@@ -3,25 +3,50 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessManagerUI", "ProcessManagerUI\ProcessManagerUI.csproj", "{C8D00382-6819-4FE5-96F7-EFD428487F41}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessManager", "ProcessManager\ProcessManager.csproj", "{98D87BB4-276C-4CE1-ACC4-9841244E9560}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessManagerService", "ProcessManagerService\ProcessManagerService.csproj", "{B2D8BA19-3D8F-4A38-9800-A8A919A20686}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ProcessManagerSetup", "ProcessManagerSetup\ProcessManagerSetup.vdproj", "{F1657BA5-FA21-411E-BA96-46584F15A3EF}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 2
+		SccNumberOfProjects = 5
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = http://qttfseu.qliktech.com:8080/tfs/defaultcollection
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = ProcessManagerUI\\ProcessManagerUI.csproj
 		SccProjectName1 = ProcessManagerUI
 		SccLocalPath1 = ProcessManagerUI
+		SccProjectUniqueName2 = ProcessManager\\ProcessManager.csproj
+		SccProjectName2 = ProcessManager
+		SccLocalPath2 = ProcessManager
+		SccProjectUniqueName3 = ProcessManagerService\\ProcessManagerService.csproj
+		SccProjectName3 = ProcessManagerService
+		SccLocalPath3 = ProcessManagerService
+		SccProjectUniqueName4 = ProcessManagerSetup\\ProcessManagerSetup.vdproj
+		SccProjectName4 = ProcessManagerSetup
+		SccLocalPath4 = ProcessManagerSetup
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x86 = Debug|x86
-		Release|x86 = Release|x86
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C8D00382-6819-4FE5-96F7-EFD428487F41}.Debug|x86.ActiveCfg = Debug|x86
-		{C8D00382-6819-4FE5-96F7-EFD428487F41}.Debug|x86.Build.0 = Debug|x86
-		{C8D00382-6819-4FE5-96F7-EFD428487F41}.Release|x86.ActiveCfg = Release|x86
-		{C8D00382-6819-4FE5-96F7-EFD428487F41}.Release|x86.Build.0 = Release|x86
+		{C8D00382-6819-4FE5-96F7-EFD428487F41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8D00382-6819-4FE5-96F7-EFD428487F41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8D00382-6819-4FE5-96F7-EFD428487F41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8D00382-6819-4FE5-96F7-EFD428487F41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98D87BB4-276C-4CE1-ACC4-9841244E9560}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98D87BB4-276C-4CE1-ACC4-9841244E9560}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98D87BB4-276C-4CE1-ACC4-9841244E9560}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98D87BB4-276C-4CE1-ACC4-9841244E9560}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2D8BA19-3D8F-4A38-9800-A8A919A20686}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2D8BA19-3D8F-4A38-9800-A8A919A20686}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2D8BA19-3D8F-4A38-9800-A8A919A20686}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2D8BA19-3D8F-4A38-9800-A8A919A20686}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1657BA5-FA21-411E-BA96-46584F15A3EF}.Debug|Any CPU.ActiveCfg = Debug
+		{F1657BA5-FA21-411E-BA96-46584F15A3EF}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
