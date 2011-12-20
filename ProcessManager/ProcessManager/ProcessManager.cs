@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
+using ProcessManager.EventArguments;
 using ProcessManager.Utilities;
 
 namespace ProcessManager
@@ -13,16 +13,32 @@ namespace ProcessManager
 	public class ProcessManager
 	{
 		private Thread _mainThread;
-		private IDictionary<Guid, IDictionary<Guid, ApplicationStatus>> _applicationStatuses;
+		private Dictionary<Guid, Dictionary<Guid, ApplicationStatus>> _applicationStatuses;
 
 		public ProcessManager()
 		{
-			_applicationStatuses = new Dictionary<Guid, IDictionary<Guid, ApplicationStatus>>();
+			_applicationStatuses = new Dictionary<Guid, Dictionary<Guid, ApplicationStatus>>();
 		}
+
+		#region Events
+
+		public event EventHandler<ApplicationStatusesEventArgs> ApplicationStatusesChanged;
+
+		#endregion
 
 		#region Properties
 
 		public bool IsRunning { get { return (_mainThread != null); } }
+
+		#endregion
+
+		#region Event raisers
+
+		private void RaiseApplicationStatusesChangedEvent(List<ApplicationStatus> applicationStatuses)
+		{
+			if (ApplicationStatusesChanged != null)
+				ApplicationStatusesChanged(this, new ApplicationStatusesEventArgs(applicationStatuses));
+		}
 
 		#endregion
 
@@ -55,26 +71,59 @@ namespace ProcessManager
 			{
 				while (true)
 				{
-					Configuration configuration = Configuration.Read();
+					try
+					{
+						Configuration configuration = Configuration.Read();
 
-					List<string> processNames = configuration.Applications.Select(application => Path.GetFileNameWithoutExtension(application.RelativePath)).ToList();
-					List<string> runningProcesses = ProcessHandler.GetProcesses(processNames);
-					List<string> applicationFilePaths = configuration.Groups
-						.Select(group => new
-							{
-								RootPath = group.Path,
-								RelativePaths = configuration.Applications.Where(application => group.Applications.Contains(application.ID)).Select(application => application.RelativePath)
-							})
-						.SelectMany(x => x.RelativePaths.Select(relativePath => Path.Combine(x.RootPath, relativePath)))
-						.ToList();
+						if (configuration.Applications.Count > 0 && configuration.Groups.Sum(group => group.Applications.Count) > 0)
+						{
+							List<string> processNames = configuration.Applications.Select(application => Path.GetFileNameWithoutExtension(application.RelativePath)).ToList();
+							List<string> runningProcesses = ProcessHandler.GetProcesses(processNames);
 
+							var applicationsStatusList = configuration.Groups
+								.SelectMany(group => configuration.Applications
+									.Where(application => group.Applications.Contains(application.ID))
+									.Select(application => new
+										{
+											Group = group,
+											Application = application,
+											Path = Path.Combine(group.Path, application.RelativePath.TrimStart('\\'))
+										}))
+								.Select(x => new
+									{
+										x.Group,
+										x.Application,
+										ApplicationStatus = new ApplicationStatus(x.Group.ID, x.Application.ID,
+											runningProcesses.Any(runningProcess => runningProcess.Equals(x.Path, StringComparison.CurrentCultureIgnoreCase)))
+									})
+								.ToList();
+
+							List<ApplicationStatus> changedApplicationStatuses = applicationsStatusList
+								.Where(x => !_applicationStatuses.ContainsKey(x.Group.ID) || !_applicationStatuses[x.Group.ID].ContainsKey(x.Application.ID)
+									|| _applicationStatuses[x.Group.ID][x.Application.ID].IsRunning != x.ApplicationStatus.IsRunning)
+								.Select(x => x.ApplicationStatus)
+								.ToList();
+
+							_applicationStatuses = applicationsStatusList
+								.GroupBy(x => x.Group.ID)
+								.ToDictionary(x => x.Key, x => x.ToDictionary(y => y.Application.ID, y => y.ApplicationStatus));
+
+							if (changedApplicationStatuses.Count > 0)
+								RaiseApplicationStatusesChangedEvent(changedApplicationStatuses);
+						}
+					}
+					catch (ThreadAbortException) { throw; }
+					catch (Exception ex)
+					{
+						Logger.Add("An unexpected error occurred in main loop", ex);
+					}
 
 					Thread.Sleep(Settings.Read<int>("StatusUpdateInterval"));
 				}
 			}
 			catch (ThreadAbortException)
 			{
-				Logger.Add("Exiting..");
+				Logger.Add("Exiting main loop...");
 			}
 			catch (Exception ex)
 			{

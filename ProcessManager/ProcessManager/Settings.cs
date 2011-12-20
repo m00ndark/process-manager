@@ -15,6 +15,7 @@ namespace ProcessManager
 			public const string CONFIGURATION_FILE_NAME = "processmanager_config.xml";
 			public const string LOG_FOLDER_NAME = "Logs";
 			public const string LOG_FILE_NAME = "processmanager_%date%.log";
+			public const int STATUS_UPDATE_INTERVAL = 500;
 		}
 
 		#endregion
@@ -27,7 +28,8 @@ namespace ProcessManager
 				{
 					{ "ConfigurationFileName", Defaults.CONFIGURATION_FILE_NAME },
 					{ "LogFolderName", Defaults.LOG_FOLDER_NAME },
-					{ "LogFileName", Defaults.LOG_FILE_NAME }
+					{ "LogFileName", Defaults.LOG_FILE_NAME },
+					{ "StatusUpdateInterval", Defaults.STATUS_UPDATE_INTERVAL.ToString() }
 				};
 		}
 

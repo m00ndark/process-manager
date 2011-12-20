@@ -41,6 +41,9 @@ namespace ProcessManager.DataObjects
 
 		public static Configuration Read()
 		{
+			if (!File.Exists(_configFilePath))
+				return new Configuration();
+
 			lock (_serializationLock)
 			{
 				return FileSystemHandler.Deserialize<Configuration>(_configFilePath);
