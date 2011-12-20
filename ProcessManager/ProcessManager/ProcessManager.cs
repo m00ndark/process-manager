@@ -17,6 +17,7 @@ namespace ProcessManager
 
 		public ProcessManager()
 		{
+			_mainThread = null;
 			_applicationStatuses = new Dictionary<Guid, Dictionary<Guid, ApplicationStatus>>();
 		}
 
@@ -41,6 +42,8 @@ namespace ProcessManager
 		}
 
 		#endregion
+
+		#region Application statuses - start, shut down, main thread and loop
 
 		public void Start()
 		{
@@ -98,15 +101,19 @@ namespace ProcessManager
 									})
 								.ToList();
 
-							List<ApplicationStatus> changedApplicationStatuses = applicationsStatusList
-								.Where(x => !_applicationStatuses.ContainsKey(x.Group.ID) || !_applicationStatuses[x.Group.ID].ContainsKey(x.Application.ID)
-									|| _applicationStatuses[x.Group.ID][x.Application.ID].IsRunning != x.ApplicationStatus.IsRunning)
-								.Select(x => x.ApplicationStatus)
-								.ToList();
+							List<ApplicationStatus> changedApplicationStatuses;
+							lock (_applicationStatuses)
+							{
+								changedApplicationStatuses = applicationsStatusList
+									.Where(x => !_applicationStatuses.ContainsKey(x.Group.ID) || !_applicationStatuses[x.Group.ID].ContainsKey(x.Application.ID)
+										|| _applicationStatuses[x.Group.ID][x.Application.ID].IsRunning != x.ApplicationStatus.IsRunning)
+									.Select(x => x.ApplicationStatus)
+									.ToList();
 
-							_applicationStatuses = applicationsStatusList
-								.GroupBy(x => x.Group.ID)
-								.ToDictionary(x => x.Key, x => x.ToDictionary(y => y.Application.ID, y => y.ApplicationStatus));
+								_applicationStatuses = applicationsStatusList
+									.GroupBy(x => x.Group.ID)
+									.ToDictionary(x => x.Key, x => x.ToDictionary(y => y.Application.ID, y => y.ApplicationStatus));
+							}
 
 							if (changedApplicationStatuses.Count > 0)
 								RaiseApplicationStatusesChangedEvent(changedApplicationStatuses);
@@ -130,5 +137,7 @@ namespace ProcessManager
 				Logger.Add("Fatal exception in main loop, dying....", ex);
 			}
 		}
+
+		#endregion
 	}
 }
