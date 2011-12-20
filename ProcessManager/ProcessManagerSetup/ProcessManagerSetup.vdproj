@@ -213,7 +213,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Process Manager"
         "ProductCode" = "8:{6BFDFBD3-B1D7-4C39-A28C-223866490013}"
-        "PackageCode" = "8:{17F72823-2096-4468-A2B0-599C01D91F90}"
+        "PackageCode" = "8:{CF5DF8FC-481E-4D27-BEEA-B789F6FF8FB7}"
         "UpgradeCode" = "8:{1CE3B821-CE0C-495E-BB3C-5D9EDCD8FD3E}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -221,12 +221,12 @@
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
         "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:MoleCode"
+        "Manufacturer" = "8:QlikTech International AB"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:Process Manager"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:MoleCode"
+        "ARPCONTACT" = "8:QlikTech International AB"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
@@ -748,7 +748,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4E7F0B68F17D41B1893892E3609809ED"
             {
-            "SourcePath" = "8:..\\ProcessManagerService\\obj\\x86\\Debug\\ProcessManagerService.exe"
+            "SourcePath" = "8:..\\ProcessManagerService\\obj\\Debug\\ProcessManagerService.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0A5D5E4CC8DC463D82AF6A14A495AF90"
@@ -776,7 +776,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6766A1030DC14F71ABB001087665CB2B"
             {
-            "SourcePath" = "8:..\\ProcessManagerUI\\obj\\x86\\Debug\\ProcessManagerUI.exe"
+            "SourcePath" = "8:..\\ProcessManagerUI\\obj\\Debug\\ProcessManagerUI.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0A5D5E4CC8DC463D82AF6A14A495AF90"
