@@ -55,7 +55,17 @@
 			this.buttonAddGroup = new System.Windows.Forms.Button();
 			this.listViewGroups = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderGroups = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.treeViewConfiguration = new ProcessManagerUI.Controls.TreeView();
+			this.buttonApply = new System.Windows.Forms.Button();
+			this.panelPlugins = new ProcessManagerUI.Controls.BackgroundPanel();
+			this.checkBoxPluginEnabled = new System.Windows.Forms.CheckBox();
+			this.labelPluginDescriptionValue = new System.Windows.Forms.Label();
+			this.labelPluginNameValue = new System.Windows.Forms.Label();
+			this.buttonConfigurePlugin = new System.Windows.Forms.Button();
+			this.labeledDividerPlugin = new ProcessManagerUI.Controls.LabeledDivider();
+			this.labelPluginDescription = new System.Windows.Forms.Label();
+			this.labelPluginName = new System.Windows.Forms.Label();
+			this.listViewPlugins = new ProcessManagerUI.Controls.ListView();
+			this.columnHeaderPlugins = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.panelApplications = new ProcessManagerUI.Controls.BackgroundPanel();
 			this.textBoxApplicationArguments = new System.Windows.Forms.TextBox();
 			this.labelApplicationArguments = new System.Windows.Forms.Label();
@@ -69,19 +79,12 @@
 			this.buttonAddApplication = new System.Windows.Forms.Button();
 			this.listViewApplications = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderApplications = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.panelPlugins = new ProcessManagerUI.Controls.BackgroundPanel();
-			this.checkBoxPluginEnabled = new System.Windows.Forms.CheckBox();
-			this.labelPluginDescriptionValue = new System.Windows.Forms.Label();
-			this.labelPluginNameValue = new System.Windows.Forms.Label();
-			this.buttonConfigurePlugin = new System.Windows.Forms.Button();
-			this.labeledDividerPlugin = new ProcessManagerUI.Controls.LabeledDivider();
-			this.labelPluginDescription = new System.Windows.Forms.Label();
-			this.labelPluginName = new System.Windows.Forms.Label();
-			this.listViewPlugins = new ProcessManagerUI.Controls.ListView();
-			this.columnHeaderPlugins = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.treeViewConfiguration = new ProcessManagerUI.Controls.TreeView();
+			this.buttonCancel = new System.Windows.Forms.Button();
+			this.buttonOK = new System.Windows.Forms.Button();
 			this.panelGroups.SuspendLayout();
-			this.panelApplications.SuspendLayout();
 			this.panelPlugins.SuspendLayout();
+			this.panelApplications.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// comboBoxMachines
@@ -176,7 +179,7 @@
 			this.listViewGroupApplications.Location = new System.Drawing.Point(244, 126);
 			this.listViewGroupApplications.MultiSelect = false;
 			this.listViewGroupApplications.Name = "listViewGroupApplications";
-			this.listViewGroupApplications.Size = new System.Drawing.Size(287, 227);
+			this.listViewGroupApplications.Size = new System.Drawing.Size(287, 225);
 			this.listViewGroupApplications.TabIndex = 13;
 			this.listViewGroupApplications.UseCompatibleStateImageBehavior = false;
 			this.listViewGroupApplications.View = System.Windows.Forms.View.Details;
@@ -309,29 +312,126 @@
 			this.columnHeaderGroups.Text = "Groups";
 			this.columnHeaderGroups.Width = 100;
 			// 
-			// treeViewConfiguration
+			// buttonApply
 			// 
-			this.treeViewConfiguration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.buttonApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonApply.Location = new System.Drawing.Point(671, 406);
+			this.buttonApply.Name = "buttonApply";
+			this.buttonApply.Size = new System.Drawing.Size(92, 23);
+			this.buttonApply.TabIndex = 17;
+			this.buttonApply.Text = "Apply";
+			this.buttonApply.UseVisualStyleBackColor = true;
+			// 
+			// panelPlugins
+			// 
+			this.panelPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelPlugins.BackColor = System.Drawing.SystemColors.Window;
+			this.panelPlugins.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
+			this.panelPlugins.Controls.Add(this.checkBoxPluginEnabled);
+			this.panelPlugins.Controls.Add(this.labelPluginDescriptionValue);
+			this.panelPlugins.Controls.Add(this.labelPluginNameValue);
+			this.panelPlugins.Controls.Add(this.buttonConfigurePlugin);
+			this.panelPlugins.Controls.Add(this.labeledDividerPlugin);
+			this.panelPlugins.Controls.Add(this.labelPluginDescription);
+			this.panelPlugins.Controls.Add(this.labelPluginName);
+			this.panelPlugins.Controls.Add(this.listViewPlugins);
+			this.panelPlugins.Location = new System.Drawing.Point(174, 39);
+			this.panelPlugins.Name = "panelPlugins";
+			this.panelPlugins.Padding = new System.Windows.Forms.Padding(5);
+			this.panelPlugins.Size = new System.Drawing.Size(589, 361);
+			this.panelPlugins.TabIndex = 18;
+			// 
+			// checkBoxPluginEnabled
+			// 
+			this.checkBoxPluginEnabled.AutoSize = true;
+			this.checkBoxPluginEnabled.Location = new System.Drawing.Point(147, 334);
+			this.checkBoxPluginEnabled.Name = "checkBoxPluginEnabled";
+			this.checkBoxPluginEnabled.Size = new System.Drawing.Size(68, 17);
+			this.checkBoxPluginEnabled.TabIndex = 14;
+			this.checkBoxPluginEnabled.Text = "Enabled";
+			this.checkBoxPluginEnabled.UseVisualStyleBackColor = true;
+			// 
+			// labelPluginDescriptionValue
+			// 
+			this.labelPluginDescriptionValue.Location = new System.Drawing.Point(239, 62);
+			this.labelPluginDescriptionValue.Name = "labelPluginDescriptionValue";
+			this.labelPluginDescriptionValue.Size = new System.Drawing.Size(336, 262);
+			this.labelPluginDescriptionValue.TabIndex = 13;
+			this.labelPluginDescriptionValue.Text = "[description]";
+			// 
+			// labelPluginNameValue
+			// 
+			this.labelPluginNameValue.AutoSize = true;
+			this.labelPluginNameValue.Location = new System.Drawing.Point(239, 34);
+			this.labelPluginNameValue.Name = "labelPluginNameValue";
+			this.labelPluginNameValue.Size = new System.Drawing.Size(41, 13);
+			this.labelPluginNameValue.TabIndex = 12;
+			this.labelPluginNameValue.Text = "[name]";
+			// 
+			// buttonConfigurePlugin
+			// 
+			this.buttonConfigurePlugin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonConfigurePlugin.Location = new System.Drawing.Point(489, 330);
+			this.buttonConfigurePlugin.Name = "buttonConfigurePlugin";
+			this.buttonConfigurePlugin.Size = new System.Drawing.Size(92, 23);
+			this.buttonConfigurePlugin.TabIndex = 11;
+			this.buttonConfigurePlugin.Text = "Configure...";
+			this.buttonConfigurePlugin.UseVisualStyleBackColor = true;
+			// 
+			// labeledDividerPlugin
+			// 
+			this.labeledDividerPlugin.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labeledDividerPlugin.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDividerPlugin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
+			this.labeledDividerPlugin.Location = new System.Drawing.Point(144, 8);
+			this.labeledDividerPlugin.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
+			this.labeledDividerPlugin.Name = "labeledDividerPlugin";
+			this.labeledDividerPlugin.Size = new System.Drawing.Size(437, 15);
+			this.labeledDividerPlugin.TabIndex = 10;
+			this.labeledDividerPlugin.Text = "Plugin";
+			// 
+			// labelPluginDescription
+			// 
+			this.labelPluginDescription.AutoSize = true;
+			this.labelPluginDescription.Location = new System.Drawing.Point(164, 62);
+			this.labelPluginDescription.Name = "labelPluginDescription";
+			this.labelPluginDescription.Size = new System.Drawing.Size(69, 13);
+			this.labelPluginDescription.TabIndex = 7;
+			this.labelPluginDescription.Text = "Description:";
+			// 
+			// labelPluginName
+			// 
+			this.labelPluginName.AutoSize = true;
+			this.labelPluginName.Location = new System.Drawing.Point(164, 34);
+			this.labelPluginName.Name = "labelPluginName";
+			this.labelPluginName.Size = new System.Drawing.Size(39, 13);
+			this.labelPluginName.TabIndex = 5;
+			this.labelPluginName.Text = "Name:";
+			// 
+			// listViewPlugins
+			// 
+			this.listViewPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-			this.treeViewConfiguration.FullRowSelect = true;
-			this.treeViewConfiguration.HideSelection = false;
-			this.treeViewConfiguration.HotTracking = true;
-			this.treeViewConfiguration.Location = new System.Drawing.Point(12, 39);
-			this.treeViewConfiguration.Name = "treeViewConfiguration";
-			treeNode1.Name = "Groups";
-			treeNode1.Text = "Groups";
-			treeNode2.Name = "Applications";
-			treeNode2.Text = "Applications";
-			treeNode3.Name = "Setup";
-			treeNode3.Text = "Setup";
-			treeNode4.Name = "Plugins";
-			treeNode4.Text = "Plugins";
-			this.treeViewConfiguration.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3,
-            treeNode4});
-			this.treeViewConfiguration.ShowLines = false;
-			this.treeViewConfiguration.Size = new System.Drawing.Size(156, 361);
-			this.treeViewConfiguration.TabIndex = 2;
+			this.listViewPlugins.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderPlugins});
+			this.listViewPlugins.FullRowSelect = true;
+			this.listViewPlugins.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewPlugins.HideSelection = false;
+			this.listViewPlugins.Location = new System.Drawing.Point(8, 8);
+			this.listViewPlugins.MultiSelect = false;
+			this.listViewPlugins.Name = "listViewPlugins";
+			this.listViewPlugins.Size = new System.Drawing.Size(120, 345);
+			this.listViewPlugins.TabIndex = 0;
+			this.listViewPlugins.UseCompatibleStateImageBehavior = false;
+			this.listViewPlugins.View = System.Windows.Forms.View.Details;
+			// 
+			// columnHeaderPlugins
+			// 
+			this.columnHeaderPlugins.Text = "Plugins";
+			this.columnHeaderPlugins.Width = 100;
 			// 
 			// panelApplications
 			// 
@@ -476,125 +576,61 @@
 			this.columnHeaderApplications.Text = "Applications";
 			this.columnHeaderApplications.Width = 100;
 			// 
-			// panelPlugins
+			// treeViewConfiguration
 			// 
-			this.panelPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelPlugins.BackColor = System.Drawing.SystemColors.Window;
-			this.panelPlugins.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
-			this.panelPlugins.Controls.Add(this.checkBoxPluginEnabled);
-			this.panelPlugins.Controls.Add(this.labelPluginDescriptionValue);
-			this.panelPlugins.Controls.Add(this.labelPluginNameValue);
-			this.panelPlugins.Controls.Add(this.buttonConfigurePlugin);
-			this.panelPlugins.Controls.Add(this.labeledDividerPlugin);
-			this.panelPlugins.Controls.Add(this.labelPluginDescription);
-			this.panelPlugins.Controls.Add(this.labelPluginName);
-			this.panelPlugins.Controls.Add(this.listViewPlugins);
-			this.panelPlugins.Location = new System.Drawing.Point(174, 39);
-			this.panelPlugins.Name = "panelPlugins";
-			this.panelPlugins.Padding = new System.Windows.Forms.Padding(5);
-			this.panelPlugins.Size = new System.Drawing.Size(589, 361);
-			this.panelPlugins.TabIndex = 18;
-			// 
-			// checkBoxPluginEnabled
-			// 
-			this.checkBoxPluginEnabled.AutoSize = true;
-			this.checkBoxPluginEnabled.Location = new System.Drawing.Point(147, 334);
-			this.checkBoxPluginEnabled.Name = "checkBoxPluginEnabled";
-			this.checkBoxPluginEnabled.Size = new System.Drawing.Size(68, 17);
-			this.checkBoxPluginEnabled.TabIndex = 14;
-			this.checkBoxPluginEnabled.Text = "Enabled";
-			this.checkBoxPluginEnabled.UseVisualStyleBackColor = true;
-			// 
-			// labelPluginDescriptionValue
-			// 
-			this.labelPluginDescriptionValue.Location = new System.Drawing.Point(239, 62);
-			this.labelPluginDescriptionValue.Name = "labelPluginDescriptionValue";
-			this.labelPluginDescriptionValue.Size = new System.Drawing.Size(336, 262);
-			this.labelPluginDescriptionValue.TabIndex = 13;
-			this.labelPluginDescriptionValue.Text = "[description]";
-			// 
-			// labelPluginNameValue
-			// 
-			this.labelPluginNameValue.AutoSize = true;
-			this.labelPluginNameValue.Location = new System.Drawing.Point(239, 34);
-			this.labelPluginNameValue.Name = "labelPluginNameValue";
-			this.labelPluginNameValue.Size = new System.Drawing.Size(41, 13);
-			this.labelPluginNameValue.TabIndex = 12;
-			this.labelPluginNameValue.Text = "[name]";
-			// 
-			// buttonConfigurePlugin
-			// 
-			this.buttonConfigurePlugin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonConfigurePlugin.Location = new System.Drawing.Point(489, 330);
-			this.buttonConfigurePlugin.Name = "buttonConfigurePlugin";
-			this.buttonConfigurePlugin.Size = new System.Drawing.Size(92, 23);
-			this.buttonConfigurePlugin.TabIndex = 11;
-			this.buttonConfigurePlugin.Text = "Configure...";
-			this.buttonConfigurePlugin.UseVisualStyleBackColor = true;
-			// 
-			// labeledDividerPlugin
-			// 
-			this.labeledDividerPlugin.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDividerPlugin.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDividerPlugin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
-			this.labeledDividerPlugin.Location = new System.Drawing.Point(144, 8);
-			this.labeledDividerPlugin.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
-			this.labeledDividerPlugin.Name = "labeledDividerPlugin";
-			this.labeledDividerPlugin.Size = new System.Drawing.Size(437, 15);
-			this.labeledDividerPlugin.TabIndex = 10;
-			this.labeledDividerPlugin.Text = "Plugin";
-			// 
-			// labelPluginDescription
-			// 
-			this.labelPluginDescription.AutoSize = true;
-			this.labelPluginDescription.Location = new System.Drawing.Point(164, 62);
-			this.labelPluginDescription.Name = "labelPluginDescription";
-			this.labelPluginDescription.Size = new System.Drawing.Size(69, 13);
-			this.labelPluginDescription.TabIndex = 7;
-			this.labelPluginDescription.Text = "Description:";
-			// 
-			// labelPluginName
-			// 
-			this.labelPluginName.AutoSize = true;
-			this.labelPluginName.Location = new System.Drawing.Point(164, 34);
-			this.labelPluginName.Name = "labelPluginName";
-			this.labelPluginName.Size = new System.Drawing.Size(39, 13);
-			this.labelPluginName.TabIndex = 5;
-			this.labelPluginName.Text = "Name:";
-			// 
-			// listViewPlugins
-			// 
-			this.listViewPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.treeViewConfiguration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-			this.listViewPlugins.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeaderPlugins});
-			this.listViewPlugins.FullRowSelect = true;
-			this.listViewPlugins.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.listViewPlugins.HideSelection = false;
-			this.listViewPlugins.Location = new System.Drawing.Point(8, 8);
-			this.listViewPlugins.MultiSelect = false;
-			this.listViewPlugins.Name = "listViewPlugins";
-			this.listViewPlugins.Size = new System.Drawing.Size(120, 345);
-			this.listViewPlugins.TabIndex = 0;
-			this.listViewPlugins.UseCompatibleStateImageBehavior = false;
-			this.listViewPlugins.View = System.Windows.Forms.View.Details;
+			this.treeViewConfiguration.FullRowSelect = true;
+			this.treeViewConfiguration.HideSelection = false;
+			this.treeViewConfiguration.HotTracking = true;
+			this.treeViewConfiguration.Location = new System.Drawing.Point(12, 39);
+			this.treeViewConfiguration.Name = "treeViewConfiguration";
+			treeNode1.Name = "Groups";
+			treeNode1.Text = "Groups";
+			treeNode2.Name = "Applications";
+			treeNode2.Text = "Applications";
+			treeNode3.Name = "Setup";
+			treeNode3.Text = "Setup";
+			treeNode4.Name = "Plugins";
+			treeNode4.Text = "Plugins";
+			this.treeViewConfiguration.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode3,
+            treeNode4});
+			this.treeViewConfiguration.ShowLines = false;
+			this.treeViewConfiguration.Size = new System.Drawing.Size(156, 361);
+			this.treeViewConfiguration.TabIndex = 2;
 			// 
-			// columnHeaderPlugins
+			// buttonCancel
 			// 
-			this.columnHeaderPlugins.Text = "Plugins";
-			this.columnHeaderPlugins.Width = 100;
+			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCancel.Location = new System.Drawing.Point(573, 406);
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.Size = new System.Drawing.Size(92, 23);
+			this.buttonCancel.TabIndex = 19;
+			this.buttonCancel.Text = "Cancel";
+			this.buttonCancel.UseVisualStyleBackColor = true;
+			// 
+			// buttonOK
+			// 
+			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonOK.Location = new System.Drawing.Point(475, 406);
+			this.buttonOK.Name = "buttonOK";
+			this.buttonOK.Size = new System.Drawing.Size(92, 23);
+			this.buttonOK.TabIndex = 20;
+			this.buttonOK.Text = "OK";
+			this.buttonOK.UseVisualStyleBackColor = true;
 			// 
 			// ConfigurationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(775, 412);
+			this.ClientSize = new System.Drawing.Size(775, 441);
+			this.Controls.Add(this.buttonOK);
+			this.Controls.Add(this.buttonCancel);
+			this.Controls.Add(this.buttonApply);
 			this.Controls.Add(this.panelGroups);
-			this.Controls.Add(this.panelApplications);
 			this.Controls.Add(this.panelPlugins);
+			this.Controls.Add(this.panelApplications);
 			this.Controls.Add(this.treeViewConfiguration);
 			this.Controls.Add(this.buttonMachines);
 			this.Controls.Add(this.comboBoxMachines);
@@ -609,10 +645,10 @@
 			this.Load += new System.EventHandler(this.ConfigurationForm_Load);
 			this.panelGroups.ResumeLayout(false);
 			this.panelGroups.PerformLayout();
-			this.panelApplications.ResumeLayout(false);
-			this.panelApplications.PerformLayout();
 			this.panelPlugins.ResumeLayout(false);
 			this.panelPlugins.PerformLayout();
+			this.panelApplications.ResumeLayout(false);
+			this.panelApplications.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -663,6 +699,9 @@
 		private Controls.ListView listViewPlugins;
 		private System.Windows.Forms.ColumnHeader columnHeaderPlugins;
 		private System.Windows.Forms.CheckBox checkBoxPluginEnabled;
+		private System.Windows.Forms.Button buttonApply;
+		private System.Windows.Forms.Button buttonCancel;
+		private System.Windows.Forms.Button buttonOK;
 
 	}
 }

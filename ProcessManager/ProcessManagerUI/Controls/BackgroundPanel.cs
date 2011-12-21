@@ -19,12 +19,7 @@ namespace ProcessManagerUI.Controls
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-			e.Graphics.DrawRectangle(
-				new Pen(BorderColor),
-				e.ClipRectangle.Left,
-				e.ClipRectangle.Top,
-				e.ClipRectangle.Width - 1,
-				e.ClipRectangle.Height - 1);
+			e.Graphics.DrawRectangle(new Pen(BorderColor), 0, 0, Size.Width - 1, Size.Height - 1);
 		}
 	}
 }

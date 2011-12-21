@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataAccess\RegistryHandler.cs" />
     <Compile Include="DataObjects\Machine.cs" />
     <Compile Include="EventArguments\ApplicationStatusesEventArgs.cs" />
     <Compile Include="IProcessManagerEventHandler.cs" />

@@ -125,7 +125,7 @@ namespace ProcessManager
 						Logger.Add("An unexpected error occurred in main loop", ex);
 					}
 
-					Thread.Sleep(Settings.Read<int>("StatusUpdateInterval"));
+					Thread.Sleep(Settings.Service.Read<int>("StatusUpdateInterval"));
 				}
 			}
 			catch (ThreadAbortException)

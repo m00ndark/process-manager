@@ -19,11 +19,11 @@ namespace ProcessManager.DataObjects
 		static Configuration()
 		{
 			_appDataFolder = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-				Settings.Defaults.COMPANY_FOLDER_NAME), Settings.Defaults.APPLICATION_FOLDER_NAME);
+				Settings.Service.Defaults.COMPANY_FOLDER_NAME), Settings.Service.Defaults.APPLICATION_FOLDER_NAME);
 
 			FileSystemHandler.CreateDirectory(_appDataFolder);
 
-			_configFilePath = Path.Combine(_appDataFolder, Settings.Read("ConfigurationFileName"));
+			_configFilePath = Path.Combine(_appDataFolder, Settings.Service.Read("ConfigurationFileName"));
 		}
 
 		private Configuration()

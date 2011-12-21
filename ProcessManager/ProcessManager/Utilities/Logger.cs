@@ -27,9 +27,9 @@ namespace ProcessManager.Utilities
 		static Logger()
 		{
 			_appDataFolder = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-				Settings.Defaults.COMPANY_FOLDER_NAME), Settings.Defaults.APPLICATION_FOLDER_NAME);
-			_logFolder = Path.Combine(_appDataFolder, Settings.Read("LogFolderName"));
-			_logFileNameTemplate = Settings.Read("LogFileName");
+				Settings.Service.Defaults.COMPANY_FOLDER_NAME), Settings.Service.Defaults.APPLICATION_FOLDER_NAME);
+			_logFolder = Path.Combine(_appDataFolder, Settings.Service.Read("LogFolderName"));
+			_logFileNameTemplate = Settings.Service.Read("LogFileName");
 
 			FileSystemHandler.CreateDirectory(_logFolder);
 
