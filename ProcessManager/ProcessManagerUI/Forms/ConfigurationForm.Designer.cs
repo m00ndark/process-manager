@@ -35,75 +35,75 @@
             treeNode2});
 			System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Plugins");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigurationForm));
-			this.comboBox1 = new System.Windows.Forms.ComboBox();
-			this.button1 = new System.Windows.Forms.Button();
-			this.panelGroups = new System.Windows.Forms.Panel();
-			this.button7 = new System.Windows.Forms.Button();
-			this.button6 = new System.Windows.Forms.Button();
-			this.button5 = new System.Windows.Forms.Button();
-			this.label3 = new System.Windows.Forms.Label();
-			this.button4 = new System.Windows.Forms.Button();
-			this.textBox2 = new System.Windows.Forms.TextBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.button3 = new System.Windows.Forms.Button();
-			this.button2 = new System.Windows.Forms.Button();
-			this.listView2 = new ProcessManagerUI.Controls.ListView();
-			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.labeledDivider2 = new ProcessManagerUI.Controls.LabeledDivider();
-			this.labeledDivider1 = new ProcessManagerUI.Controls.LabeledDivider();
-			this.listView1 = new ProcessManagerUI.Controls.ListView();
-			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.treeView1 = new ProcessManagerUI.Controls.TreeView();
-			this.panelApplications = new System.Windows.Forms.Panel();
-			this.button11 = new System.Windows.Forms.Button();
-			this.labeledDivider3 = new ProcessManagerUI.Controls.LabeledDivider();
-			this.textBox3 = new System.Windows.Forms.TextBox();
-			this.label5 = new System.Windows.Forms.Label();
-			this.textBox4 = new System.Windows.Forms.TextBox();
-			this.label6 = new System.Windows.Forms.Label();
-			this.button12 = new System.Windows.Forms.Button();
-			this.button13 = new System.Windows.Forms.Button();
-			this.listView4 = new ProcessManagerUI.Controls.ListView();
-			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.textBox5 = new System.Windows.Forms.TextBox();
-			this.label4 = new System.Windows.Forms.Label();
-			this.panelPlugins = new System.Windows.Forms.Panel();
-			this.button8 = new System.Windows.Forms.Button();
-			this.labeledDivider4 = new ProcessManagerUI.Controls.LabeledDivider();
-			this.label8 = new System.Windows.Forms.Label();
-			this.label9 = new System.Windows.Forms.Label();
-			this.listView3 = new ProcessManagerUI.Controls.ListView();
-			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.label7 = new System.Windows.Forms.Label();
-			this.label10 = new System.Windows.Forms.Label();
-			this.checkBox1 = new System.Windows.Forms.CheckBox();
+			this.comboBoxMachines = new System.Windows.Forms.ComboBox();
+			this.buttonMachines = new System.Windows.Forms.Button();
+			this.panelGroups = new ProcessManagerUI.Controls.BackgroundPanel();
+			this.buttonCopyGroupApplications = new System.Windows.Forms.Button();
+			this.buttonRemoveGroupApplication = new System.Windows.Forms.Button();
+			this.buttonAddGroupApplication = new System.Windows.Forms.Button();
+			this.listViewGroupApplications = new ProcessManagerUI.Controls.ListView();
+			this.columnHeaderApplicationMappings = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.labelGroupApplications = new System.Windows.Forms.Label();
+			this.buttonBrowseGroupPath = new System.Windows.Forms.Button();
+			this.labeledDividerGroup = new ProcessManagerUI.Controls.LabeledDivider();
+			this.labeledDividerGroupApplicationMappings = new ProcessManagerUI.Controls.LabeledDivider();
+			this.textBoxGroupPath = new System.Windows.Forms.TextBox();
+			this.labelGroupPath = new System.Windows.Forms.Label();
+			this.textBoxGroupName = new System.Windows.Forms.TextBox();
+			this.labelGroupName = new System.Windows.Forms.Label();
+			this.buttonRemoveGroup = new System.Windows.Forms.Button();
+			this.buttonAddGroup = new System.Windows.Forms.Button();
+			this.listViewGroups = new ProcessManagerUI.Controls.ListView();
+			this.columnHeaderGroups = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.treeViewConfiguration = new ProcessManagerUI.Controls.TreeView();
+			this.panelApplications = new ProcessManagerUI.Controls.BackgroundPanel();
+			this.textBoxApplicationArguments = new System.Windows.Forms.TextBox();
+			this.labelApplicationArguments = new System.Windows.Forms.Label();
+			this.buttonBrowseApplicationRelativePath = new System.Windows.Forms.Button();
+			this.labeledDividerApplication = new ProcessManagerUI.Controls.LabeledDivider();
+			this.textBoxApplicationRelativePath = new System.Windows.Forms.TextBox();
+			this.labelApplicationRelativePath = new System.Windows.Forms.Label();
+			this.textBoxApplicationName = new System.Windows.Forms.TextBox();
+			this.labelApplicationName = new System.Windows.Forms.Label();
+			this.buttonRemoveApplication = new System.Windows.Forms.Button();
+			this.buttonAddApplication = new System.Windows.Forms.Button();
+			this.listViewApplications = new ProcessManagerUI.Controls.ListView();
+			this.columnHeaderApplications = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.panelPlugins = new ProcessManagerUI.Controls.BackgroundPanel();
+			this.checkBoxPluginEnabled = new System.Windows.Forms.CheckBox();
+			this.labelPluginDescriptionValue = new System.Windows.Forms.Label();
+			this.labelPluginNameValue = new System.Windows.Forms.Label();
+			this.buttonConfigurePlugin = new System.Windows.Forms.Button();
+			this.labeledDividerPlugin = new ProcessManagerUI.Controls.LabeledDivider();
+			this.labelPluginDescription = new System.Windows.Forms.Label();
+			this.labelPluginName = new System.Windows.Forms.Label();
+			this.listViewPlugins = new ProcessManagerUI.Controls.ListView();
+			this.columnHeaderPlugins = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.panelGroups.SuspendLayout();
 			this.panelApplications.SuspendLayout();
 			this.panelPlugins.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// comboBox1
+			// comboBoxMachines
 			// 
-			this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.comboBoxMachines.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBox1.FormattingEnabled = true;
-			this.comboBox1.Location = new System.Drawing.Point(12, 12);
-			this.comboBox1.Name = "comboBox1";
-			this.comboBox1.Size = new System.Drawing.Size(653, 21);
-			this.comboBox1.TabIndex = 0;
+			this.comboBoxMachines.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxMachines.FormattingEnabled = true;
+			this.comboBoxMachines.Location = new System.Drawing.Point(12, 12);
+			this.comboBoxMachines.Name = "comboBoxMachines";
+			this.comboBoxMachines.Size = new System.Drawing.Size(653, 21);
+			this.comboBoxMachines.TabIndex = 0;
 			// 
-			// button1
+			// buttonMachines
 			// 
-			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Location = new System.Drawing.Point(671, 11);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(92, 23);
-			this.button1.TabIndex = 1;
-			this.button1.Text = "Machines...";
-			this.button1.UseVisualStyleBackColor = true;
+			this.buttonMachines.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonMachines.Location = new System.Drawing.Point(671, 11);
+			this.buttonMachines.Name = "buttonMachines";
+			this.buttonMachines.Size = new System.Drawing.Size(92, 23);
+			this.buttonMachines.TabIndex = 1;
+			this.buttonMachines.Text = "Machines...";
+			this.buttonMachines.UseVisualStyleBackColor = true;
 			// 
 			// panelGroups
 			// 
@@ -111,213 +111,213 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panelGroups.BackColor = System.Drawing.SystemColors.Window;
-			this.panelGroups.Controls.Add(this.button7);
-			this.panelGroups.Controls.Add(this.button6);
-			this.panelGroups.Controls.Add(this.button5);
-			this.panelGroups.Controls.Add(this.listView2);
-			this.panelGroups.Controls.Add(this.label3);
-			this.panelGroups.Controls.Add(this.button4);
-			this.panelGroups.Controls.Add(this.labeledDivider2);
-			this.panelGroups.Controls.Add(this.labeledDivider1);
-			this.panelGroups.Controls.Add(this.textBox2);
-			this.panelGroups.Controls.Add(this.label2);
-			this.panelGroups.Controls.Add(this.textBox1);
-			this.panelGroups.Controls.Add(this.label1);
-			this.panelGroups.Controls.Add(this.button3);
-			this.panelGroups.Controls.Add(this.button2);
-			this.panelGroups.Controls.Add(this.listView1);
+			this.panelGroups.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
+			this.panelGroups.Controls.Add(this.buttonCopyGroupApplications);
+			this.panelGroups.Controls.Add(this.buttonRemoveGroupApplication);
+			this.panelGroups.Controls.Add(this.buttonAddGroupApplication);
+			this.panelGroups.Controls.Add(this.listViewGroupApplications);
+			this.panelGroups.Controls.Add(this.labelGroupApplications);
+			this.panelGroups.Controls.Add(this.buttonBrowseGroupPath);
+			this.panelGroups.Controls.Add(this.labeledDividerGroup);
+			this.panelGroups.Controls.Add(this.labeledDividerGroupApplicationMappings);
+			this.panelGroups.Controls.Add(this.textBoxGroupPath);
+			this.panelGroups.Controls.Add(this.labelGroupPath);
+			this.panelGroups.Controls.Add(this.textBoxGroupName);
+			this.panelGroups.Controls.Add(this.labelGroupName);
+			this.panelGroups.Controls.Add(this.buttonRemoveGroup);
+			this.panelGroups.Controls.Add(this.buttonAddGroup);
+			this.panelGroups.Controls.Add(this.listViewGroups);
 			this.panelGroups.Location = new System.Drawing.Point(174, 39);
 			this.panelGroups.Name = "panelGroups";
 			this.panelGroups.Padding = new System.Windows.Forms.Padding(5);
 			this.panelGroups.Size = new System.Drawing.Size(589, 361);
 			this.panelGroups.TabIndex = 3;
-			this.panelGroups.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
 			// 
-			// button7
+			// buttonCopyGroupApplications
 			// 
-			this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button7.Image = global::ProcessManagerUI.Properties.Resources.copy_16;
-			this.button7.Location = new System.Drawing.Point(537, 186);
-			this.button7.Name = "button7";
-			this.button7.Size = new System.Drawing.Size(38, 24);
-			this.button7.TabIndex = 16;
-			this.button7.UseVisualStyleBackColor = true;
+			this.buttonCopyGroupApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCopyGroupApplications.Image = global::ProcessManagerUI.Properties.Resources.copy_16;
+			this.buttonCopyGroupApplications.Location = new System.Drawing.Point(537, 186);
+			this.buttonCopyGroupApplications.Name = "buttonCopyGroupApplications";
+			this.buttonCopyGroupApplications.Size = new System.Drawing.Size(38, 24);
+			this.buttonCopyGroupApplications.TabIndex = 16;
+			this.buttonCopyGroupApplications.UseVisualStyleBackColor = true;
 			// 
-			// button6
+			// buttonRemoveGroupApplication
 			// 
-			this.button6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button6.Image = global::ProcessManagerUI.Properties.Resources.remove_16;
-			this.button6.Location = new System.Drawing.Point(537, 156);
-			this.button6.Name = "button6";
-			this.button6.Size = new System.Drawing.Size(38, 24);
-			this.button6.TabIndex = 15;
-			this.button6.UseVisualStyleBackColor = true;
+			this.buttonRemoveGroupApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonRemoveGroupApplication.Image = global::ProcessManagerUI.Properties.Resources.remove_16;
+			this.buttonRemoveGroupApplication.Location = new System.Drawing.Point(537, 156);
+			this.buttonRemoveGroupApplication.Name = "buttonRemoveGroupApplication";
+			this.buttonRemoveGroupApplication.Size = new System.Drawing.Size(38, 24);
+			this.buttonRemoveGroupApplication.TabIndex = 15;
+			this.buttonRemoveGroupApplication.UseVisualStyleBackColor = true;
 			// 
-			// button5
+			// buttonAddGroupApplication
 			// 
-			this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button5.Image = global::ProcessManagerUI.Properties.Resources.add_16;
-			this.button5.Location = new System.Drawing.Point(537, 126);
-			this.button5.Name = "button5";
-			this.button5.Size = new System.Drawing.Size(38, 24);
-			this.button5.TabIndex = 14;
-			this.button5.UseVisualStyleBackColor = true;
+			this.buttonAddGroupApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonAddGroupApplication.Image = global::ProcessManagerUI.Properties.Resources.add_16;
+			this.buttonAddGroupApplication.Location = new System.Drawing.Point(537, 126);
+			this.buttonAddGroupApplication.Name = "buttonAddGroupApplication";
+			this.buttonAddGroupApplication.Size = new System.Drawing.Size(38, 24);
+			this.buttonAddGroupApplication.TabIndex = 14;
+			this.buttonAddGroupApplication.UseVisualStyleBackColor = true;
 			// 
-			// label3
+			// listViewGroupApplications
 			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(164, 129);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(74, 13);
-			this.label3.TabIndex = 12;
-			this.label3.Text = "Applications:";
-			// 
-			// button4
-			// 
-			this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button4.Location = new System.Drawing.Point(537, 58);
-			this.button4.Name = "button4";
-			this.button4.Size = new System.Drawing.Size(38, 23);
-			this.button4.TabIndex = 11;
-			this.button4.Text = "...";
-			this.button4.UseVisualStyleBackColor = true;
-			// 
-			// textBox2
-			// 
-			this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBox2.Location = new System.Drawing.Point(244, 59);
-			this.textBox2.Name = "textBox2";
-			this.textBox2.Size = new System.Drawing.Size(287, 22);
-			this.textBox2.TabIndex = 8;
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(164, 62);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(33, 13);
-			this.label2.TabIndex = 7;
-			this.label2.Text = "Path:";
-			// 
-			// textBox1
-			// 
-			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBox1.Location = new System.Drawing.Point(244, 31);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(287, 22);
-			this.textBox1.TabIndex = 6;
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(164, 34);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(39, 13);
-			this.label1.TabIndex = 5;
-			this.label1.Text = "Name:";
-			// 
-			// button3
-			// 
-			this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.button3.Location = new System.Drawing.Point(71, 330);
-			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(58, 23);
-			this.button3.TabIndex = 2;
-			this.button3.Text = "Remove";
-			this.button3.UseVisualStyleBackColor = true;
-			// 
-			// button2
-			// 
-			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.button2.Location = new System.Drawing.Point(7, 330);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(58, 23);
-			this.button2.TabIndex = 1;
-			this.button2.Text = "Add";
-			this.button2.UseVisualStyleBackColor = true;
-			// 
-			// listView2
-			// 
-			this.listView2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.listViewGroupApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.listView2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader2});
-			this.listView2.FullRowSelect = true;
-			this.listView2.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.listView2.HideSelection = false;
-			this.listView2.Location = new System.Drawing.Point(244, 126);
-			this.listView2.MultiSelect = false;
-			this.listView2.Name = "listView2";
-			this.listView2.Size = new System.Drawing.Size(287, 227);
-			this.listView2.TabIndex = 13;
-			this.listView2.UseCompatibleStateImageBehavior = false;
-			this.listView2.View = System.Windows.Forms.View.Details;
+			this.listViewGroupApplications.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderApplicationMappings});
+			this.listViewGroupApplications.FullRowSelect = true;
+			this.listViewGroupApplications.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewGroupApplications.HideSelection = false;
+			this.listViewGroupApplications.Location = new System.Drawing.Point(244, 126);
+			this.listViewGroupApplications.MultiSelect = false;
+			this.listViewGroupApplications.Name = "listViewGroupApplications";
+			this.listViewGroupApplications.Size = new System.Drawing.Size(287, 227);
+			this.listViewGroupApplications.TabIndex = 13;
+			this.listViewGroupApplications.UseCompatibleStateImageBehavior = false;
+			this.listViewGroupApplications.View = System.Windows.Forms.View.Details;
 			// 
-			// columnHeader2
+			// columnHeaderApplicationMappings
 			// 
-			this.columnHeader2.Text = "Applications";
-			this.columnHeader2.Width = 268;
+			this.columnHeaderApplicationMappings.Text = "ApplicationMappings";
+			this.columnHeaderApplicationMappings.Width = 268;
 			// 
-			// labeledDivider2
+			// labelGroupApplications
 			// 
-			this.labeledDivider2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.labelGroupApplications.AutoSize = true;
+			this.labelGroupApplications.Location = new System.Drawing.Point(164, 129);
+			this.labelGroupApplications.Name = "labelGroupApplications";
+			this.labelGroupApplications.Size = new System.Drawing.Size(74, 13);
+			this.labelGroupApplications.TabIndex = 12;
+			this.labelGroupApplications.Text = "Applications:";
+			// 
+			// buttonBrowseGroupPath
+			// 
+			this.buttonBrowseGroupPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonBrowseGroupPath.Location = new System.Drawing.Point(537, 58);
+			this.buttonBrowseGroupPath.Name = "buttonBrowseGroupPath";
+			this.buttonBrowseGroupPath.Size = new System.Drawing.Size(38, 23);
+			this.buttonBrowseGroupPath.TabIndex = 11;
+			this.buttonBrowseGroupPath.Text = "...";
+			this.buttonBrowseGroupPath.UseVisualStyleBackColor = true;
+			// 
+			// labeledDividerGroup
+			// 
+			this.labeledDividerGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDivider2.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDivider2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
-			this.labeledDivider2.Location = new System.Drawing.Point(144, 8);
-			this.labeledDivider2.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
-			this.labeledDivider2.Name = "labeledDivider2";
-			this.labeledDivider2.Size = new System.Drawing.Size(437, 15);
-			this.labeledDivider2.TabIndex = 10;
-			this.labeledDivider2.Text = "Group";
+			this.labeledDividerGroup.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDividerGroup.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
+			this.labeledDividerGroup.Location = new System.Drawing.Point(144, 8);
+			this.labeledDividerGroup.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
+			this.labeledDividerGroup.Name = "labeledDividerGroup";
+			this.labeledDividerGroup.Size = new System.Drawing.Size(437, 15);
+			this.labeledDividerGroup.TabIndex = 10;
+			this.labeledDividerGroup.Text = "Group";
 			// 
-			// labeledDivider1
+			// labeledDividerGroupApplicationMappings
 			// 
-			this.labeledDivider1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.labeledDividerGroupApplicationMappings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDivider1.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDivider1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
-			this.labeledDivider1.Location = new System.Drawing.Point(147, 103);
-			this.labeledDivider1.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
-			this.labeledDivider1.Name = "labeledDivider1";
-			this.labeledDivider1.Size = new System.Drawing.Size(434, 15);
-			this.labeledDivider1.TabIndex = 9;
-			this.labeledDivider1.Text = "Mappings";
+			this.labeledDividerGroupApplicationMappings.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDividerGroupApplicationMappings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
+			this.labeledDividerGroupApplicationMappings.Location = new System.Drawing.Point(147, 103);
+			this.labeledDividerGroupApplicationMappings.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
+			this.labeledDividerGroupApplicationMappings.Name = "labeledDividerGroupApplicationMappings";
+			this.labeledDividerGroupApplicationMappings.Size = new System.Drawing.Size(434, 15);
+			this.labeledDividerGroupApplicationMappings.TabIndex = 9;
+			this.labeledDividerGroupApplicationMappings.Text = "Mappings";
 			// 
-			// listView1
+			// textBoxGroupPath
 			// 
-			this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.textBoxGroupPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxGroupPath.Location = new System.Drawing.Point(244, 59);
+			this.textBoxGroupPath.Name = "textBoxGroupPath";
+			this.textBoxGroupPath.Size = new System.Drawing.Size(287, 22);
+			this.textBoxGroupPath.TabIndex = 8;
+			// 
+			// labelGroupPath
+			// 
+			this.labelGroupPath.AutoSize = true;
+			this.labelGroupPath.Location = new System.Drawing.Point(164, 62);
+			this.labelGroupPath.Name = "labelGroupPath";
+			this.labelGroupPath.Size = new System.Drawing.Size(33, 13);
+			this.labelGroupPath.TabIndex = 7;
+			this.labelGroupPath.Text = "Path:";
+			// 
+			// textBoxGroupName
+			// 
+			this.textBoxGroupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxGroupName.Location = new System.Drawing.Point(244, 31);
+			this.textBoxGroupName.Name = "textBoxGroupName";
+			this.textBoxGroupName.Size = new System.Drawing.Size(287, 22);
+			this.textBoxGroupName.TabIndex = 6;
+			// 
+			// labelGroupName
+			// 
+			this.labelGroupName.AutoSize = true;
+			this.labelGroupName.Location = new System.Drawing.Point(164, 34);
+			this.labelGroupName.Name = "labelGroupName";
+			this.labelGroupName.Size = new System.Drawing.Size(39, 13);
+			this.labelGroupName.TabIndex = 5;
+			this.labelGroupName.Text = "Name:";
+			// 
+			// buttonRemoveGroup
+			// 
+			this.buttonRemoveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonRemoveGroup.Location = new System.Drawing.Point(71, 330);
+			this.buttonRemoveGroup.Name = "buttonRemoveGroup";
+			this.buttonRemoveGroup.Size = new System.Drawing.Size(58, 23);
+			this.buttonRemoveGroup.TabIndex = 2;
+			this.buttonRemoveGroup.Text = "Remove";
+			this.buttonRemoveGroup.UseVisualStyleBackColor = true;
+			// 
+			// buttonAddGroup
+			// 
+			this.buttonAddGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonAddGroup.Location = new System.Drawing.Point(7, 330);
+			this.buttonAddGroup.Name = "buttonAddGroup";
+			this.buttonAddGroup.Size = new System.Drawing.Size(58, 23);
+			this.buttonAddGroup.TabIndex = 1;
+			this.buttonAddGroup.Text = "Add";
+			this.buttonAddGroup.UseVisualStyleBackColor = true;
+			// 
+			// listViewGroups
+			// 
+			this.listViewGroups.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-			this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
-			this.listView1.FullRowSelect = true;
-			this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.listView1.HideSelection = false;
-			this.listView1.Location = new System.Drawing.Point(8, 8);
-			this.listView1.MultiSelect = false;
-			this.listView1.Name = "listView1";
-			this.listView1.Size = new System.Drawing.Size(120, 316);
-			this.listView1.TabIndex = 0;
-			this.listView1.UseCompatibleStateImageBehavior = false;
-			this.listView1.View = System.Windows.Forms.View.Details;
+			this.listViewGroups.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderGroups});
+			this.listViewGroups.FullRowSelect = true;
+			this.listViewGroups.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewGroups.HideSelection = false;
+			this.listViewGroups.Location = new System.Drawing.Point(8, 8);
+			this.listViewGroups.MultiSelect = false;
+			this.listViewGroups.Name = "listViewGroups";
+			this.listViewGroups.Size = new System.Drawing.Size(120, 316);
+			this.listViewGroups.TabIndex = 0;
+			this.listViewGroups.UseCompatibleStateImageBehavior = false;
+			this.listViewGroups.View = System.Windows.Forms.View.Details;
 			// 
-			// columnHeader1
+			// columnHeaderGroups
 			// 
-			this.columnHeader1.Text = "Groups";
-			this.columnHeader1.Width = 100;
+			this.columnHeaderGroups.Text = "Groups";
+			this.columnHeaderGroups.Width = 100;
 			// 
-			// treeView1
+			// treeViewConfiguration
 			// 
-			this.treeView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.treeViewConfiguration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-			this.treeView1.FullRowSelect = true;
-			this.treeView1.HideSelection = false;
-			this.treeView1.HotTracking = true;
-			this.treeView1.Location = new System.Drawing.Point(12, 39);
-			this.treeView1.Name = "treeView1";
+			this.treeViewConfiguration.FullRowSelect = true;
+			this.treeViewConfiguration.HideSelection = false;
+			this.treeViewConfiguration.HotTracking = true;
+			this.treeViewConfiguration.Location = new System.Drawing.Point(12, 39);
+			this.treeViewConfiguration.Name = "treeViewConfiguration";
 			treeNode1.Name = "Groups";
 			treeNode1.Text = "Groups";
 			treeNode2.Name = "Applications";
@@ -326,12 +326,12 @@
 			treeNode3.Text = "Setup";
 			treeNode4.Name = "Plugins";
 			treeNode4.Text = "Plugins";
-			this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+			this.treeViewConfiguration.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode3,
             treeNode4});
-			this.treeView1.ShowLines = false;
-			this.treeView1.Size = new System.Drawing.Size(156, 361);
-			this.treeView1.TabIndex = 2;
+			this.treeViewConfiguration.ShowLines = false;
+			this.treeViewConfiguration.Size = new System.Drawing.Size(156, 361);
+			this.treeViewConfiguration.TabIndex = 2;
 			// 
 			// panelApplications
 			// 
@@ -339,141 +339,142 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panelApplications.BackColor = System.Drawing.SystemColors.Window;
-			this.panelApplications.Controls.Add(this.textBox5);
-			this.panelApplications.Controls.Add(this.label4);
-			this.panelApplications.Controls.Add(this.button11);
-			this.panelApplications.Controls.Add(this.labeledDivider3);
-			this.panelApplications.Controls.Add(this.textBox3);
-			this.panelApplications.Controls.Add(this.label5);
-			this.panelApplications.Controls.Add(this.textBox4);
-			this.panelApplications.Controls.Add(this.label6);
-			this.panelApplications.Controls.Add(this.button12);
-			this.panelApplications.Controls.Add(this.button13);
-			this.panelApplications.Controls.Add(this.listView4);
+			this.panelApplications.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
+			this.panelApplications.Controls.Add(this.textBoxApplicationArguments);
+			this.panelApplications.Controls.Add(this.labelApplicationArguments);
+			this.panelApplications.Controls.Add(this.buttonBrowseApplicationRelativePath);
+			this.panelApplications.Controls.Add(this.labeledDividerApplication);
+			this.panelApplications.Controls.Add(this.textBoxApplicationRelativePath);
+			this.panelApplications.Controls.Add(this.labelApplicationRelativePath);
+			this.panelApplications.Controls.Add(this.textBoxApplicationName);
+			this.panelApplications.Controls.Add(this.labelApplicationName);
+			this.panelApplications.Controls.Add(this.buttonRemoveApplication);
+			this.panelApplications.Controls.Add(this.buttonAddApplication);
+			this.panelApplications.Controls.Add(this.listViewApplications);
 			this.panelApplications.Location = new System.Drawing.Point(174, 39);
 			this.panelApplications.Name = "panelApplications";
 			this.panelApplications.Padding = new System.Windows.Forms.Padding(5);
 			this.panelApplications.Size = new System.Drawing.Size(589, 361);
 			this.panelApplications.TabIndex = 17;
 			// 
-			// button11
+			// textBoxApplicationArguments
 			// 
-			this.button11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button11.Location = new System.Drawing.Point(537, 58);
-			this.button11.Name = "button11";
-			this.button11.Size = new System.Drawing.Size(38, 23);
-			this.button11.TabIndex = 11;
-			this.button11.Text = "...";
-			this.button11.UseVisualStyleBackColor = true;
-			// 
-			// labeledDivider3
-			// 
-			this.labeledDivider3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.textBoxApplicationArguments.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDivider3.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDivider3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
-			this.labeledDivider3.Location = new System.Drawing.Point(144, 8);
-			this.labeledDivider3.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
-			this.labeledDivider3.Name = "labeledDivider3";
-			this.labeledDivider3.Size = new System.Drawing.Size(437, 15);
-			this.labeledDivider3.TabIndex = 10;
-			this.labeledDivider3.Text = "Application";
+			this.textBoxApplicationArguments.Location = new System.Drawing.Point(246, 87);
+			this.textBoxApplicationArguments.Name = "textBoxApplicationArguments";
+			this.textBoxApplicationArguments.Size = new System.Drawing.Size(284, 22);
+			this.textBoxApplicationArguments.TabIndex = 13;
 			// 
-			// textBox3
+			// labelApplicationArguments
 			// 
-			this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.labelApplicationArguments.AutoSize = true;
+			this.labelApplicationArguments.Location = new System.Drawing.Point(164, 90);
+			this.labelApplicationArguments.Name = "labelApplicationArguments";
+			this.labelApplicationArguments.Size = new System.Drawing.Size(66, 13);
+			this.labelApplicationArguments.TabIndex = 12;
+			this.labelApplicationArguments.Text = "Arguments:";
+			// 
+			// buttonBrowseApplicationRelativePath
+			// 
+			this.buttonBrowseApplicationRelativePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonBrowseApplicationRelativePath.Location = new System.Drawing.Point(537, 58);
+			this.buttonBrowseApplicationRelativePath.Name = "buttonBrowseApplicationRelativePath";
+			this.buttonBrowseApplicationRelativePath.Size = new System.Drawing.Size(38, 23);
+			this.buttonBrowseApplicationRelativePath.TabIndex = 11;
+			this.buttonBrowseApplicationRelativePath.Text = "...";
+			this.buttonBrowseApplicationRelativePath.UseVisualStyleBackColor = true;
+			// 
+			// labeledDividerApplication
+			// 
+			this.labeledDividerApplication.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBox3.Location = new System.Drawing.Point(246, 59);
-			this.textBox3.Name = "textBox3";
-			this.textBox3.Size = new System.Drawing.Size(284, 22);
-			this.textBox3.TabIndex = 8;
+			this.labeledDividerApplication.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDividerApplication.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
+			this.labeledDividerApplication.Location = new System.Drawing.Point(144, 8);
+			this.labeledDividerApplication.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
+			this.labeledDividerApplication.Name = "labeledDividerApplication";
+			this.labeledDividerApplication.Size = new System.Drawing.Size(437, 15);
+			this.labeledDividerApplication.TabIndex = 10;
+			this.labeledDividerApplication.Text = "Application";
 			// 
-			// label5
+			// textBoxApplicationRelativePath
 			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(164, 62);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(77, 13);
-			this.label5.TabIndex = 7;
-			this.label5.Text = "Relative path:";
-			// 
-			// textBox4
-			// 
-			this.textBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.textBoxApplicationRelativePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBox4.Location = new System.Drawing.Point(247, 31);
-			this.textBox4.Name = "textBox4";
-			this.textBox4.Size = new System.Drawing.Size(284, 22);
-			this.textBox4.TabIndex = 6;
+			this.textBoxApplicationRelativePath.Location = new System.Drawing.Point(246, 59);
+			this.textBoxApplicationRelativePath.Name = "textBoxApplicationRelativePath";
+			this.textBoxApplicationRelativePath.Size = new System.Drawing.Size(284, 22);
+			this.textBoxApplicationRelativePath.TabIndex = 8;
 			// 
-			// label6
+			// labelApplicationRelativePath
 			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(164, 34);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(39, 13);
-			this.label6.TabIndex = 5;
-			this.label6.Text = "Name:";
+			this.labelApplicationRelativePath.AutoSize = true;
+			this.labelApplicationRelativePath.Location = new System.Drawing.Point(164, 62);
+			this.labelApplicationRelativePath.Name = "labelApplicationRelativePath";
+			this.labelApplicationRelativePath.Size = new System.Drawing.Size(77, 13);
+			this.labelApplicationRelativePath.TabIndex = 7;
+			this.labelApplicationRelativePath.Text = "Relative path:";
 			// 
-			// button12
+			// textBoxApplicationName
 			// 
-			this.button12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.button12.Location = new System.Drawing.Point(71, 330);
-			this.button12.Name = "button12";
-			this.button12.Size = new System.Drawing.Size(58, 23);
-			this.button12.TabIndex = 2;
-			this.button12.Text = "Remove";
-			this.button12.UseVisualStyleBackColor = true;
+			this.textBoxApplicationName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxApplicationName.Location = new System.Drawing.Point(247, 31);
+			this.textBoxApplicationName.Name = "textBoxApplicationName";
+			this.textBoxApplicationName.Size = new System.Drawing.Size(284, 22);
+			this.textBoxApplicationName.TabIndex = 6;
 			// 
-			// button13
+			// labelApplicationName
 			// 
-			this.button13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.button13.Location = new System.Drawing.Point(7, 330);
-			this.button13.Name = "button13";
-			this.button13.Size = new System.Drawing.Size(58, 23);
-			this.button13.TabIndex = 1;
-			this.button13.Text = "Add";
-			this.button13.UseVisualStyleBackColor = true;
+			this.labelApplicationName.AutoSize = true;
+			this.labelApplicationName.Location = new System.Drawing.Point(164, 34);
+			this.labelApplicationName.Name = "labelApplicationName";
+			this.labelApplicationName.Size = new System.Drawing.Size(39, 13);
+			this.labelApplicationName.TabIndex = 5;
+			this.labelApplicationName.Text = "Name:";
 			// 
-			// listView4
+			// buttonRemoveApplication
 			// 
-			this.listView4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.buttonRemoveApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonRemoveApplication.Location = new System.Drawing.Point(71, 330);
+			this.buttonRemoveApplication.Name = "buttonRemoveApplication";
+			this.buttonRemoveApplication.Size = new System.Drawing.Size(58, 23);
+			this.buttonRemoveApplication.TabIndex = 2;
+			this.buttonRemoveApplication.Text = "Remove";
+			this.buttonRemoveApplication.UseVisualStyleBackColor = true;
+			// 
+			// buttonAddApplication
+			// 
+			this.buttonAddApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonAddApplication.Location = new System.Drawing.Point(7, 330);
+			this.buttonAddApplication.Name = "buttonAddApplication";
+			this.buttonAddApplication.Size = new System.Drawing.Size(58, 23);
+			this.buttonAddApplication.TabIndex = 1;
+			this.buttonAddApplication.Text = "Add";
+			this.buttonAddApplication.UseVisualStyleBackColor = true;
+			// 
+			// listViewApplications
+			// 
+			this.listViewApplications.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-			this.listView4.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader4});
-			this.listView4.FullRowSelect = true;
-			this.listView4.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.listView4.HideSelection = false;
-			this.listView4.Location = new System.Drawing.Point(8, 8);
-			this.listView4.MultiSelect = false;
-			this.listView4.Name = "listView4";
-			this.listView4.Size = new System.Drawing.Size(120, 316);
-			this.listView4.TabIndex = 0;
-			this.listView4.UseCompatibleStateImageBehavior = false;
-			this.listView4.View = System.Windows.Forms.View.Details;
+			this.listViewApplications.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderApplications});
+			this.listViewApplications.FullRowSelect = true;
+			this.listViewApplications.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewApplications.HideSelection = false;
+			this.listViewApplications.Location = new System.Drawing.Point(8, 8);
+			this.listViewApplications.MultiSelect = false;
+			this.listViewApplications.Name = "listViewApplications";
+			this.listViewApplications.Size = new System.Drawing.Size(120, 316);
+			this.listViewApplications.TabIndex = 0;
+			this.listViewApplications.UseCompatibleStateImageBehavior = false;
+			this.listViewApplications.View = System.Windows.Forms.View.Details;
 			// 
-			// columnHeader4
+			// columnHeaderApplications
 			// 
-			this.columnHeader4.Text = "Groups";
-			this.columnHeader4.Width = 100;
-			// 
-			// textBox5
-			// 
-			this.textBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBox5.Location = new System.Drawing.Point(246, 87);
-			this.textBox5.Name = "textBox5";
-			this.textBox5.Size = new System.Drawing.Size(284, 22);
-			this.textBox5.TabIndex = 13;
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(164, 90);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(66, 13);
-			this.label4.TabIndex = 12;
-			this.label4.Text = "Arguments:";
+			this.columnHeaderApplications.Text = "Applications";
+			this.columnHeaderApplications.Width = 100;
 			// 
 			// panelPlugins
 			// 
@@ -481,121 +482,122 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panelPlugins.BackColor = System.Drawing.SystemColors.Window;
-			this.panelPlugins.Controls.Add(this.checkBox1);
-			this.panelPlugins.Controls.Add(this.label10);
-			this.panelPlugins.Controls.Add(this.label7);
-			this.panelPlugins.Controls.Add(this.button8);
-			this.panelPlugins.Controls.Add(this.labeledDivider4);
-			this.panelPlugins.Controls.Add(this.label8);
-			this.panelPlugins.Controls.Add(this.label9);
-			this.panelPlugins.Controls.Add(this.listView3);
+			this.panelPlugins.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
+			this.panelPlugins.Controls.Add(this.checkBoxPluginEnabled);
+			this.panelPlugins.Controls.Add(this.labelPluginDescriptionValue);
+			this.panelPlugins.Controls.Add(this.labelPluginNameValue);
+			this.panelPlugins.Controls.Add(this.buttonConfigurePlugin);
+			this.panelPlugins.Controls.Add(this.labeledDividerPlugin);
+			this.panelPlugins.Controls.Add(this.labelPluginDescription);
+			this.panelPlugins.Controls.Add(this.labelPluginName);
+			this.panelPlugins.Controls.Add(this.listViewPlugins);
 			this.panelPlugins.Location = new System.Drawing.Point(174, 39);
 			this.panelPlugins.Name = "panelPlugins";
 			this.panelPlugins.Padding = new System.Windows.Forms.Padding(5);
 			this.panelPlugins.Size = new System.Drawing.Size(589, 361);
 			this.panelPlugins.TabIndex = 18;
 			// 
-			// button8
+			// checkBoxPluginEnabled
 			// 
-			this.button8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button8.Location = new System.Drawing.Point(489, 330);
-			this.button8.Name = "button8";
-			this.button8.Size = new System.Drawing.Size(92, 23);
-			this.button8.TabIndex = 11;
-			this.button8.Text = "Configure...";
-			this.button8.UseVisualStyleBackColor = true;
+			this.checkBoxPluginEnabled.AutoSize = true;
+			this.checkBoxPluginEnabled.Location = new System.Drawing.Point(147, 334);
+			this.checkBoxPluginEnabled.Name = "checkBoxPluginEnabled";
+			this.checkBoxPluginEnabled.Size = new System.Drawing.Size(68, 17);
+			this.checkBoxPluginEnabled.TabIndex = 14;
+			this.checkBoxPluginEnabled.Text = "Enabled";
+			this.checkBoxPluginEnabled.UseVisualStyleBackColor = true;
 			// 
-			// labeledDivider4
+			// labelPluginDescriptionValue
 			// 
-			this.labeledDivider4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.labelPluginDescriptionValue.Location = new System.Drawing.Point(239, 62);
+			this.labelPluginDescriptionValue.Name = "labelPluginDescriptionValue";
+			this.labelPluginDescriptionValue.Size = new System.Drawing.Size(336, 262);
+			this.labelPluginDescriptionValue.TabIndex = 13;
+			this.labelPluginDescriptionValue.Text = "[description]";
+			// 
+			// labelPluginNameValue
+			// 
+			this.labelPluginNameValue.AutoSize = true;
+			this.labelPluginNameValue.Location = new System.Drawing.Point(239, 34);
+			this.labelPluginNameValue.Name = "labelPluginNameValue";
+			this.labelPluginNameValue.Size = new System.Drawing.Size(41, 13);
+			this.labelPluginNameValue.TabIndex = 12;
+			this.labelPluginNameValue.Text = "[name]";
+			// 
+			// buttonConfigurePlugin
+			// 
+			this.buttonConfigurePlugin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonConfigurePlugin.Location = new System.Drawing.Point(489, 330);
+			this.buttonConfigurePlugin.Name = "buttonConfigurePlugin";
+			this.buttonConfigurePlugin.Size = new System.Drawing.Size(92, 23);
+			this.buttonConfigurePlugin.TabIndex = 11;
+			this.buttonConfigurePlugin.Text = "Configure...";
+			this.buttonConfigurePlugin.UseVisualStyleBackColor = true;
+			// 
+			// labeledDividerPlugin
+			// 
+			this.labeledDividerPlugin.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDivider4.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDivider4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
-			this.labeledDivider4.Location = new System.Drawing.Point(144, 8);
-			this.labeledDivider4.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
-			this.labeledDivider4.Name = "labeledDivider4";
-			this.labeledDivider4.Size = new System.Drawing.Size(437, 15);
-			this.labeledDivider4.TabIndex = 10;
-			this.labeledDivider4.Text = "Plugin";
+			this.labeledDividerPlugin.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDividerPlugin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
+			this.labeledDividerPlugin.Location = new System.Drawing.Point(144, 8);
+			this.labeledDividerPlugin.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
+			this.labeledDividerPlugin.Name = "labeledDividerPlugin";
+			this.labeledDividerPlugin.Size = new System.Drawing.Size(437, 15);
+			this.labeledDividerPlugin.TabIndex = 10;
+			this.labeledDividerPlugin.Text = "Plugin";
 			// 
-			// label8
+			// labelPluginDescription
 			// 
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(164, 62);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(69, 13);
-			this.label8.TabIndex = 7;
-			this.label8.Text = "Description:";
+			this.labelPluginDescription.AutoSize = true;
+			this.labelPluginDescription.Location = new System.Drawing.Point(164, 62);
+			this.labelPluginDescription.Name = "labelPluginDescription";
+			this.labelPluginDescription.Size = new System.Drawing.Size(69, 13);
+			this.labelPluginDescription.TabIndex = 7;
+			this.labelPluginDescription.Text = "Description:";
 			// 
-			// label9
+			// labelPluginName
 			// 
-			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(164, 34);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(39, 13);
-			this.label9.TabIndex = 5;
-			this.label9.Text = "Name:";
+			this.labelPluginName.AutoSize = true;
+			this.labelPluginName.Location = new System.Drawing.Point(164, 34);
+			this.labelPluginName.Name = "labelPluginName";
+			this.labelPluginName.Size = new System.Drawing.Size(39, 13);
+			this.labelPluginName.TabIndex = 5;
+			this.labelPluginName.Text = "Name:";
 			// 
-			// listView3
+			// listViewPlugins
 			// 
-			this.listView3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.listViewPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-			this.listView3.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader3});
-			this.listView3.FullRowSelect = true;
-			this.listView3.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.listView3.HideSelection = false;
-			this.listView3.Location = new System.Drawing.Point(8, 8);
-			this.listView3.MultiSelect = false;
-			this.listView3.Name = "listView3";
-			this.listView3.Size = new System.Drawing.Size(120, 345);
-			this.listView3.TabIndex = 0;
-			this.listView3.UseCompatibleStateImageBehavior = false;
-			this.listView3.View = System.Windows.Forms.View.Details;
+			this.listViewPlugins.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderPlugins});
+			this.listViewPlugins.FullRowSelect = true;
+			this.listViewPlugins.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewPlugins.HideSelection = false;
+			this.listViewPlugins.Location = new System.Drawing.Point(8, 8);
+			this.listViewPlugins.MultiSelect = false;
+			this.listViewPlugins.Name = "listViewPlugins";
+			this.listViewPlugins.Size = new System.Drawing.Size(120, 345);
+			this.listViewPlugins.TabIndex = 0;
+			this.listViewPlugins.UseCompatibleStateImageBehavior = false;
+			this.listViewPlugins.View = System.Windows.Forms.View.Details;
 			// 
-			// columnHeader3
+			// columnHeaderPlugins
 			// 
-			this.columnHeader3.Text = "Groups";
-			this.columnHeader3.Width = 100;
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(239, 34);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(41, 13);
-			this.label7.TabIndex = 12;
-			this.label7.Text = "[name]";
-			// 
-			// label10
-			// 
-			this.label10.Location = new System.Drawing.Point(239, 62);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(336, 262);
-			this.label10.TabIndex = 13;
-			this.label10.Text = "[description]";
-			// 
-			// checkBox1
-			// 
-			this.checkBox1.AutoSize = true;
-			this.checkBox1.Location = new System.Drawing.Point(147, 334);
-			this.checkBox1.Name = "checkBox1";
-			this.checkBox1.Size = new System.Drawing.Size(68, 17);
-			this.checkBox1.TabIndex = 14;
-			this.checkBox1.Text = "Enabled";
-			this.checkBox1.UseVisualStyleBackColor = true;
+			this.columnHeaderPlugins.Text = "Plugins";
+			this.columnHeaderPlugins.Width = 100;
 			// 
 			// ConfigurationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(775, 412);
-			this.Controls.Add(this.panelPlugins);
 			this.Controls.Add(this.panelGroups);
 			this.Controls.Add(this.panelApplications);
-			this.Controls.Add(this.treeView1);
-			this.Controls.Add(this.button1);
-			this.Controls.Add(this.comboBox1);
+			this.Controls.Add(this.panelPlugins);
+			this.Controls.Add(this.treeViewConfiguration);
+			this.Controls.Add(this.buttonMachines);
+			this.Controls.Add(this.comboBoxMachines);
 			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
@@ -617,50 +619,50 @@
 
 		#endregion
 
-		private System.Windows.Forms.ComboBox comboBox1;
-		private System.Windows.Forms.Button button1;
-		private Controls.TreeView treeView1;
-		private System.Windows.Forms.Panel panelGroups;
-		private System.Windows.Forms.Button button3;
-		private System.Windows.Forms.Button button2;
-		private Controls.ListView listView1;
-		private System.Windows.Forms.TextBox textBox2;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.Label label1;
-		private Controls.LabeledDivider labeledDivider1;
-		private Controls.LabeledDivider labeledDivider2;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Button button4;
-		private System.Windows.Forms.Button button7;
-		private System.Windows.Forms.Button button6;
-		private System.Windows.Forms.Button button5;
-		private Controls.ListView listView2;
-		private System.Windows.Forms.ColumnHeader columnHeader1;
-		private System.Windows.Forms.ColumnHeader columnHeader2;
-		private System.Windows.Forms.Panel panelApplications;
-		private System.Windows.Forms.TextBox textBox5;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Button button11;
-		private Controls.LabeledDivider labeledDivider3;
-		private System.Windows.Forms.TextBox textBox3;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.TextBox textBox4;
-		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.Button button12;
-		private System.Windows.Forms.Button button13;
-		private Controls.ListView listView4;
-		private System.Windows.Forms.ColumnHeader columnHeader4;
-		private System.Windows.Forms.Panel panelPlugins;
-		private System.Windows.Forms.Label label10;
-		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.Button button8;
-		private Controls.LabeledDivider labeledDivider4;
-		private System.Windows.Forms.Label label8;
-		private System.Windows.Forms.Label label9;
-		private Controls.ListView listView3;
-		private System.Windows.Forms.ColumnHeader columnHeader3;
-		private System.Windows.Forms.CheckBox checkBox1;
+		private System.Windows.Forms.ComboBox comboBoxMachines;
+		private System.Windows.Forms.Button buttonMachines;
+		private Controls.TreeView treeViewConfiguration;
+		private Controls.BackgroundPanel panelGroups;
+		private System.Windows.Forms.Button buttonRemoveGroup;
+		private System.Windows.Forms.Button buttonAddGroup;
+		private Controls.ListView listViewGroups;
+		private System.Windows.Forms.TextBox textBoxGroupPath;
+		private System.Windows.Forms.Label labelGroupPath;
+		private System.Windows.Forms.TextBox textBoxGroupName;
+		private System.Windows.Forms.Label labelGroupName;
+		private Controls.LabeledDivider labeledDividerGroupApplicationMappings;
+		private Controls.LabeledDivider labeledDividerGroup;
+		private System.Windows.Forms.Label labelGroupApplications;
+		private System.Windows.Forms.Button buttonBrowseGroupPath;
+		private System.Windows.Forms.Button buttonCopyGroupApplications;
+		private System.Windows.Forms.Button buttonRemoveGroupApplication;
+		private System.Windows.Forms.Button buttonAddGroupApplication;
+		private Controls.ListView listViewGroupApplications;
+		private System.Windows.Forms.ColumnHeader columnHeaderGroups;
+		private System.Windows.Forms.ColumnHeader columnHeaderApplicationMappings;
+		private Controls.BackgroundPanel panelApplications;
+		private System.Windows.Forms.TextBox textBoxApplicationArguments;
+		private System.Windows.Forms.Label labelApplicationArguments;
+		private System.Windows.Forms.Button buttonBrowseApplicationRelativePath;
+		private Controls.LabeledDivider labeledDividerApplication;
+		private System.Windows.Forms.TextBox textBoxApplicationRelativePath;
+		private System.Windows.Forms.Label labelApplicationRelativePath;
+		private System.Windows.Forms.TextBox textBoxApplicationName;
+		private System.Windows.Forms.Label labelApplicationName;
+		private System.Windows.Forms.Button buttonRemoveApplication;
+		private System.Windows.Forms.Button buttonAddApplication;
+		private Controls.ListView listViewApplications;
+		private System.Windows.Forms.ColumnHeader columnHeaderApplications;
+		private Controls.BackgroundPanel panelPlugins;
+		private System.Windows.Forms.Label labelPluginDescriptionValue;
+		private System.Windows.Forms.Label labelPluginNameValue;
+		private System.Windows.Forms.Button buttonConfigurePlugin;
+		private Controls.LabeledDivider labeledDividerPlugin;
+		private System.Windows.Forms.Label labelPluginDescription;
+		private System.Windows.Forms.Label labelPluginName;
+		private Controls.ListView listViewPlugins;
+		private System.Windows.Forms.ColumnHeader columnHeaderPlugins;
+		private System.Windows.Forms.CheckBox checkBoxPluginEnabled;
 
 	}
 }

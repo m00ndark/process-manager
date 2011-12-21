@@ -13,22 +13,12 @@ namespace ProcessManagerUI.Forms
 		public ConfigurationForm()
 		{
 			InitializeComponent();
-			SetWindowTheme(treeView1.Handle, "explorer", null);
+			SetWindowTheme(treeViewConfiguration.Handle, "explorer", null);
 		}
 
 		private void ConfigurationForm_Load(object sender, EventArgs e)
 		{
-			treeView1.ExpandAll();
-		}
-
-		private void panel1_Paint(object sender, PaintEventArgs e)
-		{
-			e.Graphics.DrawRectangle(
-				new Pen(Color.FromArgb(130, 135, 144)),
-				e.ClipRectangle.Left,
-				e.ClipRectangle.Top,
-				e.ClipRectangle.Width - 1,
-				e.ClipRectangle.Height - 1);
+			treeViewConfiguration.ExpandAll();
 		}
 	}
 }
