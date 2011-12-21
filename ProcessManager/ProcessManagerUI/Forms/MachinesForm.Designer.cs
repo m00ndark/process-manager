@@ -56,7 +56,7 @@
 			this.listViewMachines.Location = new System.Drawing.Point(12, 12);
 			this.listViewMachines.MultiSelect = false;
 			this.listViewMachines.Name = "listViewMachines";
-			this.listViewMachines.Size = new System.Drawing.Size(120, 175);
+			this.listViewMachines.Size = new System.Drawing.Size(120, 180);
 			this.listViewMachines.TabIndex = 1;
 			this.listViewMachines.UseCompatibleStateImageBehavior = false;
 			this.listViewMachines.View = System.Windows.Forms.View.Details;
@@ -69,7 +69,7 @@
 			// buttonRemoveMachine
 			// 
 			this.buttonRemoveMachine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonRemoveMachine.Location = new System.Drawing.Point(76, 193);
+			this.buttonRemoveMachine.Location = new System.Drawing.Point(76, 198);
 			this.buttonRemoveMachine.Name = "buttonRemoveMachine";
 			this.buttonRemoveMachine.Size = new System.Drawing.Size(58, 23);
 			this.buttonRemoveMachine.TabIndex = 4;
@@ -79,7 +79,7 @@
 			// buttonAddMachine
 			// 
 			this.buttonAddMachine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonAddMachine.Location = new System.Drawing.Point(12, 193);
+			this.buttonAddMachine.Location = new System.Drawing.Point(12, 198);
 			this.buttonAddMachine.Name = "buttonAddMachine";
 			this.buttonAddMachine.Size = new System.Drawing.Size(58, 23);
 			this.buttonAddMachine.TabIndex = 3;
@@ -101,13 +101,13 @@
 			this.panelMachines.Location = new System.Drawing.Point(140, 12);
 			this.panelMachines.Name = "panelMachines";
 			this.panelMachines.Padding = new System.Windows.Forms.Padding(5);
-			this.panelMachines.Size = new System.Drawing.Size(322, 204);
+			this.panelMachines.Size = new System.Drawing.Size(332, 209);
 			this.panelMachines.TabIndex = 18;
 			// 
 			// buttonCopyMachineSetup
 			// 
 			this.buttonCopyMachineSetup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonCopyMachineSetup.Location = new System.Drawing.Point(216, 113);
+			this.buttonCopyMachineSetup.Location = new System.Drawing.Point(226, 113);
 			this.buttonCopyMachineSetup.Name = "buttonCopyMachineSetup";
 			this.buttonCopyMachineSetup.Size = new System.Drawing.Size(92, 23);
 			this.buttonCopyMachineSetup.TabIndex = 12;
@@ -117,7 +117,7 @@
 			// buttonValidateMachine
 			// 
 			this.buttonValidateMachine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonValidateMachine.Location = new System.Drawing.Point(216, 84);
+			this.buttonValidateMachine.Location = new System.Drawing.Point(226, 84);
 			this.buttonValidateMachine.Name = "buttonValidateMachine";
 			this.buttonValidateMachine.Size = new System.Drawing.Size(92, 23);
 			this.buttonValidateMachine.TabIndex = 11;
@@ -133,7 +133,7 @@
 			this.labeledDividerMachine.Location = new System.Drawing.Point(8, 8);
 			this.labeledDividerMachine.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
 			this.labeledDividerMachine.Name = "labeledDividerMachine";
-			this.labeledDividerMachine.Size = new System.Drawing.Size(306, 15);
+			this.labeledDividerMachine.Size = new System.Drawing.Size(316, 15);
 			this.labeledDividerMachine.TabIndex = 10;
 			this.labeledDividerMachine.Text = "Machine";
 			// 
@@ -143,7 +143,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxMachineHostName.Location = new System.Drawing.Point(99, 31);
 			this.textBoxMachineHostName.Name = "textBoxMachineHostName";
-			this.textBoxMachineHostName.Size = new System.Drawing.Size(209, 22);
+			this.textBoxMachineHostName.Size = new System.Drawing.Size(219, 22);
 			this.textBoxMachineHostName.TabIndex = 6;
 			// 
 			// labelMachineHostName
@@ -158,7 +158,7 @@
 			// buttonOK
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOK.Location = new System.Drawing.Point(174, 222);
+			this.buttonOK.Location = new System.Drawing.Point(184, 227);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(92, 23);
 			this.buttonOK.TabIndex = 23;
@@ -168,7 +168,7 @@
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonCancel.Location = new System.Drawing.Point(272, 222);
+			this.buttonCancel.Location = new System.Drawing.Point(282, 227);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(92, 23);
 			this.buttonCancel.TabIndex = 22;
@@ -178,7 +178,8 @@
 			// buttonApply
 			// 
 			this.buttonApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonApply.Location = new System.Drawing.Point(370, 222);
+			this.buttonApply.Enabled = false;
+			this.buttonApply.Location = new System.Drawing.Point(380, 227);
 			this.buttonApply.Name = "buttonApply";
 			this.buttonApply.Size = new System.Drawing.Size(92, 23);
 			this.buttonApply.TabIndex = 21;
@@ -189,7 +190,8 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(474, 257);
+			this.CancelButton = this.buttonCancel;
+			this.ClientSize = new System.Drawing.Size(484, 262);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonApply);
@@ -200,6 +202,7 @@
 			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(500, 300);
 			this.Name = "MachinesForm";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;

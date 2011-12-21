@@ -35,24 +35,24 @@
 			this.toolStripMenuItemSystemTrayConfiguration = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparatorSystemTray1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripMenuItemSystemTrayExit = new System.Windows.Forms.ToolStripMenuItem();
-			this.horizontalPanel = new ProcessManagerUI.Controls.HorizontalPanel();
-			this.linkLabelOpenConfiguration = new System.Windows.Forms.LinkLabel();
 			this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
 			this.panelApplications = new System.Windows.Forms.Panel();
 			this.labelUnavailable = new System.Windows.Forms.Label();
 			this.flowLayoutPanelApplications = new System.Windows.Forms.FlowLayoutPanel();
 			this.panelGroupByAndFilter = new System.Windows.Forms.Panel();
-			this.labelGroupBy = new System.Windows.Forms.Label();
-			this.comboBoxGroupBy = new System.Windows.Forms.ComboBox();
+			this.comboBoxApplicationFilter = new System.Windows.Forms.ComboBox();
+			this.comboBoxGroupFilter = new System.Windows.Forms.ComboBox();
 			this.comboBoxMachineFilter = new System.Windows.Forms.ComboBox();
 			this.labelFilter = new System.Windows.Forms.Label();
-			this.comboBoxGroupFilter = new System.Windows.Forms.ComboBox();
-			this.comboBoxApplicationFilter = new System.Windows.Forms.ComboBox();
+			this.comboBoxGroupBy = new System.Windows.Forms.ComboBox();
+			this.labelGroupBy = new System.Windows.Forms.Label();
+			this.horizontalPanel = new ProcessManagerUI.Controls.HorizontalPanel();
+			this.linkLabelOpenConfiguration = new System.Windows.Forms.LinkLabel();
 			this.contextMenuStripSystemTray.SuspendLayout();
-			this.horizontalPanel.SuspendLayout();
 			this.tableLayoutPanel.SuspendLayout();
 			this.panelApplications.SuspendLayout();
 			this.panelGroupByAndFilter.SuspendLayout();
+			this.horizontalPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// notifyIcon
@@ -61,6 +61,8 @@
 			this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
 			this.notifyIcon.Text = "Process Manager";
 			this.notifyIcon.Visible = true;
+			this.notifyIcon.MouseDown += new System.Windows.Forms.MouseEventHandler(this.NotifyIcon_MouseDown);
+			this.notifyIcon.MouseUp += new System.Windows.Forms.MouseEventHandler(this.NotifyIcon_MouseUp);
 			// 
 			// contextMenuStripSystemTray
 			// 
@@ -76,6 +78,7 @@
 			this.toolStripMenuItemSystemTrayConfiguration.Name = "toolStripMenuItemSystemTrayConfiguration";
 			this.toolStripMenuItemSystemTrayConfiguration.Size = new System.Drawing.Size(157, 22);
 			this.toolStripMenuItemSystemTrayConfiguration.Text = "Configuration...";
+			this.toolStripMenuItemSystemTrayConfiguration.Click += new System.EventHandler(this.ToolStripMenuItemSystemTrayConfiguration_Click);
 			// 
 			// toolStripSeparatorSystemTray1
 			// 
@@ -87,34 +90,7 @@
 			this.toolStripMenuItemSystemTrayExit.Name = "toolStripMenuItemSystemTrayExit";
 			this.toolStripMenuItemSystemTrayExit.Size = new System.Drawing.Size(157, 22);
 			this.toolStripMenuItemSystemTrayExit.Text = "Exit";
-			// 
-			// horizontalPanel
-			// 
-			this.horizontalPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.horizontalPanel.BackColor = System.Drawing.Color.Transparent;
-			this.horizontalPanel.Controls.Add(this.linkLabelOpenConfiguration);
-			this.horizontalPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.horizontalPanel.Location = new System.Drawing.Point(0, 236);
-			this.horizontalPanel.Margin = new System.Windows.Forms.Padding(0);
-			this.horizontalPanel.Name = "horizontalPanel";
-			this.horizontalPanel.Size = new System.Drawing.Size(401, 43);
-			this.horizontalPanel.TabIndex = 1;
-			// 
-			// linkLabelOpenConfiguration
-			// 
-			this.linkLabelOpenConfiguration.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelOpenConfiguration.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.linkLabelOpenConfiguration.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.linkLabelOpenConfiguration.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-			this.linkLabelOpenConfiguration.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelOpenConfiguration.Location = new System.Drawing.Point(0, 0);
-			this.linkLabelOpenConfiguration.Name = "linkLabelOpenConfiguration";
-			this.linkLabelOpenConfiguration.Size = new System.Drawing.Size(401, 43);
-			this.linkLabelOpenConfiguration.TabIndex = 0;
-			this.linkLabelOpenConfiguration.TabStop = true;
-			this.linkLabelOpenConfiguration.Text = "Open Configuration";
-			this.linkLabelOpenConfiguration.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.toolStripMenuItemSystemTrayExit.Click += new System.EventHandler(this.ToolStripMenuItemSystemTrayExit_Click);
 			// 
 			// tableLayoutPanel
 			// 
@@ -185,25 +161,27 @@
 			this.panelGroupByAndFilter.Size = new System.Drawing.Size(401, 74);
 			this.panelGroupByAndFilter.TabIndex = 3;
 			// 
-			// labelGroupBy
+			// comboBoxApplicationFilter
 			// 
-			this.labelGroupBy.AutoSize = true;
-			this.labelGroupBy.Location = new System.Drawing.Point(13, 16);
-			this.labelGroupBy.Name = "labelGroupBy";
-			this.labelGroupBy.Size = new System.Drawing.Size(58, 13);
-			this.labelGroupBy.TabIndex = 0;
-			this.labelGroupBy.Text = "Group by:";
-			// 
-			// comboBoxGroupBy
-			// 
-			this.comboBoxGroupBy.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.comboBoxApplicationFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.comboBoxGroupBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxGroupBy.FormattingEnabled = true;
-			this.comboBoxGroupBy.Location = new System.Drawing.Point(77, 13);
-			this.comboBoxGroupBy.Name = "comboBoxGroupBy";
-			this.comboBoxGroupBy.Size = new System.Drawing.Size(311, 21);
-			this.comboBoxGroupBy.TabIndex = 1;
+			this.comboBoxApplicationFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxApplicationFilter.FormattingEnabled = true;
+			this.comboBoxApplicationFilter.Location = new System.Drawing.Point(294, 40);
+			this.comboBoxApplicationFilter.Name = "comboBoxApplicationFilter";
+			this.comboBoxApplicationFilter.Size = new System.Drawing.Size(94, 21);
+			this.comboBoxApplicationFilter.TabIndex = 5;
+			// 
+			// comboBoxGroupFilter
+			// 
+			this.comboBoxGroupFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.comboBoxGroupFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxGroupFilter.FormattingEnabled = true;
+			this.comboBoxGroupFilter.Location = new System.Drawing.Point(194, 40);
+			this.comboBoxGroupFilter.Name = "comboBoxGroupFilter";
+			this.comboBoxGroupFilter.Size = new System.Drawing.Size(94, 21);
+			this.comboBoxGroupFilter.TabIndex = 4;
 			// 
 			// comboBoxMachineFilter
 			// 
@@ -225,27 +203,55 @@
 			this.labelFilter.TabIndex = 2;
 			this.labelFilter.Text = "Filter:";
 			// 
-			// comboBoxGroupFilter
+			// comboBoxGroupBy
 			// 
-			this.comboBoxGroupFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.comboBoxGroupBy.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.comboBoxGroupFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxGroupFilter.FormattingEnabled = true;
-			this.comboBoxGroupFilter.Location = new System.Drawing.Point(194, 40);
-			this.comboBoxGroupFilter.Name = "comboBoxGroupFilter";
-			this.comboBoxGroupFilter.Size = new System.Drawing.Size(94, 21);
-			this.comboBoxGroupFilter.TabIndex = 4;
+			this.comboBoxGroupBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxGroupBy.FormattingEnabled = true;
+			this.comboBoxGroupBy.Location = new System.Drawing.Point(77, 13);
+			this.comboBoxGroupBy.Name = "comboBoxGroupBy";
+			this.comboBoxGroupBy.Size = new System.Drawing.Size(311, 21);
+			this.comboBoxGroupBy.TabIndex = 1;
 			// 
-			// comboBoxApplicationFilter
+			// labelGroupBy
 			// 
-			this.comboBoxApplicationFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.labelGroupBy.AutoSize = true;
+			this.labelGroupBy.Location = new System.Drawing.Point(13, 16);
+			this.labelGroupBy.Name = "labelGroupBy";
+			this.labelGroupBy.Size = new System.Drawing.Size(58, 13);
+			this.labelGroupBy.TabIndex = 0;
+			this.labelGroupBy.Text = "Group by:";
+			// 
+			// horizontalPanel
+			// 
+			this.horizontalPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.comboBoxApplicationFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxApplicationFilter.FormattingEnabled = true;
-			this.comboBoxApplicationFilter.Location = new System.Drawing.Point(294, 40);
-			this.comboBoxApplicationFilter.Name = "comboBoxApplicationFilter";
-			this.comboBoxApplicationFilter.Size = new System.Drawing.Size(94, 21);
-			this.comboBoxApplicationFilter.TabIndex = 5;
+			this.horizontalPanel.AutoModifyAddedControls = false;
+			this.horizontalPanel.BackColor = System.Drawing.Color.Transparent;
+			this.horizontalPanel.Controls.Add(this.linkLabelOpenConfiguration);
+			this.horizontalPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.horizontalPanel.Location = new System.Drawing.Point(0, 236);
+			this.horizontalPanel.Margin = new System.Windows.Forms.Padding(0);
+			this.horizontalPanel.Name = "horizontalPanel";
+			this.horizontalPanel.Size = new System.Drawing.Size(401, 43);
+			this.horizontalPanel.TabIndex = 1;
+			// 
+			// linkLabelOpenConfiguration
+			// 
+			this.linkLabelOpenConfiguration.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelOpenConfiguration.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.linkLabelOpenConfiguration.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.linkLabelOpenConfiguration.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelOpenConfiguration.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelOpenConfiguration.Location = new System.Drawing.Point(0, 0);
+			this.linkLabelOpenConfiguration.Name = "linkLabelOpenConfiguration";
+			this.linkLabelOpenConfiguration.Size = new System.Drawing.Size(401, 43);
+			this.linkLabelOpenConfiguration.TabIndex = 0;
+			this.linkLabelOpenConfiguration.TabStop = true;
+			this.linkLabelOpenConfiguration.Text = "Open Configuration";
+			this.linkLabelOpenConfiguration.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.linkLabelOpenConfiguration.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelOpenConfiguration_LinkClicked);
 			// 
 			// ControlPanelForm
 			// 
@@ -263,13 +269,14 @@
 			this.ShowInTaskbar = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+			this.Deactivate += new System.EventHandler(this.ControlPanelForm_Deactivate);
 			this.Load += new System.EventHandler(this.ControlPanelForm_Load);
 			this.contextMenuStripSystemTray.ResumeLayout(false);
-			this.horizontalPanel.ResumeLayout(false);
 			this.tableLayoutPanel.ResumeLayout(false);
 			this.panelApplications.ResumeLayout(false);
 			this.panelGroupByAndFilter.ResumeLayout(false);
 			this.panelGroupByAndFilter.PerformLayout();
+			this.horizontalPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}

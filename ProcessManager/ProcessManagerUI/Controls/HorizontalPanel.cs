@@ -60,6 +60,7 @@ namespace ProcessManagerUI.Controls
 		protected override void OnControlAdded(ControlEventArgs e)
 		{
 			base.OnControlAdded(e);
+			if (!AutoModifyAddedControls) return;
 			if (e.Control is LinkLabel)
 			{
 				e.Control.Font = new Font("Segoe UI", 9, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -166,5 +167,8 @@ namespace ProcessManagerUI.Controls
 		/// </remarks>
 		[Description("Gets or sets whether the control can render on an Aero glass surface."), Category("Appearance"), DefaultValue(false)]
 		public bool RenderOnGlass { get; set; }
+
+		[Description("Gets or sets whether the control should automatically modify certain controls' default behaivor to fit the theme."), Category("Appearance"), DefaultValue(true)]
+		public bool AutoModifyAddedControls { get; set; }
 	}
 }

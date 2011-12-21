@@ -37,6 +37,9 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigurationForm));
 			this.comboBoxMachines = new System.Windows.Forms.ComboBox();
 			this.buttonMachines = new System.Windows.Forms.Button();
+			this.buttonApply = new System.Windows.Forms.Button();
+			this.buttonCancel = new System.Windows.Forms.Button();
+			this.buttonOK = new System.Windows.Forms.Button();
 			this.panelGroups = new ProcessManagerUI.Controls.BackgroundPanel();
 			this.buttonCopyGroupApplications = new System.Windows.Forms.Button();
 			this.buttonRemoveGroupApplication = new System.Windows.Forms.Button();
@@ -55,7 +58,6 @@
 			this.buttonAddGroup = new System.Windows.Forms.Button();
 			this.listViewGroups = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderGroups = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.buttonApply = new System.Windows.Forms.Button();
 			this.panelPlugins = new ProcessManagerUI.Controls.BackgroundPanel();
 			this.checkBoxPluginEnabled = new System.Windows.Forms.CheckBox();
 			this.labelPluginDescriptionValue = new System.Windows.Forms.Label();
@@ -80,8 +82,6 @@
 			this.listViewApplications = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderApplications = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.treeViewConfiguration = new ProcessManagerUI.Controls.TreeView();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOK = new System.Windows.Forms.Button();
 			this.panelGroups.SuspendLayout();
 			this.panelPlugins.SuspendLayout();
 			this.panelApplications.SuspendLayout();
@@ -95,18 +95,50 @@
 			this.comboBoxMachines.FormattingEnabled = true;
 			this.comboBoxMachines.Location = new System.Drawing.Point(12, 12);
 			this.comboBoxMachines.Name = "comboBoxMachines";
-			this.comboBoxMachines.Size = new System.Drawing.Size(653, 21);
+			this.comboBoxMachines.Size = new System.Drawing.Size(652, 21);
 			this.comboBoxMachines.TabIndex = 0;
 			// 
 			// buttonMachines
 			// 
 			this.buttonMachines.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonMachines.Location = new System.Drawing.Point(671, 11);
+			this.buttonMachines.Location = new System.Drawing.Point(670, 11);
 			this.buttonMachines.Name = "buttonMachines";
 			this.buttonMachines.Size = new System.Drawing.Size(92, 23);
 			this.buttonMachines.TabIndex = 1;
 			this.buttonMachines.Text = "Machines...";
 			this.buttonMachines.UseVisualStyleBackColor = true;
+			// 
+			// buttonApply
+			// 
+			this.buttonApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonApply.Enabled = false;
+			this.buttonApply.Location = new System.Drawing.Point(670, 407);
+			this.buttonApply.Name = "buttonApply";
+			this.buttonApply.Size = new System.Drawing.Size(92, 23);
+			this.buttonApply.TabIndex = 17;
+			this.buttonApply.Text = "Apply";
+			this.buttonApply.UseVisualStyleBackColor = true;
+			// 
+			// buttonCancel
+			// 
+			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.Location = new System.Drawing.Point(572, 407);
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.Size = new System.Drawing.Size(92, 23);
+			this.buttonCancel.TabIndex = 19;
+			this.buttonCancel.Text = "Cancel";
+			this.buttonCancel.UseVisualStyleBackColor = true;
+			// 
+			// buttonOK
+			// 
+			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonOK.Location = new System.Drawing.Point(474, 407);
+			this.buttonOK.Name = "buttonOK";
+			this.buttonOK.Size = new System.Drawing.Size(92, 23);
+			this.buttonOK.TabIndex = 20;
+			this.buttonOK.Text = "OK";
+			this.buttonOK.UseVisualStyleBackColor = true;
 			// 
 			// panelGroups
 			// 
@@ -133,14 +165,14 @@
 			this.panelGroups.Location = new System.Drawing.Point(174, 39);
 			this.panelGroups.Name = "panelGroups";
 			this.panelGroups.Padding = new System.Windows.Forms.Padding(5);
-			this.panelGroups.Size = new System.Drawing.Size(589, 361);
+			this.panelGroups.Size = new System.Drawing.Size(588, 362);
 			this.panelGroups.TabIndex = 3;
 			// 
 			// buttonCopyGroupApplications
 			// 
 			this.buttonCopyGroupApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCopyGroupApplications.Image = global::ProcessManagerUI.Properties.Resources.copy_16;
-			this.buttonCopyGroupApplications.Location = new System.Drawing.Point(537, 186);
+			this.buttonCopyGroupApplications.Location = new System.Drawing.Point(536, 186);
 			this.buttonCopyGroupApplications.Name = "buttonCopyGroupApplications";
 			this.buttonCopyGroupApplications.Size = new System.Drawing.Size(38, 24);
 			this.buttonCopyGroupApplications.TabIndex = 16;
@@ -150,7 +182,7 @@
 			// 
 			this.buttonRemoveGroupApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonRemoveGroupApplication.Image = global::ProcessManagerUI.Properties.Resources.remove_16;
-			this.buttonRemoveGroupApplication.Location = new System.Drawing.Point(537, 156);
+			this.buttonRemoveGroupApplication.Location = new System.Drawing.Point(536, 156);
 			this.buttonRemoveGroupApplication.Name = "buttonRemoveGroupApplication";
 			this.buttonRemoveGroupApplication.Size = new System.Drawing.Size(38, 24);
 			this.buttonRemoveGroupApplication.TabIndex = 15;
@@ -160,7 +192,7 @@
 			// 
 			this.buttonAddGroupApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonAddGroupApplication.Image = global::ProcessManagerUI.Properties.Resources.add_16;
-			this.buttonAddGroupApplication.Location = new System.Drawing.Point(537, 126);
+			this.buttonAddGroupApplication.Location = new System.Drawing.Point(536, 126);
 			this.buttonAddGroupApplication.Name = "buttonAddGroupApplication";
 			this.buttonAddGroupApplication.Size = new System.Drawing.Size(38, 24);
 			this.buttonAddGroupApplication.TabIndex = 14;
@@ -179,7 +211,7 @@
 			this.listViewGroupApplications.Location = new System.Drawing.Point(244, 126);
 			this.listViewGroupApplications.MultiSelect = false;
 			this.listViewGroupApplications.Name = "listViewGroupApplications";
-			this.listViewGroupApplications.Size = new System.Drawing.Size(287, 225);
+			this.listViewGroupApplications.Size = new System.Drawing.Size(286, 226);
 			this.listViewGroupApplications.TabIndex = 13;
 			this.listViewGroupApplications.UseCompatibleStateImageBehavior = false;
 			this.listViewGroupApplications.View = System.Windows.Forms.View.Details;
@@ -201,7 +233,7 @@
 			// buttonBrowseGroupPath
 			// 
 			this.buttonBrowseGroupPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonBrowseGroupPath.Location = new System.Drawing.Point(537, 58);
+			this.buttonBrowseGroupPath.Location = new System.Drawing.Point(536, 58);
 			this.buttonBrowseGroupPath.Name = "buttonBrowseGroupPath";
 			this.buttonBrowseGroupPath.Size = new System.Drawing.Size(38, 23);
 			this.buttonBrowseGroupPath.TabIndex = 11;
@@ -217,7 +249,7 @@
 			this.labeledDividerGroup.Location = new System.Drawing.Point(144, 8);
 			this.labeledDividerGroup.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
 			this.labeledDividerGroup.Name = "labeledDividerGroup";
-			this.labeledDividerGroup.Size = new System.Drawing.Size(437, 15);
+			this.labeledDividerGroup.Size = new System.Drawing.Size(436, 15);
 			this.labeledDividerGroup.TabIndex = 10;
 			this.labeledDividerGroup.Text = "Group";
 			// 
@@ -230,7 +262,7 @@
 			this.labeledDividerGroupApplicationMappings.Location = new System.Drawing.Point(147, 103);
 			this.labeledDividerGroupApplicationMappings.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
 			this.labeledDividerGroupApplicationMappings.Name = "labeledDividerGroupApplicationMappings";
-			this.labeledDividerGroupApplicationMappings.Size = new System.Drawing.Size(434, 15);
+			this.labeledDividerGroupApplicationMappings.Size = new System.Drawing.Size(433, 15);
 			this.labeledDividerGroupApplicationMappings.TabIndex = 9;
 			this.labeledDividerGroupApplicationMappings.Text = "Mappings";
 			// 
@@ -240,7 +272,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxGroupPath.Location = new System.Drawing.Point(244, 59);
 			this.textBoxGroupPath.Name = "textBoxGroupPath";
-			this.textBoxGroupPath.Size = new System.Drawing.Size(287, 22);
+			this.textBoxGroupPath.Size = new System.Drawing.Size(286, 22);
 			this.textBoxGroupPath.TabIndex = 8;
 			// 
 			// labelGroupPath
@@ -258,7 +290,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxGroupName.Location = new System.Drawing.Point(244, 31);
 			this.textBoxGroupName.Name = "textBoxGroupName";
-			this.textBoxGroupName.Size = new System.Drawing.Size(287, 22);
+			this.textBoxGroupName.Size = new System.Drawing.Size(286, 22);
 			this.textBoxGroupName.TabIndex = 6;
 			// 
 			// labelGroupName
@@ -273,7 +305,7 @@
 			// buttonRemoveGroup
 			// 
 			this.buttonRemoveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonRemoveGroup.Location = new System.Drawing.Point(71, 330);
+			this.buttonRemoveGroup.Location = new System.Drawing.Point(71, 331);
 			this.buttonRemoveGroup.Name = "buttonRemoveGroup";
 			this.buttonRemoveGroup.Size = new System.Drawing.Size(58, 23);
 			this.buttonRemoveGroup.TabIndex = 2;
@@ -283,7 +315,7 @@
 			// buttonAddGroup
 			// 
 			this.buttonAddGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonAddGroup.Location = new System.Drawing.Point(7, 330);
+			this.buttonAddGroup.Location = new System.Drawing.Point(7, 331);
 			this.buttonAddGroup.Name = "buttonAddGroup";
 			this.buttonAddGroup.Size = new System.Drawing.Size(58, 23);
 			this.buttonAddGroup.TabIndex = 1;
@@ -302,7 +334,7 @@
 			this.listViewGroups.Location = new System.Drawing.Point(8, 8);
 			this.listViewGroups.MultiSelect = false;
 			this.listViewGroups.Name = "listViewGroups";
-			this.listViewGroups.Size = new System.Drawing.Size(120, 316);
+			this.listViewGroups.Size = new System.Drawing.Size(120, 317);
 			this.listViewGroups.TabIndex = 0;
 			this.listViewGroups.UseCompatibleStateImageBehavior = false;
 			this.listViewGroups.View = System.Windows.Forms.View.Details;
@@ -311,16 +343,6 @@
 			// 
 			this.columnHeaderGroups.Text = "Groups";
 			this.columnHeaderGroups.Width = 100;
-			// 
-			// buttonApply
-			// 
-			this.buttonApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonApply.Location = new System.Drawing.Point(671, 406);
-			this.buttonApply.Name = "buttonApply";
-			this.buttonApply.Size = new System.Drawing.Size(92, 23);
-			this.buttonApply.TabIndex = 17;
-			this.buttonApply.Text = "Apply";
-			this.buttonApply.UseVisualStyleBackColor = true;
 			// 
 			// panelPlugins
 			// 
@@ -340,7 +362,7 @@
 			this.panelPlugins.Location = new System.Drawing.Point(174, 39);
 			this.panelPlugins.Name = "panelPlugins";
 			this.panelPlugins.Padding = new System.Windows.Forms.Padding(5);
-			this.panelPlugins.Size = new System.Drawing.Size(589, 361);
+			this.panelPlugins.Size = new System.Drawing.Size(588, 362);
 			this.panelPlugins.TabIndex = 18;
 			// 
 			// checkBoxPluginEnabled
@@ -373,7 +395,7 @@
 			// buttonConfigurePlugin
 			// 
 			this.buttonConfigurePlugin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonConfigurePlugin.Location = new System.Drawing.Point(489, 330);
+			this.buttonConfigurePlugin.Location = new System.Drawing.Point(488, 330);
 			this.buttonConfigurePlugin.Name = "buttonConfigurePlugin";
 			this.buttonConfigurePlugin.Size = new System.Drawing.Size(92, 23);
 			this.buttonConfigurePlugin.TabIndex = 11;
@@ -389,7 +411,7 @@
 			this.labeledDividerPlugin.Location = new System.Drawing.Point(144, 8);
 			this.labeledDividerPlugin.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
 			this.labeledDividerPlugin.Name = "labeledDividerPlugin";
-			this.labeledDividerPlugin.Size = new System.Drawing.Size(437, 15);
+			this.labeledDividerPlugin.Size = new System.Drawing.Size(436, 15);
 			this.labeledDividerPlugin.TabIndex = 10;
 			this.labeledDividerPlugin.Text = "Plugin";
 			// 
@@ -423,7 +445,7 @@
 			this.listViewPlugins.Location = new System.Drawing.Point(8, 8);
 			this.listViewPlugins.MultiSelect = false;
 			this.listViewPlugins.Name = "listViewPlugins";
-			this.listViewPlugins.Size = new System.Drawing.Size(120, 345);
+			this.listViewPlugins.Size = new System.Drawing.Size(120, 346);
 			this.listViewPlugins.TabIndex = 0;
 			this.listViewPlugins.UseCompatibleStateImageBehavior = false;
 			this.listViewPlugins.View = System.Windows.Forms.View.Details;
@@ -454,7 +476,7 @@
 			this.panelApplications.Location = new System.Drawing.Point(174, 39);
 			this.panelApplications.Name = "panelApplications";
 			this.panelApplications.Padding = new System.Windows.Forms.Padding(5);
-			this.panelApplications.Size = new System.Drawing.Size(589, 361);
+			this.panelApplications.Size = new System.Drawing.Size(588, 362);
 			this.panelApplications.TabIndex = 17;
 			// 
 			// textBoxApplicationArguments
@@ -463,7 +485,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxApplicationArguments.Location = new System.Drawing.Point(246, 87);
 			this.textBoxApplicationArguments.Name = "textBoxApplicationArguments";
-			this.textBoxApplicationArguments.Size = new System.Drawing.Size(284, 22);
+			this.textBoxApplicationArguments.Size = new System.Drawing.Size(283, 22);
 			this.textBoxApplicationArguments.TabIndex = 13;
 			// 
 			// labelApplicationArguments
@@ -478,7 +500,7 @@
 			// buttonBrowseApplicationRelativePath
 			// 
 			this.buttonBrowseApplicationRelativePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonBrowseApplicationRelativePath.Location = new System.Drawing.Point(537, 58);
+			this.buttonBrowseApplicationRelativePath.Location = new System.Drawing.Point(536, 58);
 			this.buttonBrowseApplicationRelativePath.Name = "buttonBrowseApplicationRelativePath";
 			this.buttonBrowseApplicationRelativePath.Size = new System.Drawing.Size(38, 23);
 			this.buttonBrowseApplicationRelativePath.TabIndex = 11;
@@ -494,7 +516,7 @@
 			this.labeledDividerApplication.Location = new System.Drawing.Point(144, 8);
 			this.labeledDividerApplication.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
 			this.labeledDividerApplication.Name = "labeledDividerApplication";
-			this.labeledDividerApplication.Size = new System.Drawing.Size(437, 15);
+			this.labeledDividerApplication.Size = new System.Drawing.Size(436, 15);
 			this.labeledDividerApplication.TabIndex = 10;
 			this.labeledDividerApplication.Text = "Application";
 			// 
@@ -504,7 +526,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxApplicationRelativePath.Location = new System.Drawing.Point(246, 59);
 			this.textBoxApplicationRelativePath.Name = "textBoxApplicationRelativePath";
-			this.textBoxApplicationRelativePath.Size = new System.Drawing.Size(284, 22);
+			this.textBoxApplicationRelativePath.Size = new System.Drawing.Size(283, 22);
 			this.textBoxApplicationRelativePath.TabIndex = 8;
 			// 
 			// labelApplicationRelativePath
@@ -522,7 +544,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxApplicationName.Location = new System.Drawing.Point(247, 31);
 			this.textBoxApplicationName.Name = "textBoxApplicationName";
-			this.textBoxApplicationName.Size = new System.Drawing.Size(284, 22);
+			this.textBoxApplicationName.Size = new System.Drawing.Size(283, 22);
 			this.textBoxApplicationName.TabIndex = 6;
 			// 
 			// labelApplicationName
@@ -537,7 +559,7 @@
 			// buttonRemoveApplication
 			// 
 			this.buttonRemoveApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonRemoveApplication.Location = new System.Drawing.Point(71, 330);
+			this.buttonRemoveApplication.Location = new System.Drawing.Point(71, 331);
 			this.buttonRemoveApplication.Name = "buttonRemoveApplication";
 			this.buttonRemoveApplication.Size = new System.Drawing.Size(58, 23);
 			this.buttonRemoveApplication.TabIndex = 2;
@@ -547,7 +569,7 @@
 			// buttonAddApplication
 			// 
 			this.buttonAddApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonAddApplication.Location = new System.Drawing.Point(7, 330);
+			this.buttonAddApplication.Location = new System.Drawing.Point(7, 331);
 			this.buttonAddApplication.Name = "buttonAddApplication";
 			this.buttonAddApplication.Size = new System.Drawing.Size(58, 23);
 			this.buttonAddApplication.TabIndex = 1;
@@ -566,7 +588,7 @@
 			this.listViewApplications.Location = new System.Drawing.Point(8, 8);
 			this.listViewApplications.MultiSelect = false;
 			this.listViewApplications.Name = "listViewApplications";
-			this.listViewApplications.Size = new System.Drawing.Size(120, 316);
+			this.listViewApplications.Size = new System.Drawing.Size(120, 317);
 			this.listViewApplications.TabIndex = 0;
 			this.listViewApplications.UseCompatibleStateImageBehavior = false;
 			this.listViewApplications.View = System.Windows.Forms.View.Details;
@@ -597,34 +619,15 @@
             treeNode3,
             treeNode4});
 			this.treeViewConfiguration.ShowLines = false;
-			this.treeViewConfiguration.Size = new System.Drawing.Size(156, 361);
+			this.treeViewConfiguration.Size = new System.Drawing.Size(156, 362);
 			this.treeViewConfiguration.TabIndex = 2;
-			// 
-			// buttonCancel
-			// 
-			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonCancel.Location = new System.Drawing.Point(573, 406);
-			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(92, 23);
-			this.buttonCancel.TabIndex = 19;
-			this.buttonCancel.Text = "Cancel";
-			this.buttonCancel.UseVisualStyleBackColor = true;
-			// 
-			// buttonOK
-			// 
-			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOK.Location = new System.Drawing.Point(475, 406);
-			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(92, 23);
-			this.buttonOK.TabIndex = 20;
-			this.buttonOK.Text = "OK";
-			this.buttonOK.UseVisualStyleBackColor = true;
 			// 
 			// ConfigurationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(775, 441);
+			this.CancelButton = this.buttonCancel;
+			this.ClientSize = new System.Drawing.Size(774, 442);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonApply);
@@ -638,6 +641,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(790, 480);
 			this.Name = "ConfigurationForm";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
