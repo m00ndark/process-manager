@@ -141,9 +141,9 @@
 			// 
 			this.textBoxMachineHostName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxMachineHostName.Location = new System.Drawing.Point(95, 31);
+			this.textBoxMachineHostName.Location = new System.Drawing.Point(99, 31);
 			this.textBoxMachineHostName.Name = "textBoxMachineHostName";
-			this.textBoxMachineHostName.Size = new System.Drawing.Size(213, 20);
+			this.textBoxMachineHostName.Size = new System.Drawing.Size(209, 22);
 			this.textBoxMachineHostName.TabIndex = 6;
 			// 
 			// labelMachineHostName
@@ -151,7 +151,7 @@
 			this.labelMachineHostName.AutoSize = true;
 			this.labelMachineHostName.Location = new System.Drawing.Point(28, 34);
 			this.labelMachineHostName.Name = "labelMachineHostName";
-			this.labelMachineHostName.Size = new System.Drawing.Size(61, 13);
+			this.labelMachineHostName.Size = new System.Drawing.Size(65, 13);
 			this.labelMachineHostName.TabIndex = 5;
 			this.labelMachineHostName.Text = "Host name:";
 			// 
@@ -197,6 +197,7 @@
 			this.Controls.Add(this.buttonRemoveMachine);
 			this.Controls.Add(this.buttonAddMachine);
 			this.Controls.Add(this.listViewMachines);
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "MachinesForm";
