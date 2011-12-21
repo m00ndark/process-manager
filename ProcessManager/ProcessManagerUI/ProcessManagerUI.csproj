@@ -83,6 +83,12 @@
     <Compile Include="Controls\TreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Forms\ControlPanelForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ControlPanelForm.Designer.cs">
+      <DependentUpon>ControlPanelForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MachinesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,6 +99,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\ConfigurationForm.resx">
       <DependentUpon>ConfigurationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ControlPanelForm.resx">
+      <DependentUpon>ControlPanelForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MachinesForm.resx">
       <DependentUpon>MachinesForm.cs</DependentUpon>
@@ -119,6 +128,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\remove-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProcessManager\ProcessManager.csproj">
+      <Project>{98D87BB4-276C-4CE1-ACC4-9841244E9560}</Project>
+      <Name>ProcessManager</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

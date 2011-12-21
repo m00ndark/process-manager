@@ -38,6 +38,8 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,7 +47,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataObjects\Machine.cs" />
     <Compile Include="EventArguments\ApplicationStatusesEventArgs.cs" />
+    <Compile Include="IProcessManagerEventHandler.cs" />
+    <Compile Include="IProcessManagerEventProvider.cs" />
+    <Compile Include="Service\Client\ProcessManagerServiceEventHandler.cs" />
+    <Compile Include="Service\Client\ProcessManagerServiceClient.cs" />
+    <Compile Include="Service\Client\ProcessManagerServiceHandler.cs" />
+    <Compile Include="Service\Common\IProcessManagerServiceEventHandler.cs" />
+    <Compile Include="Service\Common\IProcessManagerService.cs" />
+    <Compile Include="Service\DataObjects\DTOApplicationStatus.cs" />
+    <Compile Include="Service\Host\ProcessManagerService.cs" />
+    <Compile Include="Service\Host\ProcessManagerServiceHost.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="DataAccess\FileSystemHandler.cs" />
     <Compile Include="DataAccess\ProcessHandler.cs" />
@@ -60,6 +73,7 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

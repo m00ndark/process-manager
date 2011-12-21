@@ -13,9 +13,9 @@ namespace ProcessManager.DataObjects
 
 		#region Properties
 
-		public Guid GroupID { get; set; }
-		public Guid ApplicationID { get; set; }
-		public bool IsRunning { get; set; }
+		public Guid GroupID { get; private set; }
+		public Guid ApplicationID { get; private set; }
+		public bool IsRunning { get; private set; }
 
 		#endregion
 	}

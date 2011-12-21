@@ -10,7 +10,7 @@ using ProcessManager.Utilities;
 
 namespace ProcessManager
 {
-	public class ProcessManager
+	public class ProcessManager : IProcessManagerEventProvider
 	{
 		private Thread _mainThread;
 		private Dictionary<Guid, Dictionary<Guid, ApplicationStatus>> _applicationStatuses;
