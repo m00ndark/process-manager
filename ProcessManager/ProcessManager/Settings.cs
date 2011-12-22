@@ -13,6 +13,7 @@ namespace ProcessManager
 		public static class Constants
 		{
 			public const string APPLICATION_NAME = "Process Manager";
+			public const string LOCALHOST = "localhost";
 		}
 
 		#endregion
@@ -81,6 +82,8 @@ namespace ProcessManager
 			public static class Defaults
 			{
 				public const string START_WITH_WINDOWS = "False";
+				public const string SELECTED_HOST_NAME = Constants.LOCALHOST;
+				public const string SELECTED_CONFIGURATION_SECTION = null;
 			}
 
 			#endregion

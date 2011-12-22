@@ -4,12 +4,19 @@ namespace ProcessManager.DataObjects
 {
 	public class Machine
 	{
+		public const string DEFAULT_HOST_NAME = "<host-name>";
+
+		public Machine()
+		{
+			HostName = DEFAULT_HOST_NAME;
+		}
+
 		public Machine(string hostName)
 		{
 			HostName = hostName;
 		}
 
-		public string HostName { get; private set; }
+		public string HostName { get; set; }
 
 		#region Equality
 
@@ -23,6 +30,15 @@ namespace ProcessManager.DataObjects
 		public override int GetHashCode()
 		{
 			return (HostName != null ? HostName.ToLower().GetHashCode() : 0);
+		}
+
+		#endregion
+
+		#region ToString
+
+		public override string ToString()
+		{
+			return HostName;
 		}
 
 		#endregion

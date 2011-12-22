@@ -80,6 +80,9 @@
 			this.listViewApplications = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderApplications = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.treeViewConfiguration = new ProcessManagerUI.Controls.TreeView();
+			this.labelNoGroupSelected = new System.Windows.Forms.Label();
+			this.labelNoApplicationSelected = new System.Windows.Forms.Label();
+			this.labelNoPluginSelected = new System.Windows.Forms.Label();
 			this.panelGroups.SuspendLayout();
 			this.panelGroup.SuspendLayout();
 			this.panelPlugins.SuspendLayout();
@@ -98,7 +101,7 @@
 			this.comboBoxMachines.Name = "comboBoxMachines";
 			this.comboBoxMachines.Size = new System.Drawing.Size(653, 21);
 			this.comboBoxMachines.TabIndex = 0;
-			this.comboBoxMachines.SelectedIndexChanged += new System.EventHandler(this.comboBoxMachines_SelectedIndexChanged);
+			this.comboBoxMachines.SelectedIndexChanged += new System.EventHandler(this.ComboBoxMachines_SelectedIndexChanged);
 			// 
 			// buttonMachines
 			// 
@@ -109,6 +112,7 @@
 			this.buttonMachines.TabIndex = 1;
 			this.buttonMachines.Text = "Machines...";
 			this.buttonMachines.UseVisualStyleBackColor = true;
+			this.buttonMachines.Click += new System.EventHandler(this.ButtonMachines_Click);
 			// 
 			// buttonApply
 			// 
@@ -120,7 +124,7 @@
 			this.buttonApply.TabIndex = 17;
 			this.buttonApply.Text = "Apply";
 			this.buttonApply.UseVisualStyleBackColor = true;
-			this.buttonApply.Click += new System.EventHandler(this.buttonApply_Click);
+			this.buttonApply.Click += new System.EventHandler(this.ButtonApply_Click);
 			// 
 			// buttonCancel
 			// 
@@ -132,7 +136,7 @@
 			this.buttonCancel.TabIndex = 19;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+			this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
 			// 
 			// buttonOK
 			// 
@@ -143,7 +147,7 @@
 			this.buttonOK.TabIndex = 20;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
-			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
 			// 
 			// labelNothingToShow
 			// 
@@ -162,6 +166,7 @@
 			this.panelGroups.BackColor = System.Drawing.SystemColors.Window;
 			this.panelGroups.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
 			this.panelGroups.Controls.Add(this.panelGroup);
+			this.panelGroups.Controls.Add(this.labelNoGroupSelected);
 			this.panelGroups.Controls.Add(this.buttonRemoveGroup);
 			this.panelGroups.Controls.Add(this.buttonAddGroup);
 			this.panelGroups.Controls.Add(this.listViewGroups);
@@ -284,7 +289,7 @@
 			// columnHeaderApplicationMappings
 			// 
 			this.columnHeaderApplicationMappings.Text = "ApplicationMappings";
-			this.columnHeaderApplicationMappings.Width = 268;
+			this.columnHeaderApplicationMappings.Width = 265;
 			// 
 			// textBoxGroupPath
 			// 
@@ -367,7 +372,7 @@
 			// columnHeaderGroups
 			// 
 			this.columnHeaderGroups.Text = "Groups";
-			this.columnHeaderGroups.Width = 100;
+			this.columnHeaderGroups.Width = 99;
 			// 
 			// panelPlugins
 			// 
@@ -377,6 +382,7 @@
 			this.panelPlugins.BackColor = System.Drawing.SystemColors.Window;
 			this.panelPlugins.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
 			this.panelPlugins.Controls.Add(this.panelPlugin);
+			this.panelPlugins.Controls.Add(this.labelNoPluginSelected);
 			this.panelPlugins.Controls.Add(this.listViewPlugins);
 			this.panelPlugins.Location = new System.Drawing.Point(174, 39);
 			this.panelPlugins.Name = "panelPlugins";
@@ -489,7 +495,7 @@
 			// columnHeaderPlugins
 			// 
 			this.columnHeaderPlugins.Text = "Plugins";
-			this.columnHeaderPlugins.Width = 100;
+			this.columnHeaderPlugins.Width = 99;
 			// 
 			// panelApplications
 			// 
@@ -499,6 +505,7 @@
 			this.panelApplications.BackColor = System.Drawing.SystemColors.Window;
 			this.panelApplications.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
 			this.panelApplications.Controls.Add(this.panelApplication);
+			this.panelApplications.Controls.Add(this.labelNoApplicationSelected);
 			this.panelApplications.Controls.Add(this.buttonRemoveApplication);
 			this.panelApplications.Controls.Add(this.buttonAddApplication);
 			this.panelApplications.Controls.Add(this.listViewApplications);
@@ -643,7 +650,7 @@
 			// columnHeaderApplications
 			// 
 			this.columnHeaderApplications.Text = "Applications";
-			this.columnHeaderApplications.Width = 100;
+			this.columnHeaderApplications.Width = 99;
 			// 
 			// treeViewConfiguration
 			// 
@@ -657,7 +664,34 @@
 			this.treeViewConfiguration.ShowLines = false;
 			this.treeViewConfiguration.Size = new System.Drawing.Size(156, 362);
 			this.treeViewConfiguration.TabIndex = 2;
-			this.treeViewConfiguration.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewConfiguration_AfterSelect);
+			this.treeViewConfiguration.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewConfiguration_AfterSelect);
+			// 
+			// labelNoGroupSelected
+			// 
+			this.labelNoGroupSelected.Location = new System.Drawing.Point(144, 8);
+			this.labelNoGroupSelected.Name = "labelNoGroupSelected";
+			this.labelNoGroupSelected.Size = new System.Drawing.Size(436, 345);
+			this.labelNoGroupSelected.TabIndex = 22;
+			this.labelNoGroupSelected.Text = "No group selected";
+			this.labelNoGroupSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// labelNoApplicationSelected
+			// 
+			this.labelNoApplicationSelected.Location = new System.Drawing.Point(144, 8);
+			this.labelNoApplicationSelected.Name = "labelNoApplicationSelected";
+			this.labelNoApplicationSelected.Size = new System.Drawing.Size(436, 345);
+			this.labelNoApplicationSelected.TabIndex = 23;
+			this.labelNoApplicationSelected.Text = "No application selected";
+			this.labelNoApplicationSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// labelNoPluginSelected
+			// 
+			this.labelNoPluginSelected.Location = new System.Drawing.Point(144, 8);
+			this.labelNoPluginSelected.Name = "labelNoPluginSelected";
+			this.labelNoPluginSelected.Size = new System.Drawing.Size(436, 345);
+			this.labelNoPluginSelected.TabIndex = 24;
+			this.labelNoPluginSelected.Text = "No plugin selected";
+			this.labelNoPluginSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// ConfigurationForm
 			// 
@@ -751,6 +785,9 @@
 		private System.Windows.Forms.Panel panelApplication;
 		private System.Windows.Forms.Panel panelPlugin;
 		private System.Windows.Forms.Label labelNothingToShow;
+		private System.Windows.Forms.Label labelNoGroupSelected;
+		private System.Windows.Forms.Label labelNoPluginSelected;
+		private System.Windows.Forms.Label labelNoApplicationSelected;
 
 	}
 }

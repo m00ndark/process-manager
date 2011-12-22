@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataAccess;
@@ -12,13 +13,13 @@ namespace ProcessManagerUI.Forms
 	public partial class ConfigurationForm : Form
 	{
 		private Panel _currentPanel;
-		private bool _configurationChanged;
+		private bool _hasUnsavedConfiguration;
 
 		public ConfigurationForm()
 		{
 			InitializeComponent();
 			_currentPanel = null;
-			_configurationChanged = true;
+			_hasUnsavedConfiguration = false;
 		}
 
 		#region GUI event handlers
@@ -26,21 +27,7 @@ namespace ProcessManagerUI.Forms
 		private void ConfigurationForm_Load(object sender, EventArgs e)
 		{
 			Settings.Client.Load();
-			Machine localhost = new Machine("localhost");
-			if (!Settings.Client.Machines.Contains(localhost))
-			{
-				Settings.Client.Machines.Add(localhost);
-				Settings.Client.Save(ClientSettingsType.Machines);
-			}
-			foreach (Machine machine in Settings.Client.Machines)
-			{
-				int index = comboBoxMachines.Items.Add(new ComboBoxItem(machine.HostName, machine));
-				if (machine.HostName == Settings.Client.CFG_SelectedHostName)
-					comboBoxMachines.SelectedIndex = index;
-			}
-			if (comboBoxMachines.SelectedIndex < 0)
-				comboBoxMachines.SelectedIndex = 0;
-
+			PopulateMachinesComboBox();
 			TreeNode setupNode = new TreeNode("Setup");
 			TreeNode groupsNode = new TreeNode("Groups") { Tag = panelGroups };
 			TreeNode applicationsNode = new TreeNode("Applications") { Tag = panelApplications };
@@ -53,16 +40,28 @@ namespace ProcessManagerUI.Forms
 			treeViewConfiguration.SelectedNode = groupsNode;
 		}
 
-		private void comboBoxMachines_SelectedIndexChanged(object sender, EventArgs e)
+		private void ComboBoxMachines_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxMachines.SelectedIndex > -1)
 			{
-				Settings.Client.CFG_SelectedHostName = ((Machine) ((ComboBoxItem) comboBoxMachines.SelectedItem).Tag).HostName;
+				Settings.Client.CFG_SelectedHostName = ((Machine) comboBoxMachines.SelectedItem).HostName;
 				// todo: retrieve and update with selected machine's configuration
-			} 
+			}
 		}
 
-		private void treeViewConfiguration_AfterSelect(object sender, TreeViewEventArgs e)
+		private void ButtonMachines_Click(object sender, EventArgs e)
+		{
+			MachinesForm machinesForm = new MachinesForm();
+			machinesForm.ShowDialog(this);
+			if (machinesForm.MachinesChanged)
+			{
+				PopulateMachinesComboBox();
+
+				// todo: update 
+			}
+		}
+
+		private void TreeViewConfiguration_AfterSelect(object sender, TreeViewEventArgs e)
 		{
 			if (_currentPanel != null)
 				_currentPanel.Visible = false;
@@ -73,21 +72,21 @@ namespace ProcessManagerUI.Forms
 				_currentPanel.Visible = true;
 		}
 
-		private void buttonOK_Click(object sender, EventArgs e)
+		private void ButtonOK_Click(object sender, EventArgs e)
 		{
 			SaveConfiguration();
 			Close();
 		}
 
-		private void buttonCancel_Click(object sender, EventArgs e)
+		private void ButtonCancel_Click(object sender, EventArgs e)
 		{
-			if (_configurationChanged)
+			if (_hasUnsavedConfiguration)
 				if (Messenger.ShowWarningQuestion("Configuration has been changed", "Would you like to discard any changes?") == DialogResult.No)
 					return;
 			Close();
 		}
 
-		private void buttonApply_Click(object sender, EventArgs e)
+		private void ButtonApply_Click(object sender, EventArgs e)
 		{
 			SaveConfiguration();
 		}
@@ -96,12 +95,38 @@ namespace ProcessManagerUI.Forms
 
 		#region Helpers
 
+		private void PopulateMachinesComboBox()
+		{
+			Machine localhost = new Machine(Settings.Constants.LOCALHOST);
+			if (!Settings.Client.Machines.Contains(localhost))
+			{
+				Settings.Client.Machines.Insert(0, localhost);
+				Settings.Client.Save(ClientSettingsType.Machines);
+			}
+
+			Machine selectedMachine = new Machine(Settings.Client.CFG_SelectedHostName);
+			if (!Settings.Client.Machines.Contains(selectedMachine))
+				selectedMachine = localhost;
+
+			comboBoxMachines.Items.Clear();
+			foreach (Machine machine in Settings.Client.Machines)
+			{
+				int index = comboBoxMachines.Items.Add(machine);
+				if (machine == selectedMachine)
+					comboBoxMachines.SelectedIndex = index;
+			}
+
+			if (comboBoxMachines.SelectedIndex < 0)
+				comboBoxMachines.SelectedIndex = 0;
+		}
+
 		private void SaveConfiguration()
 		{
-			if (_configurationChanged)
+			if (_hasUnsavedConfiguration)
 			{
 				Settings.Client.Save();
 				// todo: save server side config
+				_hasUnsavedConfiguration = false;
 			}
 		}
 

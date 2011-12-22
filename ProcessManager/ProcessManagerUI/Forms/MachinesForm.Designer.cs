@@ -32,7 +32,7 @@
 			this.columnHeaderMachines = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.buttonRemoveMachine = new System.Windows.Forms.Button();
 			this.buttonAddMachine = new System.Windows.Forms.Button();
-			this.panelMachines = new ProcessManagerUI.Controls.BackgroundPanel();
+			this.panelMachine = new ProcessManagerUI.Controls.BackgroundPanel();
 			this.buttonCopyMachineSetup = new System.Windows.Forms.Button();
 			this.buttonValidateMachine = new System.Windows.Forms.Button();
 			this.labeledDividerMachine = new ProcessManagerUI.Controls.LabeledDivider();
@@ -41,7 +41,8 @@
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonApply = new System.Windows.Forms.Button();
-			this.panelMachines.SuspendLayout();
+			this.labelNoMachineSelected = new System.Windows.Forms.Label();
+			this.panelMachine.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// listViewMachines
@@ -57,24 +58,27 @@
 			this.listViewMachines.MultiSelect = false;
 			this.listViewMachines.Name = "listViewMachines";
 			this.listViewMachines.Size = new System.Drawing.Size(120, 180);
+			this.listViewMachines.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listViewMachines.TabIndex = 1;
 			this.listViewMachines.UseCompatibleStateImageBehavior = false;
 			this.listViewMachines.View = System.Windows.Forms.View.Details;
+			this.listViewMachines.SelectedIndexChanged += new System.EventHandler(this.ListViewMachines_SelectedIndexChanged);
 			// 
 			// columnHeaderMachines
 			// 
 			this.columnHeaderMachines.Text = "Machines";
-			this.columnHeaderMachines.Width = 100;
+			this.columnHeaderMachines.Width = 99;
 			// 
 			// buttonRemoveMachine
 			// 
 			this.buttonRemoveMachine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonRemoveMachine.Location = new System.Drawing.Point(76, 198);
+			this.buttonRemoveMachine.Location = new System.Drawing.Point(75, 198);
 			this.buttonRemoveMachine.Name = "buttonRemoveMachine";
 			this.buttonRemoveMachine.Size = new System.Drawing.Size(58, 23);
 			this.buttonRemoveMachine.TabIndex = 4;
 			this.buttonRemoveMachine.Text = "Remove";
 			this.buttonRemoveMachine.UseVisualStyleBackColor = true;
+			this.buttonRemoveMachine.Click += new System.EventHandler(this.ButtonRemoveMachine_Click);
 			// 
 			// buttonAddMachine
 			// 
@@ -85,24 +89,26 @@
 			this.buttonAddMachine.TabIndex = 3;
 			this.buttonAddMachine.Text = "Add";
 			this.buttonAddMachine.UseVisualStyleBackColor = true;
+			this.buttonAddMachine.Click += new System.EventHandler(this.ButtonAddMachine_Click);
 			// 
-			// panelMachines
+			// panelMachine
 			// 
-			this.panelMachines.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.panelMachine.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelMachines.BackColor = System.Drawing.SystemColors.Window;
-			this.panelMachines.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
-			this.panelMachines.Controls.Add(this.buttonCopyMachineSetup);
-			this.panelMachines.Controls.Add(this.buttonValidateMachine);
-			this.panelMachines.Controls.Add(this.labeledDividerMachine);
-			this.panelMachines.Controls.Add(this.textBoxMachineHostName);
-			this.panelMachines.Controls.Add(this.labelMachineHostName);
-			this.panelMachines.Location = new System.Drawing.Point(140, 12);
-			this.panelMachines.Name = "panelMachines";
-			this.panelMachines.Padding = new System.Windows.Forms.Padding(5);
-			this.panelMachines.Size = new System.Drawing.Size(332, 209);
-			this.panelMachines.TabIndex = 18;
+			this.panelMachine.BackColor = System.Drawing.SystemColors.Window;
+			this.panelMachine.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
+			this.panelMachine.Controls.Add(this.buttonCopyMachineSetup);
+			this.panelMachine.Controls.Add(this.buttonValidateMachine);
+			this.panelMachine.Controls.Add(this.labeledDividerMachine);
+			this.panelMachine.Controls.Add(this.textBoxMachineHostName);
+			this.panelMachine.Controls.Add(this.labelMachineHostName);
+			this.panelMachine.Location = new System.Drawing.Point(140, 12);
+			this.panelMachine.Name = "panelMachine";
+			this.panelMachine.Padding = new System.Windows.Forms.Padding(5);
+			this.panelMachine.Size = new System.Drawing.Size(332, 209);
+			this.panelMachine.TabIndex = 18;
+			this.panelMachine.Visible = false;
 			// 
 			// buttonCopyMachineSetup
 			// 
@@ -164,16 +170,19 @@
 			this.buttonOK.TabIndex = 23;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
+			this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
 			// 
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.buttonCancel.Location = new System.Drawing.Point(282, 227);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(92, 23);
 			this.buttonCancel.TabIndex = 22;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
 			// 
 			// buttonApply
 			// 
@@ -185,6 +194,16 @@
 			this.buttonApply.TabIndex = 21;
 			this.buttonApply.Text = "Apply";
 			this.buttonApply.UseVisualStyleBackColor = true;
+			this.buttonApply.Click += new System.EventHandler(this.ButtonApply_Click);
+			// 
+			// labelNoMachineSelected
+			// 
+			this.labelNoMachineSelected.Location = new System.Drawing.Point(140, 12);
+			this.labelNoMachineSelected.Name = "labelNoMachineSelected";
+			this.labelNoMachineSelected.Size = new System.Drawing.Size(332, 209);
+			this.labelNoMachineSelected.TabIndex = 24;
+			this.labelNoMachineSelected.Text = "No machine selected";
+			this.labelNoMachineSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// MachinesForm
 			// 
@@ -195,10 +214,11 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonApply);
-			this.Controls.Add(this.panelMachines);
+			this.Controls.Add(this.panelMachine);
 			this.Controls.Add(this.buttonRemoveMachine);
 			this.Controls.Add(this.buttonAddMachine);
 			this.Controls.Add(this.listViewMachines);
+			this.Controls.Add(this.labelNoMachineSelected);
 			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -208,8 +228,9 @@
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Machines";
-			this.panelMachines.ResumeLayout(false);
-			this.panelMachines.PerformLayout();
+			this.Load += new System.EventHandler(this.MachinesForm_Load);
+			this.panelMachine.ResumeLayout(false);
+			this.panelMachine.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -220,7 +241,7 @@
 		private System.Windows.Forms.ColumnHeader columnHeaderMachines;
 		private System.Windows.Forms.Button buttonRemoveMachine;
 		private System.Windows.Forms.Button buttonAddMachine;
-		private Controls.BackgroundPanel panelMachines;
+		private Controls.BackgroundPanel panelMachine;
 		private System.Windows.Forms.Button buttonValidateMachine;
 		private Controls.LabeledDivider labeledDividerMachine;
 		private System.Windows.Forms.TextBox textBoxMachineHostName;
@@ -229,5 +250,6 @@
 		private System.Windows.Forms.Button buttonOK;
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.Button buttonApply;
+		private System.Windows.Forms.Label labelNoMachineSelected;
 	}
 }

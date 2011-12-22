@@ -61,8 +61,8 @@ namespace ProcessManager.DataAccess
 					RegistryKey statesKey = key.OpenSubKey("States", false);
 					if (statesKey != null)
 					{
-						Settings.Client.CFG_SelectedHostName = (string) key.GetValue("CFG Selected Host Name", string.Empty);
-						Settings.Client.CFG_SelectedConfigurationSection = (string) key.GetValue("CFG Selected Configuration Section", string.Empty);
+						Settings.Client.CFG_SelectedHostName = (string) key.GetValue("CFG Selected Host Name", Settings.Client.Defaults.SELECTED_HOST_NAME);
+						Settings.Client.CFG_SelectedConfigurationSection = (string) key.GetValue("CFG Selected Configuration Section", Settings.Client.Defaults.SELECTED_CONFIGURATION_SECTION);
 						statesKey.Close();
 					}
 					break;
