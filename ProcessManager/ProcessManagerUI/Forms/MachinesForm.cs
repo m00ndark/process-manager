@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using ProcessManager;
@@ -10,15 +11,17 @@ namespace ProcessManagerUI.Forms
 {
 	public partial class MachinesForm : Form
 	{
+		private readonly Machine _initiallySelectedMachine;
 		private Machine _selectedMachine;
 		private bool _hasUnsavedChanges;
 
-		public MachinesForm()
+		public MachinesForm(Machine initiallySelectedMachine)
 		{
 			InitializeComponent();
+			_initiallySelectedMachine = initiallySelectedMachine;
 			_selectedMachine = null;
-			MachinesChanged = false;
 			_hasUnsavedChanges = false;
+			MachinesChanged = _hasUnsavedChanges;
 		}
 
 		#region Properties
@@ -33,7 +36,9 @@ namespace ProcessManagerUI.Forms
 		{
 			foreach (Machine machine in Settings.Client.Machines)
 			{
-				listViewMachines.Items.Add(new ListViewItem(machine.HostName) { Tag = machine });
+				ListViewItem item = listViewMachines.Items.Add(new ListViewItem(machine.HostName) { Tag = machine });
+				if (_initiallySelectedMachine != null && _initiallySelectedMachine == machine)
+					item.Selected = true;
 			}
 		}
 
@@ -63,6 +68,7 @@ namespace ProcessManagerUI.Forms
 			item.Selected = true;
 			panelMachine.Visible = true;
 			EnableControls();
+			textBoxMachineHostName.Focus();
 		}
 
 		private void ButtonRemoveMachine_Click(object sender, EventArgs e)
@@ -124,6 +130,11 @@ namespace ProcessManagerUI.Forms
 			UpdateSelectedMachine();
 			if (_hasUnsavedChanges)
 			{
+				// todo: make machines distinct before saving and possible update GUI
+				//List<Machine> duplicateMachines = Settings.Client.Machines.Where(x => Settings.Client.Machines.Count(y => y.Equals(x)) > 1).ToList();
+				//List<Machine> distincts = duplicateMachines.Distinct(EqualityComparer<Machine>.Default).ToList();
+				//List<Machine> left = duplicateMachines.ToList().Except(distincts, EqualityComparer<object>.Default).Cast<Machine>().ToList();
+				//left.ForEach(x => Settings.Client.Machines.Remove(x));
 				Settings.Client.Save(ClientSettingsType.Machines);
 				_hasUnsavedChanges = false;
 				EnableControls();

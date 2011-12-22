@@ -51,13 +51,11 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonMachines_Click(object sender, EventArgs e)
 		{
-			MachinesForm machinesForm = new MachinesForm();
+			MachinesForm machinesForm = new MachinesForm((Machine) comboBoxMachines.SelectedItem);
 			machinesForm.ShowDialog(this);
 			if (machinesForm.MachinesChanged)
 			{
-				PopulateMachinesComboBox();
-
-				// todo: update 
+				PopulateMachinesComboBox(false);
 			}
 		}
 
@@ -95,7 +93,7 @@ namespace ProcessManagerUI.Forms
 
 		#region Helpers
 
-		private void PopulateMachinesComboBox()
+		private void PopulateMachinesComboBox(bool selectDefault = true)
 		{
 			Machine localhost = new Machine(Settings.Constants.LOCALHOST);
 			if (!Settings.Client.Machines.Contains(localhost))
@@ -116,7 +114,7 @@ namespace ProcessManagerUI.Forms
 					comboBoxMachines.SelectedIndex = index;
 			}
 
-			if (comboBoxMachines.SelectedIndex < 0)
+			if (selectDefault && comboBoxMachines.SelectedIndex < 0)
 				comboBoxMachines.SelectedIndex = 0;
 		}
 
