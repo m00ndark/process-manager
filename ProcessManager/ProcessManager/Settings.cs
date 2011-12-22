@@ -8,6 +8,15 @@ namespace ProcessManager
 {
 	public static class Settings
 	{
+		#region Constants class
+
+		public static class Constants
+		{
+			public const string APPLICATION_NAME = "Process Manager";
+		}
+
+		#endregion
+
 		#region Service class
 
 		public static class Service
@@ -86,6 +95,8 @@ namespace ProcessManager
 
 			public static List<Machine> Machines { get; private set; }
 			public static bool StartWithWindows { get; set; }
+			public static string CFG_SelectedHostName { get; set; }
+			public static string CFG_SelectedConfigurationSection { get; set; }
 
 			#endregion
 

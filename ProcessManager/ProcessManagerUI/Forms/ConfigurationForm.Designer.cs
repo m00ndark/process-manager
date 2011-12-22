@@ -34,6 +34,7 @@
 			this.buttonApply = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonOK = new System.Windows.Forms.Button();
+			this.labelNothingToShow = new System.Windows.Forms.Label();
 			this.panelGroups = new ProcessManagerUI.Controls.BackgroundPanel();
 			this.panelGroup = new System.Windows.Forms.Panel();
 			this.labeledDividerGroup = new ProcessManagerUI.Controls.LabeledDivider();
@@ -53,7 +54,6 @@
 			this.buttonAddGroup = new System.Windows.Forms.Button();
 			this.listViewGroups = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderGroups = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.labelNothingToShow = new System.Windows.Forms.Label();
 			this.panelPlugins = new ProcessManagerUI.Controls.BackgroundPanel();
 			this.panelPlugin = new System.Windows.Forms.Panel();
 			this.checkBoxPluginEnabled = new System.Windows.Forms.CheckBox();
@@ -98,6 +98,7 @@
 			this.comboBoxMachines.Name = "comboBoxMachines";
 			this.comboBoxMachines.Size = new System.Drawing.Size(653, 21);
 			this.comboBoxMachines.TabIndex = 0;
+			this.comboBoxMachines.SelectedIndexChanged += new System.EventHandler(this.comboBoxMachines_SelectedIndexChanged);
 			// 
 			// buttonMachines
 			// 
@@ -119,6 +120,7 @@
 			this.buttonApply.TabIndex = 17;
 			this.buttonApply.Text = "Apply";
 			this.buttonApply.UseVisualStyleBackColor = true;
+			this.buttonApply.Click += new System.EventHandler(this.buttonApply_Click);
 			// 
 			// buttonCancel
 			// 
@@ -130,6 +132,7 @@
 			this.buttonCancel.TabIndex = 19;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
 			// 
 			// buttonOK
 			// 
@@ -140,6 +143,16 @@
 			this.buttonOK.TabIndex = 20;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
+			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			// 
+			// labelNothingToShow
+			// 
+			this.labelNothingToShow.Location = new System.Drawing.Point(174, 39);
+			this.labelNothingToShow.Name = "labelNothingToShow";
+			this.labelNothingToShow.Size = new System.Drawing.Size(588, 362);
+			this.labelNothingToShow.TabIndex = 21;
+			this.labelNothingToShow.Text = "There are no items to show in this view";
+			this.labelNothingToShow.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// panelGroups
 			// 
@@ -355,15 +368,6 @@
 			// 
 			this.columnHeaderGroups.Text = "Groups";
 			this.columnHeaderGroups.Width = 100;
-			// 
-			// labelNothingToShow
-			// 
-			this.labelNothingToShow.Location = new System.Drawing.Point(174, 39);
-			this.labelNothingToShow.Name = "labelNothingToShow";
-			this.labelNothingToShow.Size = new System.Drawing.Size(588, 362);
-			this.labelNothingToShow.TabIndex = 21;
-			this.labelNothingToShow.Text = "There are no items to show in this view";
-			this.labelNothingToShow.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// panelPlugins
 			// 

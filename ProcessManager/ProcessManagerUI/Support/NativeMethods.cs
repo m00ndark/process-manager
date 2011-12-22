@@ -1,21 +1,8 @@
-/*
-* VISTA CONTROLS FOR .NET 2.0
-* 
-* Written by Marco Minerva, mailto:marco.minerva@gmail.com
-* 
-* This code is released under the Microsoft Community License (Ms-CL).
-* A copy of this license is available at
-* http://www.microsoft.com/resources/sharedsource/licensingbasics/limitedcommunitylicense.mspx
-*/
-
 using System;
 using System.Runtime.InteropServices;
 
-namespace ProcessManagerUI.Controls
+namespace ProcessManagerUI.Support
 {
-    /// <summary>
-    /// Control style and notification constants
-    /// </summary>
     internal class NativeMethods
     {
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
@@ -26,79 +13,178 @@ namespace ProcessManagerUI.Controls
         public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, string lParam);
+
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern void SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
         [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
         public extern static int SetWindowTheme(IntPtr hWnd, string pszSubAppName, string pszSubIdList);
 
-		/*[DllImport("user32.dll", EntryPoint = "ReleaseCapture")]
-		public static extern bool StopMouseCapture();
+		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+		public static extern IntPtr GetActiveWindow();
 
-		[DllImport("user32.dll", EntryPoint = "SetCapture")]
-		public static extern IntPtr StartMouseCapture(IntPtr hWnd);*/
+		[DllImport("comctl32.dll", CharSet = CharSet.Unicode, EntryPoint = "TaskDialog")]
+		public static extern int TaskDialog(IntPtr hWndParent, IntPtr hInstance, string pszWindowTitle, string pszMainInstruction, string pszContent, int dwCommonButtons, IntPtr pszIcon, out int pnButton);
 
-		//Window styles
+		[DllImport("comctl32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
+		public static extern IntPtr TaskDialogIndirect(ref TaskDialogConfig pTaskConfig, out int pnButton, out int pnRadioButton, out bool pfVerificationFlagChecked);
+
+
+
+		internal delegate IntPtr TaskDialogCallback(IntPtr hwnd, uint msg, UIntPtr wParam, IntPtr lParam, IntPtr refData);
+
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
+		internal struct TaskDialogConfig
+		{
+			public uint cbSize;
+			public IntPtr hwndParent;
+			public IntPtr hInstance;
+			public TaskDialogFlags dwFlags;
+			public TaskDialogButtons dwCommonButtons;
+			[MarshalAs(UnmanagedType.LPWStr)]
+			public string pszWindowTitle;
+			public IntPtr hMainIcon;
+			[MarshalAs(UnmanagedType.LPWStr)]
+			public string pszMainInstruction;
+			[MarshalAs(UnmanagedType.LPWStr)]
+			public string pszContent;
+			public uint cButtons;
+			public IntPtr pButtons;
+			public int nDefaultButton;
+			public uint cRadioButtons;
+			public IntPtr pRadioButtons;
+			public int nDefaultRadioButton;
+			[MarshalAs(UnmanagedType.LPWStr)]
+			public string pszVerificationText;
+			[MarshalAs(UnmanagedType.LPWStr)]
+			public string pszExpandedInformation;
+			[MarshalAs(UnmanagedType.LPWStr)]
+			public string pszExpandedControlText;
+			[MarshalAs(UnmanagedType.LPWStr)]
+			public string pszCollapsedControlText;
+			public IntPtr hFooterIcon;
+			[MarshalAs(UnmanagedType.LPWStr)]
+			public string pszFooter;
+			public TaskDialogCallback pfCallback;
+			public IntPtr lpCallbackData;
+			public uint cxWidth;
+		}
+
+		[Flags]
+		public enum TaskDialogButtons
+		{
+			OK = 0x0001,
+			Cancel = 0x0008,
+			Yes = 0x0002,
+			No = 0x0004,
+			Retry = 0x0010,
+			Close = 0x0020
+		}
+
+		public enum TaskDialogIcon : long
+		{
+			Information = UInt16.MaxValue - 2,
+			Warning = UInt16.MaxValue,
+			Stop = UInt16.MaxValue - 1,
+			None = 0,
+			SecurityWarning = UInt16.MaxValue - 5,
+			SecurityError = UInt16.MaxValue - 6,
+			SecuritySuccess = UInt16.MaxValue - 7,
+			SecurityShield = UInt16.MaxValue - 3,
+			SecurityShieldBlue = UInt16.MaxValue - 4,
+			SecurityShieldGray = UInt16.MaxValue - 8
+		}
+
+		[Flags]
+		internal enum TaskDialogFlags
+		{
+			TDF_ENABLE_HYPERLINKS = 0x0001,
+			TDF_USE_HICON_MAIN = 0x0002,
+			TDF_USE_HICON_FOOTER = 0x0004,
+			TDF_ALLOW_DIALOG_CANCELLATION = 0x0008,
+			TDF_USE_COMMAND_LINKS = 0x0010,
+			TDF_USE_COMMAND_LINKS_NO_ICON = 0x0020,
+			TDF_EXPAND_FOOTER_AREA = 0x0040,
+			TDF_EXPANDED_BY_DEFAULT = 0x0080,
+			TDF_VERIFICATION_FLAG_CHECKED = 0x0100,
+			TDF_SHOW_PROGRESS_BAR = 0x0200,
+			TDF_SHOW_MARQUEE_PROGRESS_BAR = 0x0400,
+			TDF_CALLBACK_TIMER = 0x0800,
+			TDF_POSITION_RELATIVE_TO_WINDOW = 0x1000,
+			TDF_RTL_LAYOUT = 0x2000,
+			TDF_NO_DEFAULT_RADIO_BUTTON = 0x4000,
+			TDF_CAN_BE_MINIMIZED = 0x8000
+		}
+
+
+		// window styles
 		public const int WS_EX_CONTROLPARENT = 0x00010000;
 		public const int WS_EX_CLIENTEDGE = 0x00000200;
 		public const int WS_BORDER = 0x00800000;
 
-		//Window NCHITTEST values
+		// window NCHITTEST values
 		public const int HTTRANSPARENT = -1;
         
-        //Button styles
+        // button styles
         public const int BS_COMMANDLINK = 0x0000000E;
         public const int BS_SPLITBUTTON = 0x0000000C;
 		public const int BS_DEFSPLITBUTTON = 0x0000000D;
-        //Button messages
+
+		// button messages
         public const int BCM_SETNOTE = 0x00001609;
         public const int BCM_SETSHIELD = 0x0000160C;
         public const int BM_SETIMAGE = 0x00F7;
 		public const int BCM_SETSPLITINFO = 0x1600 + 0x0007;
-
 		public const int BCN_SETDROPDOWNSTATE = 0x1606;
-
         public const int ECM_FIRST = 0x1500;
         public const int EM_SETCUEBANNER = ECM_FIRST + 1;
 
-        //ComboBox messages
+        // comboBox messages
         public const int CB_SETCUEBANNER = 0x1703;
 
-        //Static messages
+        // static messages
         public const int STM_SETICON = 0x0170;
 
-        //Treeview universal constants
+        // treeview universal constants
         public const int TV_FIRST = 0x1100;
-        //Treeview messages
+
+        // treeview messages
         public const int TVM_SETEXTENDEDSTYLE = TV_FIRST + 44;
         public const int TVM_GETEXTENDEDSTYLE = TV_FIRST + 45;
         public const int TVM_SETAUTOSCROLLINFO = TV_FIRST + 59;
-        //Treeview styles
+
+		//treeview styles
         public const int TVS_NOHSCROLL = 0x8000;
-        //Treeview extended styles
+
+		//treeview extended styles
         public const int TVS_EX_AUTOHSCROLL = 0x0020;
         public const int TVS_EX_FADEINOUTEXPANDOS = 0x0040;
         public const int TVS_EX_DOUBLEBUFFER = 0x0004;
         public const int GWL_STYLE = -16;
 
-        //Listview universal constants
+        // listview universal constants
         public const int LVM_FIRST = 0x1000;
-        //Listview messages
+
+        // listview messages
         public const int LVM_SETEXTENDEDLISTVIEWSTYLE = LVM_FIRST + 54;
         public const int LVS_EX_FULLROWSELECT = 0x00000020;
-        //Listview extended styles
+
+        // listview extended styles
         public const int LVS_EX_DOUBLEBUFFER = 0x00010000;
 
-        //Progressbar styles
+        // progress bar styles
         public const int PBS_SMOOTHREVERSE = 0x10;
         public const int PBST_NORMAL = 0x0001; //used with PBM_SETSTATE
         public const int PBST_ERROR = 0x0002; //used with PBM_SETSTATE
         public const int PBST_PAUSED = 0x0003; //used with PBM_SETSTATE
-        //Progressbar messages
+
+        // progress bar messages
         public const int PBM_SETSTATE = WM_USER + 16;
 
-        //Windows notifications
+        // windows notifications
         public const int WM_NULL = 0x00;
         public const int WM_CREATE = 0x01;
         public const int WM_DESTROY = 0x02;

@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Support\ComboBoxItem.cs" />
     <Compile Include="Controls\BackgroundPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -85,7 +86,7 @@
     <Compile Include="Controls\ListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\NativeMethods.cs" />
+    <Compile Include="Support\NativeMethods.cs" />
     <Compile Include="Controls\TreeView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -103,6 +104,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Support\TaskDialog.cs" />
+    <Compile Include="Utilities\Messenger.cs" />
     <EmbeddedResource Include="Forms\ConfigurationForm.resx">
       <DependentUpon>ConfigurationForm.cs</DependentUpon>
     </EmbeddedResource>

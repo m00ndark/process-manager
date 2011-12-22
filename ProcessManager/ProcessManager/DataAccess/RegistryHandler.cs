@@ -8,7 +8,8 @@ namespace ProcessManager.DataAccess
 	public enum	ClientSettingsType
 	{
 		Machines,
-		StartWithWindows
+		Options,
+		States
 	}
 
 	public static class RegistryHandler
@@ -47,8 +48,23 @@ namespace ProcessManager.DataAccess
 					}
 					break;
 
-				case ClientSettingsType.StartWithWindows:
-					Settings.Client.StartWithWindows = bool.Parse((string) key.GetValue("Start With Windows", Settings.Client.Defaults.START_WITH_WINDOWS));
+				case ClientSettingsType.Options:
+					RegistryKey optionsKey = key.OpenSubKey("Options", false);
+					if (optionsKey != null)
+					{
+						Settings.Client.StartWithWindows = bool.Parse((string) key.GetValue("Start With Windows", Settings.Client.Defaults.START_WITH_WINDOWS));
+						optionsKey.Close();
+					}
+					break;
+
+				case ClientSettingsType.States:
+					RegistryKey statesKey = key.OpenSubKey("States", false);
+					if (statesKey != null)
+					{
+						Settings.Client.CFG_SelectedHostName = (string) key.GetValue("CFG Selected Host Name", string.Empty);
+						Settings.Client.CFG_SelectedConfigurationSection = (string) key.GetValue("CFG Selected Configuration Section", string.Empty);
+						statesKey.Close();
+					}
 					break;
 			}
 			key.Close();
@@ -88,8 +104,23 @@ namespace ProcessManager.DataAccess
 					}
 					break;
 
-				case ClientSettingsType.StartWithWindows:
-					key.SetValue("Start With Windows", Settings.Client.StartWithWindows.ToString());
+				case ClientSettingsType.Options:
+					RegistryKey optionsKey = key.CreateSubKey("Options");
+					if (optionsKey != null)
+					{
+						key.SetValue("Start With Windows", Settings.Client.StartWithWindows.ToString());
+						optionsKey.Close();
+					}
+					break;
+
+				case ClientSettingsType.States:
+					RegistryKey statesKey = key.CreateSubKey("States");
+					if (statesKey != null)
+					{
+						key.SetValue("CFG Selected Host Name", Settings.Client.CFG_SelectedHostName);
+						key.SetValue("CFG Selected Configuration Section", Settings.Client.CFG_SelectedConfigurationSection);
+						statesKey.Close();
+					}
 					break;
 			}
 			key.Close();
