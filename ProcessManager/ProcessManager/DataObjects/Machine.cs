@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ProcessManager.DataObjects
+﻿namespace ProcessManager.DataObjects
 {
 	public class Machine
 	{
-		public string HostName { get; set; }
+		public Machine(string hostName)
+		{
+			HostName = hostName;
+		}
+
+		public string HostName { get; private set; }
 	}
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using ProcessManager.DataAccess;
+using ProcessManager.DataObjects;
 
 namespace ProcessManager
 {
@@ -77,11 +78,13 @@ namespace ProcessManager
 
 			static Client()
 			{
+				Machines = new List<Machine>();
 				StartWithWindows = bool.Parse(Defaults.START_WITH_WINDOWS);
 			}
 
 			#region Properties
 
+			public static List<Machine> Machines { get; private set; }
 			public static bool StartWithWindows { get; set; }
 
 			#endregion
