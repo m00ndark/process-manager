@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
+﻿using System.ServiceModel;
 
 namespace ProcessManager.Service.Common
 {
 	[ServiceContract(SessionMode = SessionMode.Required, CallbackContract = typeof(IProcessManagerServiceEventHandler))]
-	public interface IProcessManagerService
+	public interface IProcessManagerService : IProcessManagerServiceOperator
 	{
 		[OperationContract(IsInitiating = true)]
-		void Subscribe();
+		void Register(bool subscribe);
 
 		[OperationContract(IsTerminating = true)]
-		void Unsubscribe();
-
-
+		void Unregister();
 	}
 }

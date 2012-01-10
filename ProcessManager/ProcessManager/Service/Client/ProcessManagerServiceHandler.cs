@@ -16,7 +16,7 @@ namespace ProcessManager.Service.Client
 		private ProcessManagerServiceClient _processManagerServiceClient;
 		private Thread _connectionWatcherThread;
 
-		public ProcessManagerServiceHandler(IProcessManagerEventHandler processManagerEventHandler, Machine machine)
+		public ProcessManagerServiceHandler(IProcessManagerEventHandler processManagerEventHandler, Machine machine, bool subscribeToEvents)
 		{
 			_machine = machine;
 			_processManagerEventHandler = processManagerEventHandler;
@@ -24,12 +24,12 @@ namespace ProcessManager.Service.Client
 			_processManagerServiceEventHandler.ApplicationStatusesChanged += _processManagerEventHandler.ProcessManagerServiceEventHandler_ApplicationStatusesChanged;
 			_connectionWatcherThread = new Thread(ConnectionWatcher);
 			SetupClient();
-			_connectionWatcherThread.Start();
+			_connectionWatcherThread.Start(subscribeToEvents);
 		}
 
 		#region Properties
 
-		public IProcessManagerService Service { get { return _processManagerServiceClient; } }
+		public IProcessManagerServiceOperator Service { get { return _processManagerServiceClient; } }
 
 		#endregion
 
@@ -43,7 +43,7 @@ namespace ProcessManager.Service.Client
 				_connectionWatcherThread = null;
 				try
 				{
-					_processManagerServiceClient.Unsubscribe();
+					_processManagerServiceClient.Unregister();
 					_processManagerServiceClient.Abort();
 				}
 				catch { ; }
@@ -63,10 +63,11 @@ namespace ProcessManager.Service.Client
 			_processManagerServiceClient = new ProcessManagerServiceClient(context, binding, endpointAddress);
 		}
 
-		private void ConnectionWatcher()
+		private void ConnectionWatcher(object inParam)
 		{
 			try
 			{
+				bool subscribe = (bool) inParam;
 				while (true)
 				{
 					if (_processManagerServiceClient.State == CommunicationState.Faulted)
@@ -76,7 +77,7 @@ namespace ProcessManager.Service.Client
 						SetupClient();
 
 					if (_processManagerServiceClient.State == CommunicationState.Created)
-						try { _processManagerServiceClient.Subscribe(); } catch { ; }
+						try { _processManagerServiceClient.Register(subscribe); } catch { ; }
 
 					Thread.Sleep(1000);
 				}

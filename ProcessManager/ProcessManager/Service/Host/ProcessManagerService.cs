@@ -11,43 +11,56 @@ namespace ProcessManager.Service.Host
 	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
 	internal class ProcessManagerService : IProcessManagerService
 	{
-		private readonly List<IProcessManagerServiceEventHandler> _subscribers;
+		private readonly IDictionary<IProcessManagerServiceEventHandler, bool> _clients;
 
 		public ProcessManagerService()
 		{
-			_subscribers = new List<IProcessManagerServiceEventHandler>();
+			_clients = new Dictionary<IProcessManagerServiceEventHandler, bool>();
 		}
 
 		#region Implementation of IProcessManagerService
 
-		public void Subscribe()
+		public void Register(bool subscribe)
 		{
-			_subscribers.Add(OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>());
+			_clients.Add(OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>(), subscribe);
 		}
 
-		public void Unsubscribe()
+		public void Unregister()
 		{
 			IProcessManagerServiceEventHandler caller = OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>();
-			_subscribers.RemoveAll(subscriber => (subscriber == caller));
+			_clients.Where(x => (x.Key == caller)).ToList().ForEach(x => _clients.Remove(x));
 		}
 
 		#endregion
 
+		#region Implementation of IProcessManagerServiceOperator
+
+		public void Ping()
+		{
+			// do nothing
+		}
+
+		#endregion
+
+		#region Service event handlers
+
 		public void ProcessManagerEventProvider_ApplicationStatusesChanged(object sender, ApplicationStatusesEventArgs e)
 		{
-			List<IProcessManagerServiceEventHandler> faultedSubscribers = new List<IProcessManagerServiceEventHandler>();
-			foreach (IProcessManagerServiceEventHandler subscriber in _subscribers)
+			List<IProcessManagerServiceEventHandler> faultedClients = new List<IProcessManagerServiceEventHandler>();
+			foreach (IProcessManagerServiceEventHandler client in _clients.Where(x => x.Value).Select(x => x.Key))
 			{
 				try
 				{
-					subscriber.ServiceEvent_ApplicationStatusesChanged(e.ApplicationStatuses.Select(x => new DTOApplicationStatus(x)).ToList());
+					client.ServiceEvent_ApplicationStatusesChanged(e.ApplicationStatuses.Select(x => new DTOApplicationStatus(x)).ToList());
 				}
 				catch
 				{
-					faultedSubscribers.Add(subscriber);
+					faultedClients.Add(client);
 				}
 			}
-			faultedSubscribers.ForEach(subscriber => _subscribers.Remove(subscriber));
+			faultedClients.ForEach(client => _clients.Remove(client));
 		}
+
+		#endregion
 	}
 }

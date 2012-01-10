@@ -57,6 +57,7 @@
     <Compile Include="Service\Client\ProcessManagerServiceHandler.cs" />
     <Compile Include="Service\Common\IProcessManagerServiceEventHandler.cs" />
     <Compile Include="Service\Common\IProcessManagerService.cs" />
+    <Compile Include="Service\Common\IProcessManagerServiceOperator.cs" />
     <Compile Include="Service\DataObjects\DTOApplicationStatus.cs" />
     <Compile Include="Service\Host\ProcessManagerService.cs" />
     <Compile Include="Service\Host\ProcessManagerServiceHost.cs" />

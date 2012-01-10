@@ -11,14 +11,23 @@ namespace ProcessManager.Service.Client
 
 		#region Implementation of IProcessManagerService
 
-		public void Subscribe()
+		public void Register(bool subscribe)
 		{
-			Channel.Subscribe();
+			Channel.Register(subscribe);
 		}
 
-		public void Unsubscribe()
+		public void Unregister()
 		{
-			Channel.Unsubscribe();
+			Channel.Unregister();
+		}
+
+		#endregion
+
+		#region Implementation of IProcessManagerServiceOperator
+
+		public void Ping()
+		{
+			Channel.Ping();
 		}
 
 		#endregion
