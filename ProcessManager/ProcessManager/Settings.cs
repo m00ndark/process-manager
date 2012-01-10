@@ -83,7 +83,7 @@ namespace ProcessManager
 			{
 				public const string START_WITH_WINDOWS = "False";
 				public const string SELECTED_HOST_NAME = Constants.LOCALHOST;
-				public const string SELECTED_CONFIGURATION_SECTION = null;
+				public const string SELECTED_CONFIGURATION_SECTION = "";
 			}
 
 			#endregion

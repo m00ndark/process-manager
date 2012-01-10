@@ -114,9 +114,9 @@ namespace ProcessManagerUI.Forms
 				bool machineChanged = (_selectedMachine.HostName != textBoxMachineHostName.Text);
 				_hasUnsavedChanges |= machineChanged;
 				MachinesChanged |= machineChanged;
-				_selectedMachine.HostName = textBoxMachineHostName.Text;
 				if (machineChanged)
 				{
+					_selectedMachine.HostName = textBoxMachineHostName.Text;
 					ListViewItem item = listViewMachines.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedMachine);
 					item.Text = _selectedMachine.HostName;
 					listViewMachines.Sort();
@@ -130,11 +130,26 @@ namespace ProcessManagerUI.Forms
 			UpdateSelectedMachine();
 			if (_hasUnsavedChanges)
 			{
-				// todo: make machines distinct before saving and possible update GUI
-				//List<Machine> duplicateMachines = Settings.Client.Machines.Where(x => Settings.Client.Machines.Count(y => y.Equals(x)) > 1).ToList();
-				//List<Machine> distincts = duplicateMachines.Distinct(EqualityComparer<Machine>.Default).ToList();
-				//List<Machine> left = duplicateMachines.ToList().Except(distincts, EqualityComparer<object>.Default).Cast<Machine>().ToList();
-				//left.ForEach(x => Settings.Client.Machines.Remove(x));
+				var duplicateMachines = Settings.Client.Machines
+					.Distinct()
+					.Select(machine => new { Machine = machine, Count = Settings.Client.Machines.Count(x => x.Equals(machine)) })
+					.Where(x => x.Count > 1);
+				foreach (var x in duplicateMachines.ToList())
+				{
+					for (int i = 0; i < x.Count - 1; i++)
+					{
+						ListViewItem item = listViewMachines.Items.Cast<ListViewItem>().First(y => x.Machine.Equals(y.Tag));
+						Settings.Client.Machines.Remove(x.Machine);
+						listViewMachines.Items.Remove(item);
+					}
+				}
+				Machine defaultMachine = Settings.Client.Machines.FirstOrDefault(machine => machine.HostName == Machine.DEFAULT_HOST_NAME);
+				if (defaultMachine != null)
+				{
+					ListViewItem item = listViewMachines.Items.Cast<ListViewItem>().First(y => defaultMachine.Equals(y.Tag));
+					Settings.Client.Machines.Remove(defaultMachine);
+					listViewMachines.Items.Remove(item);
+				}
 				Settings.Client.Save(ClientSettingsType.Machines);
 				_hasUnsavedChanges = false;
 				EnableControls();

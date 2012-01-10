@@ -164,7 +164,7 @@
 			// buttonOK
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOK.Location = new System.Drawing.Point(184, 227);
+			this.buttonOK.Location = new System.Drawing.Point(185, 227);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(92, 23);
 			this.buttonOK.TabIndex = 23;
@@ -176,7 +176,7 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(282, 227);
+			this.buttonCancel.Location = new System.Drawing.Point(283, 227);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(92, 23);
 			this.buttonCancel.TabIndex = 22;
@@ -188,7 +188,7 @@
 			// 
 			this.buttonApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonApply.Enabled = false;
-			this.buttonApply.Location = new System.Drawing.Point(380, 227);
+			this.buttonApply.Location = new System.Drawing.Point(381, 227);
 			this.buttonApply.Name = "buttonApply";
 			this.buttonApply.Size = new System.Drawing.Size(92, 23);
 			this.buttonApply.TabIndex = 21;

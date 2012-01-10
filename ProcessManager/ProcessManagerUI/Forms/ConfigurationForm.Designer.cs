@@ -50,6 +50,7 @@
 			this.labelGroupApplications = new System.Windows.Forms.Label();
 			this.labeledDividerGroupApplicationMappings = new ProcessManagerUI.Controls.LabeledDivider();
 			this.buttonBrowseGroupPath = new System.Windows.Forms.Button();
+			this.labelNoGroupSelected = new System.Windows.Forms.Label();
 			this.buttonRemoveGroup = new System.Windows.Forms.Button();
 			this.buttonAddGroup = new System.Windows.Forms.Button();
 			this.listViewGroups = new ProcessManagerUI.Controls.ListView();
@@ -63,6 +64,7 @@
 			this.labelPluginNameValue = new System.Windows.Forms.Label();
 			this.labelPluginDescription = new System.Windows.Forms.Label();
 			this.buttonConfigurePlugin = new System.Windows.Forms.Button();
+			this.labelNoPluginSelected = new System.Windows.Forms.Label();
 			this.listViewPlugins = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderPlugins = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.panelApplications = new ProcessManagerUI.Controls.BackgroundPanel();
@@ -75,14 +77,12 @@
 			this.buttonBrowseApplicationRelativePath = new System.Windows.Forms.Button();
 			this.labelApplicationRelativePath = new System.Windows.Forms.Label();
 			this.textBoxApplicationRelativePath = new System.Windows.Forms.TextBox();
+			this.labelNoApplicationSelected = new System.Windows.Forms.Label();
 			this.buttonRemoveApplication = new System.Windows.Forms.Button();
 			this.buttonAddApplication = new System.Windows.Forms.Button();
 			this.listViewApplications = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderApplications = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.treeViewConfiguration = new ProcessManagerUI.Controls.TreeView();
-			this.labelNoGroupSelected = new System.Windows.Forms.Label();
-			this.labelNoApplicationSelected = new System.Windows.Forms.Label();
-			this.labelNoPluginSelected = new System.Windows.Forms.Label();
 			this.panelGroups.SuspendLayout();
 			this.panelGroup.SuspendLayout();
 			this.panelPlugins.SuspendLayout();
@@ -332,6 +332,15 @@
 			this.buttonBrowseGroupPath.Text = "...";
 			this.buttonBrowseGroupPath.UseVisualStyleBackColor = true;
 			// 
+			// labelNoGroupSelected
+			// 
+			this.labelNoGroupSelected.Location = new System.Drawing.Point(144, 8);
+			this.labelNoGroupSelected.Name = "labelNoGroupSelected";
+			this.labelNoGroupSelected.Size = new System.Drawing.Size(436, 345);
+			this.labelNoGroupSelected.TabIndex = 22;
+			this.labelNoGroupSelected.Text = "No group selected";
+			this.labelNoGroupSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
 			// buttonRemoveGroup
 			// 
 			this.buttonRemoveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -475,6 +484,15 @@
 			this.buttonConfigurePlugin.Text = "Configure...";
 			this.buttonConfigurePlugin.UseVisualStyleBackColor = true;
 			// 
+			// labelNoPluginSelected
+			// 
+			this.labelNoPluginSelected.Location = new System.Drawing.Point(144, 8);
+			this.labelNoPluginSelected.Name = "labelNoPluginSelected";
+			this.labelNoPluginSelected.Size = new System.Drawing.Size(436, 345);
+			this.labelNoPluginSelected.TabIndex = 24;
+			this.labelNoPluginSelected.Text = "No plugin selected";
+			this.labelNoPluginSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
 			// listViewPlugins
 			// 
 			this.listViewPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -610,6 +628,15 @@
 			this.textBoxApplicationRelativePath.Size = new System.Drawing.Size(283, 22);
 			this.textBoxApplicationRelativePath.TabIndex = 8;
 			// 
+			// labelNoApplicationSelected
+			// 
+			this.labelNoApplicationSelected.Location = new System.Drawing.Point(144, 8);
+			this.labelNoApplicationSelected.Name = "labelNoApplicationSelected";
+			this.labelNoApplicationSelected.Size = new System.Drawing.Size(436, 345);
+			this.labelNoApplicationSelected.TabIndex = 23;
+			this.labelNoApplicationSelected.Text = "No application selected";
+			this.labelNoApplicationSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
 			// buttonRemoveApplication
 			// 
 			this.buttonRemoveApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -666,33 +693,6 @@
 			this.treeViewConfiguration.TabIndex = 2;
 			this.treeViewConfiguration.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewConfiguration_AfterSelect);
 			// 
-			// labelNoGroupSelected
-			// 
-			this.labelNoGroupSelected.Location = new System.Drawing.Point(144, 8);
-			this.labelNoGroupSelected.Name = "labelNoGroupSelected";
-			this.labelNoGroupSelected.Size = new System.Drawing.Size(436, 345);
-			this.labelNoGroupSelected.TabIndex = 22;
-			this.labelNoGroupSelected.Text = "No group selected";
-			this.labelNoGroupSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// labelNoApplicationSelected
-			// 
-			this.labelNoApplicationSelected.Location = new System.Drawing.Point(144, 8);
-			this.labelNoApplicationSelected.Name = "labelNoApplicationSelected";
-			this.labelNoApplicationSelected.Size = new System.Drawing.Size(436, 345);
-			this.labelNoApplicationSelected.TabIndex = 23;
-			this.labelNoApplicationSelected.Text = "No application selected";
-			this.labelNoApplicationSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// labelNoPluginSelected
-			// 
-			this.labelNoPluginSelected.Location = new System.Drawing.Point(144, 8);
-			this.labelNoPluginSelected.Name = "labelNoPluginSelected";
-			this.labelNoPluginSelected.Size = new System.Drawing.Size(436, 345);
-			this.labelNoPluginSelected.TabIndex = 24;
-			this.labelNoPluginSelected.Text = "No plugin selected";
-			this.labelNoPluginSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
 			// ConfigurationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -718,6 +718,7 @@
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Process Manager Configuration";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigurationForm_FormClosing);
 			this.Load += new System.EventHandler(this.ConfigurationForm_Load);
 			this.panelGroups.ResumeLayout(false);
 			this.panelGroup.ResumeLayout(false);

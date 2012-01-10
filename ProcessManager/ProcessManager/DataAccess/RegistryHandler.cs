@@ -52,7 +52,7 @@ namespace ProcessManager.DataAccess
 					RegistryKey optionsKey = key.OpenSubKey("Options", false);
 					if (optionsKey != null)
 					{
-						Settings.Client.StartWithWindows = bool.Parse((string) key.GetValue("Start With Windows", Settings.Client.Defaults.START_WITH_WINDOWS));
+						Settings.Client.StartWithWindows = bool.Parse((string) optionsKey.GetValue("Start With Windows", Settings.Client.Defaults.START_WITH_WINDOWS));
 						optionsKey.Close();
 					}
 					break;
@@ -61,8 +61,8 @@ namespace ProcessManager.DataAccess
 					RegistryKey statesKey = key.OpenSubKey("States", false);
 					if (statesKey != null)
 					{
-						Settings.Client.CFG_SelectedHostName = (string) key.GetValue("CFG Selected Host Name", Settings.Client.Defaults.SELECTED_HOST_NAME);
-						Settings.Client.CFG_SelectedConfigurationSection = (string) key.GetValue("CFG Selected Configuration Section", Settings.Client.Defaults.SELECTED_CONFIGURATION_SECTION);
+						Settings.Client.CFG_SelectedHostName = (string) statesKey.GetValue("CFG Selected Host Name", Settings.Client.Defaults.SELECTED_HOST_NAME);
+						Settings.Client.CFG_SelectedConfigurationSection = (string) statesKey.GetValue("CFG Selected Configuration Section", Settings.Client.Defaults.SELECTED_CONFIGURATION_SECTION);
 						statesKey.Close();
 					}
 					break;
@@ -108,7 +108,7 @@ namespace ProcessManager.DataAccess
 					RegistryKey optionsKey = key.CreateSubKey("Options");
 					if (optionsKey != null)
 					{
-						key.SetValue("Start With Windows", Settings.Client.StartWithWindows.ToString());
+						optionsKey.SetValue("Start With Windows", Settings.Client.StartWithWindows.ToString());
 						optionsKey.Close();
 					}
 					break;
@@ -117,8 +117,8 @@ namespace ProcessManager.DataAccess
 					RegistryKey statesKey = key.CreateSubKey("States");
 					if (statesKey != null)
 					{
-						key.SetValue("CFG Selected Host Name", Settings.Client.CFG_SelectedHostName);
-						key.SetValue("CFG Selected Configuration Section", Settings.Client.CFG_SelectedConfigurationSection);
+						statesKey.SetValue("CFG Selected Host Name", Settings.Client.CFG_SelectedHostName);
+						statesKey.SetValue("CFG Selected Configuration Section", Settings.Client.CFG_SelectedConfigurationSection);
 						statesKey.Close();
 					}
 					break;

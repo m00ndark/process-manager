@@ -28,16 +28,24 @@ namespace ProcessManagerUI.Forms
 		{
 			Settings.Client.Load();
 			PopulateMachinesComboBox();
-			TreeNode setupNode = new TreeNode("Setup");
-			TreeNode groupsNode = new TreeNode("Groups") { Tag = panelGroups };
-			TreeNode applicationsNode = new TreeNode("Applications") { Tag = panelApplications };
-			TreeNode pluginsNode = new TreeNode("Plugins") { Tag = panelPlugins };
+			TreeNode setupNode = new TreeNode("Setup") { Name = "Setup" };
+			TreeNode groupsNode = new TreeNode("Groups") { Name = "Groups", Tag = panelGroups };
+			TreeNode applicationsNode = new TreeNode("Applications") { Name = "Applications", Tag = panelApplications };
+			TreeNode pluginsNode = new TreeNode("Plugins") { Name = "Plugins", Tag = panelPlugins };
 			treeViewConfiguration.Nodes.Add(setupNode);
 			treeViewConfiguration.Nodes.Add(pluginsNode);
 			setupNode.Nodes.Add(groupsNode);
 			setupNode.Nodes.Add(applicationsNode);
 			treeViewConfiguration.ExpandAll();
-			treeViewConfiguration.SelectedNode = groupsNode;
+			TreeNode[] matches =  treeViewConfiguration.Nodes.Find(Settings.Client.CFG_SelectedConfigurationSection, true);
+			treeViewConfiguration.SelectedNode = (matches.Length > 0 ? matches[0] : groupsNode);
+		}
+
+		private void ConfigurationForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			Settings.Client.CFG_SelectedConfigurationSection =
+				(treeViewConfiguration.SelectedNode != null ? treeViewConfiguration.SelectedNode.Name : Settings.Client.Defaults.SELECTED_CONFIGURATION_SECTION);
+			Settings.Client.Save(ClientSettingsType.States);
 		}
 
 		private void ComboBoxMachines_SelectedIndexChanged(object sender, EventArgs e)
@@ -110,7 +118,7 @@ namespace ProcessManagerUI.Forms
 			foreach (Machine machine in Settings.Client.Machines)
 			{
 				int index = comboBoxMachines.Items.Add(machine);
-				if (machine == selectedMachine)
+				if (machine.Equals(selectedMachine))
 					comboBoxMachines.SelectedIndex = index;
 			}
 
@@ -122,7 +130,7 @@ namespace ProcessManagerUI.Forms
 		{
 			if (_hasUnsavedConfiguration)
 			{
-				Settings.Client.Save();
+				//Settings.Client.Save(); // skip??
 				// todo: save server side config
 				_hasUnsavedConfiguration = false;
 			}
