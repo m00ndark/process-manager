@@ -5,6 +5,7 @@ using System.ServiceModel;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Common;
 using ProcessManager.Service.DataObjects;
+using ProcessManager.Utilities;
 
 namespace ProcessManager.Service.Host
 {
@@ -23,12 +24,14 @@ namespace ProcessManager.Service.Host
 		public void Register(bool subscribe)
 		{
 			_clients.Add(OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>(), subscribe);
+			Logger.Add("Client at " + OperationContext.Current.Host + " registered" + (subscribe ? " as subscriber" : string.Empty));
 		}
 
 		public void Unregister()
 		{
 			IProcessManagerServiceEventHandler caller = OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>();
 			_clients.Where(x => (x.Key == caller)).ToList().ForEach(x => _clients.Remove(x));
+			Logger.Add("Client at " + OperationContext.Current.Host + " unregistered");
 		}
 
 		#endregion
@@ -58,9 +61,16 @@ namespace ProcessManager.Service.Host
 					faultedClients.Add(client);
 				}
 			}
-			faultedClients.ForEach(client => _clients.Remove(client));
+			RemoveFaultedClients(faultedClients);
 		}
 
 		#endregion
+
+		private void RemoveFaultedClients(List<IProcessManagerServiceEventHandler> faultedClients)
+		{
+			faultedClients.ForEach(client => _clients.Remove(client));
+			if (faultedClients.Count > 0)
+				Logger.Add(LogType.Error, "Removed " + faultedClients.Count + " faulted clients");
+		}
 	}
 }

@@ -14,11 +14,12 @@ namespace ProcessManager.Service.Host
 		{
 			if (_serviceHost == null || _serviceHost.State == CommunicationState.Closed || _serviceHost.State == CommunicationState.Faulted)
 			{
+				_processManagerService = new ProcessManagerService();
 				_processManagerEventProvider = processManagerEventProvider;
 				_processManagerEventProvider.ApplicationStatusesChanged += _processManagerService.ProcessManagerEventProvider_ApplicationStatusesChanged;
-				_processManagerService = new ProcessManagerService();
-				_serviceHost = new ServiceHost(_processManagerService, new Uri("net.pipe://" + Environment.MachineName + "/ProcessManagerService"));
-				_serviceHost.AddServiceEndpoint(typeof(IProcessManagerService), new NetNamedPipeBinding(), string.Empty);
+				NetTcpBinding binding = new NetTcpBinding() { Security = { Mode = SecurityMode.None } };
+				_serviceHost = new ServiceHost(_processManagerService, new Uri("net.tcp://" + Environment.MachineName + "/ProcessManagerService"));
+				_serviceHost.AddServiceEndpoint(typeof(IProcessManagerService), binding, string.Empty);
 				_serviceHost.Open();
 			}
 		}

@@ -119,6 +119,7 @@
 			this.buttonCopyMachineSetup.TabIndex = 12;
 			this.buttonCopyMachineSetup.Text = "Copy Setup";
 			this.buttonCopyMachineSetup.UseVisualStyleBackColor = true;
+			this.buttonCopyMachineSetup.Click += new System.EventHandler(this.ButtonCopyMachineSetup_Click);
 			// 
 			// buttonValidateMachine
 			// 
@@ -129,6 +130,7 @@
 			this.buttonValidateMachine.TabIndex = 11;
 			this.buttonValidateMachine.Text = "Validate";
 			this.buttonValidateMachine.UseVisualStyleBackColor = true;
+			this.buttonValidateMachine.Click += new System.EventHandler(this.ButtonValidateMachine_Click);
 			// 
 			// labeledDividerMachine
 			// 
@@ -151,6 +153,7 @@
 			this.textBoxMachineHostName.Name = "textBoxMachineHostName";
 			this.textBoxMachineHostName.Size = new System.Drawing.Size(219, 22);
 			this.textBoxMachineHostName.TabIndex = 6;
+			this.textBoxMachineHostName.TextChanged += new System.EventHandler(this.TextBoxMachineHostName_TextChanged);
 			// 
 			// labelMachineHostName
 			// 

@@ -6,6 +6,7 @@ using System.Threading;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
+using ProcessManager.Service.Host;
 using ProcessManager.Utilities;
 
 namespace ProcessManager
@@ -43,7 +44,7 @@ namespace ProcessManager
 
 		#endregion
 
-		#region Application statuses - start, shut down, main thread and loop
+		#region Start, shut down, main thread and loop
 
 		public void Start()
 		{
@@ -59,13 +60,32 @@ namespace ProcessManager
 			if (IsRunning)
 			{
 				_mainThread.Abort();
-				_mainThread = null;
 			}
 		}
 
 		private void MainThread()
 		{
-			EnterMainLoop();
+			try
+			{
+				ProcessManagerServiceHost.Open(this);
+
+				Thread.Sleep(2000);
+
+				EnterMainLoop();
+
+				ProcessManagerServiceHost.Close();
+
+				Logger.Add("ABORTING -- Shut down completed, signing off");
+			}
+			catch (Exception ex)
+			{
+				Logger.Add("Fatal exception in main thread, dying...", ex);
+			}
+			finally
+			{
+				// indicate that we are no longer running
+				_mainThread = null;
+			}
 		}
 
 		private void EnterMainLoop()
@@ -130,7 +150,7 @@ namespace ProcessManager
 			}
 			catch (ThreadAbortException)
 			{
-				Logger.Add("Exiting main loop...");
+				Logger.Add("ABORTING -- Exiting main loop...");
 			}
 			catch (Exception ex)
 			{

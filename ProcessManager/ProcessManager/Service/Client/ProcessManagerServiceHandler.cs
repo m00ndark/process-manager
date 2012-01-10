@@ -11,20 +11,31 @@ namespace ProcessManager.Service.Client
 	public class ProcessManagerServiceHandler : IDisposable
 	{
 		private readonly Machine _machine;
+		private readonly bool _isSubscribing;
 		private readonly ProcessManagerServiceEventHandler _processManagerServiceEventHandler;
 		private readonly IProcessManagerEventHandler _processManagerEventHandler;
 		private ProcessManagerServiceClient _processManagerServiceClient;
 		private Thread _connectionWatcherThread;
+		
+		public ProcessManagerServiceHandler(Machine machine) : this(null, machine) { }
 
-		public ProcessManagerServiceHandler(IProcessManagerEventHandler processManagerEventHandler, Machine machine, bool subscribeToEvents)
+		public ProcessManagerServiceHandler(IProcessManagerEventHandler processManagerEventHandler, Machine machine)
 		{
 			_machine = machine;
 			_processManagerEventHandler = processManagerEventHandler;
+			_isSubscribing = (_processManagerEventHandler != null);
 			_processManagerServiceEventHandler = new ProcessManagerServiceEventHandler();
-			_processManagerServiceEventHandler.ApplicationStatusesChanged += _processManagerEventHandler.ProcessManagerServiceEventHandler_ApplicationStatusesChanged;
-			_connectionWatcherThread = new Thread(ConnectionWatcher);
 			SetupClient();
-			_connectionWatcherThread.Start(subscribeToEvents);
+			if (_isSubscribing)
+			{
+				_processManagerServiceEventHandler.ApplicationStatusesChanged += _processManagerEventHandler.ProcessManagerServiceEventHandler_ApplicationStatusesChanged;
+				_connectionWatcherThread = new Thread(ConnectionWatcher);
+				_connectionWatcherThread.Start();
+			}
+			else
+			{
+				_processManagerServiceClient.Register(false);
+			}
 		}
 
 		#region Properties
@@ -37,17 +48,23 @@ namespace ProcessManager.Service.Client
 
 		public void Dispose()
 		{
-			if (_connectionWatcherThread != null)
+			if (_isSubscribing)
 			{
-				_connectionWatcherThread.Abort();
-				_connectionWatcherThread = null;
+				if (_connectionWatcherThread != null)
+				{
+					_connectionWatcherThread.Abort();
+					_connectionWatcherThread = null;
+				}
+				_processManagerServiceEventHandler.ApplicationStatusesChanged -= _processManagerEventHandler.ProcessManagerServiceEventHandler_ApplicationStatusesChanged;
+			}
+			if (_processManagerServiceClient != null)
+			{
 				try
 				{
 					_processManagerServiceClient.Unregister();
 					_processManagerServiceClient.Abort();
 				}
 				catch { ; }
-				_processManagerServiceEventHandler.ApplicationStatusesChanged -= _processManagerEventHandler.ProcessManagerServiceEventHandler_ApplicationStatusesChanged;
 			}
 		}
 
@@ -57,17 +74,16 @@ namespace ProcessManager.Service.Client
 
 		private void SetupClient()
 		{
-			Binding binding = new NetNamedPipeBinding();
-			EndpointAddress endpointAddress = new EndpointAddress("net.pipe://" + _machine.HostName + "/ProcessManagerService");
+			NetTcpBinding binding = new NetTcpBinding() { Security = { Mode = SecurityMode.None } };
+			EndpointAddress endpointAddress = new EndpointAddress("net.tcp://" + _machine.HostName + "/ProcessManagerService");
 			InstanceContext context = new InstanceContext(_processManagerServiceEventHandler);
 			_processManagerServiceClient = new ProcessManagerServiceClient(context, binding, endpointAddress);
 		}
 
-		private void ConnectionWatcher(object inParam)
+		private void ConnectionWatcher()
 		{
 			try
 			{
-				bool subscribe = (bool) inParam;
 				while (true)
 				{
 					if (_processManagerServiceClient.State == CommunicationState.Faulted)
@@ -77,7 +93,7 @@ namespace ProcessManager.Service.Client
 						SetupClient();
 
 					if (_processManagerServiceClient.State == CommunicationState.Created)
-						try { _processManagerServiceClient.Register(subscribe); } catch { ; }
+						try { _processManagerServiceClient.Register(true); } catch { ; }
 
 					Thread.Sleep(1000);
 				}

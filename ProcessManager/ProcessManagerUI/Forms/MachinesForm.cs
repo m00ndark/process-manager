@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
+using ProcessManager.Service.Client;
 using ProcessManagerUI.Utilities;
 
 namespace ProcessManagerUI.Forms
@@ -84,6 +85,35 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
+		private void TextBoxMachineHostName_TextChanged(object sender, EventArgs e)
+		{
+			MachineChanged();
+			EnableControls();
+		}
+
+		private void ButtonValidateMachine_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				Machine machine = new Machine(textBoxMachineHostName.Text);
+				using (ProcessManagerServiceHandler serviceHandler = new ProcessManagerServiceHandler(machine))
+				{
+					serviceHandler.Service.Ping();
+				}
+				Messenger.ShowInformation("Machine connection validated", "Connection to a Process Manager service on the specified machine was successfully established.");
+			}
+			catch (Exception ex)
+			{
+				Messenger.ShowError("Machine connection validation failed", "Connection to a Process Manager service on the specified machine could not be established.", ex.Message);
+				ProcessManager.Utilities.Logger.Add(ex.Message, ex.InnerException);
+			}
+		}
+
+		private void ButtonCopyMachineSetup_Click(object sender, EventArgs e)
+		{
+
+		}
+
 		private void ButtonOK_Click(object sender, EventArgs e)
 		{
 			SaveMachines();
@@ -111,18 +141,28 @@ namespace ProcessManagerUI.Forms
 		{
 			if (_selectedMachine != null)
 			{
-				bool machineChanged = (_selectedMachine.HostName != textBoxMachineHostName.Text);
-				_hasUnsavedChanges |= machineChanged;
-				MachinesChanged |= machineChanged;
-				if (machineChanged)
+				if (MachineChanged())
 				{
 					_selectedMachine.HostName = textBoxMachineHostName.Text;
 					ListViewItem item = listViewMachines.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedMachine);
 					item.Text = _selectedMachine.HostName;
 					listViewMachines.Sort();
 				}
+				textBoxMachineHostName.Text = _selectedMachine.HostName;
 				EnableControls();
 			}
+		}
+
+		private bool MachineChanged()
+		{
+			bool machineChanged = false;
+			if (_selectedMachine != null && !string.IsNullOrEmpty(textBoxMachineHostName.Text))
+			{
+				machineChanged = (_selectedMachine.HostName != textBoxMachineHostName.Text);
+				_hasUnsavedChanges |= machineChanged;
+				MachinesChanged |= machineChanged;
+			}
+			return machineChanged;
 		}
 
 		private void SaveMachines()
@@ -159,6 +199,8 @@ namespace ProcessManagerUI.Forms
 		private void EnableControls(bool enable = true)
 		{
 			buttonApply.Enabled = (enable && _hasUnsavedChanges);
+			buttonValidateMachine.Enabled = (enable && !string.IsNullOrEmpty(textBoxMachineHostName.Text));
+			buttonCopyMachineSetup.Enabled = (enable && !_hasUnsavedChanges && !string.IsNullOrEmpty(textBoxMachineHostName.Text));
 		}
 
 		#endregion
