@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Channels;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Common;
 using ProcessManager.Service.DataObjects;
@@ -24,14 +25,16 @@ namespace ProcessManager.Service.Host
 		public void Register(bool subscribe)
 		{
 			_clients.Add(OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>(), subscribe);
-			Logger.Add("Client at " + OperationContext.Current.Host + " registered" + (subscribe ? " as subscriber" : string.Empty));
+			string clientAddress = ((RemoteEndpointMessageProperty) OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name]).Address;
+			Logger.Add("Client at " + clientAddress + " registered" + (subscribe ? " as subscriber" : string.Empty));
 		}
 
 		public void Unregister()
 		{
 			IProcessManagerServiceEventHandler caller = OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>();
 			_clients.Where(x => (x.Key == caller)).ToList().ForEach(x => _clients.Remove(x));
-			Logger.Add("Client at " + OperationContext.Current.Host + " unregistered");
+			string clientAddress = ((RemoteEndpointMessageProperty) OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name]).Address;
+			Logger.Add("Client at " + clientAddress + " unregistered");
 		}
 
 		#endregion
