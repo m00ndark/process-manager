@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -26,7 +25,7 @@ namespace ProcessManager.DataObjects
 			_configFilePath = Path.Combine(_appDataFolder, Settings.Service.Read("ConfigurationFileName"));
 		}
 
-		private Configuration()
+		public Configuration()
 		{
 			Groups = new List<Group>();
 			Applications = new List<Application>();

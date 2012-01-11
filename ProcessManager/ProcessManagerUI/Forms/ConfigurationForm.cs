@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
+using ProcessManager.Service.Client;
 using ProcessManagerUI.Support;
 using ProcessManagerUI.Utilities;
 
@@ -12,12 +13,14 @@ namespace ProcessManagerUI.Forms
 {
 	public partial class ConfigurationForm : Form
 	{
+		private readonly IProcessManagerEventHandler _processManagerEventHandler;
 		private Panel _currentPanel;
 		private bool _hasUnsavedConfiguration;
 
-		public ConfigurationForm()
+		public ConfigurationForm(IProcessManagerEventHandler processManagerEventHandler)
 		{
 			InitializeComponent();
+			_processManagerEventHandler = processManagerEventHandler;
 			_currentPanel = null;
 			_hasUnsavedConfiguration = false;
 		}
@@ -63,6 +66,7 @@ namespace ProcessManagerUI.Forms
 			machinesForm.ShowDialog(this);
 			if (machinesForm.MachinesChanged)
 			{
+				ConnectMachines();
 				PopulateMachinesComboBox(false);
 			}
 		}
@@ -101,6 +105,15 @@ namespace ProcessManagerUI.Forms
 
 		#region Helpers
 
+		private void ConnectMachines()
+		{
+			foreach (Machine machine in Settings.Client.Machines.Where(machine => machine.ServiceHandler == null))
+			{
+				machine.ServiceHandler = new ProcessManagerServiceHandler(_processManagerEventHandler, machine);
+				// todo: get configuration, show please wait with "progress"
+			}
+		}
+
 		private void PopulateMachinesComboBox(bool selectDefault = true)
 		{
 			Machine localhost = new Machine(Settings.Constants.LOCALHOST);
@@ -124,6 +137,15 @@ namespace ProcessManagerUI.Forms
 
 			if (selectDefault && comboBoxMachines.SelectedIndex < 0)
 				comboBoxMachines.SelectedIndex = 0;
+		}
+
+		private void LoadConfiguration()
+		{
+			Machine selectedMachine = new Machine(Settings.Client.CFG_SelectedHostName);
+			using (ProcessManagerServiceHandler serviceHandler = new ProcessManagerServiceHandler(selectedMachine))
+			{
+				
+			}
 		}
 
 		private void SaveConfiguration()

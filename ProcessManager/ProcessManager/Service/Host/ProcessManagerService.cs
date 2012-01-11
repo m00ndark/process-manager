@@ -46,6 +46,16 @@ namespace ProcessManager.Service.Host
 			// do nothing
 		}
 
+		public DTOConfiguration GetConfiguration()
+		{
+			return new DTOConfiguration(ProcessManager.GetConfiguration());
+		}
+
+		public void SetConfiguration(DTOConfiguration configuration)
+		{
+			ProcessManager.SetConfiguration(configuration.FromDTO());
+		}
+
 		#endregion
 
 		#region Service event handlers

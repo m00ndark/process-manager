@@ -15,11 +15,13 @@ namespace ProcessManagerUI.Forms
 {
 	public partial class ControlPanelForm : Form, IProcessManagerEventHandler
 	{
+		private readonly IDictionary<Machine, ProcessManagerServiceHandler> _serviceHandlers;
 		private DateTime _formClosedAt;
 
 		public ControlPanelForm()
 		{
 			InitializeComponent();
+			_serviceHandlers = new Dictionary<Machine, ProcessManagerServiceHandler>();
 			_formClosedAt = DateTime.MinValue;
 		}
 
@@ -68,7 +70,7 @@ namespace ProcessManagerUI.Forms
 
 		private void ToolStripMenuItemSystemTrayConfiguration_Click(object sender, EventArgs e)
 		{
-			new ConfigurationForm().Show();
+			new ConfigurationForm(this).Show();
 		}
 
 		private void ToolStripMenuItemSystemTrayExit_Click(object sender, EventArgs e)
@@ -81,7 +83,7 @@ namespace ProcessManagerUI.Forms
 
 		private void LinkLabelOpenConfiguration_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			new ConfigurationForm().Show();
+			new ConfigurationForm(this).Show();
 		}
 
 		#endregion

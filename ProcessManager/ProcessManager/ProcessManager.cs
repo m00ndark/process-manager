@@ -44,6 +44,20 @@ namespace ProcessManager
 
 		#endregion
 
+		#region Operations
+
+		public static Configuration GetConfiguration()
+		{
+			return Configuration.Read();
+		}
+
+		public static void SetConfiguration(Configuration configuration)
+		{
+			Configuration.Write(configuration);
+		}
+
+		#endregion
+
 		#region Start, shut down, main thread and loop
 
 		public void Start()

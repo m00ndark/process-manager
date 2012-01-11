@@ -1,4 +1,5 @@
 ﻿using System.ServiceModel;
+using ProcessManager.Service.DataObjects;
 
 namespace ProcessManager.Service.Common
 {
@@ -7,5 +8,11 @@ namespace ProcessManager.Service.Common
 	{
 		[OperationContract]
 		void Ping();
+
+		[OperationContract]
+		DTOConfiguration GetConfiguration();
+
+		[OperationContract]
+		void SetConfiguration(DTOConfiguration configuration);
 	}
 }

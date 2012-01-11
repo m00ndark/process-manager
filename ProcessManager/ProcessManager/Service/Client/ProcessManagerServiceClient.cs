@@ -1,6 +1,7 @@
 ﻿using System.ServiceModel;
 using System.ServiceModel.Channels;
 using ProcessManager.Service.Common;
+using ProcessManager.Service.DataObjects;
 
 namespace ProcessManager.Service.Client
 {
@@ -28,6 +29,16 @@ namespace ProcessManager.Service.Client
 		public void Ping()
 		{
 			Channel.Ping();
+		}
+
+		public DTOConfiguration GetConfiguration()
+		{
+			return Channel.GetConfiguration();
+		}
+
+		public void SetConfiguration(DTOConfiguration configuration)
+		{
+			Channel.SetConfiguration(configuration);
 		}
 
 		#endregion
