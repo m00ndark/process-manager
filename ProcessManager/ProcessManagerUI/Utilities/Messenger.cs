@@ -43,7 +43,10 @@ namespace ProcessManagerUI.Utilities
 
 		public static DialogResult ShowMessage(string instruction, string message, MessageBoxButtons buttons, MessageBoxIcon icon, string details = null)
 		{
-			return TaskDialog.Show(Settings.Constants.APPLICATION_NAME, instruction, message, buttons, icon, true, details);
+			if (TaskDialog.IsPlatformSupported)
+				return TaskDialog.Show(Settings.Constants.APPLICATION_NAME, instruction, message, buttons, icon, true, details);
+
+			return MessageBox.Show(instruction + Environment.NewLine + Environment.NewLine + message, Settings.Constants.APPLICATION_NAME, buttons, icon);
 		}
 	}
 }

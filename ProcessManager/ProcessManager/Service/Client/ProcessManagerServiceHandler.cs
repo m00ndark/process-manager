@@ -2,43 +2,48 @@
 using System.ServiceModel;
 using System.Threading;
 using ProcessManager.DataObjects;
+using ProcessManager.EventArguments;
 using ProcessManager.Service.Common;
 using ProcessManager.Utilities;
 
 namespace ProcessManager.Service.Client
 {
+	public enum ProcessManagerServiceHandlerStatus
+	{
+		Uninitialized,
+		Connected,
+		Disconnected
+	}
+
 	public class ProcessManagerServiceHandler : IDisposable
 	{
-		private readonly Machine _machine;
 		private readonly bool _isSubscribing;
 		private readonly ProcessManagerServiceEventHandler _processManagerServiceEventHandler;
 		private readonly IProcessManagerEventHandler _processManagerEventHandler;
 		private ProcessManagerServiceClient _processManagerServiceClient;
 		private Thread _connectionWatcherThread;
-		
+
+		public event EventHandler<ServiceHandlerConnectionChangedEventArgs> InitializationCompleted;
+		public event EventHandler<ServiceHandlerConnectionChangedEventArgs> ConnectionChanged;
+
 		public ProcessManagerServiceHandler(Machine machine) : this(null, machine) { }
 
 		public ProcessManagerServiceHandler(IProcessManagerEventHandler processManagerEventHandler, Machine machine)
 		{
-			_machine = machine;
+			Machine = machine;
+			Status = ProcessManagerServiceHandlerStatus.Uninitialized;
 			_processManagerEventHandler = processManagerEventHandler;
 			_isSubscribing = (_processManagerEventHandler != null);
 			_processManagerServiceEventHandler = new ProcessManagerServiceEventHandler();
 			SetupClient();
 			if (_isSubscribing)
-			{
 				_processManagerServiceEventHandler.ApplicationStatusesChanged += _processManagerEventHandler.ProcessManagerServiceEventHandler_ApplicationStatusesChanged;
-				_connectionWatcherThread = new Thread(ConnectionWatcher);
-				_connectionWatcherThread.Start();
-			}
-			else
-			{
-				_processManagerServiceClient.Register(false);
-			}
 		}
 
 		#region Properties
 
+		public Machine Machine { get; private set; }
+		public ProcessManagerServiceHandlerStatus Status { get; private set; }
 		public IProcessManagerServiceOperator Service { get { return _processManagerServiceClient; } }
 
 		#endregion
@@ -64,35 +69,98 @@ namespace ProcessManager.Service.Client
 					_processManagerServiceClient.Abort();
 				}
 				catch { ; }
+				_processManagerServiceClient = null;
 			}
+			InitializationCompleted = null;
+			ConnectionChanged = null;
 		}
 
 		#endregion
 
-		#region Connection setup and watcher
+		#region Event raisers
+
+		private void RaiseInitializationCompletedEvent(Exception exception = null)
+		{
+			if (InitializationCompleted != null)
+				InitializationCompleted(this, new ServiceHandlerConnectionChangedEventArgs(this, Status, exception));
+		}
+
+		private void RaiseConnectionChangedEvent()
+		{
+			if (ConnectionChanged != null)
+				ConnectionChanged(this, new ServiceHandlerConnectionChangedEventArgs(this, Status));
+		}
+
+		#endregion
+
+		#region Initialization and setup
+
+		public void Initialize()
+		{
+			if (_isSubscribing)
+			{
+				_connectionWatcherThread = new Thread(ConnectionWatcher);
+				_connectionWatcherThread.Start();
+			}
+			else
+			{
+				_processManagerServiceClient.Register(false);
+				Status = ProcessManagerServiceHandlerStatus.Connected;
+			}
+		}
 
 		private void SetupClient()
 		{
 			NetTcpBinding binding = new NetTcpBinding() { Security = { Mode = SecurityMode.None } };
-			EndpointAddress endpointAddress = new EndpointAddress("net.tcp://" + _machine.HostName + "/ProcessManagerService");
+			EndpointAddress endpointAddress = new EndpointAddress("net.tcp://" + Machine.HostName + "/ProcessManagerService");
 			InstanceContext context = new InstanceContext(_processManagerServiceEventHandler);
 			_processManagerServiceClient = new ProcessManagerServiceClient(context, binding, endpointAddress);
 		}
+
+		#endregion
+
+		#region Connection watcher
 
 		private void ConnectionWatcher()
 		{
 			try
 			{
+				bool connectionLost = false, connectionAttempted = false;
 				while (true)
 				{
 					if (_processManagerServiceClient.State == CommunicationState.Faulted)
+					{
 						_processManagerServiceClient.Abort();
+						if (!connectionLost)
+						{
+							Status = ProcessManagerServiceHandlerStatus.Disconnected;
+							connectionLost = true;
+							RaiseConnectionChangedEvent();
+						}
+					}
 
 					if (_processManagerServiceClient.State == CommunicationState.Closed)
 						SetupClient();
 
 					if (_processManagerServiceClient.State == CommunicationState.Created)
-						try { _processManagerServiceClient.Register(true); } catch { ; }
+					{
+						try
+						{
+							_processManagerServiceClient.Register(true);
+							Status = ProcessManagerServiceHandlerStatus.Connected;
+							connectionLost = false;
+							if (!connectionAttempted)
+								RaiseInitializationCompletedEvent();
+							else
+								RaiseConnectionChangedEvent();
+						}
+						catch (Exception ex)
+						{
+							if (!connectionAttempted)
+								RaiseInitializationCompletedEvent(ex);
+						}
+						connectionAttempted = true;
+					}
 
 					Thread.Sleep(1000);
 				}
@@ -100,7 +168,7 @@ namespace ProcessManager.Service.Client
 			catch (ThreadAbortException) { /* exit */ }
 			catch (Exception ex)
 			{
-				Logger.Add("Connection watcher thread for host " + _machine.HostName + " exited due to an unexpected exception", ex);
+				Logger.Add("Connection watcher thread for host " + Machine.HostName + " exited due to an unexpected exception", ex);
 			}
 		}
 

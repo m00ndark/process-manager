@@ -7,6 +7,13 @@ using ProcessManager.DataAccess;
 
 namespace ProcessManager.Utilities
 {
+	public enum LogSource
+	{
+		Undefined = 0,
+		Client = 1,
+		Server = 2
+	}
+
 	public enum LogType
 	{
 		Debug = 0,
@@ -36,12 +43,15 @@ namespace ProcessManager.Utilities
 			_logQueue = new Queue<string>();
 			_logEntryAddedEvent = new AutoResetEvent(false);
 			SetupLogTypeIndentationDepth();
+			LogSource = LogSource.Undefined;
 			DefaultLogType = LogType.Flow;
 
 			new Thread(LogWriterThread) { IsBackground = true, Name = "Log Writer Thread" }.Start();
 		}
 
 		#region Properties
+
+		public static LogSource LogSource { get; set; }
 
 		public static LogType DefaultLogType { get; set; }
 
@@ -79,7 +89,9 @@ namespace ProcessManager.Utilities
 			lock (_logQueue)
 			{
 				_logQueue.Enqueue(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
-					+ " > " + logType.ToString().PadRight(_logTypeIndentationDepth) + " " + logText);
+					+ " > " + logType.ToString().PadRight(_logTypeIndentationDepth)
+					+ (LogSource != LogSource.Undefined ? LogSource.ToString().ToUpper() + " :" : string.Empty)
+					+ " " + logText);
 			}
 			_logEntryAddedEvent.Set();
 		}

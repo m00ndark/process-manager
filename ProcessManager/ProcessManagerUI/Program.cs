@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using ProcessManager.Utilities;
 using ProcessManagerUI.Forms;
 
 namespace ProcessManagerUI
@@ -22,6 +23,7 @@ namespace ProcessManagerUI
 			{
 				if (createdNew)
 				{
+					Logger.LogSource = LogSource.Client;
 					Application.EnableVisualStyles();
 					Application.SetCompatibleTextRenderingDefault(false);
 					Application.Run(new ControlPanelForm());

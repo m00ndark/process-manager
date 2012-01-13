@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Drawing;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
+using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
-using ProcessManagerUI.Support;
 using ProcessManagerUI.Utilities;
 
 namespace ProcessManagerUI.Forms
@@ -14,6 +14,7 @@ namespace ProcessManagerUI.Forms
 	public partial class ConfigurationForm : Form
 	{
 		private readonly IProcessManagerEventHandler _processManagerEventHandler;
+		private readonly Timer _initTimer;
 		private Panel _currentPanel;
 		private bool _hasUnsavedConfiguration;
 
@@ -23,14 +24,31 @@ namespace ProcessManagerUI.Forms
 			_processManagerEventHandler = processManagerEventHandler;
 			_currentPanel = null;
 			_hasUnsavedConfiguration = false;
+			_initTimer = new Timer() { Enabled = false, Interval = 100 };
+			_initTimer.Tick += InitTimer_Tick;
 		}
+
+		#region Timer event handlers
+
+		private void InitTimer_Tick(object sender, EventArgs e)
+		{
+			_initTimer.Stop();
+			ConnectMachines();
+			SelectInitialMachine();
+		}
+
+		#endregion
 
 		#region GUI event handlers
 
 		private void ConfigurationForm_Load(object sender, EventArgs e)
 		{
 			Settings.Client.Load();
-			PopulateMachinesComboBox();
+			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
+			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;
+			ShowAllControls();
+			ClearAllControls();
+			PopulateMachinesComboBox(false);
 			TreeNode setupNode = new TreeNode("Setup") { Name = "Setup" };
 			TreeNode groupsNode = new TreeNode("Groups") { Name = "Groups", Tag = panelGroups };
 			TreeNode applicationsNode = new TreeNode("Applications") { Name = "Applications", Tag = panelApplications };
@@ -42,10 +60,13 @@ namespace ProcessManagerUI.Forms
 			treeViewConfiguration.ExpandAll();
 			TreeNode[] matches =  treeViewConfiguration.Nodes.Find(Settings.Client.CFG_SelectedConfigurationSection, true);
 			treeViewConfiguration.SelectedNode = (matches.Length > 0 ? matches[0] : groupsNode);
+			_initTimer.Start();
 		}
 
 		private void ConfigurationForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted -= ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
+			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged -= ServiceConnectionHandler_ServiceHandlerConnectionChanged;
 			Settings.Client.CFG_SelectedConfigurationSection =
 				(treeViewConfiguration.SelectedNode != null ? treeViewConfiguration.SelectedNode.Name : Settings.Client.Defaults.SELECTED_CONFIGURATION_SECTION);
 			Settings.Client.Save(ClientSettingsType.States);
@@ -55,8 +76,9 @@ namespace ProcessManagerUI.Forms
 		{
 			if (comboBoxMachines.SelectedIndex > -1)
 			{
-				Settings.Client.CFG_SelectedHostName = ((Machine) comboBoxMachines.SelectedItem).HostName;
-				// todo: retrieve and update with selected machine's configuration
+				Machine machine = (Machine) comboBoxMachines.SelectedItem;
+				Settings.Client.CFG_SelectedHostName = machine.HostName;
+				PopulateAllControls();
 			}
 		}
 
@@ -67,7 +89,7 @@ namespace ProcessManagerUI.Forms
 			if (machinesForm.MachinesChanged)
 			{
 				ConnectMachines();
-				PopulateMachinesComboBox(false);
+				PopulateMachinesComboBox();
 			}
 		}
 
@@ -103,18 +125,76 @@ namespace ProcessManagerUI.Forms
 
 		#endregion
 
+		#region Service handler event handlers
+
+		private void ServiceConnectionHandler_ServiceHandlerInitializationCompleted(object sender, ServiceHandlerConnectionChangedEventArgs e)
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new EventHandler<ServiceHandlerConnectionChangedEventArgs>(ServiceConnectionHandler_ServiceHandlerInitializationCompleted), sender, e);
+				return;
+			}
+
+			Machine machine = Settings.Client.Machines.FirstOrDefault(x => x.ServiceHandler == e.ServiceHandler);
+			if (machine != null)
+			{
+				if (e.Status == ProcessManagerServiceHandlerStatus.Disconnected && e.Exception != null)
+				{
+					Messenger.ShowError("Failed to connect to machine", "Could not connect to Process Manager service at " + machine.HostName, e.Exception.Message);
+				}
+				else if (e.Status == ProcessManagerServiceHandlerStatus.Connected && comboBoxMachines.SelectedItem == machine)
+				{
+					PopulateAllControls();
+				}
+			}
+		}
+
+		private void ServiceConnectionHandler_ServiceHandlerConnectionChanged(object sender, ServiceHandlerConnectionChangedEventArgs e)
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new EventHandler<ServiceHandlerConnectionChangedEventArgs>(ServiceConnectionHandler_ServiceHandlerConnectionChanged), sender, e);
+				return;
+			}
+
+			Machine machine = Settings.Client.Machines.FirstOrDefault(x => x.ServiceHandler == e.ServiceHandler);
+			if (machine != null && comboBoxMachines.SelectedItem == machine)
+			{
+				if (e.Status == ProcessManagerServiceHandlerStatus.Disconnected)
+				{
+					ClearAllControls();
+					ShowAllControls(false);
+					Messenger.ShowWarning("Connection lost", "The connection to the selected machine was lost.");
+				}
+				else if (e.Status == ProcessManagerServiceHandlerStatus.Connected)
+				{
+					PopulateAllControls();
+				}
+			}
+		}
+
+		#endregion
+
 		#region Helpers
 
 		private void ConnectMachines()
 		{
-			foreach (Machine machine in Settings.Client.Machines.Where(machine => machine.ServiceHandler == null))
-			{
-				machine.ServiceHandler = new ProcessManagerServiceHandler(_processManagerEventHandler, machine);
-				// todo: get configuration, show please wait with "progress"
-			}
+			if (!Settings.Client.Machines.Any(machine => machine.ServiceHandler == null))
+				return;
+
+			Worker.Do("Connecting to machines...", () =>
+				{
+					foreach (Machine machine in Settings.Client.Machines.Where(machine => machine.ServiceHandler == null))
+					{
+						ProcessManagerServiceConnectionHandler.Instance.CreateServiceHandler(_processManagerEventHandler, machine);
+						machine.ServiceHandler.Initialize();
+					}
+				});
+			// todo: not here but anyways.. progress bar task dialog does not hide buttons!!
+			WaitForConfiguration((Machine) comboBoxMachines.SelectedItem);
 		}
 
-		private void PopulateMachinesComboBox(bool selectDefault = true)
+		private void PopulateMachinesComboBox(bool enableAutoSelect = true)
 		{
 			Machine localhost = new Machine(Settings.Constants.LOCALHOST);
 			if (!Settings.Client.Machines.Contains(localhost))
@@ -131,21 +211,66 @@ namespace ProcessManagerUI.Forms
 			foreach (Machine machine in Settings.Client.Machines)
 			{
 				int index = comboBoxMachines.Items.Add(machine);
-				if (machine.Equals(selectedMachine))
+				if (enableAutoSelect && machine.Equals(selectedMachine))
 					comboBoxMachines.SelectedIndex = index;
 			}
-
-			if (selectDefault && comboBoxMachines.SelectedIndex < 0)
-				comboBoxMachines.SelectedIndex = 0;
 		}
 
-		private void LoadConfiguration()
+		private void SelectInitialMachine()
 		{
 			Machine selectedMachine = new Machine(Settings.Client.CFG_SelectedHostName);
-			using (ProcessManagerServiceHandler serviceHandler = new ProcessManagerServiceHandler(selectedMachine))
+			if (!Settings.Client.Machines.Contains(selectedMachine))
+				selectedMachine = new Machine(Settings.Constants.LOCALHOST);
+
+			int index = comboBoxMachines.Items.IndexOf(selectedMachine);
+			comboBoxMachines.SelectedIndex = (index == -1 ? 0 : index);
+		}
+
+		private void ShowAllControls(bool show = true)
+		{
+			labelMachineNotAvailable.Visible = !show;
+			if (show)
+				labelMachineNotAvailable.SendToBack();
+			else
+				labelMachineNotAvailable.BringToFront();
+		}
+
+		private void ClearAllControls()
+		{
+			// groups
+			listViewGroups.Items.Clear();
+			textBoxGroupName.Text = string.Empty;
+			textBoxGroupPath.Text = string.Empty;
+			listViewGroupApplications.Items.Clear();
+			// applications
+			listViewApplications.Items.Clear();
+			textBoxApplicationName.Text = string.Empty;
+			textBoxApplicationRelativePath.Text = string.Empty;
+			textBoxApplicationArguments.Text = string.Empty;
+			// plugins
+			listViewPlugins.Items.Clear();
+			labelPluginNameValue.Text = string.Empty;
+			labelPluginDescriptionValue.Text = string.Empty;
+		}
+
+		private void PopulateAllControls()
+		{
+			ClearAllControls();
+			Machine selectedMachine = (Machine) comboBoxMachines.SelectedItem;
+			WaitForConfiguration(selectedMachine);
+			if (selectedMachine.Configuration != null)
 			{
-				
+				selectedMachine.Configuration.Groups.ForEach(group => listViewGroups.Items.Add(new ListViewItem(group.Name) { Tag = group }));
+				selectedMachine.Configuration.Applications.ForEach(application => listViewApplications.Items.Add(new ListViewItem(application.Name) { Tag = application }));
 			}
+			ShowAllControls(selectedMachine.Configuration != null);
+		}
+
+		private void WaitForConfiguration(Machine machine)
+		{
+			if (machine != null && machine.Configuration == null)
+				Worker.WaitFor("Retrieving configuration...", () => (machine.ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Disconnected
+					|| machine.ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Connected && machine.Configuration != null));
 		}
 
 		private void SaveConfiguration()

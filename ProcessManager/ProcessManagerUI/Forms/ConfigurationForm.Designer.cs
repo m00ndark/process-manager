@@ -83,6 +83,7 @@
 			this.listViewApplications = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderApplications = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.treeViewConfiguration = new ProcessManagerUI.Controls.TreeView();
+			this.labelMachineNotAvailable = new System.Windows.Forms.Label();
 			this.panelGroups.SuspendLayout();
 			this.panelGroup.SuspendLayout();
 			this.panelPlugins.SuspendLayout();
@@ -693,6 +694,16 @@
 			this.treeViewConfiguration.TabIndex = 2;
 			this.treeViewConfiguration.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewConfiguration_AfterSelect);
 			// 
+			// labelMachineNotAvailable
+			// 
+			this.labelMachineNotAvailable.Location = new System.Drawing.Point(12, 39);
+			this.labelMachineNotAvailable.Name = "labelMachineNotAvailable";
+			this.labelMachineNotAvailable.Size = new System.Drawing.Size(750, 362);
+			this.labelMachineNotAvailable.TabIndex = 22;
+			this.labelMachineNotAvailable.Text = "The selected machine is not available";
+			this.labelMachineNotAvailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.labelMachineNotAvailable.Visible = false;
+			// 
 			// ConfigurationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -709,6 +720,7 @@
 			this.Controls.Add(this.treeViewConfiguration);
 			this.Controls.Add(this.buttonMachines);
 			this.Controls.Add(this.comboBoxMachines);
+			this.Controls.Add(this.labelMachineNotAvailable);
 			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
@@ -789,6 +801,7 @@
 		private System.Windows.Forms.Label labelNoGroupSelected;
 		private System.Windows.Forms.Label labelNoPluginSelected;
 		private System.Windows.Forms.Label labelNoApplicationSelected;
+		private System.Windows.Forms.Label labelMachineNotAvailable;
 
 	}
 }

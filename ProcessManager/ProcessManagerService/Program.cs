@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ServiceProcess;
+using ProcessManager.Utilities;
 
 namespace ProcessManagerService
 {
@@ -7,6 +8,7 @@ namespace ProcessManagerService
 	{
 		private static void Main()
 		{
+			Logger.LogSource = LogSource.Server;
 			if (Environment.CommandLine.Contains("-debug"))
 			{
 				new ProcessManager.ProcessManager().Start();

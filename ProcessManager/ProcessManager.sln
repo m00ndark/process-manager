@@ -9,6 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessManagerService", "Pr
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ProcessManagerSetup", "ProcessManagerSetup\ProcessManagerSetup.vdproj", "{F1657BA5-FA21-411E-BA96-46584F15A3EF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{82ADC677-6355-4BFA-91C4-F24B0CB2FABF}"
+	ProjectSection(SolutionItems) = preProject
+		Microsoft.WindowsAPICodePack.dll = Microsoft.WindowsAPICodePack.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 5

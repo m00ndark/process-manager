@@ -10,6 +10,7 @@ using ProcessManager;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
+using ProcessManagerUI.Utilities;
 
 namespace ProcessManagerUI.Forms
 {
@@ -32,14 +33,25 @@ namespace ProcessManagerUI.Forms
 		private void ControlPanelForm_Load(object sender, EventArgs e)
 		{
 			HideForm();
-			//ProcessManagerServiceHandler processManagerServiceHandler = new ProcessManagerServiceHandler(this, new Machine());
-
+			Settings.Client.Load();
+			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
+			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;
+			foreach (Machine machine in Settings.Client.Machines.Where(machine => machine.ServiceHandler == null))
+			{
+				ProcessManagerServiceConnectionHandler.Instance.CreateServiceHandler(this, machine);
+				machine.ServiceHandler.Initialize();
+			}
 		}
 
 		private void ControlPanelForm_Deactivate(object sender, EventArgs e)
 		{
 			if (Opacity == 1)
 				HideForm();
+		}
+
+		private void LinkLabelOpenConfiguration_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			new ConfigurationForm(this).Show();
 		}
 
 		#endregion
@@ -81,9 +93,30 @@ namespace ProcessManagerUI.Forms
 
 		#endregion
 
-		private void LinkLabelOpenConfiguration_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		#endregion
+
+		#region Connection handler event handlers
+
+		private void ServiceConnectionHandler_ServiceHandlerInitializationCompleted(object sender, ServiceHandlerConnectionChangedEventArgs e)
 		{
-			new ConfigurationForm(this).Show();
+			if (InvokeRequired)
+			{
+				Invoke(new EventHandler<ServiceHandlerConnectionChangedEventArgs>(ServiceConnectionHandler_ServiceHandlerInitializationCompleted), sender, e);
+				return;
+			}
+
+			// do stuff
+		}
+
+		private void ServiceConnectionHandler_ServiceHandlerConnectionChanged(object sender, ServiceHandlerConnectionChangedEventArgs e)
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new EventHandler<ServiceHandlerConnectionChangedEventArgs>(ServiceConnectionHandler_ServiceHandlerConnectionChanged), sender, e);
+				return;
+			}
+
+			// do stuff
 		}
 
 		#endregion
