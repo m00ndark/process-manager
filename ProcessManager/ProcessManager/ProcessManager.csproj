@@ -50,7 +50,6 @@
     <Compile Include="DataAccess\RegistryHandler.cs" />
     <Compile Include="DataObjects\Machine.cs" />
     <Compile Include="EventArguments\ApplicationStatusesEventArgs.cs" />
-    <Compile Include="EventArguments\ServiceHandlerConnectionEventArgs.cs" />
     <Compile Include="EventArguments\ServiceHandlerConnectionChangedEventArgs.cs" />
     <Compile Include="IProcessManagerEventHandler.cs" />
     <Compile Include="IProcessManagerEventProvider.cs" />
