@@ -198,6 +198,7 @@ namespace ProcessManagerUI.Forms
 		private void EnableControls(bool enable = true)
 		{
 			buttonApply.Enabled = (enable && _hasUnsavedChanges);
+			buttonRemoveMachine.Enabled = (enable && listViewMachines.SelectedItems.Count > 0);
 			buttonValidateMachine.Enabled = (enable && !string.IsNullOrEmpty(textBoxMachineHostName.Text));
 			buttonCopyMachineSetup.Enabled = (enable && !_hasUnsavedChanges && !string.IsNullOrEmpty(textBoxMachineHostName.Text));
 		}
