@@ -351,6 +351,7 @@
 			this.buttonRemoveGroup.TabIndex = 2;
 			this.buttonRemoveGroup.Text = "Remove";
 			this.buttonRemoveGroup.UseVisualStyleBackColor = true;
+			this.buttonRemoveGroup.Click += new System.EventHandler(this.ButtonRemoveGroup_Click);
 			// 
 			// buttonAddGroup
 			// 
@@ -361,6 +362,7 @@
 			this.buttonAddGroup.TabIndex = 1;
 			this.buttonAddGroup.Text = "Add";
 			this.buttonAddGroup.UseVisualStyleBackColor = true;
+			this.buttonAddGroup.Click += new System.EventHandler(this.ButtonAddGroup_Click);
 			// 
 			// listViewGroups
 			// 
@@ -378,6 +380,7 @@
 			this.listViewGroups.TabIndex = 0;
 			this.listViewGroups.UseCompatibleStateImageBehavior = false;
 			this.listViewGroups.View = System.Windows.Forms.View.Details;
+			this.listViewGroups.SelectedIndexChanged += new System.EventHandler(this.ListViewGroups_SelectedIndexChanged);
 			// 
 			// columnHeaderGroups
 			// 

@@ -8,31 +8,31 @@ namespace ProcessManagerUI.Utilities
 	public class Worker
 	{
 		private readonly int _threadID;
-		private bool _workCompleted;
+		private bool _executeCompleted;
 
 		private Worker()
 		{
 			_threadID = Thread.CurrentThread.ManagedThreadId;
-			_workCompleted = false;
+			_executeCompleted = false;
 		}
 
 		private void ExceuteDo(object inParam)
 		{
 			Action work = (Action) inParam;
 			work();
-			_workCompleted = true;
+			_executeCompleted = true;
 		}
 
 		private void ExceuteWaitFor(object inParam)
 		{
 			Func<bool> signal = (Func<bool>) inParam;
 			while (!signal()) Thread.Sleep(200);
-			_workCompleted = true;
+			_executeCompleted = true;
 		}
 
 		private void Tick(int ticks)
 		{
-			if (_workCompleted)
+			if (_executeCompleted)
 				TaskDialog.Close(_threadID);
 		}
 
@@ -57,11 +57,9 @@ namespace ProcessManagerUI.Utilities
 			{
 				TaskDialog.Show(Settings.Constants.APPLICATION_NAME, message, string.Empty, null, 0, worker.Tick);
 			}
-			else
-			{
-				while (!worker._workCompleted)
-					Thread.Sleep(200);
-			}
+
+			while (!worker._executeCompleted)
+				Thread.Sleep(200);
 		}
 	}
 }

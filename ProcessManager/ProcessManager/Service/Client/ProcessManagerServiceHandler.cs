@@ -156,6 +156,7 @@ namespace ProcessManager.Service.Client
 						}
 						catch (Exception ex)
 						{
+							Status = ProcessManagerServiceHandlerStatus.Disconnected;
 							if (!connectionAttempted)
 								RaiseInitializationCompletedEvent(ex);
 						}

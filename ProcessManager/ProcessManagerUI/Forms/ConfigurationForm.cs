@@ -8,6 +8,7 @@ using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
 using ProcessManagerUI.Utilities;
+using Application = ProcessManager.DataObjects.Application;
 
 namespace ProcessManagerUI.Forms
 {
@@ -16,6 +17,8 @@ namespace ProcessManagerUI.Forms
 		private readonly IProcessManagerEventHandler _processManagerEventHandler;
 		private readonly Timer _initTimer;
 		private Panel _currentPanel;
+		private Group _selectedGroup;
+		private Application _selectedApplication;
 		private bool _hasUnsavedConfiguration;
 
 		public ConfigurationForm(IProcessManagerEventHandler processManagerEventHandler)
@@ -41,9 +44,10 @@ namespace ProcessManagerUI.Forms
 
 		#region GUI event handlers
 
+		#region Main
+
 		private void ConfigurationForm_Load(object sender, EventArgs e)
 		{
-			Settings.Client.Load();
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;
 			ShowAllControls();
@@ -125,6 +129,73 @@ namespace ProcessManagerUI.Forms
 
 		#endregion
 
+		#region Groups
+
+		private void ListViewGroups_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Machine machine = (Machine) comboBoxMachines.SelectedItem;
+			if (machine == null) return;
+
+			UpdateSelectedGroup();
+			if (listViewGroups.SelectedItems.Count == 0)
+			{
+				panelGroup.Visible = false;
+			}
+			else
+			{
+				_selectedGroup = ((Group) listViewGroups.SelectedItems[0].Tag);
+				textBoxGroupName.Text = _selectedGroup.Name;
+				textBoxGroupPath.Text = _selectedGroup.Path;
+				listViewGroupApplications.Items.Clear();
+				listViewGroupApplications.Items.AddRange(_selectedGroup.Applications
+					.Select(id => machine.Configuration.Applications.FirstOrDefault(x => x.ID == id))
+					.Where(application => application != null)
+					.Select(application => new ListViewItem(application.Name) { Tag = application.ID })
+					.ToArray());
+				panelGroup.Visible = true;
+			}
+		}
+
+		private void ButtonAddGroup_Click(object sender, EventArgs e)
+		{
+			Machine machine = (Machine) comboBoxMachines.SelectedItem;
+			if (machine == null) return;
+
+			UpdateSelectedGroup();
+			_hasUnsavedConfiguration = true;
+			string groupName = GetFirstAvailableDefaultName(machine.Configuration.Groups.Select(group => group.Name).ToList(), "Group");
+			_selectedGroup = new Group(groupName);
+			machine.Configuration.Groups.Add(_selectedGroup);
+			textBoxGroupName.Text = _selectedGroup.Name;
+			textBoxGroupPath.Text = _selectedGroup.Path;
+			listViewGroupApplications.Items.Clear();
+			ListViewItem item = listViewGroups.Items.Add(new ListViewItem(_selectedGroup.Name) { Tag = _selectedGroup });
+			item.Selected = true;
+			panelGroup.Visible = true;
+			EnableControls();
+			textBoxGroupName.Focus();
+		}
+
+		private void ButtonRemoveGroup_Click(object sender, EventArgs e)
+		{
+			Machine machine = (Machine) comboBoxMachines.SelectedItem;
+			if (machine == null) return;
+
+			if (listViewGroups.SelectedItems.Count > 0)
+			{
+				_hasUnsavedConfiguration = true;
+				_selectedGroup = ((Group) listViewGroups.SelectedItems[0].Tag);
+				machine.Configuration.Groups.Remove(_selectedGroup);
+				listViewGroups.Items.Remove(listViewGroups.SelectedItems[0]);
+				_selectedGroup = null;
+				EnableControls();
+			}
+		}
+
+		#endregion
+
+		#endregion
+
 		#region Service handler event handlers
 
 		private void ServiceConnectionHandler_ServiceHandlerInitializationCompleted(object sender, ServiceHandlerConnectionChangedEventArgs e)
@@ -190,7 +261,7 @@ namespace ProcessManagerUI.Forms
 						machine.ServiceHandler.Initialize();
 					}
 				});
-			// todo: not here but anyways.. progress bar task dialog does not hide buttons!!
+
 			WaitForConfiguration((Machine) comboBoxMachines.SelectedItem);
 		}
 
@@ -281,6 +352,55 @@ namespace ProcessManagerUI.Forms
 				// todo: save server side config
 				_hasUnsavedConfiguration = false;
 			}
+		}
+
+		private string GetFirstAvailableDefaultName(List<string> existingNames, string nameTemplate)
+		{
+			int tryNo = 1;
+			nameTemplate = nameTemplate.Trim() + " ";
+			string name = nameTemplate + tryNo;
+
+			while (existingNames.Contains(name))
+				name = nameTemplate + (++tryNo);
+
+			return name;
+		}
+
+		private void UpdateSelectedGroup()
+		{
+			if (_selectedGroup != null)
+			{
+				if (GroupChanged())
+				{
+					_selectedGroup.Name = textBoxGroupName.Text;
+					_selectedGroup.Path = textBoxGroupPath.Text;
+					_selectedGroup.Applications.Clear();
+					_selectedGroup.Applications.AddRange(listViewGroupApplications.Items.Cast<ListViewItem>().Select(x => (Guid) x.Tag));
+					ListViewItem item = listViewGroups.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedGroup);
+					item.Text = _selectedGroup.Name;
+					listViewGroups.Sort();
+				}
+				textBoxGroupName.Text = _selectedGroup.Name;
+				EnableControls();
+			}
+		}
+
+		private bool GroupChanged()
+		{
+			bool groupChanged = false;
+			if (_selectedGroup != null && !string.IsNullOrEmpty(textBoxGroupName.Text))
+			{
+				int equalApplicationsCount = _selectedGroup.Applications.Intersect(listViewGroupApplications.Items.Cast<ListViewItem>().Select(x => (Guid) x.Tag)).Count();
+				groupChanged = (_selectedGroup.Name != textBoxGroupName.Text || _selectedGroup.Path != textBoxGroupPath.Text
+					|| equalApplicationsCount != _selectedGroup.Applications.Count || equalApplicationsCount != listViewGroupApplications.Items.Count);
+				_hasUnsavedConfiguration |= groupChanged;
+			}
+			return groupChanged;
+		}
+
+		private void EnableControls(bool enable = true)
+		{
+			buttonApply.Enabled = (enable && _hasUnsavedConfiguration);
 		}
 
 		#endregion

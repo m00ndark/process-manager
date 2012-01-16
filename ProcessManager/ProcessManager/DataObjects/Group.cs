@@ -13,6 +13,13 @@ namespace ProcessManager.DataObjects
 			Applications = new List<Guid>();
 		}
 
+		public Group(string name) : this()
+		{
+			ID = Guid.NewGuid();
+			Name = name;
+			Path = string.Empty;
+		}
+
 		public Group(XmlReader reader) : this()
 		{
 			ReadXml(reader);
