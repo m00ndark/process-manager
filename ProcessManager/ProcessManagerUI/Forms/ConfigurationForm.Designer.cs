@@ -221,6 +221,7 @@
 			this.buttonCopyGroupApplications.Size = new System.Drawing.Size(38, 24);
 			this.buttonCopyGroupApplications.TabIndex = 16;
 			this.buttonCopyGroupApplications.UseVisualStyleBackColor = true;
+			this.buttonCopyGroupApplications.Click += new System.EventHandler(this.ButtonCopyGroupApplications_Click);
 			// 
 			// labelGroupName
 			// 
@@ -240,6 +241,7 @@
 			this.buttonRemoveGroupApplication.Size = new System.Drawing.Size(38, 24);
 			this.buttonRemoveGroupApplication.TabIndex = 15;
 			this.buttonRemoveGroupApplication.UseVisualStyleBackColor = true;
+			this.buttonRemoveGroupApplication.Click += new System.EventHandler(this.ButtonRemoveGroupApplication_Click);
 			// 
 			// textBoxGroupName
 			// 
@@ -249,6 +251,7 @@
 			this.textBoxGroupName.Name = "textBoxGroupName";
 			this.textBoxGroupName.Size = new System.Drawing.Size(286, 22);
 			this.textBoxGroupName.TabIndex = 6;
+			this.textBoxGroupName.TextChanged += new System.EventHandler(this.TextBoxGroupName_TextChanged);
 			// 
 			// buttonAddGroupApplication
 			// 
@@ -259,6 +262,7 @@
 			this.buttonAddGroupApplication.Size = new System.Drawing.Size(38, 24);
 			this.buttonAddGroupApplication.TabIndex = 14;
 			this.buttonAddGroupApplication.UseVisualStyleBackColor = true;
+			this.buttonAddGroupApplication.Click += new System.EventHandler(this.ButtonAddGroupApplication_Click);
 			// 
 			// labelGroupPath
 			// 
@@ -286,6 +290,7 @@
 			this.listViewGroupApplications.TabIndex = 13;
 			this.listViewGroupApplications.UseCompatibleStateImageBehavior = false;
 			this.listViewGroupApplications.View = System.Windows.Forms.View.Details;
+			this.listViewGroupApplications.SelectedIndexChanged += new System.EventHandler(this.ListViewGroupApplications_SelectedIndexChanged);
 			// 
 			// columnHeaderApplicationMappings
 			// 
@@ -300,6 +305,7 @@
 			this.textBoxGroupPath.Name = "textBoxGroupPath";
 			this.textBoxGroupPath.Size = new System.Drawing.Size(286, 22);
 			this.textBoxGroupPath.TabIndex = 8;
+			this.textBoxGroupPath.TextChanged += new System.EventHandler(this.TextBoxGroupPath_TextChanged);
 			// 
 			// labelGroupApplications
 			// 
@@ -332,6 +338,7 @@
 			this.buttonBrowseGroupPath.TabIndex = 11;
 			this.buttonBrowseGroupPath.Text = "...";
 			this.buttonBrowseGroupPath.UseVisualStyleBackColor = true;
+			this.buttonBrowseGroupPath.Click += new System.EventHandler(this.ButtonBrowseGroupPath_Click);
 			// 
 			// labelNoGroupSelected
 			// 

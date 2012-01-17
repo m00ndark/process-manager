@@ -10,7 +10,7 @@ using ProcessManager.Utilities;
 
 namespace ProcessManager.Service.Host
 {
-	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = true)]
 	internal class ProcessManagerService : IProcessManagerService
 	{
 		private readonly IDictionary<IProcessManagerServiceEventHandler, bool> _clients;
@@ -53,6 +53,7 @@ namespace ProcessManager.Service.Host
 
 		public void SetConfiguration(DTOConfiguration configuration)
 		{
+			throw new Exception("TEST");
 			ProcessManager.SetConfiguration(configuration.FromDTO());
 		}
 

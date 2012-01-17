@@ -112,27 +112,15 @@ namespace ProcessManager.Service.Client
 		private void SetupClient()
 		{
 			NetTcpBinding binding = new NetTcpBinding() { Security = { Mode = SecurityMode.None } };
-			EndpointAddress endpointAddress = new EndpointAddress(CreateEndpointURI(Machine));
+			EndpointAddress endpointAddress = new EndpointAddress(new Uri("net.tcp://" + Machine.HostName + "/ProcessManagerService"));
 			InstanceContext context = new InstanceContext(_processManagerServiceEventHandler);
 			_processManagerServiceClient = new ProcessManagerServiceClient(context, binding, endpointAddress);
 		}
 
 		public static bool HostNameValid(Machine machine)
 		{
-			try
-			{
-				CreateEndpointURI(machine);
-				return true;
-			}
-			catch
-			{
-				return false;
-			}
-		}
-
-		private static Uri CreateEndpointURI(Machine machine)
-		{
-			return new Uri("net.tcp://" + machine.HostName + "/ProcessManagerService");
+			UriHostNameType hostNameType = Uri.CheckHostName(machine.HostName);
+			return (hostNameType == UriHostNameType.Dns || hostNameType == UriHostNameType.IPv4 || hostNameType == UriHostNameType.IPv6);
 		}
 
 		#endregion
@@ -149,12 +137,12 @@ namespace ProcessManager.Service.Client
 					if (_processManagerServiceClient.State == CommunicationState.Faulted)
 					{
 						_processManagerServiceClient.Abort();
-						if (!connectionLost)
-						{
-							Status = ProcessManagerServiceHandlerStatus.Disconnected;
-							connectionLost = true;
-							RaiseConnectionChangedEvent();
-						}
+						//if (!connectionLost)
+						//{
+						//    Status = ProcessManagerServiceHandlerStatus.Disconnected;
+						//    connectionLost = true;
+						//    RaiseConnectionChangedEvent();
+						//}
 					}
 
 					if (_processManagerServiceClient.State == CommunicationState.Closed)
@@ -166,18 +154,24 @@ namespace ProcessManager.Service.Client
 						{
 							_processManagerServiceClient.Register(true);
 							Status = ProcessManagerServiceHandlerStatus.Connected;
-							connectionLost = false;
 							if (!connectionAttempted)
 								RaiseInitializationCompletedEvent();
-							else
+							else if (connectionLost)
+							{
+								connectionLost = false;
 								RaiseConnectionChangedEvent();
+							}
 						}
 						catch (Exception ex)
 						{
 							Status = ProcessManagerServiceHandlerStatus.Disconnected;
-							connectionLost = true;
 							if (!connectionAttempted)
 								RaiseInitializationCompletedEvent(ex);
+							else if (!connectionLost)
+							{
+								connectionLost = true;
+								RaiseConnectionChangedEvent();
+							}
 						}
 						connectionAttempted = true;
 					}

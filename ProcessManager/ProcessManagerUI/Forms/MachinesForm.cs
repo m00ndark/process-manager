@@ -78,7 +78,7 @@ namespace ProcessManagerUI.Forms
 			if (listViewMachines.SelectedItems.Count > 0)
 			{
 				MachinesChanged = _hasUnsavedChanges = true;
-				_selectedMachine = ((Machine) listViewMachines.SelectedItems[0].Tag);
+				_selectedMachine = (Machine) listViewMachines.SelectedItems[0].Tag;
 				Settings.Client.Machines.Remove(_selectedMachine);
 				listViewMachines.Items.Remove(listViewMachines.SelectedItems[0]);
 				_selectedMachine = null;
@@ -122,7 +122,7 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonCancel_Click(object sender, EventArgs e)
 		{
-			if (MachinesChanged)
+			if (_hasUnsavedChanges)
 			{
 				if (Messenger.ShowWarningQuestion("Machines has been changed", "Would you like to discard any changes?") == DialogResult.No)
 				{
@@ -130,7 +130,6 @@ namespace ProcessManagerUI.Forms
 					return;
 				}
 				Settings.Client.Load(ClientSettingsType.Machines);
-				MachinesChanged = false;
 			}
 			Close();
 		}
@@ -198,7 +197,7 @@ namespace ProcessManagerUI.Forms
 					listViewMachines.Items.Remove(item);
 				}
 
-				List<Machine> invalidMachines = new List<Machine>(Settings.Client.Machines.Where(machine => !ConnectionStore.MachineIsValid(machine)));
+				List<Machine> invalidMachines = new List<Machine>(Settings.Client.Machines.Where(machine => !MachineIsValid(machine)));
 				if (invalidMachines.Count > 0)
 				{
 					Messenger.ShowError("Machine" + (invalidMachines.Count == 1 ? string.Empty : "s") + " invalid", "Host name invalid for "
@@ -211,6 +210,11 @@ namespace ProcessManagerUI.Forms
 				EnableControls();
 			}
 			return true;
+		}
+
+		private static bool MachineIsValid(Machine machine)
+		{
+			return ConnectionStore.MachineIsValid(machine);
 		}
 
 		private void EnableControls(bool enable = true)

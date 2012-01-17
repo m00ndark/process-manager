@@ -6,6 +6,8 @@ namespace ProcessManager.DataObjects
 {
 	public class MachineConnection
 	{
+		private Configuration _configuration;
+
 		public MachineConnection(Machine machine, ProcessManagerServiceHandler serviceHandler)
 		{
 			Machine = machine;
@@ -18,8 +20,18 @@ namespace ProcessManager.DataObjects
 
 		public Machine Machine { get; private set; }
 		public ProcessManagerServiceHandler ServiceHandler { get; set; }
-		public Configuration Configuration { get; set; }
+		public bool ConfigurationModified { get; set; }
 		public Dictionary<Guid, Dictionary<Guid, ApplicationStatus>> ApplicationStatuses { get; set; }
+
+		public Configuration Configuration
+		{
+			get { return _configuration; }
+			set
+			{
+				_configuration = value;
+				ConfigurationModified = false;
+			}
+		}
 
 		#endregion
 	}
