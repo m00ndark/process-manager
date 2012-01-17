@@ -170,6 +170,7 @@ namespace ProcessManagerUI.Forms
 					.Select(application => new ListViewItem(application.Name) { Tag = application.ID })
 					.ToArray());
 				_disableTextChangedEvents = false;
+				EnableControls();
 				panelGroup.Visible = true;
 			}
 		}
@@ -248,7 +249,22 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonAddGroupApplication_Click(object sender, EventArgs e)
 		{
+			Machine selectedMachine = (Machine) comboBoxMachines.SelectedItem;
+			if (selectedMachine == null) return;
 
+			Picker.ShowMenu(buttonAddGroupApplication,
+				ConnectionStore.Connections[selectedMachine].Configuration.Applications
+					.Except(ConnectionStore.Connections[selectedMachine].Configuration.Applications
+						.Where(x => listViewGroupApplications.Items.Cast<ListViewItem>().Select(y => (Guid) y.Tag).Contains(x.ID))),
+				ContextMenu_ApplicationClicked);
+		}
+
+		private void ContextMenu_ApplicationClicked(Application application)
+		{
+			listViewGroupApplications.Items.Add(new ListViewItem(application.Name) { Tag = application.ID });
+			listViewGroupApplications.Sort(); // todo: not working??
+			GroupChanged();
+			EnableControls();
 		}
 
 		private void ButtonRemoveGroupApplication_Click(object sender, EventArgs e)

@@ -34,6 +34,11 @@ namespace ProcessManager.DataObjects
 
 		#endregion
 
+		public override string ToString()
+		{
+			return Name;
+		}
+
 		#region Implementation of IXmlSerializable
 
 		public XmlSchema GetSchema()
