@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using ProcessManager.Service.Client;
 
 namespace ProcessManager.DataObjects
 {
@@ -13,20 +11,11 @@ namespace ProcessManager.DataObjects
 		public Machine(string hostName)
 		{
 			HostName = hostName;
-			Configuration = null;
-			ApplicationStatuses = null;
-			ServiceHandler = null;
 		}
 
 		#region Properties
 
-		// defining properties
 		public string HostName { get; set; }
-
-		// optional properties
-		public Configuration Configuration { get; set; }
-		public Dictionary<Guid, Dictionary<Guid, ApplicationStatus>> ApplicationStatuses { get; set; }
-		public ProcessManagerServiceHandler ServiceHandler { get; set; }
 
 		#endregion
 

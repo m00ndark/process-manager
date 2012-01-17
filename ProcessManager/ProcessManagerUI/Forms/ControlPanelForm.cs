@@ -36,10 +36,10 @@ namespace ProcessManagerUI.Forms
 			Settings.Client.Load();
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;
-			foreach (Machine machine in Settings.Client.Machines.Where(machine => machine.ServiceHandler == null))
+			foreach (Machine machine in Settings.Client.Machines.Where(machine => !ConnectionStore.ConnectionCreated(machine)))
 			{
-				ProcessManagerServiceConnectionHandler.Instance.CreateServiceHandler(this, machine);
-				machine.ServiceHandler.Initialize();
+				MachineConnection connection = ConnectionStore.CreateConnection(this, machine);
+				connection.ServiceHandler.Initialize();
 			}
 		}
 

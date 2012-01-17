@@ -9,11 +9,11 @@ namespace ProcessManagerUI.Support
 {
 	public static class TaskDialog
 	{
-		private static readonly IDictionary<int, APITaskDialog> _taskDialogs;
+		private static readonly IDictionary<Guid, APITaskDialog> _taskDialogs;
 
 		static TaskDialog()
 		{
-			_taskDialogs = new Dictionary<int, APITaskDialog>();
+			_taskDialogs = new Dictionary<Guid, APITaskDialog>();
 		}
 
 		#region Properties
@@ -25,14 +25,14 @@ namespace ProcessManagerUI.Support
 		public static DialogResult Show(string title, string instruction, string message,
 			string details = null, int progressBarMaxValue = -1, Action<int> tickEventHandler = null)
 		{
-			return Show(title, instruction, message, TaskDialogStandardButtons.None,
+			return Show(Guid.Empty, title, instruction, message, TaskDialogStandardButtons.None,
 				TaskDialogStandardIcon.None, details, progressBarMaxValue, tickEventHandler);
 		}
 
 		public static DialogResult Show(string title, string instruction, string message, MessageBoxIcon icon,
 			string details = null, int progressBarMaxValue = -1, Action<int> tickEventHandler = null)
 		{
-			return Show(title, instruction, message, TaskDialogStandardButtons.None,
+			return Show(Guid.Empty, title, instruction, message, TaskDialogStandardButtons.None,
 				ConvertToTaskDialogStandardIcon(icon), details, progressBarMaxValue, tickEventHandler);
 		}
 
@@ -40,7 +40,7 @@ namespace ProcessManagerUI.Support
 			bool showCloseButtonInsteadOfOK = false, string details = null, int progressBarMaxValue = -1,
 			Action<int> tickEventHandler = null)
 		{
-			return Show(title, instruction, message, ConvertToTaskDialogStandardButtons(buttons, showCloseButtonInsteadOfOK),
+			return Show(Guid.Empty, title, instruction, message, ConvertToTaskDialogStandardButtons(buttons, showCloseButtonInsteadOfOK),
 				TaskDialogStandardIcon.None, details, progressBarMaxValue, tickEventHandler);
 		}
 
@@ -48,11 +48,41 @@ namespace ProcessManagerUI.Support
 			bool showCloseButtonInsteadOfOK = false, string details = null, int progressBarMaxValue = -1,
 			Action<int> tickEventHandler = null)
 		{
-			return Show(title, instruction, message, ConvertToTaskDialogStandardButtons(buttons, showCloseButtonInsteadOfOK),
+			return Show(Guid.Empty, title, instruction, message, ConvertToTaskDialogStandardButtons(buttons, showCloseButtonInsteadOfOK),
 				ConvertToTaskDialogStandardIcon(icon), details, progressBarMaxValue, tickEventHandler);
 		}
 
-		private static DialogResult Show(string title, string instruction, string message, TaskDialogStandardButtons buttons, TaskDialogStandardIcon icon,
+		public static DialogResult Show(Guid id, string title, string instruction, string message,
+			string details = null, int progressBarMaxValue = -1, Action<int> tickEventHandler = null)
+		{
+			return Show(id, title, instruction, message, TaskDialogStandardButtons.None,
+				TaskDialogStandardIcon.None, details, progressBarMaxValue, tickEventHandler);
+		}
+
+		public static DialogResult Show(Guid id, string title, string instruction, string message, MessageBoxIcon icon,
+			string details = null, int progressBarMaxValue = -1, Action<int> tickEventHandler = null)
+		{
+			return Show(id, title, instruction, message, TaskDialogStandardButtons.None,
+				ConvertToTaskDialogStandardIcon(icon), details, progressBarMaxValue, tickEventHandler);
+		}
+
+		public static DialogResult Show(Guid id, string title, string instruction, string message, MessageBoxButtons buttons,
+			bool showCloseButtonInsteadOfOK = false, string details = null, int progressBarMaxValue = -1,
+			Action<int> tickEventHandler = null)
+		{
+			return Show(id, title, instruction, message, ConvertToTaskDialogStandardButtons(buttons, showCloseButtonInsteadOfOK),
+				TaskDialogStandardIcon.None, details, progressBarMaxValue, tickEventHandler);
+		}
+
+		public static DialogResult Show(Guid id, string title, string instruction, string message, MessageBoxButtons buttons, MessageBoxIcon icon,
+			bool showCloseButtonInsteadOfOK = false, string details = null, int progressBarMaxValue = -1,
+			Action<int> tickEventHandler = null)
+		{
+			return Show(id, title, instruction, message, ConvertToTaskDialogStandardButtons(buttons, showCloseButtonInsteadOfOK),
+				ConvertToTaskDialogStandardIcon(icon), details, progressBarMaxValue, tickEventHandler);
+		}
+
+		private static DialogResult Show(Guid id, string title, string instruction, string message, TaskDialogStandardButtons buttons, TaskDialogStandardIcon icon,
 			string details, int progressBarMaxValue, Action<int> tickEventHandler)
 		{
 			TaskDialogProgressBar progressBar = (progressBarMaxValue < 0 ? null
@@ -86,10 +116,10 @@ namespace ProcessManagerUI.Support
 				taskDialog.Tick += new EventHandler<TaskDialogTickEventArgs>(internalTickEventHandler);
 			}
 
-			lock (_taskDialogs)
+			if (id != Guid.Empty)
 			{
-				if (!_taskDialogs.ContainsKey(Thread.CurrentThread.ManagedThreadId))
-					_taskDialogs[Thread.CurrentThread.ManagedThreadId] = taskDialog;
+				lock (_taskDialogs)
+					_taskDialogs[id] = taskDialog;
 			}
 
 			DialogResult result = ConvertFromTaskDialogResult(taskDialog.Show());
@@ -97,25 +127,23 @@ namespace ProcessManagerUI.Support
 			if (tickEventHandler != null)
 				taskDialog.Tick -= new EventHandler<TaskDialogTickEventArgs>(internalTickEventHandler);
 
-			lock (_taskDialogs)
-				_taskDialogs.Remove(Thread.CurrentThread.ManagedThreadId);
+			if (id != Guid.Empty)
+			{
+				lock (_taskDialogs)
+					_taskDialogs.Remove(id);
+			}
 
 			return result;
 		}
 
-		public static void Close()
-		{
-			Close(Thread.CurrentThread.ManagedThreadId);
-		}
-
-		public static void Close(int threadID)
+		public static void Close(Guid id)
 		{
 			lock (_taskDialogs)
 			{
-				if (_taskDialogs.ContainsKey(threadID))
+				if (_taskDialogs.ContainsKey(id))
 				{
-					_taskDialogs[threadID].Close();
-					_taskDialogs.Remove(threadID);
+					_taskDialogs[id].Close();
+					_taskDialogs.Remove(id);
 				}
 			}
 		}

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
 
@@ -15,7 +14,7 @@ namespace ProcessManager.Service.Client
 		public event EventHandler<ServiceHandlerConnectionChangedEventArgs> ServiceHandlerInitializationCompleted;
 		public event EventHandler<ServiceHandlerConnectionChangedEventArgs> ServiceHandlerConnectionChanged;
 
-		private ProcessManagerServiceConnectionHandler() { }
+		private ProcessManagerServiceConnectionHandler() {}
 
 		#region Properties
 
@@ -37,11 +36,12 @@ namespace ProcessManager.Service.Client
 
 		#endregion
 
-		public void CreateServiceHandler(IProcessManagerEventHandler processManagerEventHandler, Machine machine)
+		public ProcessManagerServiceHandler CreateServiceHandler(IProcessManagerEventHandler processManagerEventHandler, Machine machine)
 		{
-			machine.ServiceHandler = new ProcessManagerServiceHandler(processManagerEventHandler, machine);
-			machine.ServiceHandler.InitializationCompleted += ServiceHandler_InitializationCompleted;
-			machine.ServiceHandler.ConnectionChanged += ServiceHandler_ConnectionChanged;
+			ProcessManagerServiceHandler serviceHandler = new ProcessManagerServiceHandler(processManagerEventHandler, machine);
+			serviceHandler.InitializationCompleted += ServiceHandler_InitializationCompleted;
+			serviceHandler.ConnectionChanged += ServiceHandler_ConnectionChanged;
+			return serviceHandler;
 		}
 
 		#region Service handler event handlers
@@ -94,12 +94,12 @@ namespace ProcessManager.Service.Client
 
 		private void ModifyMachineConfiguration(ProcessManagerServiceHandler serviceHandler, bool retrieve)
 		{
-			Machine machine = Settings.Client.Machines.FirstOrDefault(x => x.ServiceHandler == serviceHandler);
-			if (machine != null)
+			MachineConnection machineConnection = ConnectionStore.Connections.Values.FirstOrDefault(x => x.ServiceHandler == serviceHandler);
+			if (machineConnection != null)
 			{
 				try
 				{
-					machine.Configuration = (retrieve ? machine.ServiceHandler.Service.GetConfiguration().FromDTO() : null);
+					machineConnection.Configuration = (retrieve ? machineConnection.ServiceHandler.Service.GetConfiguration().FromDTO() : null);
 				}
 				catch { ; }
 			}

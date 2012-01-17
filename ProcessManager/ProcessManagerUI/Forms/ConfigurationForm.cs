@@ -50,7 +50,7 @@ namespace ProcessManagerUI.Forms
 		{
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;
-			ShowAllControls();
+			ShowAllControls(false);
 			ClearAllControls();
 			PopulateMachinesComboBox(false);
 			TreeNode setupNode = new TreeNode("Setup") { Name = "Setup" };
@@ -148,7 +148,7 @@ namespace ProcessManagerUI.Forms
 				textBoxGroupPath.Text = _selectedGroup.Path;
 				listViewGroupApplications.Items.Clear();
 				listViewGroupApplications.Items.AddRange(_selectedGroup.Applications
-					.Select(id => machine.Configuration.Applications.FirstOrDefault(x => x.ID == id))
+					.Select(id => ConnectionStore.Connections[machine].Configuration.Applications.FirstOrDefault(x => x.ID == id))
 					.Where(application => application != null)
 					.Select(application => new ListViewItem(application.Name) { Tag = application.ID })
 					.ToArray());
@@ -163,9 +163,9 @@ namespace ProcessManagerUI.Forms
 
 			UpdateSelectedGroup();
 			_hasUnsavedConfiguration = true;
-			string groupName = GetFirstAvailableDefaultName(machine.Configuration.Groups.Select(group => group.Name).ToList(), "Group");
+			string groupName = GetFirstAvailableDefaultName(ConnectionStore.Connections[machine].Configuration.Groups.Select(group => group.Name).ToList(), "Group");
 			_selectedGroup = new Group(groupName);
-			machine.Configuration.Groups.Add(_selectedGroup);
+			ConnectionStore.Connections[machine].Configuration.Groups.Add(_selectedGroup);
 			textBoxGroupName.Text = _selectedGroup.Name;
 			textBoxGroupPath.Text = _selectedGroup.Path;
 			listViewGroupApplications.Items.Clear();
@@ -185,7 +185,7 @@ namespace ProcessManagerUI.Forms
 			{
 				_hasUnsavedConfiguration = true;
 				_selectedGroup = ((Group) listViewGroups.SelectedItems[0].Tag);
-				machine.Configuration.Groups.Remove(_selectedGroup);
+				ConnectionStore.Connections[machine].Configuration.Groups.Remove(_selectedGroup);
 				listViewGroups.Items.Remove(listViewGroups.SelectedItems[0]);
 				_selectedGroup = null;
 				EnableControls();
@@ -206,7 +206,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			Machine machine = Settings.Client.Machines.FirstOrDefault(x => x.ServiceHandler == e.ServiceHandler);
+			Machine machine = ConnectionStore.Connections.Values.Where(x => x.ServiceHandler == e.ServiceHandler).Select(x => x.Machine).FirstOrDefault();
 			if (machine != null)
 			{
 				if (e.Status == ProcessManagerServiceHandlerStatus.Disconnected && e.Exception != null)
@@ -228,7 +228,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			Machine machine = Settings.Client.Machines.FirstOrDefault(x => x.ServiceHandler == e.ServiceHandler);
+			Machine machine = ConnectionStore.Connections.Values.Where(x => x.ServiceHandler == e.ServiceHandler).Select(x => x.Machine).FirstOrDefault();
 			if (machine != null && comboBoxMachines.SelectedItem == machine)
 			{
 				if (e.Status == ProcessManagerServiceHandlerStatus.Disconnected)
@@ -250,17 +250,19 @@ namespace ProcessManagerUI.Forms
 
 		private void ConnectMachines()
 		{
-			if (!Settings.Client.Machines.Any(machine => machine.ServiceHandler == null))
-				return;
+			ConnectionStore.Connections.Keys.Where(machine => !Settings.Client.Machines.Contains(machine)).ToList().ForEach(ConnectionStore.RemoveConnection);
 
-			Worker.Do("Connecting to machines...", () =>
-				{
-					foreach (Machine machine in Settings.Client.Machines.Where(machine => machine.ServiceHandler == null))
+			if (Settings.Client.Machines.Any(machine => !ConnectionStore.ConnectionCreated(machine)))
+			{
+				Worker.Do("Connecting to machines...", () =>
 					{
-						ProcessManagerServiceConnectionHandler.Instance.CreateServiceHandler(_processManagerEventHandler, machine);
-						machine.ServiceHandler.Initialize();
-					}
-				});
+						foreach (Machine machine in Settings.Client.Machines.Where(machine => !ConnectionStore.ConnectionCreated(machine)))
+						{
+							MachineConnection connection = ConnectionStore.CreateConnection(_processManagerEventHandler, machine);
+							connection.ServiceHandler.Initialize();
+						}
+					});
+			}
 
 			WaitForConfiguration((Machine) comboBoxMachines.SelectedItem);
 		}
@@ -329,19 +331,19 @@ namespace ProcessManagerUI.Forms
 			ClearAllControls();
 			Machine selectedMachine = (Machine) comboBoxMachines.SelectedItem;
 			WaitForConfiguration(selectedMachine);
-			if (selectedMachine.Configuration != null)
+			if (ConnectionStore.Connections[selectedMachine].Configuration != null)
 			{
-				selectedMachine.Configuration.Groups.ForEach(group => listViewGroups.Items.Add(new ListViewItem(group.Name) { Tag = group }));
-				selectedMachine.Configuration.Applications.ForEach(application => listViewApplications.Items.Add(new ListViewItem(application.Name) { Tag = application }));
+				ConnectionStore.Connections[selectedMachine].Configuration.Groups.ForEach(group => listViewGroups.Items.Add(new ListViewItem(group.Name) { Tag = group }));
+				ConnectionStore.Connections[selectedMachine].Configuration.Applications.ForEach(application => listViewApplications.Items.Add(new ListViewItem(application.Name) { Tag = application }));
 			}
-			ShowAllControls(selectedMachine.Configuration != null);
+			ShowAllControls(ConnectionStore.Connections[selectedMachine].Configuration != null);
 		}
 
 		private void WaitForConfiguration(Machine machine)
 		{
-			if (machine != null && machine.Configuration == null)
-				Worker.WaitFor("Retrieving configuration...", () => (machine.ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Disconnected
-					|| machine.ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Connected && machine.Configuration != null));
+			if (machine != null && ConnectionStore.Connections[machine].Configuration == null)
+				Worker.WaitFor("Retrieving configuration...", () => (ConnectionStore.Connections[machine].ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Disconnected
+					|| ConnectionStore.Connections[machine].ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Connected && ConnectionStore.Connections[machine].Configuration != null));
 		}
 
 		private void SaveConfiguration()

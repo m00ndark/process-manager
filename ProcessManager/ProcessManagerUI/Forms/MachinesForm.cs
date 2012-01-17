@@ -38,7 +38,7 @@ namespace ProcessManagerUI.Forms
 			foreach (Machine machine in Settings.Client.Machines)
 			{
 				ListViewItem item = listViewMachines.Items.Add(new ListViewItem(machine.HostName) { Tag = machine });
-				if (_initiallySelectedMachine != null && _initiallySelectedMachine == machine)
+				if (_initiallySelectedMachine != null && _initiallySelectedMachine.Equals(machine))
 					item.Selected = true;
 			}
 		}
@@ -66,6 +66,7 @@ namespace ProcessManagerUI.Forms
 			Settings.Client.Machines.Add(_selectedMachine);
 			textBoxMachineHostName.Text = _selectedMachine.HostName;
 			ListViewItem item = listViewMachines.Items.Add(new ListViewItem(_selectedMachine.HostName) { Tag = _selectedMachine });
+			listViewMachines.Sort();
 			item.Selected = true;
 			panelMachine.Visible = true;
 			EnableControls();
@@ -115,15 +116,22 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonOK_Click(object sender, EventArgs e)
 		{
-			SaveMachines();
-			Close();
+			if (SaveMachines())
+				Close();
 		}
 
 		private void ButtonCancel_Click(object sender, EventArgs e)
 		{
 			if (MachinesChanged)
+			{
 				if (Messenger.ShowWarningQuestion("Machines has been changed", "Would you like to discard any changes?") == DialogResult.No)
+				{
+					DialogResult = DialogResult.None;
 					return;
+				}
+				Settings.Client.Load(ClientSettingsType.Machines);
+				MachinesChanged = false;
+			}
 			Close();
 		}
 
@@ -164,7 +172,7 @@ namespace ProcessManagerUI.Forms
 			return machineChanged;
 		}
 
-		private void SaveMachines()
+		private bool SaveMachines()
 		{
 			UpdateSelectedMachine();
 			if (_hasUnsavedChanges)
@@ -189,10 +197,20 @@ namespace ProcessManagerUI.Forms
 					Settings.Client.Machines.Remove(defaultMachine);
 					listViewMachines.Items.Remove(item);
 				}
+
+				List<Machine> invalidMachines = new List<Machine>(Settings.Client.Machines.Where(machine => !ConnectionStore.MachineIsValid(machine)));
+				if (invalidMachines.Count > 0)
+				{
+					Messenger.ShowError("Machine" + (invalidMachines.Count == 1 ? string.Empty : "s") + " invalid", "Host name invalid for "
+						+ invalidMachines.Aggregate(string.Empty, (x, y) => x + ", " + y).Trim(", ".ToCharArray()));
+					return false;
+				}
+
 				Settings.Client.Save(ClientSettingsType.Machines);
 				_hasUnsavedChanges = false;
 				EnableControls();
 			}
+			return true;
 		}
 
 		private void EnableControls(bool enable = true)

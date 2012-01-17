@@ -112,9 +112,27 @@ namespace ProcessManager.Service.Client
 		private void SetupClient()
 		{
 			NetTcpBinding binding = new NetTcpBinding() { Security = { Mode = SecurityMode.None } };
-			EndpointAddress endpointAddress = new EndpointAddress("net.tcp://" + Machine.HostName + "/ProcessManagerService");
+			EndpointAddress endpointAddress = new EndpointAddress(CreateEndpointURI(Machine));
 			InstanceContext context = new InstanceContext(_processManagerServiceEventHandler);
 			_processManagerServiceClient = new ProcessManagerServiceClient(context, binding, endpointAddress);
+		}
+
+		public static bool HostNameValid(Machine machine)
+		{
+			try
+			{
+				CreateEndpointURI(machine);
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		private static Uri CreateEndpointURI(Machine machine)
+		{
+			return new Uri("net.tcp://" + machine.HostName + "/ProcessManagerService");
 		}
 
 		#endregion
@@ -157,6 +175,7 @@ namespace ProcessManager.Service.Client
 						catch (Exception ex)
 						{
 							Status = ProcessManagerServiceHandlerStatus.Disconnected;
+							connectionLost = true;
 							if (!connectionAttempted)
 								RaiseInitializationCompletedEvent(ex);
 						}

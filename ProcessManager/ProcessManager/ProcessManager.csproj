@@ -47,8 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConnectionStore.cs" />
     <Compile Include="DataAccess\RegistryHandler.cs" />
     <Compile Include="DataObjects\Machine.cs" />
+    <Compile Include="DataObjects\MachineConnection.cs" />
     <Compile Include="EventArguments\ApplicationStatusesEventArgs.cs" />
     <Compile Include="EventArguments\ServiceHandlerConnectionChangedEventArgs.cs" />
     <Compile Include="IProcessManagerEventHandler.cs" />
