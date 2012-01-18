@@ -187,7 +187,8 @@ namespace ProcessManagerUI.Forms
 			if (_selectedMachine == null) return;
 
 			UpdateSelectedGroup();
-			string groupName = GetFirstAvailableDefaultName(ConnectionStore.Connections[_selectedMachine].Configuration.Groups.Select(group => group.Name).ToList(), "Group");
+			string groupName = GetFirstAvailableDefaultName(
+				ConnectionStore.Connections[_selectedMachine].Configuration.Groups.Select(group => group.Name).ToList(), "Group");
 			_selectedGroup = new Group(groupName);
 			ConnectionStore.Connections[_selectedMachine].Configuration.Groups.Add(_selectedGroup);
 			ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
@@ -282,27 +283,77 @@ namespace ProcessManagerUI.Forms
 
 		private void ListViewApplications_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (_selectedMachine == null) return;
 
+			UpdateSelectedApplication();
+			if (listViewApplications.SelectedItems.Count == 0)
+			{
+				panelApplication.Visible = false;
+			}
+			else
+			{
+				_disableTextChangedEvents = true;
+				_selectedApplication = ((Application) listViewApplications.SelectedItems[0].Tag);
+				textBoxApplicationName.Text = _selectedApplication.Name;
+				textBoxApplicationRelativePath.Text = _selectedApplication.RelativePath;
+				textBoxApplicationArguments.Text = _selectedApplication.Arguments;
+				_disableTextChangedEvents = false;
+				EnableControls();
+				panelApplication.Visible = true;
+			}
 		}
 
 		private void ButtonAddApplication_Click(object sender, EventArgs e)
 		{
+			if (_selectedMachine == null) return;
 
+			UpdateSelectedApplication();
+			string applicationName = GetFirstAvailableDefaultName(
+				ConnectionStore.Connections[_selectedMachine].Configuration.Applications.Select(application => application.Name).ToList(), "Application");
+			_selectedApplication = new Application(applicationName);
+			ConnectionStore.Connections[_selectedMachine].Configuration.Applications.Add(_selectedApplication);
+			ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
+			textBoxApplicationName.Text = _selectedApplication.Name;
+			textBoxApplicationRelativePath.Text = _selectedApplication.RelativePath;
+			textBoxApplicationArguments.Text = _selectedApplication.Arguments;
+			ListViewItem item = listViewApplications.Items.Add(new ListViewItem(_selectedApplication.Name) { Tag = _selectedApplication });
+			item.Selected = true;
+			panelApplication.Visible = true;
+			EnableControls();
+			textBoxApplicationName.Focus();
 		}
 
 		private void ButtonRemoveApplication_Click(object sender, EventArgs e)
 		{
+			if (_selectedMachine == null) return;
 
+			if (listViewApplications.SelectedItems.Count > 0)
+			{
+				_selectedApplication = (Application) listViewApplications.SelectedItems[0].Tag;
+				ConnectionStore.Connections[_selectedMachine].Configuration.Applications.Remove(_selectedApplication);
+				ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
+				listViewApplications.Items.Remove(listViewApplications.SelectedItems[0]);
+				_selectedApplication = null;
+				EnableControls();
+			}
 		}
 
 		private void TextBoxApplicationName_TextChanged(object sender, EventArgs e)
 		{
-
+			if (!_disableTextChangedEvents)
+			{
+				ApplicationChanged();
+				EnableControls();
+			}
 		}
 
 		private void TextBoxApplicationRelativePath_TextChanged(object sender, EventArgs e)
 		{
-
+			if (!_disableTextChangedEvents)
+			{
+				ApplicationChanged();
+				EnableControls();
+			}
 		}
 
 		private void ButtonBrowseApplicationRelativePath_Click(object sender, EventArgs e)
@@ -312,7 +363,11 @@ namespace ProcessManagerUI.Forms
 
 		private void TextBoxApplicationArguments_TextChanged(object sender, EventArgs e)
 		{
-
+			if (!_disableTextChangedEvents)
+			{
+				ApplicationChanged();
+				EnableControls();
+			}
 		}
 
 		#endregion
@@ -477,7 +532,7 @@ namespace ProcessManagerUI.Forms
 			if (HasUnsavedConfiguration)
 			{
 				// validate
-				if (!ValidateGroups())
+				if (!ValidateGroups() || !ValidateApplications())
 					return false;
 
 				// save
@@ -583,7 +638,8 @@ namespace ProcessManagerUI.Forms
 			if (invalidGroups.Count > 0)
 			{
 				int invalidGroupCount = invalidGroups.SelectMany(x => x.Value).Count();
-				Messenger.ShowError("Group" + (invalidGroupCount == 1 ? string.Empty : "s") + " invalid", "One or more group properties invalid. See details for further information.",
+				Messenger.ShowError("Group" + (invalidGroupCount == 1 ? string.Empty : "s") + " invalid",
+					"One or more group property invalid. See details for more information.",
 					invalidGroups.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine
 						+ y.Value.SelectMany(z => z.Value, (a, b) => new { Group = a.Key, Message = b })
 							.Aggregate(string.Empty, (a, b) => a + Environment.NewLine + y.Key + " > " + b.Group + ": " + b.Message).Trim()).Trim());
@@ -608,7 +664,79 @@ namespace ProcessManagerUI.Forms
 
 		#region Applications
 
+		private void UpdateSelectedApplication()
+		{
+			if (_selectedApplication != null)
+			{
+				if (ApplicationChanged())
+				{
+					_selectedApplication.Name = textBoxApplicationName.Text;
+					_selectedApplication.RelativePath = textBoxApplicationRelativePath.Text;
+					_selectedApplication.Arguments = textBoxApplicationArguments.Text;
+					ListViewItem item = listViewApplications.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedApplication);
+					item.Text = _selectedApplication.Name;
+				}
+				textBoxApplicationName.Text = _selectedApplication.Name;
+				EnableControls();
+			}
+		}
 
+		private bool ApplicationChanged()
+		{
+			bool applicationChanged = false;
+			if (_selectedMachine != null && _selectedApplication != null && !string.IsNullOrEmpty(textBoxApplicationName.Text))
+			{
+				applicationChanged = (_selectedApplication.Name != textBoxApplicationName.Text
+					|| _selectedApplication.RelativePath != textBoxApplicationRelativePath.Text
+					|| _selectedApplication.Arguments != textBoxApplicationArguments.Text);
+				ConnectionStore.Connections[_selectedMachine].ConfigurationModified |= applicationChanged;
+			}
+			return applicationChanged;
+		}
+
+		private static bool ValidateApplications()
+		{
+			IDictionary<Machine, Dictionary<Application, List<string>>> invalidApplications =
+				ConnectionStore.Connections.Values
+					.Where(connection => connection.ConfigurationModified)
+					.Select(connection => new
+					{
+						Machine = connection.Machine,
+						Applications = connection.Configuration.Applications
+							.Select(application => new
+							{
+								Application = application,
+								Messages = ApplicationIsValid(application)
+							})
+							.Where(x => x.Messages.Count > 0)
+							.ToList()
+					})
+					.Where(x => x.Applications.Count > 0)
+					.ToDictionary(x => x.Machine, x => x.Applications.ToDictionary(y => y.Application, y => y.Messages));
+			if (invalidApplications.Count > 0)
+			{
+				int invalidApplicationCount = invalidApplications.SelectMany(x => x.Value).Count();
+				Messenger.ShowError("Application" + (invalidApplicationCount == 1 ? string.Empty : "s") + " invalid",
+					"One or more application property invalid. See details for more information.",
+					invalidApplications.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine
+						+ y.Value.SelectMany(z => z.Value, (a, b) => new { Application = a.Key, Message = b })
+							.Aggregate(string.Empty, (a, b) => a + Environment.NewLine + y.Key + " > " + b.Application + ": " + b.Message).Trim()).Trim());
+				return false;
+			}
+			return true;
+		}
+
+		private static List<string> ApplicationIsValid(Application application)
+		{
+			List<string> messages = new List<string>();
+			if (string.IsNullOrEmpty(application.Name))
+				messages.Add("Name missing");
+			if (string.IsNullOrEmpty(application.RelativePath))
+				messages.Add("Relative path missing");
+			else if (Path.IsPathRooted(application.RelativePath))
+				messages.Add("Relative path can not be rooted");
+			return messages;
+		}
 
 		#endregion
 

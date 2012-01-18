@@ -9,6 +9,14 @@ namespace ProcessManager.DataObjects
 	{
 		public Application() { }
 
+		public Application(string name) : this()
+		{
+			ID = Guid.NewGuid();
+			Name = name;
+			RelativePath = string.Empty;
+			Arguments = string.Empty;
+		}
+
 		public Application(XmlReader reader) : this()
 		{
 			ReadXml(reader);
