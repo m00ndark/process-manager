@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using ProcessManager;
@@ -18,6 +19,7 @@ namespace ProcessManagerUI.Forms
 		private readonly IProcessManagerEventHandler _processManagerEventHandler;
 		private readonly Timer _initTimer;
 		private Panel _currentPanel;
+		private Machine _selectedMachine;
 		private Group _selectedGroup;
 		private Application _selectedApplication;
 		private bool _disableTextChangedEvents;
@@ -27,6 +29,9 @@ namespace ProcessManagerUI.Forms
 			InitializeComponent();
 			_processManagerEventHandler = processManagerEventHandler;
 			_currentPanel = null;
+			_selectedMachine = null;
+			_selectedGroup = null;
+			_selectedApplication = null;
 			_disableTextChangedEvents = false;
 			_initTimer = new Timer() { Enabled = false, Interval = 100 };
 			_initTimer.Tick += InitTimer_Tick;
@@ -88,17 +93,20 @@ namespace ProcessManagerUI.Forms
 
 		private void ComboBoxMachines_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			UpdateSelectedGroup();
 			if (comboBoxMachines.SelectedIndex > -1)
 			{
-				Machine machine = (Machine) comboBoxMachines.SelectedItem;
-				Settings.Client.CFG_SelectedHostName = machine.HostName;
+				_selectedMachine = (Machine) comboBoxMachines.SelectedItem;
+				Settings.Client.CFG_SelectedHostName = _selectedMachine.HostName;
 				PopulateAllControls();
 			}
+			else
+				_selectedMachine = null;
 		}
 
 		private void ButtonMachines_Click(object sender, EventArgs e)
 		{
-			MachinesForm machinesForm = new MachinesForm((Machine) comboBoxMachines.SelectedItem);
+			MachinesForm machinesForm = new MachinesForm(_selectedMachine);
 			machinesForm.ShowDialog(this);
 			if (machinesForm.MachinesChanged)
 			{
@@ -149,8 +157,7 @@ namespace ProcessManagerUI.Forms
 
 		private void ListViewGroups_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			Machine selectedMachine = (Machine) comboBoxMachines.SelectedItem;
-			if (selectedMachine == null) return;
+			if (_selectedMachine == null) return;
 
 			UpdateSelectedGroup();
 			if (listViewGroups.SelectedItems.Count == 0)
@@ -165,7 +172,7 @@ namespace ProcessManagerUI.Forms
 				textBoxGroupPath.Text = _selectedGroup.Path;
 				listViewGroupApplications.Items.Clear();
 				listViewGroupApplications.Items.AddRange(_selectedGroup.Applications
-					.Select(id => ConnectionStore.Connections[selectedMachine].Configuration.Applications.FirstOrDefault(x => x.ID == id))
+					.Select(id => ConnectionStore.Connections[_selectedMachine].Configuration.Applications.FirstOrDefault(x => x.ID == id))
 					.Where(application => application != null)
 					.Select(application => new ListViewItem(application.Name) { Tag = application.ID })
 					.ToArray());
@@ -177,14 +184,13 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonAddGroup_Click(object sender, EventArgs e)
 		{
-			Machine selectedMachine = (Machine) comboBoxMachines.SelectedItem;
-			if (selectedMachine == null) return;
+			if (_selectedMachine == null) return;
 
 			UpdateSelectedGroup();
-			string groupName = GetFirstAvailableDefaultName(ConnectionStore.Connections[selectedMachine].Configuration.Groups.Select(group => group.Name).ToList(), "Group");
+			string groupName = GetFirstAvailableDefaultName(ConnectionStore.Connections[_selectedMachine].Configuration.Groups.Select(group => group.Name).ToList(), "Group");
 			_selectedGroup = new Group(groupName);
-			ConnectionStore.Connections[selectedMachine].Configuration.Groups.Add(_selectedGroup);
-			ConnectionStore.Connections[selectedMachine].ConfigurationModified = true;
+			ConnectionStore.Connections[_selectedMachine].Configuration.Groups.Add(_selectedGroup);
+			ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
 			textBoxGroupName.Text = _selectedGroup.Name;
 			textBoxGroupPath.Text = _selectedGroup.Path;
 			listViewGroupApplications.Items.Clear();
@@ -197,14 +203,13 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonRemoveGroup_Click(object sender, EventArgs e)
 		{
-			Machine selectedMachine = (Machine) comboBoxMachines.SelectedItem;
-			if (selectedMachine == null) return;
+			if (_selectedMachine == null) return;
 
 			if (listViewGroups.SelectedItems.Count > 0)
 			{
 				_selectedGroup = (Group) listViewGroups.SelectedItems[0].Tag;
-				ConnectionStore.Connections[selectedMachine].Configuration.Groups.Remove(_selectedGroup);
-				ConnectionStore.Connections[selectedMachine].ConfigurationModified = true;
+				ConnectionStore.Connections[_selectedMachine].Configuration.Groups.Remove(_selectedGroup);
+				ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
 				listViewGroups.Items.Remove(listViewGroups.SelectedItems[0]);
 				_selectedGroup = null;
 				EnableControls();
@@ -249,22 +254,9 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonAddGroupApplication_Click(object sender, EventArgs e)
 		{
-			Machine selectedMachine = (Machine) comboBoxMachines.SelectedItem;
-			if (selectedMachine == null) return;
+			if (_selectedMachine == null) return;
 
-			Picker.ShowMenu(buttonAddGroupApplication,
-				ConnectionStore.Connections[selectedMachine].Configuration.Applications
-					.Except(ConnectionStore.Connections[selectedMachine].Configuration.Applications
-						.Where(x => listViewGroupApplications.Items.Cast<ListViewItem>().Select(y => (Guid) y.Tag).Contains(x.ID))),
-				ContextMenu_ApplicationClicked);
-		}
-
-		private void ContextMenu_ApplicationClicked(Application application)
-		{
-			listViewGroupApplications.Items.Add(new ListViewItem(application.Name) { Tag = application.ID });
-			listViewGroupApplications.Sort(); // todo: not working??
-			GroupChanged();
-			EnableControls();
+			Picker.ShowMenu(buttonAddGroupApplication, GetNonIncludedGroupApplications(), ContextMenu_AddGroupApplication_ApplicationClicked);
 		}
 
 		private void ButtonRemoveGroupApplication_Click(object sender, EventArgs e)
@@ -279,10 +271,76 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonCopyGroupApplications_Click(object sender, EventArgs e)
 		{
+			if (_selectedMachine == null || _selectedGroup == null) return;
+
+			Picker.ShowMenu(buttonCopyGroupApplications, GetAllGroups(true), ContextMenu_CopyGroupApplications_GroupClicked);
+		}
+
+		#endregion
+
+		#region Applications
+
+		private void ListViewApplications_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void ButtonAddApplication_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void ButtonRemoveApplication_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void TextBoxApplicationName_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void TextBoxApplicationRelativePath_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void ButtonBrowseApplicationRelativePath_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void TextBoxApplicationArguments_TextChanged(object sender, EventArgs e)
+		{
 
 		}
 
 		#endregion
+
+		#endregion
+
+		#region Picker event handlers
+
+		private void ContextMenu_AddGroupApplication_ApplicationClicked(Application application)
+		{
+			listViewGroupApplications.Items.Add(new ListViewItem(application.Name) { Tag = application.ID });
+			GroupChanged();
+			EnableControls();
+		}
+
+		private void ContextMenu_CopyGroupApplications_GroupClicked(Group group)
+		{
+			if (_selectedMachine == null) return;
+
+			listViewGroupApplications.Items.Clear();
+			listViewGroupApplications.Items.AddRange(group.Applications
+				.Select(id => ConnectionStore.Connections[_selectedMachine].Configuration.Applications.FirstOrDefault(x => x.ID == id))
+				.Where(application => application != null)
+				.Select(application => new ListViewItem(application.Name) { Tag = application.ID })
+				.ToArray());
+			GroupChanged();
+			EnableControls();
+		}
 
 		#endregion
 
@@ -303,7 +361,7 @@ namespace ProcessManagerUI.Forms
 				{
 					Messenger.ShowError("Failed to connect to machine", "Could not connect to Process Manager service at " + machine.HostName, e.Exception.Message);
 				}
-				else if (e.Status == ProcessManagerServiceHandlerStatus.Connected && comboBoxMachines.SelectedItem == machine)
+				else if (e.Status == ProcessManagerServiceHandlerStatus.Connected && _selectedMachine == machine)
 				{
 					PopulateAllControls();
 				}
@@ -319,7 +377,7 @@ namespace ProcessManagerUI.Forms
 			}
 
 			Machine machine = ConnectionStore.Connections.Values.Where(x => x.ServiceHandler == e.ServiceHandler).Select(x => x.Machine).FirstOrDefault();
-			if (machine != null && comboBoxMachines.SelectedItem == machine)
+			if (machine != null && _selectedMachine == machine)
 			{
 				if (e.Status == ProcessManagerServiceHandlerStatus.Disconnected)
 				{
@@ -338,6 +396,8 @@ namespace ProcessManagerUI.Forms
 
 		#region Helpers
 
+		#region Machines
+
 		private void ConnectMachines()
 		{
 			ConnectionStore.Connections.Keys.Where(machine => !Settings.Client.Machines.Contains(machine)).ToList().ForEach(ConnectionStore.RemoveConnection);
@@ -354,7 +414,7 @@ namespace ProcessManagerUI.Forms
 					});
 			}
 
-			WaitForConfiguration((Machine) comboBoxMachines.SelectedItem);
+			WaitForConfiguration(_selectedMachine);
 		}
 
 		private void PopulateMachinesComboBox(bool enableAutoSelect = true)
@@ -389,6 +449,181 @@ namespace ProcessManagerUI.Forms
 			comboBoxMachines.SelectedIndex = (index == -1 ? 0 : index);
 		}
 
+		#endregion
+
+		#region Configuration
+
+		private static void WaitForConfiguration(Machine machine)
+		{
+			if (machine != null && ConnectionStore.Connections[machine].Configuration == null)
+				Worker.WaitFor("Retrieving configuration...", () => (ConnectionStore.Connections[machine].ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Disconnected
+					|| ConnectionStore.Connections[machine].ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Connected && ConnectionStore.Connections[machine].Configuration != null));
+		}
+
+		private static void ReloadConfiguration(Machine machine = null)
+		{
+			Worker.Do("Retrieving configuration...", () =>
+				{
+					foreach (MachineConnection connection in ConnectionStore.Connections.Values.Where(x => (machine == null || machine.Equals(x.Machine))))
+					{
+						try { connection.Configuration = connection.ServiceHandler.Service.GetConfiguration().FromDTO(); } catch { ; }
+					}
+				});
+		}
+
+		private bool SaveConfiguration()
+		{
+			UpdateSelectedGroup();
+			if (HasUnsavedConfiguration)
+			{
+				// validate
+				if (!ValidateGroups())
+					return false;
+
+				// save
+				IDictionary<Machine, Exception> exceptions = new Dictionary<Machine, Exception>();
+				Worker.Do("Saving configuration...", () =>
+					{
+						foreach (MachineConnection connection in ConnectionStore.Connections.Values.Where(connection => connection.ConfigurationModified))
+						{
+							try
+							{
+								connection.ServiceHandler.Service.SetConfiguration(new DTOConfiguration(connection.Configuration));
+								connection.ConfigurationModified = false;
+							}
+							catch (Exception ex)
+							{
+								exceptions.Add(connection.Machine, ex);
+							}
+						}
+					});
+				if (exceptions.Count > 0)
+				{
+					Messenger.ShowError("Failed to save configuration",
+						"Could not save configuration for " + exceptions.Aggregate(string.Empty, (x, y) => x + ", " + y.Key).Trim(", ".ToCharArray()),
+						exceptions.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine + y.Value.Message).Trim());
+					return false;
+				}
+				EnableControls();
+			}
+			return true;
+		}
+
+		#endregion
+
+		#region Groups
+
+		private void UpdateSelectedGroup()
+		{
+			if (_selectedGroup != null)
+			{
+				if (GroupChanged())
+				{
+					_selectedGroup.Name = textBoxGroupName.Text;
+					_selectedGroup.Path = textBoxGroupPath.Text;
+					_selectedGroup.Applications.Clear();
+					_selectedGroup.Applications.AddRange(listViewGroupApplications.Items.Cast<ListViewItem>().Select(x => (Guid) x.Tag));
+					ListViewItem item = listViewGroups.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedGroup);
+					item.Text = _selectedGroup.Name;
+				}
+				textBoxGroupName.Text = _selectedGroup.Name;
+				EnableControls();
+			}
+		}
+
+		private bool GroupChanged()
+		{
+			bool groupChanged = false;
+			if (_selectedMachine != null && _selectedGroup != null && !string.IsNullOrEmpty(textBoxGroupName.Text))
+			{
+				int equalApplicationsCount = _selectedGroup.Applications.Intersect(listViewGroupApplications.Items.Cast<ListViewItem>().Select(x => (Guid) x.Tag)).Count();
+				groupChanged = (_selectedGroup.Name != textBoxGroupName.Text || _selectedGroup.Path != textBoxGroupPath.Text
+					|| equalApplicationsCount != _selectedGroup.Applications.Count || equalApplicationsCount != listViewGroupApplications.Items.Count);
+				ConnectionStore.Connections[_selectedMachine].ConfigurationModified |= groupChanged;
+			}
+			return groupChanged;
+		}
+
+		private IEnumerable<Application> GetNonIncludedGroupApplications()
+		{
+			if (_selectedMachine == null) return new List<Application>();
+
+			return ConnectionStore.Connections[_selectedMachine].Configuration.Applications
+				.Except(ConnectionStore.Connections[_selectedMachine].Configuration.Applications
+					.Where(x => listViewGroupApplications.Items.Cast<ListViewItem>().Any(y => (Guid) y.Tag == x.ID)));
+		}
+
+		private IEnumerable<Group> GetAllGroups(bool exceptCurrent)
+		{
+			if (_selectedMachine == null || _selectedGroup == null) return new List<Group>();
+
+			List<Group> groups = ConnectionStore.Connections[_selectedMachine].Configuration.Groups;
+			return (exceptCurrent ? groups.Except(new List<Group>() { _selectedGroup }) : groups);
+		}
+
+		private static bool ValidateGroups()
+		{
+			IDictionary<Machine, Dictionary<Group, List<string>>> invalidGroups =
+				ConnectionStore.Connections.Values
+					.Where(connection => connection.ConfigurationModified)
+					.Select(connection => new
+						{
+							Machine = connection.Machine,
+							Groups = connection.Configuration.Groups
+								.Select(group => new
+									{
+										Group = group,
+										Messages = GroupIsValid(group)
+									})
+								.Where(x => x.Messages.Count > 0)
+								.ToList()
+						})
+					.Where(x => x.Groups.Count > 0)
+					.ToDictionary(x => x.Machine, x => x.Groups.ToDictionary(y => y.Group, y => y.Messages));
+			if (invalidGroups.Count > 0)
+			{
+				int invalidGroupCount = invalidGroups.SelectMany(x => x.Value).Count();
+				Messenger.ShowError("Group" + (invalidGroupCount == 1 ? string.Empty : "s") + " invalid", "One or more group properties invalid. See details for further information.",
+					invalidGroups.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine
+						+ y.Value.SelectMany(z => z.Value, (a, b) => new { Group = a.Key, Message = b })
+							.Aggregate(string.Empty, (a, b) => a + Environment.NewLine + y.Key + " > " + b.Group + ": " + b.Message).Trim()).Trim());
+				return false;
+			}
+			return true;
+		}
+
+		private static List<string> GroupIsValid(Group group)
+		{
+			List<string> messages = new List<string>();
+			if (string.IsNullOrEmpty(group.Name))
+				messages.Add("Name missing");
+			if (string.IsNullOrEmpty(group.Path))
+				messages.Add("Path missing");
+			else if (!Path.IsPathRooted(group.Path))
+				messages.Add("Path must be rooted");
+			return messages;
+		}
+
+		#endregion
+
+		#region Applications
+
+
+
+		#endregion
+
+		private static string GetFirstAvailableDefaultName(List<string> existingNames, string nameTemplate)
+		{
+			int tryNo = 1;
+			nameTemplate = nameTemplate.Trim() + " ";
+			string name = nameTemplate + tryNo;
+
+			while (existingNames.Contains(name))
+				name = nameTemplate + (++tryNo);
+
+			return name;
+		}
+
 		private void ShowAllControls(bool show = true)
 		{
 			labelMachineNotAvailable.Visible = !show;
@@ -419,119 +654,24 @@ namespace ProcessManagerUI.Forms
 		private void PopulateAllControls()
 		{
 			ClearAllControls();
-			Machine selectedMachine = (Machine) comboBoxMachines.SelectedItem;
-			WaitForConfiguration(selectedMachine);
+			WaitForConfiguration(_selectedMachine);
 			listViewGroups.Items.Clear();
 			listViewApplications.Items.Clear();
 			listViewPlugins.Items.Clear();
-			if (ConnectionStore.Connections[selectedMachine].Configuration != null)
+			if (_selectedMachine != null && ConnectionStore.Connections[_selectedMachine].Configuration != null)
 			{
-				ConnectionStore.Connections[selectedMachine].Configuration.Groups.ForEach(group => listViewGroups.Items.Add(new ListViewItem(group.Name) { Tag = group }));
-				ConnectionStore.Connections[selectedMachine].Configuration.Applications.ForEach(application => listViewApplications.Items.Add(new ListViewItem(application.Name) { Tag = application }));
+				ConnectionStore.Connections[_selectedMachine].Configuration.Groups.ForEach(group => listViewGroups.Items.Add(new ListViewItem(group.Name) { Tag = group }));
+				ConnectionStore.Connections[_selectedMachine].Configuration.Applications.ForEach(application => listViewApplications.Items.Add(new ListViewItem(application.Name) { Tag = application }));
 			}
-			ShowAllControls(ConnectionStore.Connections[selectedMachine].Configuration != null);
-		}
-
-		private void WaitForConfiguration(Machine machine)
-		{
-			if (machine != null && ConnectionStore.Connections[machine].Configuration == null)
-				Worker.WaitFor("Retrieving configuration...", () => (ConnectionStore.Connections[machine].ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Disconnected
-					|| ConnectionStore.Connections[machine].ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Connected && ConnectionStore.Connections[machine].Configuration != null));
-		}
-
-		private void ReloadConfiguration(Machine machine = null)
-		{
-			Worker.Do("Retrieving configuration...", () =>
-				{
-					foreach (MachineConnection connection in ConnectionStore.Connections.Values.Where(x => (machine == null || machine.Equals(x.Machine))))
-					{
-						try { connection.Configuration = connection.ServiceHandler.Service.GetConfiguration().FromDTO(); } catch { ; }
-					}
-				});
-		}
-
-		private bool SaveConfiguration()
-		{
-			UpdateSelectedGroup();
-			if (HasUnsavedConfiguration)
-			{
-				IDictionary<Machine, Exception> exceptions = new Dictionary<Machine, Exception>();
-				Worker.Do("Saving configuration...", () =>
-					{
-						foreach (MachineConnection connection in ConnectionStore.Connections.Values.Where(connection => connection.ConfigurationModified))
-						{
-							try
-							{
-								connection.ServiceHandler.Service.SetConfiguration(new DTOConfiguration(connection.Configuration));
-								connection.ConfigurationModified = false;
-							}
-							catch (Exception ex)
-							{
-								exceptions.Add(connection.Machine, ex);
-							}
-						}
-					});
-				if (exceptions.Count > 0)
-				{
-					Messenger.ShowError("Failed to save configuration",
-						"Could not save configuration for " + exceptions.Aggregate(string.Empty, (x, y) => x + ", " + y.Key).Trim(", ".ToCharArray()),
-						exceptions.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine + y.Value.Message).Trim());
-					return false;
-				}
-				EnableControls();
-			}
-			return true;
-		}
-
-		private string GetFirstAvailableDefaultName(List<string> existingNames, string nameTemplate)
-		{
-			int tryNo = 1;
-			nameTemplate = nameTemplate.Trim() + " ";
-			string name = nameTemplate + tryNo;
-
-			while (existingNames.Contains(name))
-				name = nameTemplate + (++tryNo);
-
-			return name;
-		}
-
-		private void UpdateSelectedGroup()
-		{
-			if (_selectedGroup != null)
-			{
-				if (GroupChanged())
-				{
-					_selectedGroup.Name = textBoxGroupName.Text;
-					_selectedGroup.Path = textBoxGroupPath.Text;
-					_selectedGroup.Applications.Clear();
-					_selectedGroup.Applications.AddRange(listViewGroupApplications.Items.Cast<ListViewItem>().Select(x => (Guid) x.Tag));
-					ListViewItem item = listViewGroups.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedGroup);
-					item.Text = _selectedGroup.Name;
-					listViewGroups.Sort();
-				}
-				textBoxGroupName.Text = _selectedGroup.Name;
-				EnableControls();
-			}
-		}
-
-		private bool GroupChanged()
-		{
-			bool groupChanged = false;
-			if (_selectedGroup != null && !string.IsNullOrEmpty(textBoxGroupName.Text))
-			{
-				int equalApplicationsCount = _selectedGroup.Applications.Intersect(listViewGroupApplications.Items.Cast<ListViewItem>().Select(x => (Guid) x.Tag)).Count();
-				groupChanged = (_selectedGroup.Name != textBoxGroupName.Text || _selectedGroup.Path != textBoxGroupPath.Text
-					|| equalApplicationsCount != _selectedGroup.Applications.Count || equalApplicationsCount != listViewGroupApplications.Items.Count);
-				Machine selectedMachine = (Machine) comboBoxMachines.SelectedItem;
-				ConnectionStore.Connections[selectedMachine].ConfigurationModified |= groupChanged;
-			}
-			return groupChanged;
+			ShowAllControls(_selectedMachine != null && ConnectionStore.Connections[_selectedMachine].Configuration != null);
 		}
 
 		private void EnableControls(bool enable = true)
 		{
 			buttonApply.Enabled = (enable && HasUnsavedConfiguration);
+			buttonAddGroupApplication.Enabled = (enable && GetNonIncludedGroupApplications().Count() > 0);
 			buttonRemoveGroupApplication.Enabled = (enable && listViewGroupApplications.SelectedItems.Count > 0);
+			buttonCopyGroupApplications.Enabled = (enable && GetAllGroups(true).Count() > 0);
 		}
 
 		#endregion

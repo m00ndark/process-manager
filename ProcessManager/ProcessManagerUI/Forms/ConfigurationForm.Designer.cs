@@ -35,6 +35,7 @@
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.labelNothingToShow = new System.Windows.Forms.Label();
+			this.labelMachineNotAvailable = new System.Windows.Forms.Label();
 			this.panelGroups = new ProcessManagerUI.Controls.BackgroundPanel();
 			this.panelGroup = new System.Windows.Forms.Panel();
 			this.labeledDividerGroup = new ProcessManagerUI.Controls.LabeledDivider();
@@ -83,7 +84,6 @@
 			this.listViewApplications = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderApplications = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.treeViewConfiguration = new ProcessManagerUI.Controls.TreeView();
-			this.labelMachineNotAvailable = new System.Windows.Forms.Label();
 			this.panelGroups.SuspendLayout();
 			this.panelGroup.SuspendLayout();
 			this.panelPlugins.SuspendLayout();
@@ -158,6 +158,16 @@
 			this.labelNothingToShow.TabIndex = 21;
 			this.labelNothingToShow.Text = "There are no items to show in this view";
 			this.labelNothingToShow.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// labelMachineNotAvailable
+			// 
+			this.labelMachineNotAvailable.Location = new System.Drawing.Point(12, 39);
+			this.labelMachineNotAvailable.Name = "labelMachineNotAvailable";
+			this.labelMachineNotAvailable.Size = new System.Drawing.Size(750, 362);
+			this.labelMachineNotAvailable.TabIndex = 22;
+			this.labelMachineNotAvailable.Text = "The selected machine is not available";
+			this.labelMachineNotAvailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.labelMachineNotAvailable.Visible = false;
 			// 
 			// panelGroups
 			// 
@@ -287,6 +297,7 @@
 			this.listViewGroupApplications.MultiSelect = false;
 			this.listViewGroupApplications.Name = "listViewGroupApplications";
 			this.listViewGroupApplications.Size = new System.Drawing.Size(286, 226);
+			this.listViewGroupApplications.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listViewGroupApplications.TabIndex = 13;
 			this.listViewGroupApplications.UseCompatibleStateImageBehavior = false;
 			this.listViewGroupApplications.View = System.Windows.Forms.View.Details;
@@ -384,6 +395,7 @@
 			this.listViewGroups.MultiSelect = false;
 			this.listViewGroups.Name = "listViewGroups";
 			this.listViewGroups.Size = new System.Drawing.Size(120, 317);
+			this.listViewGroups.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listViewGroups.TabIndex = 0;
 			this.listViewGroups.UseCompatibleStateImageBehavior = false;
 			this.listViewGroups.View = System.Windows.Forms.View.Details;
@@ -517,6 +529,7 @@
 			this.listViewPlugins.MultiSelect = false;
 			this.listViewPlugins.Name = "listViewPlugins";
 			this.listViewPlugins.Size = new System.Drawing.Size(120, 346);
+			this.listViewPlugins.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listViewPlugins.TabIndex = 0;
 			this.listViewPlugins.UseCompatibleStateImageBehavior = false;
 			this.listViewPlugins.View = System.Windows.Forms.View.Details;
@@ -583,6 +596,7 @@
 			this.textBoxApplicationArguments.Name = "textBoxApplicationArguments";
 			this.textBoxApplicationArguments.Size = new System.Drawing.Size(283, 22);
 			this.textBoxApplicationArguments.TabIndex = 13;
+			this.textBoxApplicationArguments.TextChanged += new System.EventHandler(this.TextBoxApplicationArguments_TextChanged);
 			// 
 			// labelApplicationName
 			// 
@@ -610,6 +624,7 @@
 			this.textBoxApplicationName.Name = "textBoxApplicationName";
 			this.textBoxApplicationName.Size = new System.Drawing.Size(283, 22);
 			this.textBoxApplicationName.TabIndex = 6;
+			this.textBoxApplicationName.TextChanged += new System.EventHandler(this.TextBoxApplicationName_TextChanged);
 			// 
 			// buttonBrowseApplicationRelativePath
 			// 
@@ -620,6 +635,7 @@
 			this.buttonBrowseApplicationRelativePath.TabIndex = 11;
 			this.buttonBrowseApplicationRelativePath.Text = "...";
 			this.buttonBrowseApplicationRelativePath.UseVisualStyleBackColor = true;
+			this.buttonBrowseApplicationRelativePath.Click += new System.EventHandler(this.ButtonBrowseApplicationRelativePath_Click);
 			// 
 			// labelApplicationRelativePath
 			// 
@@ -638,6 +654,7 @@
 			this.textBoxApplicationRelativePath.Name = "textBoxApplicationRelativePath";
 			this.textBoxApplicationRelativePath.Size = new System.Drawing.Size(283, 22);
 			this.textBoxApplicationRelativePath.TabIndex = 8;
+			this.textBoxApplicationRelativePath.TextChanged += new System.EventHandler(this.TextBoxApplicationRelativePath_TextChanged);
 			// 
 			// labelNoApplicationSelected
 			// 
@@ -657,6 +674,7 @@
 			this.buttonRemoveApplication.TabIndex = 2;
 			this.buttonRemoveApplication.Text = "Remove";
 			this.buttonRemoveApplication.UseVisualStyleBackColor = true;
+			this.buttonRemoveApplication.Click += new System.EventHandler(this.ButtonRemoveApplication_Click);
 			// 
 			// buttonAddApplication
 			// 
@@ -667,6 +685,7 @@
 			this.buttonAddApplication.TabIndex = 1;
 			this.buttonAddApplication.Text = "Add";
 			this.buttonAddApplication.UseVisualStyleBackColor = true;
+			this.buttonAddApplication.Click += new System.EventHandler(this.ButtonAddApplication_Click);
 			// 
 			// listViewApplications
 			// 
@@ -681,9 +700,11 @@
 			this.listViewApplications.MultiSelect = false;
 			this.listViewApplications.Name = "listViewApplications";
 			this.listViewApplications.Size = new System.Drawing.Size(120, 317);
+			this.listViewApplications.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listViewApplications.TabIndex = 0;
 			this.listViewApplications.UseCompatibleStateImageBehavior = false;
 			this.listViewApplications.View = System.Windows.Forms.View.Details;
+			this.listViewApplications.SelectedIndexChanged += new System.EventHandler(this.ListViewApplications_SelectedIndexChanged);
 			// 
 			// columnHeaderApplications
 			// 
@@ -704,16 +725,6 @@
 			this.treeViewConfiguration.TabIndex = 2;
 			this.treeViewConfiguration.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewConfiguration_AfterSelect);
 			// 
-			// labelMachineNotAvailable
-			// 
-			this.labelMachineNotAvailable.Location = new System.Drawing.Point(12, 39);
-			this.labelMachineNotAvailable.Name = "labelMachineNotAvailable";
-			this.labelMachineNotAvailable.Size = new System.Drawing.Size(750, 362);
-			this.labelMachineNotAvailable.TabIndex = 22;
-			this.labelMachineNotAvailable.Text = "The selected machine is not available";
-			this.labelMachineNotAvailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.labelMachineNotAvailable.Visible = false;
-			// 
 			// ConfigurationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -721,8 +732,8 @@
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(774, 442);
 			this.Controls.Add(this.panelGroups);
-			this.Controls.Add(this.panelPlugins);
 			this.Controls.Add(this.panelApplications);
+			this.Controls.Add(this.panelPlugins);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.labelNothingToShow);
 			this.Controls.Add(this.buttonCancel);

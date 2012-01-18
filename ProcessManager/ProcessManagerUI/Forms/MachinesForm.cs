@@ -66,7 +66,6 @@ namespace ProcessManagerUI.Forms
 			Settings.Client.Machines.Add(_selectedMachine);
 			textBoxMachineHostName.Text = _selectedMachine.HostName;
 			ListViewItem item = listViewMachines.Items.Add(new ListViewItem(_selectedMachine.HostName) { Tag = _selectedMachine });
-			listViewMachines.Sort();
 			item.Selected = true;
 			panelMachine.Visible = true;
 			EnableControls();
@@ -152,7 +151,6 @@ namespace ProcessManagerUI.Forms
 					_selectedMachine.HostName = textBoxMachineHostName.Text;
 					ListViewItem item = listViewMachines.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedMachine);
 					item.Text = _selectedMachine.HostName;
-					listViewMachines.Sort();
 				}
 				textBoxMachineHostName.Text = _selectedMachine.HostName;
 				EnableControls();
