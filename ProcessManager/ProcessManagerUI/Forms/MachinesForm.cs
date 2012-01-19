@@ -104,7 +104,7 @@ namespace ProcessManagerUI.Forms
 			}
 			catch (Exception ex)
 			{
-				Messenger.ShowError("Machine connection validation failed", "Connection to a Process Manager service on the specified machine could not be established.", ex.Message);
+				Messenger.ShowError("Machine connection validation failed", "Connection to a Process Manager service on the specified machine could not be established.", ex);
 			}
 		}
 

@@ -358,7 +358,9 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonBrowseApplicationRelativePath_Click(object sender, EventArgs e)
 		{
+			if (_selectedMachine == null) return;
 
+			Picker.ShowMenu(buttonBrowseApplicationRelativePath, GetAllGroups(false), ContextMenu_BrowseApplicationRelativePath_GroupClicked);
 		}
 
 		private void TextBoxApplicationArguments_TextChanged(object sender, EventArgs e)
@@ -397,6 +399,26 @@ namespace ProcessManagerUI.Forms
 			EnableControls();
 		}
 
+		private void ContextMenu_BrowseApplicationRelativePath_GroupClicked(Group group)
+		{
+			OpenFileDialog openFileDialog = new OpenFileDialog()
+				{
+					Title = "Select an application",
+					InitialDirectory = (string.IsNullOrEmpty(textBoxApplicationRelativePath.Text) ? group.Path
+						: Path.GetDirectoryName(Path.Combine(group.Path, textBoxApplicationRelativePath.Text.Trim(Path.DirectorySeparatorChar)))),
+					FileName = (string.IsNullOrEmpty(textBoxApplicationRelativePath.Text) ? string.Empty : Path.GetFileName(textBoxApplicationRelativePath.Text)),
+					Filter = "Applications (*.exe)|*.exe|All files (*.*)|*.*",
+					CheckFileExists = true
+				};
+			if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+			{
+				if (!openFileDialog.FileName.StartsWith(group.Path, StringComparison.CurrentCultureIgnoreCase))
+					Messenger.ShowError("Invalid application path", "The selected application's path must start with the selected group's path; " + group.Path);
+				else
+					textBoxApplicationRelativePath.Text = openFileDialog.FileName.Substring(group.Path.TrimEnd(Path.DirectorySeparatorChar).Length);
+			}
+		}
+
 		#endregion
 
 		#region Service handler event handlers
@@ -414,7 +436,7 @@ namespace ProcessManagerUI.Forms
 			{
 				if (e.Status == ProcessManagerServiceHandlerStatus.Disconnected && e.Exception != null)
 				{
-					Messenger.ShowError("Failed to connect to machine", "Could not connect to Process Manager service at " + machine.HostName, e.Exception.Message);
+					Messenger.ShowError("Failed to connect to machine", "Could not connect to Process Manager service at " + machine.HostName, e.Exception);
 				}
 				else if (e.Status == ProcessManagerServiceHandlerStatus.Connected && _selectedMachine == machine)
 				{
@@ -610,10 +632,10 @@ namespace ProcessManagerUI.Forms
 
 		private IEnumerable<Group> GetAllGroups(bool exceptCurrent)
 		{
-			if (_selectedMachine == null || _selectedGroup == null) return new List<Group>();
+			if (_selectedMachine == null) return new List<Group>();
 
 			List<Group> groups = ConnectionStore.Connections[_selectedMachine].Configuration.Groups;
-			return (exceptCurrent ? groups.Except(new List<Group>() { _selectedGroup }) : groups);
+			return (exceptCurrent ? (_selectedGroup == null ? new List<Group>() : groups.Except(new List<Group>() { _selectedGroup })) : groups);
 		}
 
 		private static bool ValidateGroups()
@@ -803,5 +825,40 @@ namespace ProcessManagerUI.Forms
 		}
 
 		#endregion
+
+		private void textBoxApplicationArguments_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void textBoxApplicationName_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void buttonBrowseApplicationRelativePath_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void textBoxApplicationRelativePath_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void buttonRemoveApplication_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void buttonAddApplication_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void listViewApplications_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

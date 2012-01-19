@@ -190,6 +190,9 @@
 			// 
 			// panelGroup
 			// 
+			this.panelGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.panelGroup.Controls.Add(this.labeledDividerGroup);
 			this.panelGroup.Controls.Add(this.buttonCopyGroupApplications);
 			this.panelGroup.Controls.Add(this.labelGroupName);
@@ -425,6 +428,9 @@
 			// 
 			// panelPlugin
 			// 
+			this.panelPlugin.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.panelPlugin.Controls.Add(this.checkBoxPluginEnabled);
 			this.panelPlugin.Controls.Add(this.labeledDividerPlugin);
 			this.panelPlugin.Controls.Add(this.labelPluginDescriptionValue);
@@ -560,6 +566,9 @@
 			// 
 			// panelApplication
 			// 
+			this.panelApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.panelApplication.Controls.Add(this.labeledDividerApplication);
 			this.panelApplication.Controls.Add(this.textBoxApplicationArguments);
 			this.panelApplication.Controls.Add(this.labelApplicationName);

@@ -15,19 +15,26 @@ namespace ProcessManagerUI.Utilities
 
 		public static void ShowMenu<T>(Point position, IEnumerable<T> items, Action<T> pickHandler)
 		{
+			if (items == null || items.Count() == 0) return;
+
 			ContextMenuStrip contextMenu = new ContextMenuStrip();
-			EventHandler menuItemClickEventHandler = null;
-			menuItemClickEventHandler = (sender, e) =>
-			{
-				contextMenu.Items.Cast<ToolStripItem>().ToList().ForEach(item => item.Click -= menuItemClickEventHandler);
-				pickHandler((T) ((ToolStripMenuItem) sender).Tag);
-			};
-			foreach (T item in items)
-			{
-				ToolStripMenuItem menuItem = new ToolStripMenuItem(item.ToString()) { Tag = item };
-				menuItem.Click += menuItemClickEventHandler;
-				contextMenu.Items.Add(menuItem);
-			}
+			ToolStripDropDownClosedEventHandler contextMenuClosedEventHandler = null;
+			ToolStripItemClickedEventHandler menuItemClickedEventHandler = null;
+			contextMenuClosedEventHandler = (sender, e) =>
+				{
+					contextMenu.Closed -= contextMenuClosedEventHandler;
+					contextMenu.ItemClicked -= menuItemClickedEventHandler;
+				};
+			menuItemClickedEventHandler = (sender, e) =>
+				{
+					contextMenu.Closed -= contextMenuClosedEventHandler;
+					contextMenu.ItemClicked -= menuItemClickedEventHandler;
+					contextMenu.Close();
+					pickHandler((T) e.ClickedItem.Tag);
+				};
+			contextMenu.Closed += contextMenuClosedEventHandler;
+			contextMenu.ItemClicked += menuItemClickedEventHandler;
+			items.OrderBy(item => item.ToString()).ToList().ForEach(item => contextMenu.Items.Add(new ToolStripMenuItem(item.ToString()) { Tag = item }));
 			contextMenu.Show(position);
 		}
 	}

@@ -16,6 +16,11 @@ namespace ProcessManagerUI.Utilities
 				ShowError("An exception occurred", ex.ToString());
 		}
 
+		public static void ShowError(string instruction, string message, Exception exceptionAsDetails)
+		{
+			ShowError(instruction, message, exceptionAsDetails.Message);
+		}
+
 		public static void ShowError(string instruction, string message, string details = null)
 		{
 			ShowMessage(instruction, message, MessageBoxButtons.OK, MessageBoxIcon.Error, details);
