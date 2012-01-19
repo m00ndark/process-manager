@@ -152,6 +152,9 @@
 			// 
 			// labelNothingToShow
 			// 
+			this.labelNothingToShow.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelNothingToShow.Location = new System.Drawing.Point(174, 39);
 			this.labelNothingToShow.Name = "labelNothingToShow";
 			this.labelNothingToShow.Size = new System.Drawing.Size(588, 362);
@@ -161,6 +164,9 @@
 			// 
 			// labelMachineNotAvailable
 			// 
+			this.labelMachineNotAvailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelMachineNotAvailable.Location = new System.Drawing.Point(12, 39);
 			this.labelMachineNotAvailable.Name = "labelMachineNotAvailable";
 			this.labelMachineNotAvailable.Size = new System.Drawing.Size(750, 362);
@@ -356,6 +362,9 @@
 			// 
 			// labelNoGroupSelected
 			// 
+			this.labelNoGroupSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelNoGroupSelected.Location = new System.Drawing.Point(144, 8);
 			this.labelNoGroupSelected.Name = "labelNoGroupSelected";
 			this.labelNoGroupSelected.Size = new System.Drawing.Size(436, 345);
@@ -515,6 +524,9 @@
 			// 
 			// labelNoPluginSelected
 			// 
+			this.labelNoPluginSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelNoPluginSelected.Location = new System.Drawing.Point(144, 8);
 			this.labelNoPluginSelected.Name = "labelNoPluginSelected";
 			this.labelNoPluginSelected.Size = new System.Drawing.Size(436, 345);
@@ -667,6 +679,9 @@
 			// 
 			// labelNoApplicationSelected
 			// 
+			this.labelNoApplicationSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelNoApplicationSelected.Location = new System.Drawing.Point(144, 8);
 			this.labelNoApplicationSelected.Name = "labelNoApplicationSelected";
 			this.labelNoApplicationSelected.Size = new System.Drawing.Size(436, 345);

@@ -28,6 +28,7 @@ namespace ProcessManagerUI.Forms
 		{
 			InitializeComponent();
 			_processManagerEventHandler = processManagerEventHandler;
+			_processManagerEventHandler.ConfigurationChanged += ProcessManagerEventHandler_ConfigurationChanged;
 			_currentPanel = null;
 			_selectedMachine = null;
 			_selectedGroup = null;
@@ -84,6 +85,7 @@ namespace ProcessManagerUI.Forms
 
 		private void ConfigurationForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			_processManagerEventHandler.ConfigurationChanged -= ProcessManagerEventHandler_ConfigurationChanged;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted -= ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged -= ServiceConnectionHandler_ServiceHandlerConnectionChanged;
 			Settings.Client.CFG_SelectedConfigurationSection =
@@ -421,6 +423,21 @@ namespace ProcessManagerUI.Forms
 
 		#endregion
 
+		#region Process manager event handlers
+
+		private void ProcessManagerEventHandler_ConfigurationChanged(object sender, MachineConfigurationHashEventArgs e)
+		{
+			if (ConnectionStore.Connections[e.Machine].Configuration.Hash != e.ConfigurationHash)
+			{
+				Messenger.ShowWarning("Configuration changed", "The configuration for " + e.Machine + " was changed from another client."
+					+ " Configuration will be reloaded to reflect those changes.");
+
+				ReloadConfiguration(e.Machine);
+			}
+		}
+
+		#endregion
+
 		#region Service handler event handlers
 
 		private void ServiceConnectionHandler_ServiceHandlerInitializationCompleted(object sender, ServiceHandlerConnectionChangedEventArgs e)
@@ -565,6 +582,7 @@ namespace ProcessManagerUI.Forms
 						{
 							try
 							{
+								connection.Configuration.UpdateHash();
 								connection.ServiceHandler.Service.SetConfiguration(new DTOConfiguration(connection.Configuration));
 								connection.ConfigurationModified = false;
 							}
@@ -755,7 +773,7 @@ namespace ProcessManagerUI.Forms
 				messages.Add("Name missing");
 			if (string.IsNullOrEmpty(application.RelativePath))
 				messages.Add("Relative path missing");
-			else if (Path.IsPathRooted(application.RelativePath))
+			else if (Path.IsPathRooted(application.RelativePath.TrimStart(Path.DirectorySeparatorChar)))
 				messages.Add("Relative path can not be rooted");
 			return messages;
 		}

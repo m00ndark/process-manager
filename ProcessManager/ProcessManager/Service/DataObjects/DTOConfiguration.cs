@@ -10,6 +10,7 @@ namespace ProcessManager.Service.DataObjects
 	{
 		public DTOConfiguration(Configuration configuration)
 		{
+			Hash = configuration.Hash;
 			Groups = new List<DTOGroup>();
 			Applications = new List<DTOApplication>();
 			Groups.AddRange(configuration.Groups.Select(group => new DTOGroup(group)));
@@ -17,6 +18,9 @@ namespace ProcessManager.Service.DataObjects
 		}
 
 		#region Properties
+
+		[DataMember]
+		public string Hash { get; private set; }
 
 		[DataMember]
 		public List<DTOGroup> Groups { get; private set; }
@@ -28,7 +32,7 @@ namespace ProcessManager.Service.DataObjects
 
 		public Configuration FromDTO()
 		{
-			Configuration configuration = new Configuration();
+			Configuration configuration = new Configuration(Hash);
 			configuration.Groups.AddRange(Groups.Select(group => group.FromDTO()));
 			configuration.Applications.AddRange(Applications.Select(application => application.FromDTO()));
 			return configuration;

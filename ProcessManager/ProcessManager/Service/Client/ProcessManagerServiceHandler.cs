@@ -34,10 +34,13 @@ namespace ProcessManager.Service.Client
 			Status = ProcessManagerServiceHandlerStatus.Uninitialized;
 			_processManagerEventHandler = processManagerEventHandler;
 			_isSubscribing = (_processManagerEventHandler != null);
-			_processManagerServiceEventHandler = new ProcessManagerServiceEventHandler();
+			_processManagerServiceEventHandler = new ProcessManagerServiceEventHandler(Machine);
 			SetupClient();
 			if (_isSubscribing)
+			{
 				_processManagerServiceEventHandler.ApplicationStatusesChanged += _processManagerEventHandler.ProcessManagerServiceEventHandler_ApplicationStatusesChanged;
+				_processManagerServiceEventHandler.ConfigurationChanged += _processManagerEventHandler.ProcessManagerServiceEventHandler_ConfigurationChanged;
+			}
 		}
 
 		#region Properties
@@ -60,6 +63,7 @@ namespace ProcessManager.Service.Client
 					_connectionWatcherThread = null;
 				}
 				_processManagerServiceEventHandler.ApplicationStatusesChanged -= _processManagerEventHandler.ProcessManagerServiceEventHandler_ApplicationStatusesChanged;
+				_processManagerServiceEventHandler.ConfigurationChanged -= _processManagerEventHandler.ProcessManagerServiceEventHandler_ConfigurationChanged;
 			}
 			if (_processManagerServiceClient != null)
 			{
@@ -137,12 +141,6 @@ namespace ProcessManager.Service.Client
 					if (_processManagerServiceClient.State == CommunicationState.Faulted)
 					{
 						_processManagerServiceClient.Abort();
-						//if (!connectionLost)
-						//{
-						//    Status = ProcessManagerServiceHandlerStatus.Disconnected;
-						//    connectionLost = true;
-						//    RaiseConnectionChangedEvent();
-						//}
 					}
 
 					if (_processManagerServiceClient.State == CommunicationState.Closed)

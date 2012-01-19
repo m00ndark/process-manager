@@ -13,10 +13,13 @@ namespace ProcessManager
 {
 	public class ProcessManager : IProcessManagerEventProvider
 	{
+		private static volatile ProcessManager _instance;
+		private static readonly object _lock = new object();
+
 		private Thread _mainThread;
 		private Dictionary<Guid, Dictionary<Guid, ApplicationStatus>> _applicationStatuses;
 
-		public ProcessManager()
+		private ProcessManager()
 		{
 			_mainThread = null;
 			_applicationStatuses = new Dictionary<Guid, Dictionary<Guid, ApplicationStatus>>();
@@ -25,10 +28,27 @@ namespace ProcessManager
 		#region Events
 
 		public event EventHandler<ApplicationStatusesEventArgs> ApplicationStatusesChanged;
+		public event EventHandler<MachineConfigurationHashEventArgs> ConfigurationChanged;
 
 		#endregion
 
 		#region Properties
+
+		public static ProcessManager Instance
+		{
+			get
+			{
+				if (_instance == null)
+				{
+					lock (_lock)
+					{
+						if (_instance == null)
+							_instance = new ProcessManager();
+					}
+				}
+				return _instance;
+			}
+		}
 
 		public bool IsRunning { get { return (_mainThread != null); } }
 
@@ -42,18 +62,25 @@ namespace ProcessManager
 				ApplicationStatusesChanged(this, new ApplicationStatusesEventArgs(applicationStatuses));
 		}
 
+		private void RaiseConfigurationChangedEvent(Configuration configuration)
+		{
+			if (ConfigurationChanged != null)
+				ConfigurationChanged(this, new MachineConfigurationHashEventArgs(configuration.Hash));
+		}
+
 		#endregion
 
 		#region Operations
 
-		public static Configuration GetConfiguration()
+		public Configuration GetConfiguration()
 		{
 			return Configuration.Read();
 		}
 
-		public static void SetConfiguration(Configuration configuration)
+		public void SetConfiguration(Configuration configuration)
 		{
 			Configuration.Write(configuration);
+			RaiseConfigurationChangedEvent(configuration);
 		}
 
 		#endregion

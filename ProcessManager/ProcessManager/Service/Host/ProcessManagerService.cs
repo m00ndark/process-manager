@@ -48,13 +48,12 @@ namespace ProcessManager.Service.Host
 
 		public DTOConfiguration GetConfiguration()
 		{
-			return new DTOConfiguration(ProcessManager.GetConfiguration());
+			return new DTOConfiguration(ProcessManager.Instance.GetConfiguration());
 		}
 
 		public void SetConfiguration(DTOConfiguration configuration)
 		{
-			throw new Exception("TEST");
-			ProcessManager.SetConfiguration(configuration.FromDTO());
+			ProcessManager.Instance.SetConfiguration(configuration.FromDTO());
 		}
 
 		#endregion
@@ -69,6 +68,23 @@ namespace ProcessManager.Service.Host
 				try
 				{
 					client.ServiceEvent_ApplicationStatusesChanged(e.ApplicationStatuses.Select(x => new DTOApplicationStatus(x)).ToList());
+				}
+				catch
+				{
+					faultedClients.Add(client);
+				}
+			}
+			RemoveFaultedClients(faultedClients);
+		}
+
+		public void ProcessManagerEventProvider_ConfigurationChanged(object sender, MachineConfigurationHashEventArgs e)
+		{
+			List<IProcessManagerServiceEventHandler> faultedClients = new List<IProcessManagerServiceEventHandler>();
+			foreach (IProcessManagerServiceEventHandler client in _clients.Where(x => x.Value).Select(x => x.Key))
+			{
+				try
+				{
+					client.ServiceEvent_ConfigurationChanged(e.ConfigurationHash);
 				}
 				catch
 				{

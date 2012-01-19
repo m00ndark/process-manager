@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Common;
 using ProcessManager.Service.DataObjects;
@@ -9,9 +10,21 @@ namespace ProcessManager.Service.Client
 {
 	public class ProcessManagerServiceEventHandler : IProcessManagerServiceEventHandler
 	{
+		public ProcessManagerServiceEventHandler(Machine machine)
+		{
+			Machine = machine;
+		}
+
+		#region Properties
+
+		public Machine Machine { get; private set; }
+
+		#endregion
+
 		#region Events
 
 		public event EventHandler<ApplicationStatusesEventArgs> ApplicationStatusesChanged;
+		public event EventHandler<MachineConfigurationHashEventArgs> ConfigurationChanged;
 
 		#endregion
 
@@ -23,6 +36,12 @@ namespace ProcessManager.Service.Client
 				ApplicationStatusesChanged(this, new ApplicationStatusesEventArgs(applicationStatuses.Select(x => x.FromDTO()).ToList()));
 		}
 
+		private void RaiseConfigurationChangedEvent(string configurationHash)
+		{
+			if (ConfigurationChanged != null)
+				ConfigurationChanged(this, new MachineConfigurationHashEventArgs(Machine, configurationHash));
+		}
+
 		#endregion
 
 		#region Implementation of IProcessManagerServiceEventHandler
@@ -30,6 +49,11 @@ namespace ProcessManager.Service.Client
 		public void ServiceEvent_ApplicationStatusesChanged(List<DTOApplicationStatus> applicationStatuses)
 		{
 			RaiseApplicationStatusesChangedEvent(applicationStatuses);
+		}
+
+		public void ServiceEvent_ConfigurationChanged(string configurationHash)
+		{
+			RaiseConfigurationChangedEvent(configurationHash);
 		}
 
 		#endregion

@@ -8,5 +8,8 @@ namespace ProcessManager.Service.Common
 	{
 		[OperationContract(IsOneWay = true)]
 		void ServiceEvent_ApplicationStatusesChanged(List<DTOApplicationStatus> applicationStatuses);
+
+		[OperationContract(IsOneWay = true)]
+		void ServiceEvent_ConfigurationChanged(string configurationHash);
 	}
 }

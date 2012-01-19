@@ -19,12 +19,24 @@ namespace ProcessManagerUI.Forms
 		private readonly IDictionary<Machine, ProcessManagerServiceHandler> _serviceHandlers;
 		private DateTime _formClosedAt;
 
+		public event EventHandler<MachineConfigurationHashEventArgs> ConfigurationChanged;
+
 		public ControlPanelForm()
 		{
 			InitializeComponent();
 			_serviceHandlers = new Dictionary<Machine, ProcessManagerServiceHandler>();
 			_formClosedAt = DateTime.MinValue;
 		}
+
+		#region Event raisers
+
+		private void RaiseConfigurationChangedEvent(Machine machine, string configurationHash)
+		{
+			if (ConfigurationChanged != null)
+				ConfigurationChanged(this, new MachineConfigurationHashEventArgs(machine, configurationHash));
+		}
+
+		#endregion
 
 		#region GUI events handlers
 
@@ -126,6 +138,11 @@ namespace ProcessManagerUI.Forms
 		public void ProcessManagerServiceEventHandler_ApplicationStatusesChanged(object sender, ApplicationStatusesEventArgs e)
 		{
 			
+		}
+
+		public void ProcessManagerServiceEventHandler_ConfigurationChanged(object sender, MachineConfigurationHashEventArgs e)
+		{
+			RaiseConfigurationChangedEvent(e.Machine, e.ConfigurationHash);
 		}
 
 		#endregion

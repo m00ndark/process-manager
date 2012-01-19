@@ -11,7 +11,7 @@ namespace ProcessManagerService
 			Logger.LogSource = LogSource.Server;
 			if (Environment.CommandLine.Contains("-debug"))
 			{
-				new ProcessManager.ProcessManager().Start();
+				ProcessManager.ProcessManager.Instance.Start();
 			}
 			else
 			{

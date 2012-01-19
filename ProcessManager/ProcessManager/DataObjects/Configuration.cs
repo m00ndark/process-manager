@@ -6,6 +6,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using ProcessManager.DataAccess;
+using ProcessManager.Utilities;
 
 namespace ProcessManager.DataObjects
 {
@@ -25,18 +26,28 @@ namespace ProcessManager.DataObjects
 			_configFilePath = Path.Combine(_appDataFolder, Settings.Service.Read("ConfigurationFileName"));
 		}
 
-		public Configuration()
+		public Configuration() : this(null) {}
+
+		public Configuration(string hash)
 		{
+			Hash = hash;
 			Groups = new List<Group>();
 			Applications = new List<Application>();
+			if (Hash == null) UpdateHash();
 		}
 
 		#region Properties
 
+		public string Hash { get; private set; }
 		public List<Group> Groups { get; private set; }
 		public List<Application> Applications { get; private set; }
 
 		#endregion
+
+		public void UpdateHash()
+		{
+			Hash = Cryptographer.CreateSHA512Hash(Guid.NewGuid().ToString());
+		}
 
 		public static Configuration Read()
 		{
@@ -45,7 +56,9 @@ namespace ProcessManager.DataObjects
 
 			lock (_serializationLock)
 			{
-				return FileSystemHandler.Deserialize<Configuration>(_configFilePath);
+				Configuration configuration = FileSystemHandler.Deserialize<Configuration>(_configFilePath);
+				configuration.UpdateHash();
+				return configuration;
 			}
 		}
 

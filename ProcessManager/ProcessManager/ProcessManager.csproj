@@ -52,6 +52,7 @@
     <Compile Include="DataObjects\Machine.cs" />
     <Compile Include="DataObjects\MachineConnection.cs" />
     <Compile Include="EventArguments\ApplicationStatusesEventArgs.cs" />
+    <Compile Include="EventArguments\MachineConfigurationHashEventArgs.cs" />
     <Compile Include="EventArguments\ServiceHandlerConnectionChangedEventArgs.cs" />
     <Compile Include="IProcessManagerEventHandler.cs" />
     <Compile Include="IProcessManagerEventProvider.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="DataObjects\Group.cs" />
     <Compile Include="ProcessManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\Cryptographer.cs" />
     <Compile Include="Utilities\Logger.cs" />
   </ItemGroup>
   <ItemGroup>
