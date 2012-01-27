@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataAccess;
@@ -11,6 +12,7 @@ using ProcessManager.Service.Client;
 using ProcessManager.Service.DataObjects;
 using ProcessManagerUI.Utilities;
 using Application = ProcessManager.DataObjects.Application;
+using Timer = System.Windows.Forms.Timer;
 
 namespace ProcessManagerUI.Forms
 {
@@ -95,7 +97,7 @@ namespace ProcessManagerUI.Forms
 
 		private void ComboBoxMachines_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			UpdateSelectedGroup();
+			UpdateSelections();
 			if (comboBoxMachines.SelectedIndex > -1)
 			{
 				_selectedMachine = (Machine) comboBoxMachines.SelectedItem;
@@ -427,12 +429,18 @@ namespace ProcessManagerUI.Forms
 
 		private void ProcessManagerEventHandler_ConfigurationChanged(object sender, MachineConfigurationHashEventArgs e)
 		{
+			if (InvokeRequired)
+			{
+				Invoke(new EventHandler<MachineConfigurationHashEventArgs>(ProcessManagerEventHandler_ConfigurationChanged), sender, e);
+				return;
+			}
+
 			if (ConnectionStore.Connections[e.Machine].Configuration.Hash != e.ConfigurationHash)
 			{
 				Messenger.ShowWarning("Configuration changed", "The configuration for " + e.Machine + " was changed from another client."
 					+ " Configuration will be reloaded to reflect those changes.");
 
-				ReloadConfiguration(e.Machine);
+				ReloadConfiguration(true, e.Machine);
 			}
 		}
 
@@ -554,7 +562,15 @@ namespace ProcessManagerUI.Forms
 					|| ConnectionStore.Connections[machine].ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Connected && ConnectionStore.Connections[machine].Configuration != null));
 		}
 
-		private static void ReloadConfiguration(Machine machine = null)
+		private static void ReloadConfiguration(bool asSeperateThread = false, Machine machine = null)
+		{
+			if (asSeperateThread)
+				new Thread(() => ReloadConfiguration(machine)).Start();
+			else
+				ReloadConfiguration(machine);
+		}
+
+		private static void ReloadConfiguration(Machine machine)
 		{
 			Worker.Do("Retrieving configuration...", () =>
 				{
@@ -567,7 +583,7 @@ namespace ProcessManagerUI.Forms
 
 		private bool SaveConfiguration()
 		{
-			UpdateSelectedGroup();
+			UpdateSelections();
 			if (HasUnsavedConfiguration)
 			{
 				// validate
@@ -792,6 +808,12 @@ namespace ProcessManagerUI.Forms
 			return name;
 		}
 
+		private void UpdateSelections()
+		{
+			UpdateSelectedGroup();
+			UpdateSelectedApplication();
+		}
+
 		private void ShowAllControls(bool show = true)
 		{
 			labelMachineNotAvailable.Visible = !show;
@@ -805,16 +827,21 @@ namespace ProcessManagerUI.Forms
 		{
 			// groups
 			listViewGroups.Items.Clear();
+			_selectedGroup = null;
+			panelGroup.Visible = false;
 			textBoxGroupName.Text = string.Empty;
 			textBoxGroupPath.Text = string.Empty;
 			listViewGroupApplications.Items.Clear();
 			// applications
 			listViewApplications.Items.Clear();
+			_selectedApplication = null;
+			panelApplication.Visible = false;
 			textBoxApplicationName.Text = string.Empty;
 			textBoxApplicationRelativePath.Text = string.Empty;
 			textBoxApplicationArguments.Text = string.Empty;
 			// plugins
 			listViewPlugins.Items.Clear();
+			panelPlugin.Visible = false;
 			labelPluginNameValue.Text = string.Empty;
 			labelPluginDescriptionValue.Text = string.Empty;
 		}
@@ -843,40 +870,5 @@ namespace ProcessManagerUI.Forms
 		}
 
 		#endregion
-
-		private void textBoxApplicationArguments_TextChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void textBoxApplicationName_TextChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void buttonBrowseApplicationRelativePath_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void textBoxApplicationRelativePath_TextChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void buttonRemoveApplication_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void buttonAddApplication_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void listViewApplications_SelectedIndexChanged(object sender, EventArgs e)
-		{
-
-		}
 	}
 }
