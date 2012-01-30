@@ -157,7 +157,7 @@
 			this.labeledDividerMachine.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labeledDividerMachine.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDividerMachine.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
+			this.labeledDividerMachine.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.labeledDividerMachine.Location = new System.Drawing.Point(8, 8);
 			this.labeledDividerMachine.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
 			this.labeledDividerMachine.Name = "labeledDividerMachine";

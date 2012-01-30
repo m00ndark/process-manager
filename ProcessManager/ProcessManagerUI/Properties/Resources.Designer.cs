@@ -74,6 +74,13 @@ namespace ProcessManagerUI.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap collapsed_16 {
+            get {
+                object obj = ResourceManager.GetObject("collapsed_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap copy_16 {
             get {
                 object obj = ResourceManager.GetObject("copy_16", resourceCulture);
@@ -81,9 +88,30 @@ namespace ProcessManagerUI.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap expanded_16 {
+            get {
+                object obj = ResourceManager.GetObject("expanded_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap remove_16 {
             get {
                 object obj = ResourceManager.GetObject("remove_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap running_16 {
+            get {
+                object obj = ResourceManager.GetObject("running_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap stopped_16 {
+            get {
+                object obj = ResourceManager.GetObject("stopped_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

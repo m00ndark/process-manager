@@ -35,7 +35,7 @@
 			this.toolStripMenuItemSystemTrayConfiguration = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparatorSystemTray1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripMenuItemSystemTrayExit = new System.Windows.Forms.ToolStripMenuItem();
-			this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+			this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
 			this.panelApplications = new System.Windows.Forms.Panel();
 			this.labelUnavailable = new System.Windows.Forms.Label();
 			this.flowLayoutPanelApplications = new System.Windows.Forms.FlowLayoutPanel();
@@ -46,12 +46,14 @@
 			this.labelFilter = new System.Windows.Forms.Label();
 			this.comboBoxGroupBy = new System.Windows.Forms.ComboBox();
 			this.labelGroupBy = new System.Windows.Forms.Label();
+			this.tableLayoutPanelFilter = new System.Windows.Forms.TableLayoutPanel();
 			this.horizontalPanel = new ProcessManagerUI.Controls.HorizontalPanel();
 			this.linkLabelOpenConfiguration = new System.Windows.Forms.LinkLabel();
 			this.contextMenuStripSystemTray.SuspendLayout();
-			this.tableLayoutPanel.SuspendLayout();
+			this.tableLayoutPanelMain.SuspendLayout();
 			this.panelApplications.SuspendLayout();
 			this.panelGroupByAndFilter.SuspendLayout();
+			this.tableLayoutPanelFilter.SuspendLayout();
 			this.horizontalPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -92,23 +94,23 @@
 			this.toolStripMenuItemSystemTrayExit.Text = "Exit";
 			this.toolStripMenuItemSystemTrayExit.Click += new System.EventHandler(this.ToolStripMenuItemSystemTrayExit_Click);
 			// 
-			// tableLayoutPanel
+			// tableLayoutPanelMain
 			// 
-			this.tableLayoutPanel.ColumnCount = 1;
-			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel.Controls.Add(this.horizontalPanel, 0, 2);
-			this.tableLayoutPanel.Controls.Add(this.panelApplications, 0, 1);
-			this.tableLayoutPanel.Controls.Add(this.panelGroupByAndFilter, 0, 0);
-			this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
-			this.tableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
-			this.tableLayoutPanel.Name = "tableLayoutPanel";
-			this.tableLayoutPanel.RowCount = 3;
-			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 74F));
-			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 43F));
-			this.tableLayoutPanel.Size = new System.Drawing.Size(401, 279);
-			this.tableLayoutPanel.TabIndex = 2;
+			this.tableLayoutPanelMain.ColumnCount = 1;
+			this.tableLayoutPanelMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelMain.Controls.Add(this.horizontalPanel, 0, 2);
+			this.tableLayoutPanelMain.Controls.Add(this.panelApplications, 0, 1);
+			this.tableLayoutPanelMain.Controls.Add(this.panelGroupByAndFilter, 0, 0);
+			this.tableLayoutPanelMain.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanelMain.Location = new System.Drawing.Point(0, 0);
+			this.tableLayoutPanelMain.Margin = new System.Windows.Forms.Padding(0);
+			this.tableLayoutPanelMain.Name = "tableLayoutPanelMain";
+			this.tableLayoutPanelMain.RowCount = 3;
+			this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 74F));
+			this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 43F));
+			this.tableLayoutPanelMain.Size = new System.Drawing.Size(401, 279);
+			this.tableLayoutPanelMain.TabIndex = 2;
 			// 
 			// panelApplications
 			// 
@@ -147,9 +149,7 @@
 			// 
 			// panelGroupByAndFilter
 			// 
-			this.panelGroupByAndFilter.Controls.Add(this.comboBoxApplicationFilter);
-			this.panelGroupByAndFilter.Controls.Add(this.comboBoxGroupFilter);
-			this.panelGroupByAndFilter.Controls.Add(this.comboBoxMachineFilter);
+			this.panelGroupByAndFilter.Controls.Add(this.tableLayoutPanelFilter);
 			this.panelGroupByAndFilter.Controls.Add(this.labelFilter);
 			this.panelGroupByAndFilter.Controls.Add(this.comboBoxGroupBy);
 			this.panelGroupByAndFilter.Controls.Add(this.labelGroupBy);
@@ -163,35 +163,35 @@
 			// 
 			// comboBoxApplicationFilter
 			// 
-			this.comboBoxApplicationFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.comboBoxApplicationFilter.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.comboBoxApplicationFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxApplicationFilter.FormattingEnabled = true;
-			this.comboBoxApplicationFilter.Location = new System.Drawing.Point(294, 40);
+			this.comboBoxApplicationFilter.Location = new System.Drawing.Point(210, 0);
+			this.comboBoxApplicationFilter.Margin = new System.Windows.Forms.Padding(0);
 			this.comboBoxApplicationFilter.Name = "comboBoxApplicationFilter";
-			this.comboBoxApplicationFilter.Size = new System.Drawing.Size(94, 21);
+			this.comboBoxApplicationFilter.Size = new System.Drawing.Size(101, 21);
 			this.comboBoxApplicationFilter.TabIndex = 5;
 			// 
 			// comboBoxGroupFilter
 			// 
-			this.comboBoxGroupFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.comboBoxGroupFilter.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.comboBoxGroupFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxGroupFilter.FormattingEnabled = true;
-			this.comboBoxGroupFilter.Location = new System.Drawing.Point(194, 40);
+			this.comboBoxGroupFilter.Location = new System.Drawing.Point(105, 0);
+			this.comboBoxGroupFilter.Margin = new System.Windows.Forms.Padding(0);
 			this.comboBoxGroupFilter.Name = "comboBoxGroupFilter";
-			this.comboBoxGroupFilter.Size = new System.Drawing.Size(94, 21);
+			this.comboBoxGroupFilter.Size = new System.Drawing.Size(99, 21);
 			this.comboBoxGroupFilter.TabIndex = 4;
 			// 
 			// comboBoxMachineFilter
 			// 
-			this.comboBoxMachineFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.comboBoxMachineFilter.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.comboBoxMachineFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxMachineFilter.FormattingEnabled = true;
-			this.comboBoxMachineFilter.Location = new System.Drawing.Point(77, 40);
+			this.comboBoxMachineFilter.Location = new System.Drawing.Point(0, 0);
+			this.comboBoxMachineFilter.Margin = new System.Windows.Forms.Padding(0);
 			this.comboBoxMachineFilter.Name = "comboBoxMachineFilter";
-			this.comboBoxMachineFilter.Size = new System.Drawing.Size(111, 21);
+			this.comboBoxMachineFilter.Size = new System.Drawing.Size(99, 21);
 			this.comboBoxMachineFilter.TabIndex = 3;
 			// 
 			// labelFilter
@@ -222,6 +222,26 @@
 			this.labelGroupBy.Size = new System.Drawing.Size(58, 13);
 			this.labelGroupBy.TabIndex = 0;
 			this.labelGroupBy.Text = "Group by:";
+			// 
+			// tableLayoutPanelFilter
+			// 
+			this.tableLayoutPanelFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.tableLayoutPanelFilter.ColumnCount = 5;
+			this.tableLayoutPanelFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33332F));
+			this.tableLayoutPanelFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 6F));
+			this.tableLayoutPanelFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+			this.tableLayoutPanelFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 6F));
+			this.tableLayoutPanelFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+			this.tableLayoutPanelFilter.Controls.Add(this.comboBoxMachineFilter, 0, 0);
+			this.tableLayoutPanelFilter.Controls.Add(this.comboBoxApplicationFilter, 4, 0);
+			this.tableLayoutPanelFilter.Controls.Add(this.comboBoxGroupFilter, 2, 0);
+			this.tableLayoutPanelFilter.Location = new System.Drawing.Point(77, 40);
+			this.tableLayoutPanelFilter.Name = "tableLayoutPanelFilter";
+			this.tableLayoutPanelFilter.RowCount = 1;
+			this.tableLayoutPanelFilter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelFilter.Size = new System.Drawing.Size(311, 21);
+			this.tableLayoutPanelFilter.TabIndex = 6;
 			// 
 			// horizontalPanel
 			// 
@@ -260,7 +280,7 @@
 			this.BackColor = System.Drawing.SystemColors.Window;
 			this.ClientSize = new System.Drawing.Size(401, 279);
 			this.ControlBox = false;
-			this.Controls.Add(this.tableLayoutPanel);
+			this.Controls.Add(this.tableLayoutPanelMain);
 			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -272,10 +292,11 @@
 			this.Deactivate += new System.EventHandler(this.ControlPanelForm_Deactivate);
 			this.Load += new System.EventHandler(this.ControlPanelForm_Load);
 			this.contextMenuStripSystemTray.ResumeLayout(false);
-			this.tableLayoutPanel.ResumeLayout(false);
+			this.tableLayoutPanelMain.ResumeLayout(false);
 			this.panelApplications.ResumeLayout(false);
 			this.panelGroupByAndFilter.ResumeLayout(false);
 			this.panelGroupByAndFilter.PerformLayout();
+			this.tableLayoutPanelFilter.ResumeLayout(false);
 			this.horizontalPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -289,7 +310,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparatorSystemTray1;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayExit;
 		private Controls.HorizontalPanel horizontalPanel;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelMain;
 		private System.Windows.Forms.LinkLabel linkLabelOpenConfiguration;
 		private System.Windows.Forms.Panel panelApplications;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelApplications;
@@ -301,5 +322,6 @@
 		private System.Windows.Forms.Label labelFilter;
 		private System.Windows.Forms.ComboBox comboBoxGroupBy;
 		private System.Windows.Forms.Label labelGroupBy;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelFilter;
 	}
 }

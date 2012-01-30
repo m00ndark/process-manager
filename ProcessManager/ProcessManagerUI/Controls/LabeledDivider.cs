@@ -52,18 +52,19 @@ namespace ProcessManagerUI.Controls
 
 			// Draw the caption string, then get the size of it as it appears on the screen so
 			// we know where to put the caption.
-			e.Graphics.DrawString(Text, Font, Brushes.Black, ClientRectangle.X, ClientRectangle.Y);
-			SizeF sf = e.Graphics.MeasureString(Text, Font);
+			e.Graphics.DrawString(Text, Font, sbForeColor, ClientRectangle.X, ClientRectangle.Y);
+			SizeF sfW = e.Graphics.MeasureString(Text, Font);
+			SizeF sfH = e.Graphics.MeasureString(string.IsNullOrEmpty(Text) ? " " : Text, Font);
 
 			// This didn't quiet get in the cente rso I had to add 1 pixel to the sf.Height / 2
 			if (DividerPosition == DividerPositions.Center)
 			{
-				Rectangle rect = new Rectangle((int) sf.Width + 3, ((int) sf.Height / 2) + 1, Width - (int) sf.Width, 1);
+				Rectangle rect = new Rectangle((int) sfW.Width + (sfW.Width > 0 ? 3 : 0), ((int) sfH.Height / 2) + 1, Width - (int) sfW.Width, 1);
 				e.Graphics.FillRectangle(sbDividerColor, rect);
 			}
 			else if (DividerPosition == DividerPositions.Below)
 			{
-				Rectangle rect = new Rectangle(1, (int) sf.Height, Width, 1);
+				Rectangle rect = new Rectangle(1, (int) sfH.Height, Width, 1);
 				e.Graphics.FillRectangle(sbDividerColor, rect);
 			}
 

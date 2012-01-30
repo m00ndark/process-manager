@@ -223,7 +223,7 @@
 			this.labeledDividerGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labeledDividerGroup.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDividerGroup.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
+			this.labeledDividerGroup.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.labeledDividerGroup.Location = new System.Drawing.Point(0, 0);
 			this.labeledDividerGroup.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
 			this.labeledDividerGroup.Name = "labeledDividerGroup";
@@ -343,7 +343,7 @@
 			this.labeledDividerGroupApplicationMappings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labeledDividerGroupApplicationMappings.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDividerGroupApplicationMappings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
+			this.labeledDividerGroupApplicationMappings.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.labeledDividerGroupApplicationMappings.Location = new System.Drawing.Point(0, 95);
 			this.labeledDividerGroupApplicationMappings.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
 			this.labeledDividerGroupApplicationMappings.Name = "labeledDividerGroupApplicationMappings";
@@ -464,7 +464,7 @@
 			this.labeledDividerApplication.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labeledDividerApplication.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDividerApplication.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
+			this.labeledDividerApplication.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.labeledDividerApplication.Location = new System.Drawing.Point(0, 0);
 			this.labeledDividerApplication.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
 			this.labeledDividerApplication.Name = "labeledDividerApplication";
@@ -652,7 +652,7 @@
 			this.labeledDividerPlugin.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labeledDividerPlugin.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDividerPlugin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
+			this.labeledDividerPlugin.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.labeledDividerPlugin.Location = new System.Drawing.Point(0, 0);
 			this.labeledDividerPlugin.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
 			this.labeledDividerPlugin.Name = "labeledDividerPlugin";
@@ -760,9 +760,9 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(774, 442);
-			this.Controls.Add(this.panelApplications);
 			this.Controls.Add(this.panelGroups);
 			this.Controls.Add(this.panelPlugins);
+			this.Controls.Add(this.panelApplications);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.labelNothingToShow);
 			this.Controls.Add(this.buttonCancel);

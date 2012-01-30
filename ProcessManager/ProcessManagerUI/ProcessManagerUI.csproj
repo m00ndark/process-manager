@@ -70,6 +70,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\Nodes\ApplicationNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\ApplicationNode.Designer.cs">
+      <DependentUpon>ApplicationNode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Nodes\GroupNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\GroupNode.Designer.cs">
+      <DependentUpon>GroupNode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Nodes\MachineNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\MachineNode.Designer.cs">
+      <DependentUpon>MachineNode.cs</DependentUpon>
+    </Compile>
     <Compile Include="Support\ComboBoxItem.cs" />
     <Compile Include="Controls\BackgroundPanel.cs">
       <SubType>Component</SubType>
@@ -111,6 +129,15 @@
     <Compile Include="Utilities\Messenger.cs" />
     <Compile Include="Utilities\Picker.cs" />
     <Compile Include="Utilities\Worker.cs" />
+    <EmbeddedResource Include="Controls\Nodes\ApplicationNode.resx">
+      <DependentUpon>ApplicationNode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Nodes\GroupNode.resx">
+      <DependentUpon>GroupNode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Nodes\MachineNode.resx">
+      <DependentUpon>MachineNode.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ConfigurationForm.resx">
       <DependentUpon>ConfigurationForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -148,6 +175,18 @@
       <Project>{98D87BB4-276C-4CE1-ACC4-9841244E9560}</Project>
       <Name>ProcessManager</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\running-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stopped-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\collapsed-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\expanded-16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
