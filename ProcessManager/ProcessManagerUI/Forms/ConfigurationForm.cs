@@ -828,14 +828,12 @@ namespace ProcessManagerUI.Forms
 
 		#endregion
 
-		private static string GetFirstAvailableDefaultName(List<string> existingNames, string nameTemplate)
+		private static string GetFirstAvailableDefaultName(ICollection<string> existingNames, string nameTemplate)
 		{
-			int tryNo = 1;
 			nameTemplate = nameTemplate.Trim() + " ";
-			string name = nameTemplate + tryNo;
+			int tryNo = 0; string name;
 
-			while (existingNames.Contains(name))
-				name = nameTemplate + (++tryNo);
+			while (existingNames.Contains(name = nameTemplate + (++tryNo))) {}
 
 			return name;
 		}
