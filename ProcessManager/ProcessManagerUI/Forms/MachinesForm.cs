@@ -45,7 +45,6 @@ namespace ProcessManagerUI.Forms
 
 		private void ListViewMachines_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			UpdateSelectedMachine();
 			if (listViewMachines.SelectedItems.Count == 0)
 			{
 				panelMachine.Visible = false;
@@ -55,6 +54,7 @@ namespace ProcessManagerUI.Forms
 				_selectedMachine = ((Machine) listViewMachines.SelectedItems[0].Tag);
 				textBoxMachineHostName.Text = _selectedMachine.HostName;
 				panelMachine.Visible = true;
+				EnableControls();
 			}
 		}
 
@@ -89,6 +89,11 @@ namespace ProcessManagerUI.Forms
 		{
 			MachineChanged();
 			EnableControls();
+		}
+
+		private void TextBoxMachineHostName_Leave(object sender, EventArgs e)
+		{
+			UpdateSelectedMachine();
 		}
 
 		private void ButtonValidateMachine_Click(object sender, EventArgs e)
@@ -151,6 +156,7 @@ namespace ProcessManagerUI.Forms
 					_selectedMachine.HostName = textBoxMachineHostName.Text;
 					ListViewItem item = listViewMachines.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedMachine);
 					item.Text = _selectedMachine.HostName;
+					listViewMachines.Sort();
 				}
 				textBoxMachineHostName.Text = _selectedMachine.HostName;
 				EnableControls();
@@ -217,8 +223,10 @@ namespace ProcessManagerUI.Forms
 
 		private void EnableControls(bool enable = true)
 		{
+			Machine localhost = new Machine(Settings.Constants.LOCALHOST);
 			buttonApply.Enabled = (enable && _hasUnsavedChanges);
-			buttonRemoveMachine.Enabled = (enable && listViewMachines.SelectedItems.Count > 0);
+			buttonRemoveMachine.Enabled = (enable && listViewMachines.SelectedItems.Count > 0 && !listViewMachines.SelectedItems[0].Tag.Equals(localhost));
+			textBoxMachineHostName.ReadOnly = (listViewMachines.SelectedItems.Count > 0 && listViewMachines.SelectedItems[0].Tag.Equals(localhost));
 			buttonValidateMachine.Enabled = (enable && !string.IsNullOrEmpty(textBoxMachineHostName.Text));
 			buttonCopyMachineSetup.Enabled = (enable && !_hasUnsavedChanges && !string.IsNullOrEmpty(textBoxMachineHostName.Text));
 		}

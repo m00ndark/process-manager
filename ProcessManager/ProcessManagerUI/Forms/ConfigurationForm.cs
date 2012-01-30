@@ -114,6 +114,9 @@ namespace ProcessManagerUI.Forms
 			machinesForm.ShowDialog(this);
 			if (machinesForm.MachinesChanged)
 			{
+				if (_selectedMachine != null && !Settings.Client.Machines.Contains(_selectedMachine))
+					_selectedMachine = null;
+
 				ConnectMachines();
 				PopulateMachinesComboBox();
 			}
@@ -163,7 +166,6 @@ namespace ProcessManagerUI.Forms
 		{
 			if (_selectedMachine == null) return;
 
-			UpdateSelectedGroup();
 			if (listViewGroups.SelectedItems.Count == 0)
 			{
 				panelGroup.Visible = false;
@@ -230,6 +232,11 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
+		private void TextBoxGroupName_Leave(object sender, EventArgs e)
+		{
+			UpdateSelectedGroup();
+		}
+
 		private void TextBoxGroupPath_TextChanged(object sender, EventArgs e)
 		{
 			if (!_disableTextChangedEvents)
@@ -237,6 +244,11 @@ namespace ProcessManagerUI.Forms
 				GroupChanged();
 				EnableControls();
 			}
+		}
+
+		private void TextBoxGroupPath_MouseLeave(object sender, EventArgs e)
+		{
+			UpdateSelectedGroup();
 		}
 
 		private void ButtonBrowseGroupPath_Click(object sender, EventArgs e)
@@ -249,6 +261,7 @@ namespace ProcessManagerUI.Forms
 			if (folderBrowserDialog.ShowDialog(this) == DialogResult.OK)
 			{
 				textBoxGroupPath.Text = folderBrowserDialog.SelectedPath;
+				UpdateSelectedGroup();
 			}
 		}
 
@@ -269,7 +282,7 @@ namespace ProcessManagerUI.Forms
 			if (listViewGroupApplications.SelectedItems.Count > 0)
 			{
 				listViewGroupApplications.Items.Remove(listViewGroupApplications.SelectedItems[0]);
-				GroupChanged();
+				UpdateSelectedGroup();
 				EnableControls();
 			}
 		}
@@ -289,7 +302,6 @@ namespace ProcessManagerUI.Forms
 		{
 			if (_selectedMachine == null) return;
 
-			UpdateSelectedApplication();
 			if (listViewApplications.SelectedItems.Count == 0)
 			{
 				panelApplication.Visible = false;
@@ -351,6 +363,11 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
+		private void TextBoxApplicationName_Leave(object sender, EventArgs e)
+		{
+			UpdateSelectedApplication();
+		}
+
 		private void TextBoxApplicationRelativePath_TextChanged(object sender, EventArgs e)
 		{
 			if (!_disableTextChangedEvents)
@@ -358,6 +375,11 @@ namespace ProcessManagerUI.Forms
 				ApplicationChanged();
 				EnableControls();
 			}
+		}
+
+		private void TextBoxApplicationRelativePath_Leave(object sender, EventArgs e)
+		{
+			UpdateSelectedApplication();
 		}
 
 		private void ButtonBrowseApplicationRelativePath_Click(object sender, EventArgs e)
@@ -376,6 +398,11 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
+		private void TextBoxApplicationArguments_Leave(object sender, EventArgs e)
+		{
+			UpdateSelectedApplication();
+		}
+
 		#endregion
 
 		#endregion
@@ -385,7 +412,7 @@ namespace ProcessManagerUI.Forms
 		private void ContextMenu_AddGroupApplication_ApplicationClicked(Application application)
 		{
 			listViewGroupApplications.Items.Add(new ListViewItem(application.Name) { Tag = application.ID });
-			GroupChanged();
+			UpdateSelectedGroup();
 			EnableControls();
 		}
 
@@ -399,7 +426,7 @@ namespace ProcessManagerUI.Forms
 				.Where(application => application != null)
 				.Select(application => new ListViewItem(application.Name) { Tag = application.ID })
 				.ToArray());
-			GroupChanged();
+			UpdateSelectedGroup();
 			EnableControls();
 		}
 
@@ -419,7 +446,10 @@ namespace ProcessManagerUI.Forms
 				if (!openFileDialog.FileName.StartsWith(group.Path, StringComparison.CurrentCultureIgnoreCase))
 					Messenger.ShowError("Invalid application path", "The selected application's path must start with the selected group's path; " + group.Path);
 				else
+				{
 					textBoxApplicationRelativePath.Text = openFileDialog.FileName.Substring(group.Path.TrimEnd(Path.DirectorySeparatorChar).Length);
+					UpdateSelectedApplication();
+				}
 			}
 		}
 
@@ -636,6 +666,7 @@ namespace ProcessManagerUI.Forms
 					_selectedGroup.Applications.AddRange(listViewGroupApplications.Items.Cast<ListViewItem>().Select(x => (Guid) x.Tag));
 					ListViewItem item = listViewGroups.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedGroup);
 					item.Text = _selectedGroup.Name;
+					listViewGroups.Sort();
 				}
 				textBoxGroupName.Text = _selectedGroup.Name;
 				EnableControls();
@@ -731,6 +762,7 @@ namespace ProcessManagerUI.Forms
 					_selectedApplication.Arguments = textBoxApplicationArguments.Text;
 					ListViewItem item = listViewApplications.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedApplication);
 					item.Text = _selectedApplication.Name;
+					listViewApplications.Sort();
 				}
 				textBoxApplicationName.Text = _selectedApplication.Name;
 				EnableControls();

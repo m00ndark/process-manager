@@ -56,18 +56,6 @@
 			this.buttonAddGroup = new System.Windows.Forms.Button();
 			this.listViewGroups = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderGroups = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.panelPlugins = new ProcessManagerUI.Controls.BackgroundPanel();
-			this.panelPlugin = new System.Windows.Forms.Panel();
-			this.checkBoxPluginEnabled = new System.Windows.Forms.CheckBox();
-			this.labeledDividerPlugin = new ProcessManagerUI.Controls.LabeledDivider();
-			this.labelPluginDescriptionValue = new System.Windows.Forms.Label();
-			this.labelPluginName = new System.Windows.Forms.Label();
-			this.labelPluginNameValue = new System.Windows.Forms.Label();
-			this.labelPluginDescription = new System.Windows.Forms.Label();
-			this.buttonConfigurePlugin = new System.Windows.Forms.Button();
-			this.labelNoPluginSelected = new System.Windows.Forms.Label();
-			this.listViewPlugins = new ProcessManagerUI.Controls.ListView();
-			this.columnHeaderPlugins = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.panelApplications = new ProcessManagerUI.Controls.BackgroundPanel();
 			this.panelApplication = new System.Windows.Forms.Panel();
 			this.labeledDividerApplication = new ProcessManagerUI.Controls.LabeledDivider();
@@ -83,13 +71,25 @@
 			this.buttonAddApplication = new System.Windows.Forms.Button();
 			this.listViewApplications = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderApplications = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.panelPlugins = new ProcessManagerUI.Controls.BackgroundPanel();
+			this.panelPlugin = new System.Windows.Forms.Panel();
+			this.checkBoxPluginEnabled = new System.Windows.Forms.CheckBox();
+			this.labeledDividerPlugin = new ProcessManagerUI.Controls.LabeledDivider();
+			this.labelPluginDescriptionValue = new System.Windows.Forms.Label();
+			this.labelPluginName = new System.Windows.Forms.Label();
+			this.labelPluginNameValue = new System.Windows.Forms.Label();
+			this.labelPluginDescription = new System.Windows.Forms.Label();
+			this.buttonConfigurePlugin = new System.Windows.Forms.Button();
+			this.labelNoPluginSelected = new System.Windows.Forms.Label();
+			this.listViewPlugins = new ProcessManagerUI.Controls.ListView();
+			this.columnHeaderPlugins = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.treeViewConfiguration = new ProcessManagerUI.Controls.TreeView();
 			this.panelGroups.SuspendLayout();
 			this.panelGroup.SuspendLayout();
-			this.panelPlugins.SuspendLayout();
-			this.panelPlugin.SuspendLayout();
 			this.panelApplications.SuspendLayout();
 			this.panelApplication.SuspendLayout();
+			this.panelPlugins.SuspendLayout();
+			this.panelPlugin.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// comboBoxMachines
@@ -271,6 +271,7 @@
 			this.textBoxGroupName.Size = new System.Drawing.Size(286, 22);
 			this.textBoxGroupName.TabIndex = 6;
 			this.textBoxGroupName.TextChanged += new System.EventHandler(this.TextBoxGroupName_TextChanged);
+			this.textBoxGroupName.Leave += new System.EventHandler(this.TextBoxGroupName_Leave);
 			// 
 			// buttonAddGroupApplication
 			// 
@@ -326,6 +327,7 @@
 			this.textBoxGroupPath.Size = new System.Drawing.Size(286, 22);
 			this.textBoxGroupPath.TabIndex = 8;
 			this.textBoxGroupPath.TextChanged += new System.EventHandler(this.TextBoxGroupPath_TextChanged);
+			this.textBoxGroupPath.MouseLeave += new System.EventHandler(this.TextBoxGroupPath_MouseLeave);
 			// 
 			// labelGroupApplications
 			// 
@@ -417,6 +419,187 @@
 			// 
 			this.columnHeaderGroups.Text = "Groups";
 			this.columnHeaderGroups.Width = 99;
+			// 
+			// panelApplications
+			// 
+			this.panelApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelApplications.BackColor = System.Drawing.SystemColors.Window;
+			this.panelApplications.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
+			this.panelApplications.Controls.Add(this.panelApplication);
+			this.panelApplications.Controls.Add(this.labelNoApplicationSelected);
+			this.panelApplications.Controls.Add(this.buttonRemoveApplication);
+			this.panelApplications.Controls.Add(this.buttonAddApplication);
+			this.panelApplications.Controls.Add(this.listViewApplications);
+			this.panelApplications.Location = new System.Drawing.Point(174, 39);
+			this.panelApplications.Name = "panelApplications";
+			this.panelApplications.Padding = new System.Windows.Forms.Padding(5);
+			this.panelApplications.Size = new System.Drawing.Size(588, 362);
+			this.panelApplications.TabIndex = 17;
+			this.panelApplications.Visible = false;
+			// 
+			// panelApplication
+			// 
+			this.panelApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelApplication.Controls.Add(this.labeledDividerApplication);
+			this.panelApplication.Controls.Add(this.textBoxApplicationArguments);
+			this.panelApplication.Controls.Add(this.labelApplicationName);
+			this.panelApplication.Controls.Add(this.labelApplicationArguments);
+			this.panelApplication.Controls.Add(this.textBoxApplicationName);
+			this.panelApplication.Controls.Add(this.buttonBrowseApplicationRelativePath);
+			this.panelApplication.Controls.Add(this.labelApplicationRelativePath);
+			this.panelApplication.Controls.Add(this.textBoxApplicationRelativePath);
+			this.panelApplication.Location = new System.Drawing.Point(144, 8);
+			this.panelApplication.Margin = new System.Windows.Forms.Padding(0);
+			this.panelApplication.Name = "panelApplication";
+			this.panelApplication.Size = new System.Drawing.Size(436, 345);
+			this.panelApplication.TabIndex = 14;
+			this.panelApplication.Visible = false;
+			// 
+			// labeledDividerApplication
+			// 
+			this.labeledDividerApplication.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labeledDividerApplication.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDividerApplication.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
+			this.labeledDividerApplication.Location = new System.Drawing.Point(0, 0);
+			this.labeledDividerApplication.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
+			this.labeledDividerApplication.Name = "labeledDividerApplication";
+			this.labeledDividerApplication.Size = new System.Drawing.Size(436, 15);
+			this.labeledDividerApplication.TabIndex = 10;
+			this.labeledDividerApplication.Text = "Application";
+			// 
+			// textBoxApplicationArguments
+			// 
+			this.textBoxApplicationArguments.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxApplicationArguments.Location = new System.Drawing.Point(102, 79);
+			this.textBoxApplicationArguments.Name = "textBoxApplicationArguments";
+			this.textBoxApplicationArguments.Size = new System.Drawing.Size(283, 22);
+			this.textBoxApplicationArguments.TabIndex = 13;
+			this.textBoxApplicationArguments.TextChanged += new System.EventHandler(this.TextBoxApplicationArguments_TextChanged);
+			this.textBoxApplicationArguments.Leave += new System.EventHandler(this.TextBoxApplicationArguments_Leave);
+			// 
+			// labelApplicationName
+			// 
+			this.labelApplicationName.AutoSize = true;
+			this.labelApplicationName.Location = new System.Drawing.Point(20, 26);
+			this.labelApplicationName.Name = "labelApplicationName";
+			this.labelApplicationName.Size = new System.Drawing.Size(39, 13);
+			this.labelApplicationName.TabIndex = 5;
+			this.labelApplicationName.Text = "Name:";
+			// 
+			// labelApplicationArguments
+			// 
+			this.labelApplicationArguments.AutoSize = true;
+			this.labelApplicationArguments.Location = new System.Drawing.Point(20, 82);
+			this.labelApplicationArguments.Name = "labelApplicationArguments";
+			this.labelApplicationArguments.Size = new System.Drawing.Size(66, 13);
+			this.labelApplicationArguments.TabIndex = 12;
+			this.labelApplicationArguments.Text = "Arguments:";
+			// 
+			// textBoxApplicationName
+			// 
+			this.textBoxApplicationName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxApplicationName.Location = new System.Drawing.Point(103, 23);
+			this.textBoxApplicationName.Name = "textBoxApplicationName";
+			this.textBoxApplicationName.Size = new System.Drawing.Size(283, 22);
+			this.textBoxApplicationName.TabIndex = 6;
+			this.textBoxApplicationName.TextChanged += new System.EventHandler(this.TextBoxApplicationName_TextChanged);
+			this.textBoxApplicationName.Leave += new System.EventHandler(this.TextBoxApplicationName_Leave);
+			// 
+			// buttonBrowseApplicationRelativePath
+			// 
+			this.buttonBrowseApplicationRelativePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonBrowseApplicationRelativePath.Location = new System.Drawing.Point(392, 50);
+			this.buttonBrowseApplicationRelativePath.Name = "buttonBrowseApplicationRelativePath";
+			this.buttonBrowseApplicationRelativePath.Size = new System.Drawing.Size(38, 23);
+			this.buttonBrowseApplicationRelativePath.TabIndex = 11;
+			this.buttonBrowseApplicationRelativePath.Text = "...";
+			this.buttonBrowseApplicationRelativePath.UseVisualStyleBackColor = true;
+			this.buttonBrowseApplicationRelativePath.Click += new System.EventHandler(this.ButtonBrowseApplicationRelativePath_Click);
+			// 
+			// labelApplicationRelativePath
+			// 
+			this.labelApplicationRelativePath.AutoSize = true;
+			this.labelApplicationRelativePath.Location = new System.Drawing.Point(20, 54);
+			this.labelApplicationRelativePath.Name = "labelApplicationRelativePath";
+			this.labelApplicationRelativePath.Size = new System.Drawing.Size(77, 13);
+			this.labelApplicationRelativePath.TabIndex = 7;
+			this.labelApplicationRelativePath.Text = "Relative path:";
+			// 
+			// textBoxApplicationRelativePath
+			// 
+			this.textBoxApplicationRelativePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxApplicationRelativePath.Location = new System.Drawing.Point(102, 51);
+			this.textBoxApplicationRelativePath.Name = "textBoxApplicationRelativePath";
+			this.textBoxApplicationRelativePath.Size = new System.Drawing.Size(283, 22);
+			this.textBoxApplicationRelativePath.TabIndex = 8;
+			this.textBoxApplicationRelativePath.TextChanged += new System.EventHandler(this.TextBoxApplicationRelativePath_TextChanged);
+			this.textBoxApplicationRelativePath.Leave += new System.EventHandler(this.TextBoxApplicationRelativePath_Leave);
+			// 
+			// labelNoApplicationSelected
+			// 
+			this.labelNoApplicationSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelNoApplicationSelected.Location = new System.Drawing.Point(144, 8);
+			this.labelNoApplicationSelected.Name = "labelNoApplicationSelected";
+			this.labelNoApplicationSelected.Size = new System.Drawing.Size(436, 345);
+			this.labelNoApplicationSelected.TabIndex = 23;
+			this.labelNoApplicationSelected.Text = "No application selected";
+			this.labelNoApplicationSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// buttonRemoveApplication
+			// 
+			this.buttonRemoveApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonRemoveApplication.Location = new System.Drawing.Point(71, 331);
+			this.buttonRemoveApplication.Name = "buttonRemoveApplication";
+			this.buttonRemoveApplication.Size = new System.Drawing.Size(58, 23);
+			this.buttonRemoveApplication.TabIndex = 2;
+			this.buttonRemoveApplication.Text = "Remove";
+			this.buttonRemoveApplication.UseVisualStyleBackColor = true;
+			this.buttonRemoveApplication.Click += new System.EventHandler(this.ButtonRemoveApplication_Click);
+			// 
+			// buttonAddApplication
+			// 
+			this.buttonAddApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonAddApplication.Location = new System.Drawing.Point(7, 331);
+			this.buttonAddApplication.Name = "buttonAddApplication";
+			this.buttonAddApplication.Size = new System.Drawing.Size(58, 23);
+			this.buttonAddApplication.TabIndex = 1;
+			this.buttonAddApplication.Text = "Add";
+			this.buttonAddApplication.UseVisualStyleBackColor = true;
+			this.buttonAddApplication.Click += new System.EventHandler(this.ButtonAddApplication_Click);
+			// 
+			// listViewApplications
+			// 
+			this.listViewApplications.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.listViewApplications.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderApplications});
+			this.listViewApplications.FullRowSelect = true;
+			this.listViewApplications.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewApplications.HideSelection = false;
+			this.listViewApplications.Location = new System.Drawing.Point(8, 8);
+			this.listViewApplications.MultiSelect = false;
+			this.listViewApplications.Name = "listViewApplications";
+			this.listViewApplications.Size = new System.Drawing.Size(120, 317);
+			this.listViewApplications.Sorting = System.Windows.Forms.SortOrder.Ascending;
+			this.listViewApplications.TabIndex = 0;
+			this.listViewApplications.UseCompatibleStateImageBehavior = false;
+			this.listViewApplications.View = System.Windows.Forms.View.Details;
+			this.listViewApplications.SelectedIndexChanged += new System.EventHandler(this.ListViewApplications_SelectedIndexChanged);
+			// 
+			// columnHeaderApplications
+			// 
+			this.columnHeaderApplications.Text = "Applications";
+			this.columnHeaderApplications.Width = 99;
 			// 
 			// panelPlugins
 			// 
@@ -557,184 +740,6 @@
 			this.columnHeaderPlugins.Text = "Plugins";
 			this.columnHeaderPlugins.Width = 99;
 			// 
-			// panelApplications
-			// 
-			this.panelApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelApplications.BackColor = System.Drawing.SystemColors.Window;
-			this.panelApplications.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
-			this.panelApplications.Controls.Add(this.panelApplication);
-			this.panelApplications.Controls.Add(this.labelNoApplicationSelected);
-			this.panelApplications.Controls.Add(this.buttonRemoveApplication);
-			this.panelApplications.Controls.Add(this.buttonAddApplication);
-			this.panelApplications.Controls.Add(this.listViewApplications);
-			this.panelApplications.Location = new System.Drawing.Point(174, 39);
-			this.panelApplications.Name = "panelApplications";
-			this.panelApplications.Padding = new System.Windows.Forms.Padding(5);
-			this.panelApplications.Size = new System.Drawing.Size(588, 362);
-			this.panelApplications.TabIndex = 17;
-			this.panelApplications.Visible = false;
-			// 
-			// panelApplication
-			// 
-			this.panelApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelApplication.Controls.Add(this.labeledDividerApplication);
-			this.panelApplication.Controls.Add(this.textBoxApplicationArguments);
-			this.panelApplication.Controls.Add(this.labelApplicationName);
-			this.panelApplication.Controls.Add(this.labelApplicationArguments);
-			this.panelApplication.Controls.Add(this.textBoxApplicationName);
-			this.panelApplication.Controls.Add(this.buttonBrowseApplicationRelativePath);
-			this.panelApplication.Controls.Add(this.labelApplicationRelativePath);
-			this.panelApplication.Controls.Add(this.textBoxApplicationRelativePath);
-			this.panelApplication.Location = new System.Drawing.Point(144, 8);
-			this.panelApplication.Margin = new System.Windows.Forms.Padding(0);
-			this.panelApplication.Name = "panelApplication";
-			this.panelApplication.Size = new System.Drawing.Size(436, 345);
-			this.panelApplication.TabIndex = 14;
-			this.panelApplication.Visible = false;
-			// 
-			// labeledDividerApplication
-			// 
-			this.labeledDividerApplication.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDividerApplication.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDividerApplication.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(51)))), ((int)(((byte)(170)))));
-			this.labeledDividerApplication.Location = new System.Drawing.Point(0, 0);
-			this.labeledDividerApplication.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
-			this.labeledDividerApplication.Name = "labeledDividerApplication";
-			this.labeledDividerApplication.Size = new System.Drawing.Size(436, 15);
-			this.labeledDividerApplication.TabIndex = 10;
-			this.labeledDividerApplication.Text = "Application";
-			// 
-			// textBoxApplicationArguments
-			// 
-			this.textBoxApplicationArguments.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxApplicationArguments.Location = new System.Drawing.Point(102, 79);
-			this.textBoxApplicationArguments.Name = "textBoxApplicationArguments";
-			this.textBoxApplicationArguments.Size = new System.Drawing.Size(283, 22);
-			this.textBoxApplicationArguments.TabIndex = 13;
-			this.textBoxApplicationArguments.TextChanged += new System.EventHandler(this.TextBoxApplicationArguments_TextChanged);
-			// 
-			// labelApplicationName
-			// 
-			this.labelApplicationName.AutoSize = true;
-			this.labelApplicationName.Location = new System.Drawing.Point(20, 26);
-			this.labelApplicationName.Name = "labelApplicationName";
-			this.labelApplicationName.Size = new System.Drawing.Size(39, 13);
-			this.labelApplicationName.TabIndex = 5;
-			this.labelApplicationName.Text = "Name:";
-			// 
-			// labelApplicationArguments
-			// 
-			this.labelApplicationArguments.AutoSize = true;
-			this.labelApplicationArguments.Location = new System.Drawing.Point(20, 82);
-			this.labelApplicationArguments.Name = "labelApplicationArguments";
-			this.labelApplicationArguments.Size = new System.Drawing.Size(66, 13);
-			this.labelApplicationArguments.TabIndex = 12;
-			this.labelApplicationArguments.Text = "Arguments:";
-			// 
-			// textBoxApplicationName
-			// 
-			this.textBoxApplicationName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxApplicationName.Location = new System.Drawing.Point(103, 23);
-			this.textBoxApplicationName.Name = "textBoxApplicationName";
-			this.textBoxApplicationName.Size = new System.Drawing.Size(283, 22);
-			this.textBoxApplicationName.TabIndex = 6;
-			this.textBoxApplicationName.TextChanged += new System.EventHandler(this.TextBoxApplicationName_TextChanged);
-			// 
-			// buttonBrowseApplicationRelativePath
-			// 
-			this.buttonBrowseApplicationRelativePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonBrowseApplicationRelativePath.Location = new System.Drawing.Point(392, 50);
-			this.buttonBrowseApplicationRelativePath.Name = "buttonBrowseApplicationRelativePath";
-			this.buttonBrowseApplicationRelativePath.Size = new System.Drawing.Size(38, 23);
-			this.buttonBrowseApplicationRelativePath.TabIndex = 11;
-			this.buttonBrowseApplicationRelativePath.Text = "...";
-			this.buttonBrowseApplicationRelativePath.UseVisualStyleBackColor = true;
-			this.buttonBrowseApplicationRelativePath.Click += new System.EventHandler(this.ButtonBrowseApplicationRelativePath_Click);
-			// 
-			// labelApplicationRelativePath
-			// 
-			this.labelApplicationRelativePath.AutoSize = true;
-			this.labelApplicationRelativePath.Location = new System.Drawing.Point(20, 54);
-			this.labelApplicationRelativePath.Name = "labelApplicationRelativePath";
-			this.labelApplicationRelativePath.Size = new System.Drawing.Size(77, 13);
-			this.labelApplicationRelativePath.TabIndex = 7;
-			this.labelApplicationRelativePath.Text = "Relative path:";
-			// 
-			// textBoxApplicationRelativePath
-			// 
-			this.textBoxApplicationRelativePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxApplicationRelativePath.Location = new System.Drawing.Point(102, 51);
-			this.textBoxApplicationRelativePath.Name = "textBoxApplicationRelativePath";
-			this.textBoxApplicationRelativePath.Size = new System.Drawing.Size(283, 22);
-			this.textBoxApplicationRelativePath.TabIndex = 8;
-			this.textBoxApplicationRelativePath.TextChanged += new System.EventHandler(this.TextBoxApplicationRelativePath_TextChanged);
-			// 
-			// labelNoApplicationSelected
-			// 
-			this.labelNoApplicationSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labelNoApplicationSelected.Location = new System.Drawing.Point(144, 8);
-			this.labelNoApplicationSelected.Name = "labelNoApplicationSelected";
-			this.labelNoApplicationSelected.Size = new System.Drawing.Size(436, 345);
-			this.labelNoApplicationSelected.TabIndex = 23;
-			this.labelNoApplicationSelected.Text = "No application selected";
-			this.labelNoApplicationSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// buttonRemoveApplication
-			// 
-			this.buttonRemoveApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonRemoveApplication.Location = new System.Drawing.Point(71, 331);
-			this.buttonRemoveApplication.Name = "buttonRemoveApplication";
-			this.buttonRemoveApplication.Size = new System.Drawing.Size(58, 23);
-			this.buttonRemoveApplication.TabIndex = 2;
-			this.buttonRemoveApplication.Text = "Remove";
-			this.buttonRemoveApplication.UseVisualStyleBackColor = true;
-			this.buttonRemoveApplication.Click += new System.EventHandler(this.ButtonRemoveApplication_Click);
-			// 
-			// buttonAddApplication
-			// 
-			this.buttonAddApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonAddApplication.Location = new System.Drawing.Point(7, 331);
-			this.buttonAddApplication.Name = "buttonAddApplication";
-			this.buttonAddApplication.Size = new System.Drawing.Size(58, 23);
-			this.buttonAddApplication.TabIndex = 1;
-			this.buttonAddApplication.Text = "Add";
-			this.buttonAddApplication.UseVisualStyleBackColor = true;
-			this.buttonAddApplication.Click += new System.EventHandler(this.ButtonAddApplication_Click);
-			// 
-			// listViewApplications
-			// 
-			this.listViewApplications.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.listViewApplications.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeaderApplications});
-			this.listViewApplications.FullRowSelect = true;
-			this.listViewApplications.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.listViewApplications.HideSelection = false;
-			this.listViewApplications.Location = new System.Drawing.Point(8, 8);
-			this.listViewApplications.MultiSelect = false;
-			this.listViewApplications.Name = "listViewApplications";
-			this.listViewApplications.Size = new System.Drawing.Size(120, 317);
-			this.listViewApplications.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.listViewApplications.TabIndex = 0;
-			this.listViewApplications.UseCompatibleStateImageBehavior = false;
-			this.listViewApplications.View = System.Windows.Forms.View.Details;
-			this.listViewApplications.SelectedIndexChanged += new System.EventHandler(this.ListViewApplications_SelectedIndexChanged);
-			// 
-			// columnHeaderApplications
-			// 
-			this.columnHeaderApplications.Text = "Applications";
-			this.columnHeaderApplications.Width = 99;
-			// 
 			// treeViewConfiguration
 			// 
 			this.treeViewConfiguration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -755,8 +760,8 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(774, 442);
-			this.Controls.Add(this.panelGroups);
 			this.Controls.Add(this.panelApplications);
+			this.Controls.Add(this.panelGroups);
 			this.Controls.Add(this.panelPlugins);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.labelNothingToShow);
@@ -780,12 +785,12 @@
 			this.panelGroups.ResumeLayout(false);
 			this.panelGroup.ResumeLayout(false);
 			this.panelGroup.PerformLayout();
-			this.panelPlugins.ResumeLayout(false);
-			this.panelPlugin.ResumeLayout(false);
-			this.panelPlugin.PerformLayout();
 			this.panelApplications.ResumeLayout(false);
 			this.panelApplication.ResumeLayout(false);
 			this.panelApplication.PerformLayout();
+			this.panelPlugins.ResumeLayout(false);
+			this.panelPlugin.ResumeLayout(false);
+			this.panelPlugin.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
