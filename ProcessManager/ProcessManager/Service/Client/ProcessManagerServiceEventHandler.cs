@@ -33,7 +33,7 @@ namespace ProcessManager.Service.Client
 		private void RaiseApplicationStatusesChangedEvent(IEnumerable<DTOApplicationStatus> applicationStatuses)
 		{
 			if (ApplicationStatusesChanged != null)
-				ApplicationStatusesChanged(this, new ApplicationStatusesEventArgs(applicationStatuses.Select(x => x.FromDTO()).ToList()));
+				ApplicationStatusesChanged(this, new ApplicationStatusesEventArgs(applicationStatuses.Select(x => x.FromDTO(Machine)).ToList()));
 		}
 
 		private void RaiseConfigurationChangedEvent(string configurationHash)

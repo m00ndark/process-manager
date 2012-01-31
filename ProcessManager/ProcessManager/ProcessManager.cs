@@ -158,7 +158,8 @@ namespace ProcessManager
 										x.Group,
 										x.Application,
 										ApplicationStatus = new ApplicationStatus(x.Group.ID, x.Application.ID,
-											runningProcesses.Any(runningProcess => runningProcess.Equals(x.Path, StringComparison.CurrentCultureIgnoreCase)))
+											runningProcesses.Any(runningProcess => runningProcess.Equals(x.Path, StringComparison.CurrentCultureIgnoreCase))
+												? ApplicationStatusValue.Running : ApplicationStatusValue.Stopped)
 									})
 								.ToList();
 
@@ -167,7 +168,7 @@ namespace ProcessManager
 							{
 								changedApplicationStatuses = applicationsStatusList
 									.Where(x => !_applicationStatuses.ContainsKey(x.Group.ID) || !_applicationStatuses[x.Group.ID].ContainsKey(x.Application.ID)
-										|| _applicationStatuses[x.Group.ID][x.Application.ID].IsRunning != x.ApplicationStatus.IsRunning)
+										|| _applicationStatuses[x.Group.ID][x.Application.ID].Status != x.ApplicationStatus.Status)
 									.Select(x => x.ApplicationStatus)
 									.ToList();
 

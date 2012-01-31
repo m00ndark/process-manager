@@ -82,6 +82,7 @@
     <Compile Include="Controls\Nodes\GroupNode.Designer.cs">
       <DependentUpon>GroupNode.cs</DependentUpon>
     </Compile>
+    <Compile Include="IControlPanelNode.cs" />
     <Compile Include="Controls\Nodes\MachineNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -187,6 +188,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\expanded-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\unknown-16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

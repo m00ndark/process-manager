@@ -470,7 +470,7 @@ namespace ProcessManagerUI.Forms
 				Messenger.ShowWarning("Configuration changed", "The configuration for " + e.Machine + " was changed from another client."
 					+ " Configuration will be reloaded to reflect those changes.");
 
-				ReloadConfiguration(true, e.Machine);
+				ReloadConfiguration(e.Machine);
 			}
 		}
 
@@ -592,15 +592,7 @@ namespace ProcessManagerUI.Forms
 					|| ConnectionStore.Connections[machine].ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Connected && ConnectionStore.Connections[machine].Configuration != null));
 		}
 
-		private static void ReloadConfiguration(bool asSeperateThread = false, Machine machine = null)
-		{
-			if (asSeperateThread)
-				new Thread(() => ReloadConfiguration(machine)).Start();
-			else
-				ReloadConfiguration(machine);
-		}
-
-		private static void ReloadConfiguration(Machine machine)
+		private static void ReloadConfiguration(Machine machine = null)
 		{
 			Worker.Do("Retrieving configuration...", () =>
 				{

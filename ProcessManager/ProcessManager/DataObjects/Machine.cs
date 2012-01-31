@@ -10,11 +10,13 @@ namespace ProcessManager.DataObjects
 
 		public Machine(string hostName)
 		{
+			ID = Guid.NewGuid();
 			HostName = hostName;
 		}
 
 		#region Properties
 
+		public Guid ID { get; private set; }
 		public string HostName { get; set; }
 
 		#endregion

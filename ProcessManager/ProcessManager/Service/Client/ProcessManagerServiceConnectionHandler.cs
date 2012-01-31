@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
+using ProcessManager.Utilities;
 
 namespace ProcessManager.Service.Client
 {
@@ -101,7 +101,10 @@ namespace ProcessManager.Service.Client
 				{
 					machineConnection.Configuration = (retrieve ? machineConnection.ServiceHandler.Service.GetConfiguration().FromDTO() : null);
 				}
-				catch { ; }
+				catch (Exception ex)
+				{
+					Logger.Add("Failed to retrieve machine configuration", ex);
+				}
 			}
 		}
 	}

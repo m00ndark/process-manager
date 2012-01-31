@@ -115,5 +115,12 @@ namespace ProcessManagerUI.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        internal static System.Drawing.Bitmap unknown_16 {
+            get {
+                object obj = ResourceManager.GetObject("unknown_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

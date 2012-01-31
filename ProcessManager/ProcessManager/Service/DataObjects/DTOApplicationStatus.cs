@@ -11,7 +11,7 @@ namespace ProcessManager.Service.DataObjects
 		{
 			GroupID = applicationStatus.GroupID;
 			ApplicationID = applicationStatus.ApplicationID;
-			IsRunning = applicationStatus.IsRunning;
+			Status = applicationStatus.Status;
 		}
 
 		#region Properties
@@ -23,13 +23,13 @@ namespace ProcessManager.Service.DataObjects
 		public Guid ApplicationID { get; private set; }
 
 		[DataMember]
-		public bool IsRunning { get; private set; }
+		public ApplicationStatusValue Status { get; private set; }
 
 		#endregion
 
-		public ApplicationStatus FromDTO()
+		public ApplicationStatus FromDTO(Machine machine)
 		{
-			return new ApplicationStatus(GroupID, ApplicationID, IsRunning);
+			return new ApplicationStatus(machine, GroupID, ApplicationID, Status);
 		}
 	}
 }

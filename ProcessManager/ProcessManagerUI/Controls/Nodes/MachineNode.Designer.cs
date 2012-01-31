@@ -32,13 +32,15 @@
 			this.linkLabelStart = new System.Windows.Forms.LinkLabel();
 			this.labelMachineName = new System.Windows.Forms.Label();
 			this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+			this.panelMachineName = new System.Windows.Forms.Panel();
 			this.panelControl = new System.Windows.Forms.Panel();
-			this.linkLabelStop = new System.Windows.Forms.LinkLabel();
+			this.labeledDivider = new ProcessManagerUI.Controls.LabeledDivider();
 			this.linkLabelRestart = new System.Windows.Forms.LinkLabel();
+			this.linkLabelStop = new System.Windows.Forms.LinkLabel();
 			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.pictureBoxExpandCollapse = new System.Windows.Forms.PictureBox();
-			this.labeledDivider = new ProcessManagerUI.Controls.LabeledDivider();
 			this.tableLayoutPanel.SuspendLayout();
+			this.panelMachineName.SuspendLayout();
 			this.panelControl.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxExpandCollapse)).BeginInit();
 			this.SuspendLayout();
@@ -76,10 +78,10 @@
 			this.labelMachineName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
 			this.labelMachineName.AutoSize = true;
-			this.labelMachineName.Location = new System.Drawing.Point(0, 0);
-			this.labelMachineName.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+			this.labelMachineName.Location = new System.Drawing.Point(0, 4);
+			this.labelMachineName.Margin = new System.Windows.Forms.Padding(0);
 			this.labelMachineName.Name = "labelMachineName";
-			this.labelMachineName.Size = new System.Drawing.Size(69, 22);
+			this.labelMachineName.Size = new System.Drawing.Size(69, 15);
 			this.labelMachineName.TabIndex = 2;
 			this.labelMachineName.Text = "<machine>";
 			this.labelMachineName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -91,7 +93,7 @@
 			this.tableLayoutPanel.ColumnCount = 2;
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 93F));
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel.Controls.Add(this.labelMachineName, 0, 0);
+			this.tableLayoutPanel.Controls.Add(this.panelMachineName, 0, 0);
 			this.tableLayoutPanel.Controls.Add(this.panelControl, 1, 0);
 			this.tableLayoutPanel.Location = new System.Drawing.Point(44, 0);
 			this.tableLayoutPanel.Name = "tableLayoutPanel";
@@ -100,6 +102,16 @@
 			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
 			this.tableLayoutPanel.Size = new System.Drawing.Size(306, 22);
 			this.tableLayoutPanel.TabIndex = 3;
+			// 
+			// panelMachineName
+			// 
+			this.panelMachineName.Controls.Add(this.labelMachineName);
+			this.panelMachineName.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelMachineName.Location = new System.Drawing.Point(0, 0);
+			this.panelMachineName.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+			this.panelMachineName.Name = "panelMachineName";
+			this.panelMachineName.Size = new System.Drawing.Size(90, 22);
+			this.panelMachineName.TabIndex = 5;
 			// 
 			// panelControl
 			// 
@@ -114,23 +126,18 @@
 			this.panelControl.Size = new System.Drawing.Size(213, 22);
 			this.panelControl.TabIndex = 3;
 			// 
-			// linkLabelStop
+			// labeledDivider
 			// 
-			this.linkLabelStop.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelStop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.linkLabelStop.AutoSize = true;
-			this.linkLabelStop.DisabledLinkColor = System.Drawing.Color.Gray;
-			this.linkLabelStop.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-			this.linkLabelStop.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelStop.Location = new System.Drawing.Point(33, 4);
-			this.linkLabelStop.Name = "linkLabelStop";
-			this.linkLabelStop.Size = new System.Drawing.Size(31, 15);
-			this.linkLabelStop.TabIndex = 4;
-			this.linkLabelStop.TabStop = true;
-			this.linkLabelStop.Text = "Stop";
-			this.linkLabelStop.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.linkLabelStop.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.labeledDivider.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labeledDivider.BackColor = System.Drawing.Color.Transparent;
+			this.labeledDivider.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDivider.Location = new System.Drawing.Point(108, 4);
+			this.labeledDivider.Name = "labeledDivider";
+			this.labeledDivider.Size = new System.Drawing.Size(105, 15);
+			this.labeledDivider.TabIndex = 6;
+			this.labeledDivider.Text = "";
 			// 
 			// linkLabelRestart
 			// 
@@ -150,6 +157,24 @@
 			this.linkLabelRestart.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.linkLabelRestart.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
 			// 
+			// linkLabelStop
+			// 
+			this.linkLabelStop.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelStop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.linkLabelStop.AutoSize = true;
+			this.linkLabelStop.DisabledLinkColor = System.Drawing.Color.Gray;
+			this.linkLabelStop.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelStop.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelStop.Location = new System.Drawing.Point(33, 4);
+			this.linkLabelStop.Name = "linkLabelStop";
+			this.linkLabelStop.Size = new System.Drawing.Size(31, 15);
+			this.linkLabelStop.TabIndex = 4;
+			this.linkLabelStop.TabStop = true;
+			this.linkLabelStop.Text = "Stop";
+			this.linkLabelStop.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.linkLabelStop.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			// 
 			// flowLayoutPanel
 			// 
 			this.flowLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -158,7 +183,7 @@
 			this.flowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
 			this.flowLayoutPanel.Location = new System.Drawing.Point(25, 22);
 			this.flowLayoutPanel.Name = "flowLayoutPanel";
-			this.flowLayoutPanel.Size = new System.Drawing.Size(325, 97);
+			this.flowLayoutPanel.Size = new System.Drawing.Size(325, 78);
 			this.flowLayoutPanel.TabIndex = 4;
 			// 
 			// pictureBoxExpandCollapse
@@ -168,19 +193,6 @@
 			this.pictureBoxExpandCollapse.Size = new System.Drawing.Size(16, 16);
 			this.pictureBoxExpandCollapse.TabIndex = 0;
 			this.pictureBoxExpandCollapse.TabStop = false;
-			// 
-			// labeledDivider
-			// 
-			this.labeledDivider.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDivider.BackColor = System.Drawing.Color.Transparent;
-			this.labeledDivider.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDivider.Location = new System.Drawing.Point(108, 4);
-			this.labeledDivider.Name = "labeledDivider";
-			this.labeledDivider.Size = new System.Drawing.Size(105, 15);
-			this.labeledDivider.TabIndex = 6;
-			this.labeledDivider.Text = "";
 			// 
 			// MachineNode
 			// 
@@ -192,10 +204,12 @@
 			this.Controls.Add(this.checkBoxSelected);
 			this.Controls.Add(this.pictureBoxExpandCollapse);
 			this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.Margin = new System.Windows.Forms.Padding(0);
 			this.Name = "MachineNode";
-			this.Size = new System.Drawing.Size(350, 119);
+			this.Size = new System.Drawing.Size(350, 100);
 			this.tableLayoutPanel.ResumeLayout(false);
-			this.tableLayoutPanel.PerformLayout();
+			this.panelMachineName.ResumeLayout(false);
+			this.panelMachineName.PerformLayout();
 			this.panelControl.ResumeLayout(false);
 			this.panelControl.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxExpandCollapse)).EndInit();
@@ -216,5 +230,6 @@
 		private System.Windows.Forms.LinkLabel linkLabelStop;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
 		private LabeledDivider labeledDivider;
+		private System.Windows.Forms.Panel panelMachineName;
 	}
 }

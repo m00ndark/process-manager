@@ -84,6 +84,7 @@ namespace ProcessManager
 				public const string START_WITH_WINDOWS = "False";
 				public const string SELECTED_HOST_NAME = Constants.LOCALHOST;
 				public const string SELECTED_CONFIGURATION_SECTION = "";
+				public const string SELECTED_GROUPING = "";
 			}
 
 			#endregion
@@ -92,6 +93,9 @@ namespace ProcessManager
 			{
 				Machines = new List<Machine>();
 				StartWithWindows = bool.Parse(Defaults.START_WITH_WINDOWS);
+				CFG_SelectedHostName = Defaults.SELECTED_HOST_NAME;
+				CFG_SelectedConfigurationSection = Defaults.SELECTED_CONFIGURATION_SECTION;
+				CP_SelectedGrouping = Defaults.SELECTED_GROUPING;
 			}
 
 			#region Properties
@@ -100,6 +104,7 @@ namespace ProcessManager
 			public static bool StartWithWindows { get; set; }
 			public static string CFG_SelectedHostName { get; set; }
 			public static string CFG_SelectedConfigurationSection { get; set; }
+			public static string CP_SelectedGrouping { get; set; }
 
 			#endregion
 

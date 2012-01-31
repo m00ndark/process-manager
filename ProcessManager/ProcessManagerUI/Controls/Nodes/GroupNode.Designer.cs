@@ -33,13 +33,15 @@
 			this.linkLabelStart = new System.Windows.Forms.LinkLabel();
 			this.labelGroupName = new System.Windows.Forms.Label();
 			this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+			this.panelGroupName = new System.Windows.Forms.Panel();
 			this.panelControl = new System.Windows.Forms.Panel();
+			this.labeledDivider = new ProcessManagerUI.Controls.LabeledDivider();
 			this.linkLabelRestart = new System.Windows.Forms.LinkLabel();
 			this.linkLabelStop = new System.Windows.Forms.LinkLabel();
 			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-			this.labeledDivider = new ProcessManagerUI.Controls.LabeledDivider();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxExpandCollapse)).BeginInit();
 			this.tableLayoutPanel.SuspendLayout();
+			this.panelGroupName.SuspendLayout();
 			this.panelControl.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -84,10 +86,10 @@
 			this.labelGroupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
 			this.labelGroupName.AutoSize = true;
-			this.labelGroupName.Location = new System.Drawing.Point(0, 0);
-			this.labelGroupName.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+			this.labelGroupName.Location = new System.Drawing.Point(0, 4);
+			this.labelGroupName.Margin = new System.Windows.Forms.Padding(0);
 			this.labelGroupName.Name = "labelGroupName";
-			this.labelGroupName.Size = new System.Drawing.Size(55, 22);
+			this.labelGroupName.Size = new System.Drawing.Size(55, 15);
 			this.labelGroupName.TabIndex = 2;
 			this.labelGroupName.Text = "<group>";
 			this.labelGroupName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -99,7 +101,7 @@
 			this.tableLayoutPanel.ColumnCount = 2;
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 93F));
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel.Controls.Add(this.labelGroupName, 0, 0);
+			this.tableLayoutPanel.Controls.Add(this.panelGroupName, 0, 0);
 			this.tableLayoutPanel.Controls.Add(this.panelControl, 1, 0);
 			this.tableLayoutPanel.Location = new System.Drawing.Point(44, 0);
 			this.tableLayoutPanel.Name = "tableLayoutPanel";
@@ -108,6 +110,16 @@
 			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
 			this.tableLayoutPanel.Size = new System.Drawing.Size(306, 22);
 			this.tableLayoutPanel.TabIndex = 3;
+			// 
+			// panelGroupName
+			// 
+			this.panelGroupName.Controls.Add(this.labelGroupName);
+			this.panelGroupName.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelGroupName.Location = new System.Drawing.Point(0, 0);
+			this.panelGroupName.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+			this.panelGroupName.Name = "panelGroupName";
+			this.panelGroupName.Size = new System.Drawing.Size(90, 22);
+			this.panelGroupName.TabIndex = 5;
 			// 
 			// panelControl
 			// 
@@ -121,6 +133,19 @@
 			this.panelControl.Name = "panelControl";
 			this.panelControl.Size = new System.Drawing.Size(213, 22);
 			this.panelControl.TabIndex = 3;
+			// 
+			// labeledDivider
+			// 
+			this.labeledDivider.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labeledDivider.BackColor = System.Drawing.Color.Transparent;
+			this.labeledDivider.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDivider.Location = new System.Drawing.Point(108, 4);
+			this.labeledDivider.Name = "labeledDivider";
+			this.labeledDivider.Size = new System.Drawing.Size(105, 15);
+			this.labeledDivider.TabIndex = 7;
+			this.labeledDivider.Text = "";
 			// 
 			// linkLabelRestart
 			// 
@@ -166,21 +191,8 @@
 			this.flowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
 			this.flowLayoutPanel.Location = new System.Drawing.Point(25, 22);
 			this.flowLayoutPanel.Name = "flowLayoutPanel";
-			this.flowLayoutPanel.Size = new System.Drawing.Size(325, 97);
+			this.flowLayoutPanel.Size = new System.Drawing.Size(325, 78);
 			this.flowLayoutPanel.TabIndex = 4;
-			// 
-			// labeledDivider
-			// 
-			this.labeledDivider.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDivider.BackColor = System.Drawing.Color.Transparent;
-			this.labeledDivider.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDivider.Location = new System.Drawing.Point(108, 4);
-			this.labeledDivider.Name = "labeledDivider";
-			this.labeledDivider.Size = new System.Drawing.Size(105, 15);
-			this.labeledDivider.TabIndex = 7;
-			this.labeledDivider.Text = "";
 			// 
 			// GroupNode
 			// 
@@ -192,11 +204,13 @@
 			this.Controls.Add(this.checkBoxSelected);
 			this.Controls.Add(this.pictureBoxExpandCollapse);
 			this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.Margin = new System.Windows.Forms.Padding(0);
 			this.Name = "GroupNode";
-			this.Size = new System.Drawing.Size(350, 119);
+			this.Size = new System.Drawing.Size(350, 100);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxExpandCollapse)).EndInit();
 			this.tableLayoutPanel.ResumeLayout(false);
-			this.tableLayoutPanel.PerformLayout();
+			this.panelGroupName.ResumeLayout(false);
+			this.panelGroupName.PerformLayout();
 			this.panelControl.ResumeLayout(false);
 			this.panelControl.PerformLayout();
 			this.ResumeLayout(false);
@@ -216,5 +230,6 @@
 		private System.Windows.Forms.LinkLabel linkLabelStop;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
 		private LabeledDivider labeledDivider;
+		private System.Windows.Forms.Panel panelGroupName;
 	}
 }
