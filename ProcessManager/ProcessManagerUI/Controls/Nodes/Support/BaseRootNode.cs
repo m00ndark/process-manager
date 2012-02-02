@@ -17,10 +17,10 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 		protected BaseRootNode(IEnumerable<IControlPanelNode> childNodes)
 		{
 			InitializeComponent();
-			ChildNodes = new List<IControlPanelNode>(childNodes);
 			_disableEvents = false;
 			_childrenSize = new Size(0, 0);
 			_expanded = true;
+			ChildNodes = new List<IControlPanelNode>(childNodes);
 			ChildNodes.ForEach(node => node.CheckedChanged += ControlPanelNode_CheckedChanged);
 			ChildNodes.Select(node => node as IControlPanelRootNode).Where(node => node != null).ToList()
 				.ForEach(node => node.SizeChanged += ControlPanelRootNode_SizeChanged);
