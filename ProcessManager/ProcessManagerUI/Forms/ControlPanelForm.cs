@@ -15,6 +15,7 @@ using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
 using ProcessManager.Utilities;
 using ProcessManagerUI.Controls.Nodes;
+using ProcessManagerUI.Controls.Nodes.Support;
 using ProcessManagerUI.Support;
 using ProcessManagerUI.Utilities;
 using Application = ProcessManager.DataObjects.Application;
@@ -35,6 +36,8 @@ namespace ProcessManagerUI.Forms
 				{ Grouping.GroupMachineApplication, "Group > Machine > Application" }
 			};
 		private DateTime _formClosedAt;
+		private readonly List<IControlPanelNode> _allNodes;
+		private readonly List<IControlPanelRootNode> _rootNodes;
 		private readonly List<ApplicationNode> _applicationNodes;
 
 		public event EventHandler<MachineConfigurationHashEventArgs> ConfigurationChanged;
@@ -43,6 +46,8 @@ namespace ProcessManagerUI.Forms
 		{
 			InitializeComponent();
 			_formClosedAt = DateTime.MinValue;
+			_allNodes = new List<IControlPanelNode>();
+			_rootNodes = new List<IControlPanelRootNode>();
 			_applicationNodes = new List<ApplicationNode>();
 		}
 
@@ -117,6 +122,31 @@ namespace ProcessManagerUI.Forms
 			Settings.Client.Save(ClientSettingsType.States);
 		}
 
+		private void LinkLabelStartAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			_rootNodes.ForEach(node => node.Start());
+		}
+
+		private void LinkLabelStopAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			_rootNodes.ForEach(node => node.Stop());
+		}
+
+		private void LinkLabelRestartAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			_rootNodes.ForEach(node => node.Restart());
+		}
+
+		private void LinkLabelExpandAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			_rootNodes.ForEach(node => node.ExpandAll(true));
+		}
+
+		private void LinkLabelCollapseAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			_rootNodes.ForEach(node => node.ExpandAll(false));
+		}
+
 		private void LinkLabelOpenConfiguration_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			new ConfigurationForm(this).Show();
@@ -185,6 +215,25 @@ namespace ProcessManagerUI.Forms
 			}
 
 			LayoutNodes();
+		}
+
+		#endregion
+
+		#region Control panel node event handlers
+
+		private void ControlPanelRootNode_SizeChanged(object sender, EventArgs e)
+		{
+			if (flowLayoutPanelApplications.Controls.Count > 0)
+				UpdateSize(_rootNodes.Select(node => node.Size).ToList());
+		}
+
+		private void ControlPanelNode_CheckedChanged(object sender, EventArgs e)
+		{
+			if (flowLayoutPanelApplications.Controls.Count > 0)
+			{
+				int uncheckedCount = _rootNodes.Count(node => node.CheckState == CheckState.Unchecked);
+				EnableActionLinks(uncheckedCount != _rootNodes.Count);
+			}
 		}
 
 		#endregion
@@ -261,19 +310,31 @@ namespace ProcessManagerUI.Forms
 
 		private void LayoutNodes()
 		{
+			//try{
+
 			flowLayoutPanelApplications.Controls.Clear();
+			_rootNodes.ForEach(node =>
+				{
+					node.SizeChanged -= ControlPanelRootNode_SizeChanged;
+					node.CheckedChanged -= ControlPanelNode_CheckedChanged;
+				});
+			_allNodes.ForEach(node => node.Dispose());
+			_allNodes.Clear();
+			_rootNodes.Clear();
 			_applicationNodes.Clear();
 
-			var machinesGroupsApplications = ConnectionStore.Connections.Values.SelectMany(connection =>
-				connection.Configuration.Groups.SelectMany(group =>
-					connection.Configuration.Applications
-						.Where(application => group.Applications.Contains(application.ID))
-						.Select(application => new
-							{
-								connection.Machine,
-								Group = group,
-								Application = application
-							})))
+			var machinesGroupsApplications = ConnectionStore.Connections.Values
+				.Where(connection => connection.Configuration != null)
+				.SelectMany(connection =>
+					connection.Configuration.Groups.SelectMany(group =>
+						connection.Configuration.Applications
+							.Where(application => group.Applications.Contains(application.ID))
+							.Select(application => new
+								{
+									connection.Machine,
+									Group = group,
+									Application = application
+								})))
 				.GroupBy(a => a.Machine, (a, b) => new
 					{
 						Machine = a,
@@ -284,30 +345,65 @@ namespace ProcessManagerUI.Forms
 							})
 					});
 
-			List<IControlPanelNode> rootNodes = machinesGroupsApplications.Select(machineGroupsApplications =>
-				new MachineNode(machineGroupsApplications.Machine,
-					machineGroupsApplications.Groups.Select(groupApplications =>
+			_rootNodes.AddRange(machinesGroupsApplications.Select(machineGroupsApplications =>
+				{
+					IEnumerable<GroupNode> groupNodes = machineGroupsApplications.Groups.Select(groupApplications =>
 						{
 							IEnumerable<ApplicationNode> applicationNodes = groupApplications.Applications.Select(application => new ApplicationNode(application));
 							_applicationNodes.AddRange(applicationNodes);
 							return new GroupNode(groupApplications.Group, applicationNodes);
-						}))).Cast<IControlPanelNode>().ToList();
+						});
+					_allNodes.AddRange(groupNodes);
+					return new MachineNode(machineGroupsApplications.Machine, groupNodes);
+				}));
+
+			_allNodes.AddRange(_rootNodes);
+			_allNodes.AddRange(_applicationNodes);
+			_rootNodes.ForEach(node =>
+				{
+					node.SizeChanged += ControlPanelRootNode_SizeChanged;
+					node.CheckedChanged += ControlPanelNode_CheckedChanged;
+				});
 
 			if (_applicationNodes.Count > 0)
 			{
-				List<Size> rootNodeSizes = rootNodes.Select(node => node.LayoutNode()).ToList();
-				int totalNodesHeight = rootNodeSizes.Sum(size => size.Height);
-				int maxNodeWidth = rootNodeSizes.Max(size => size.Width);
+				UpdateSize(_rootNodes.Select(node => node.LayoutNode()).ToList());
 
-				Size = new Size(Size.Width - flowLayoutPanelApplications.Size.Width + maxNodeWidth,
-					Size.Height - flowLayoutPanelApplications.Size.Height + totalNodesHeight);
-
-				// todo: MinimumSize, MaximumSize ...
-
-				rootNodes.ForEach(node => flowLayoutPanelApplications.Controls.Add((UserControl) node));
+				_rootNodes.ForEach(node =>
+				{
+					node.ForceWidth(flowLayoutPanelApplications.Size.Width);
+					flowLayoutPanelApplications.Controls.Add((UserControl) node);
+				});
 			}
 
 			labelUnavailable.Visible = (_applicationNodes.Count == 0);
+			//}
+			//catch (Exception ex)
+			//{
+			//}
+		}
+
+		private void UpdateSize(List<Size> rootNodeSizes)
+		{
+			int totalNodesHeight = rootNodeSizes.Sum(size => size.Height);
+			int maxNodeWidth = rootNodeSizes.Max(size => size.Width);
+
+			MinimumSize = MaximumSize = new Size(0, 0);
+
+			Size = new Size(Size.Width - flowLayoutPanelApplications.Size.Width + maxNodeWidth,
+				Size.Height - flowLayoutPanelApplications.Size.Height + totalNodesHeight);
+
+			MinimumSize = Size;
+			MaximumSize = Size;
+
+			Location = new Point(Location.X, Screen.PrimaryScreen.WorkingArea.Height - Size.Height - 8);
+		}
+
+		private void EnableActionLinks(bool enable)
+		{
+			linkLabelStartAll.Enabled = enable;
+			linkLabelStopAll.Enabled = enable;
+			linkLabelRestartAll.Enabled = enable;
 		}
 
 		#endregion

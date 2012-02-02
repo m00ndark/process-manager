@@ -52,8 +52,8 @@
 			this.checkBoxSelected.Name = "checkBoxSelected";
 			this.checkBoxSelected.Size = new System.Drawing.Size(15, 14);
 			this.checkBoxSelected.TabIndex = 1;
-			this.checkBoxSelected.ThreeState = true;
 			this.checkBoxSelected.UseVisualStyleBackColor = true;
+			this.checkBoxSelected.CheckedChanged += new System.EventHandler(this.CheckBoxSelected_CheckedChanged);
 			// 
 			// linkLabelStart
 			// 
@@ -62,6 +62,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
 			this.linkLabelStart.AutoSize = true;
 			this.linkLabelStart.DisabledLinkColor = System.Drawing.Color.Gray;
+			this.linkLabelStart.Enabled = false;
 			this.linkLabelStart.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
 			this.linkLabelStart.LinkColor = System.Drawing.SystemColors.HotTrack;
 			this.linkLabelStart.Location = new System.Drawing.Point(3, 4);
@@ -72,6 +73,7 @@
 			this.linkLabelStart.Text = "Start";
 			this.linkLabelStart.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.linkLabelStart.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelStart.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelStart_LinkClicked);
 			// 
 			// labelMachineName
 			// 
@@ -146,6 +148,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
 			this.linkLabelRestart.AutoSize = true;
 			this.linkLabelRestart.DisabledLinkColor = System.Drawing.Color.Gray;
+			this.linkLabelRestart.Enabled = false;
 			this.linkLabelRestart.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
 			this.linkLabelRestart.LinkColor = System.Drawing.SystemColors.HotTrack;
 			this.linkLabelRestart.Location = new System.Drawing.Point(63, 4);
@@ -156,6 +159,7 @@
 			this.linkLabelRestart.Text = "Restart";
 			this.linkLabelRestart.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.linkLabelRestart.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelRestart.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelRestart_LinkClicked);
 			// 
 			// linkLabelStop
 			// 
@@ -164,6 +168,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
 			this.linkLabelStop.AutoSize = true;
 			this.linkLabelStop.DisabledLinkColor = System.Drawing.Color.Gray;
+			this.linkLabelStop.Enabled = false;
 			this.linkLabelStop.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
 			this.linkLabelStop.LinkColor = System.Drawing.SystemColors.HotTrack;
 			this.linkLabelStop.Location = new System.Drawing.Point(33, 4);
@@ -174,6 +179,7 @@
 			this.linkLabelStop.Text = "Stop";
 			this.linkLabelStop.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.linkLabelStop.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelStop.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelStop_LinkClicked);
 			// 
 			// flowLayoutPanel
 			// 
@@ -193,12 +199,13 @@
 			this.pictureBoxExpandCollapse.Size = new System.Drawing.Size(16, 16);
 			this.pictureBoxExpandCollapse.TabIndex = 0;
 			this.pictureBoxExpandCollapse.TabStop = false;
+			this.pictureBoxExpandCollapse.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PictureBoxExpandCollapse_MouseDown);
 			// 
 			// MachineNode
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.Color.Transparent;
+			this.BackColor = System.Drawing.Color.White;
 			this.Controls.Add(this.flowLayoutPanel);
 			this.Controls.Add(this.tableLayoutPanel);
 			this.Controls.Add(this.checkBoxSelected);

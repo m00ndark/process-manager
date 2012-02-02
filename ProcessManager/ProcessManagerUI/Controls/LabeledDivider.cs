@@ -45,7 +45,7 @@ namespace ProcessManagerUI.Controls
 		{
 			base.OnPaint(e);
 
-			e.Graphics.Clear(BackColor);
+			e.Graphics.Clear(BackColor.A == 0 ? Parent.BackColor : BackColor);
 
 			SolidBrush sbDividerColor = new SolidBrush(_dividerColor);
 			SolidBrush sbForeColor = new SolidBrush(ForeColor);

@@ -62,6 +62,7 @@
 			this.linkLabelStop.Text = "Stop";
 			this.linkLabelStop.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.linkLabelStop.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelStop.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelStop_LinkClicked);
 			// 
 			// linkLabelStart
 			// 
@@ -80,13 +81,14 @@
 			this.linkLabelStart.Text = "Start";
 			this.linkLabelStart.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.linkLabelStart.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelStart.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelStart_LinkClicked);
 			// 
 			// labelApplicationName
 			// 
 			this.labelApplicationName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
 			this.labelApplicationName.AutoSize = true;
-			this.labelApplicationName.Location = new System.Drawing.Point(156, 4);
+			this.labelApplicationName.Location = new System.Drawing.Point(154, 4);
 			this.labelApplicationName.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
 			this.labelApplicationName.Name = "labelApplicationName";
 			this.labelApplicationName.Size = new System.Drawing.Size(82, 15);
@@ -101,8 +103,8 @@
 			this.checkBoxSelected.Name = "checkBoxSelected";
 			this.checkBoxSelected.Size = new System.Drawing.Size(15, 14);
 			this.checkBoxSelected.TabIndex = 7;
-			this.checkBoxSelected.ThreeState = true;
 			this.checkBoxSelected.UseVisualStyleBackColor = true;
+			this.checkBoxSelected.CheckedChanged += new System.EventHandler(this.CheckBoxSelected_CheckedChanged);
 			// 
 			// linkLabelRestart
 			// 
@@ -121,12 +123,13 @@
 			this.linkLabelRestart.Text = "Restart";
 			this.linkLabelRestart.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.linkLabelRestart.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelRestart.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelRestart_LinkClicked);
 			// 
 			// ApplicationNode
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.Color.Transparent;
+			this.BackColor = System.Drawing.Color.White;
 			this.Controls.Add(this.pictureBoxStatus);
 			this.Controls.Add(this.linkLabelStop);
 			this.Controls.Add(this.linkLabelStart);

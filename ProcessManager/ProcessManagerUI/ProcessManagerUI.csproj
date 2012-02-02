@@ -70,6 +70,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\Nodes\Support\BaseRootNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\Nodes\ApplicationNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -82,13 +85,14 @@
     <Compile Include="Controls\Nodes\GroupNode.Designer.cs">
       <DependentUpon>GroupNode.cs</DependentUpon>
     </Compile>
-    <Compile Include="IControlPanelNode.cs" />
+    <Compile Include="Controls\Nodes\Support\IControlPanelNode.cs" />
     <Compile Include="Controls\Nodes\MachineNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\Nodes\MachineNode.Designer.cs">
       <DependentUpon>MachineNode.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Nodes\Support\IControlPanelRootNode.cs" />
     <Compile Include="Support\ComboBoxItem.cs" />
     <Compile Include="Controls\BackgroundPanel.cs">
       <SubType>Component</SubType>
