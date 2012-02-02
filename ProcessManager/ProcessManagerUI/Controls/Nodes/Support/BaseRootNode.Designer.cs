@@ -1,6 +1,6 @@
-﻿namespace ProcessManagerUI.Controls.Nodes
+﻿namespace ProcessManagerUI.Controls.Nodes.Support
 {
-	partial class GroupNode
+	partial class BaseRootNode
 	{
 		/// <summary> 
 		/// Required designer variable.
@@ -28,31 +28,22 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.pictureBoxExpandCollapse = new System.Windows.Forms.PictureBox();
 			this.checkBoxSelected = new System.Windows.Forms.CheckBox();
 			this.linkLabelStart = new System.Windows.Forms.LinkLabel();
-			this.labelGroupName = new System.Windows.Forms.Label();
+			this.labelNodeName = new System.Windows.Forms.Label();
 			this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-			this.panelGroupName = new System.Windows.Forms.Panel();
+			this.panelMachineName = new System.Windows.Forms.Panel();
 			this.panelControl = new System.Windows.Forms.Panel();
 			this.labeledDivider = new ProcessManagerUI.Controls.LabeledDivider();
 			this.linkLabelRestart = new System.Windows.Forms.LinkLabel();
 			this.linkLabelStop = new System.Windows.Forms.LinkLabel();
 			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBoxExpandCollapse)).BeginInit();
+			this.pictureBoxExpandCollapse = new System.Windows.Forms.PictureBox();
 			this.tableLayoutPanel.SuspendLayout();
-			this.panelGroupName.SuspendLayout();
+			this.panelMachineName.SuspendLayout();
 			this.panelControl.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxExpandCollapse)).BeginInit();
 			this.SuspendLayout();
-			// 
-			// pictureBoxExpandCollapse
-			// 
-			this.pictureBoxExpandCollapse.Location = new System.Drawing.Point(3, 3);
-			this.pictureBoxExpandCollapse.Name = "pictureBoxExpandCollapse";
-			this.pictureBoxExpandCollapse.Size = new System.Drawing.Size(16, 16);
-			this.pictureBoxExpandCollapse.TabIndex = 0;
-			this.pictureBoxExpandCollapse.TabStop = false;
-			this.pictureBoxExpandCollapse.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PictureBoxExpandCollapse_MouseDown);
 			// 
 			// checkBoxSelected
 			// 
@@ -84,18 +75,18 @@
 			this.linkLabelStart.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
 			this.linkLabelStart.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelStart_LinkClicked);
 			// 
-			// labelGroupName
+			// labelNodeName
 			// 
-			this.labelGroupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.labelNodeName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-			this.labelGroupName.AutoSize = true;
-			this.labelGroupName.Location = new System.Drawing.Point(0, 4);
-			this.labelGroupName.Margin = new System.Windows.Forms.Padding(0);
-			this.labelGroupName.Name = "labelGroupName";
-			this.labelGroupName.Size = new System.Drawing.Size(55, 15);
-			this.labelGroupName.TabIndex = 2;
-			this.labelGroupName.Text = "<group>";
-			this.labelGroupName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.labelNodeName.AutoSize = true;
+			this.labelNodeName.Location = new System.Drawing.Point(0, 4);
+			this.labelNodeName.Margin = new System.Windows.Forms.Padding(0);
+			this.labelNodeName.Name = "labelNodeName";
+			this.labelNodeName.Size = new System.Drawing.Size(85, 15);
+			this.labelNodeName.TabIndex = 2;
+			this.labelNodeName.Text = "<node-name>";
+			this.labelNodeName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// tableLayoutPanel
 			// 
@@ -104,7 +95,7 @@
 			this.tableLayoutPanel.ColumnCount = 2;
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 93F));
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel.Controls.Add(this.panelGroupName, 0, 0);
+			this.tableLayoutPanel.Controls.Add(this.panelMachineName, 0, 0);
 			this.tableLayoutPanel.Controls.Add(this.panelControl, 1, 0);
 			this.tableLayoutPanel.Location = new System.Drawing.Point(44, 0);
 			this.tableLayoutPanel.Name = "tableLayoutPanel";
@@ -114,15 +105,15 @@
 			this.tableLayoutPanel.Size = new System.Drawing.Size(306, 22);
 			this.tableLayoutPanel.TabIndex = 3;
 			// 
-			// panelGroupName
+			// panelMachineName
 			// 
-			this.panelGroupName.Controls.Add(this.labelGroupName);
-			this.panelGroupName.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelGroupName.Location = new System.Drawing.Point(0, 0);
-			this.panelGroupName.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-			this.panelGroupName.Name = "panelGroupName";
-			this.panelGroupName.Size = new System.Drawing.Size(90, 22);
-			this.panelGroupName.TabIndex = 5;
+			this.panelMachineName.Controls.Add(this.labelNodeName);
+			this.panelMachineName.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelMachineName.Location = new System.Drawing.Point(0, 0);
+			this.panelMachineName.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+			this.panelMachineName.Name = "panelMachineName";
+			this.panelMachineName.Size = new System.Drawing.Size(90, 22);
+			this.panelMachineName.TabIndex = 5;
 			// 
 			// panelControl
 			// 
@@ -147,7 +138,7 @@
 			this.labeledDivider.Location = new System.Drawing.Point(108, 4);
 			this.labeledDivider.Name = "labeledDivider";
 			this.labeledDivider.Size = new System.Drawing.Size(105, 15);
-			this.labeledDivider.TabIndex = 7;
+			this.labeledDivider.TabIndex = 6;
 			this.labeledDivider.Text = "";
 			// 
 			// linkLabelRestart
@@ -201,7 +192,16 @@
 			this.flowLayoutPanel.Size = new System.Drawing.Size(325, 78);
 			this.flowLayoutPanel.TabIndex = 4;
 			// 
-			// GroupNode
+			// pictureBoxExpandCollapse
+			// 
+			this.pictureBoxExpandCollapse.Location = new System.Drawing.Point(3, 3);
+			this.pictureBoxExpandCollapse.Name = "pictureBoxExpandCollapse";
+			this.pictureBoxExpandCollapse.Size = new System.Drawing.Size(16, 16);
+			this.pictureBoxExpandCollapse.TabIndex = 0;
+			this.pictureBoxExpandCollapse.TabStop = false;
+			this.pictureBoxExpandCollapse.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PictureBoxExpandCollapse_MouseDown);
+			// 
+			// BaseRootNode
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -212,14 +212,14 @@
 			this.Controls.Add(this.pictureBoxExpandCollapse);
 			this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Margin = new System.Windows.Forms.Padding(0);
-			this.Name = "GroupNode";
+			this.Name = "BaseRootNode";
 			this.Size = new System.Drawing.Size(350, 100);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBoxExpandCollapse)).EndInit();
 			this.tableLayoutPanel.ResumeLayout(false);
-			this.panelGroupName.ResumeLayout(false);
-			this.panelGroupName.PerformLayout();
+			this.panelMachineName.ResumeLayout(false);
+			this.panelMachineName.PerformLayout();
 			this.panelControl.ResumeLayout(false);
 			this.panelControl.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxExpandCollapse)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -230,13 +230,13 @@
 		private System.Windows.Forms.PictureBox pictureBoxExpandCollapse;
 		private System.Windows.Forms.CheckBox checkBoxSelected;
 		private System.Windows.Forms.LinkLabel linkLabelStart;
-		private System.Windows.Forms.Label labelGroupName;
+		private System.Windows.Forms.Label labelNodeName;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
 		private System.Windows.Forms.Panel panelControl;
 		private System.Windows.Forms.LinkLabel linkLabelRestart;
 		private System.Windows.Forms.LinkLabel linkLabelStop;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
 		private LabeledDivider labeledDivider;
-		private System.Windows.Forms.Panel panelGroupName;
+		private System.Windows.Forms.Panel panelMachineName;
 	}
 }

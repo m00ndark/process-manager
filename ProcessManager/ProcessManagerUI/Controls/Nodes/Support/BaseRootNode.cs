@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace ProcessManagerUI.Controls.Nodes.Support
 {
-	public abstract class BaseRootNode : UserControl, IControlPanelRootNode
+	public partial class BaseRootNode : UserControl, IControlPanelRootNode
 	{
 		private bool _disableEvents;
 		private Size _childrenSize;
@@ -16,6 +16,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		protected BaseRootNode(IEnumerable<IControlPanelNode> childNodes)
 		{
+			InitializeComponent();
 			ChildNodes = new List<IControlPanelNode>(childNodes);
 			_disableEvents = false;
 			_childrenSize = new Size(0, 0);
@@ -39,29 +40,21 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			}
 		}
 
-		public CheckState CheckState { get { return CheckBox.CheckState; } }
+		public CheckState CheckState { get { return checkBoxSelected.CheckState; } }
 
-		public abstract Guid ID { get; }
-		protected abstract string NodeName { get; }
-		protected abstract CheckBox CheckBox { get; }
-		protected abstract FlowLayoutPanel FlowLayoutPanel { get; }
-		protected abstract Label NameLabel { get; }
-		protected abstract PictureBox ExpandCollapsePictureBox { get; }
-		protected abstract TableLayoutPanel TableLayoutPanel { get; }
-		protected abstract LinkLabel StartLinkLabel { get; }
-		protected abstract LinkLabel StopLinkLabel { get; }
-		protected abstract LinkLabel RestartLinkLabel { get; }
+		public virtual Guid ID { get { throw new InvalidOperationException(); } }
+		protected virtual string NodeName { get { throw new InvalidOperationException(); } }
 
 		#endregion
 
 		#region GUI event handlers
 
-		protected void Handle_PictureBoxExpandCollapse_MouseDown()
+		private void PictureBoxExpandCollapse_MouseDown(object sender, MouseEventArgs e)
 		{
 			Expanded = !Expanded;
 		}
 
-		protected void Handle_CheckBoxSelected_CheckedChanged()
+		private void CheckBoxSelected_CheckedChanged(object sender, EventArgs e)
 		{
 			if (!_disableEvents)
 				RaiseCheckedChangedEvent();
@@ -72,17 +65,17 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 				ChildNodes.ForEach(node => node.Check(CheckState == CheckState.Checked));
 		}
 
-		protected void Handle_LinkLabelStart_LinkClicked()
+		private void LinkLabelStart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			Start();
 		}
 
-		protected void Handle_LinkLabelStop_LinkClicked()
+		private void LinkLabelStop_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			Stop();
 		}
 
-		protected void Handle_LinkLabelRestart_LinkClicked()
+		private void LinkLabelRestart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			Restart();
 		}
@@ -93,7 +86,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		protected void ControlPanelRootNode_SizeChanged(object sender, EventArgs e)
 		{
-			if (FlowLayoutPanel.Controls.Count > 0)
+			if (flowLayoutPanel.Controls.Count > 0)
 			{
 				_childrenSize.Height = ChildNodes.Select(node => node.Size).Sum(size => size.Height);
 				ApplyExpandedCollapsed();
@@ -104,7 +97,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 		{
 			int checkedCount = ChildNodes.Count(node => node.CheckState == CheckState.Checked);
 			int uncheckedCount = ChildNodes.Count(node => node.CheckState == CheckState.Unchecked);
-			CheckBox.CheckState = (checkedCount == ChildNodes.Count ? CheckState.Checked
+			checkBoxSelected.CheckState = (checkedCount == ChildNodes.Count ? CheckState.Checked
 				: (uncheckedCount == ChildNodes.Count ? CheckState.Unchecked : CheckState.Indeterminate));
 		}
 
@@ -127,22 +120,22 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			List<Size> childSizes = ChildNodes.Select(node => node.LayoutNode()).ToList();
 			_childrenSize.Height = childSizes.Sum(size => size.Height);
 			_childrenSize.Width = childSizes.Max(size => size.Width);
-			NameLabel.Text = NodeName;
+			labelNodeName.Text = NodeName;
 			ApplyExpandedCollapsed();
-			ChildNodes.ForEach(node => FlowLayoutPanel.Controls.Add((UserControl) node));
+			ChildNodes.ForEach(node => flowLayoutPanel.Controls.Add((UserControl) node));
 			return Size;
 		}
 
 		public void ForceWidth(int width)
 		{
 			Size = new Size(width, Size.Height);
-			ChildNodes.ForEach(node => node.ForceWidth(FlowLayoutPanel.Size.Width));
+			ChildNodes.ForEach(node => node.ForceWidth(flowLayoutPanel.Size.Width));
 		}
 
 		public void Check(bool @checked)
 		{
 			_disableEvents = true;
-			CheckBox.Checked = @checked;
+			checkBoxSelected.Checked = @checked;
 			_disableEvents = false;
 		}
 
@@ -177,18 +170,18 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		private void ApplyExpandedCollapsed()
 		{
-			ExpandCollapsePictureBox.Image = (Expanded ? Properties.Resources.expanded_16 : Properties.Resources.collapsed_16);
-			Size = new Size(Math.Max(Size.Width - FlowLayoutPanel.Size.Width + _childrenSize.Width,
-				Size.Width - (int) TableLayoutPanel.ColumnStyles[0].Width + NameLabel.Size.Width),
-				(Expanded ? Size.Height - FlowLayoutPanel.Size.Height + _childrenSize.Height : TableLayoutPanel.Size.Height));
-			TableLayoutPanel.ColumnStyles[0].Width = NameLabel.Size.Width;
+			pictureBoxExpandCollapse.Image = (Expanded ? Properties.Resources.expanded_16 : Properties.Resources.collapsed_16);
+			Size = new Size(Math.Max(Size.Width - flowLayoutPanel.Size.Width + _childrenSize.Width,
+				Size.Width - (int) tableLayoutPanel.ColumnStyles[0].Width + labelNodeName.Size.Width),
+				(Expanded ? Size.Height - flowLayoutPanel.Size.Height + _childrenSize.Height : tableLayoutPanel.Size.Height));
+			tableLayoutPanel.ColumnStyles[0].Width = labelNodeName.Size.Width;
 		}
 
 		private void EnableActionLinks(bool enable)
 		{
-			StartLinkLabel.Enabled = enable;
-			StopLinkLabel.Enabled = enable;
-			RestartLinkLabel.Enabled = enable;
+			linkLabelStart.Enabled = enable;
+			linkLabelStop.Enabled = enable;
+			linkLabelRestart.Enabled = enable;
 		}
 
 		#endregion

@@ -82,15 +82,12 @@
     <Compile Include="Controls\Nodes\GroupNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Nodes\GroupNode.Designer.cs">
-      <DependentUpon>GroupNode.cs</DependentUpon>
+    <Compile Include="Controls\Nodes\Support\BaseRootNode.Designer.cs">
+      <DependentUpon>BaseRootNode.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Nodes\Support\IControlPanelNode.cs" />
     <Compile Include="Controls\Nodes\MachineNode.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\Nodes\MachineNode.Designer.cs">
-      <DependentUpon>MachineNode.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Nodes\Support\IControlPanelRootNode.cs" />
     <Compile Include="Support\ComboBoxItem.cs" />
@@ -137,11 +134,8 @@
     <EmbeddedResource Include="Controls\Nodes\ApplicationNode.resx">
       <DependentUpon>ApplicationNode.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Nodes\GroupNode.resx">
-      <DependentUpon>GroupNode.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Nodes\MachineNode.resx">
-      <DependentUpon>MachineNode.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\Nodes\Support\BaseRootNode.resx">
+      <DependentUpon>BaseRootNode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ConfigurationForm.resx">
       <DependentUpon>ConfigurationForm.cs</DependentUpon>
