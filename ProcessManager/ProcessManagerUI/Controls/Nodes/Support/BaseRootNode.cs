@@ -84,7 +84,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		#region Control panel node event handlers
 
-		protected void ControlPanelRootNode_SizeChanged(object sender, EventArgs e)
+		private void ControlPanelRootNode_SizeChanged(object sender, EventArgs e)
 		{
 			if (flowLayoutPanel.Controls.Count > 0)
 			{
@@ -93,7 +93,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			}
 		}
 
-		protected void ControlPanelNode_CheckedChanged(object sender, EventArgs e)
+		private void ControlPanelNode_CheckedChanged(object sender, EventArgs e)
 		{
 			int checkedCount = ChildNodes.Count(node => node.CheckState == CheckState.Checked);
 			int uncheckedCount = ChildNodes.Count(node => node.CheckState == CheckState.Unchecked);
