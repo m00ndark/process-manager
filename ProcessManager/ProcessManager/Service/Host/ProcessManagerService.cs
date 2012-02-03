@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
@@ -54,6 +53,11 @@ namespace ProcessManager.Service.Host
 		public void SetConfiguration(DTOConfiguration configuration)
 		{
 			ProcessManager.Instance.SetConfiguration(configuration.FromDTO());
+		}
+
+		public List<DTOApplicationStatus> GetAllApplicationStatuses()
+		{
+			return ProcessManager.Instance.GetAllApplicationStatuses().Select(x => new DTOApplicationStatus(x)).ToList();
 		}
 
 		public void TakeApplicationAction(DTOApplicationAction action)

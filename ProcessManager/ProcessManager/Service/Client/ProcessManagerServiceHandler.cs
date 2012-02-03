@@ -164,7 +164,10 @@ namespace ProcessManager.Service.Client
 						{
 							Status = ProcessManagerServiceHandlerStatus.Disconnected;
 							if (!connectionAttempted)
+							{
+								connectionLost = true;
 								RaiseInitializationCompletedEvent(ex);
+							}
 							else if (!connectionLost)
 							{
 								connectionLost = true;

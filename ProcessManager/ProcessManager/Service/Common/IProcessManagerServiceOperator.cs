@@ -1,4 +1,5 @@
-﻿using System.ServiceModel;
+﻿using System.Collections.Generic;
+using System.ServiceModel;
 using ProcessManager.Service.DataObjects;
 
 namespace ProcessManager.Service.Common
@@ -14,6 +15,9 @@ namespace ProcessManager.Service.Common
 
 		[OperationContract]
 		void SetConfiguration(DTOConfiguration configuration);
+
+		[OperationContract]
+		List<DTOApplicationStatus> GetAllApplicationStatuses();
 
 		[OperationContract]
 		void TakeApplicationAction(DTOApplicationAction action);

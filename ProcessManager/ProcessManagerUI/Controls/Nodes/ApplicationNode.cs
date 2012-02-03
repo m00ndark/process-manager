@@ -58,17 +58,17 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		private void LinkLabelStart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			DoTakeAction(ApplicationActionType.Start);
+			RaiseActionTakenEvent(new ApplicationAction(ApplicationActionType.Start, Application));
 		}
 
 		private void LinkLabelStop_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			DoTakeAction(ApplicationActionType.Stop);
+			RaiseActionTakenEvent(new ApplicationAction(ApplicationActionType.Stop, Application));
 		}
 
 		private void LinkLabelRestart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			DoTakeAction(ApplicationActionType.Restart);
+			RaiseActionTakenEvent(new ApplicationAction(ApplicationActionType.Restart, Application));
 		}
 
 		#endregion
@@ -98,7 +98,7 @@ namespace ProcessManagerUI.Controls.Nodes
 		public void TakeAction(ApplicationActionType type)
 		{
 			if (checkBoxSelected.Checked)
-				DoTakeAction(type);
+				RaiseActionTakenEvent(new ApplicationAction(type, Application));
 		}
 
 		#endregion
@@ -135,11 +135,6 @@ namespace ProcessManagerUI.Controls.Nodes
 					pictureBoxStatus.Image = Properties.Resources.unknown_16;
 					break;
 			}
-		}
-
-		private void DoTakeAction(ApplicationActionType type)
-		{
-			RaiseActionTakenEvent(new ApplicationAction(type, Application));
 		}
 
 		#endregion

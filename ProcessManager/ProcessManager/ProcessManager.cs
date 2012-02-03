@@ -6,6 +6,7 @@ using System.Threading;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
+using ProcessManager.Service.DataObjects;
 using ProcessManager.Service.Host;
 using ProcessManager.Utilities;
 
@@ -83,9 +84,42 @@ namespace ProcessManager
 			RaiseConfigurationChangedEvent(configuration);
 		}
 
+		public List<ApplicationStatus> GetAllApplicationStatuses()
+		{
+			lock (_applicationStatuses)
+				return _applicationStatuses.Values.SelectMany(x => x.Values).ToList();
+		}
+
 		public void TakeApplicationAction(Guid groupID, Guid applicationID, ApplicationActionType type)
 		{
-			
+			Configuration configuration = Configuration.Read();
+			Group group = configuration.Groups.FirstOrDefault(x => x.ID == groupID);
+			Application application = configuration.Applications.FirstOrDefault(x => x.ID == applicationID);
+
+			if (group == null)
+			{
+				Logger.Add(LogType.Error, "Application " + type + ": Could not find group with ID " + groupID);
+				return;
+			}
+
+			if (application == null)
+			{
+				Logger.Add(LogType.Error, "Application " + type + ": Could not find application with ID " + applicationID);
+				return;
+			}
+
+			switch (type)
+			{
+				case ApplicationActionType.Start:
+					ProcessHandler.Start(group, application);
+					break;
+				case ApplicationActionType.Stop:
+					ProcessHandler.Stop(group, application);
+					break;
+				case ApplicationActionType.Restart:
+					ProcessHandler.Restart(group, application);
+					break;
+			}
 		}
 
 		#endregion
@@ -146,8 +180,7 @@ namespace ProcessManager
 
 						if (configuration.Applications.Count > 0 && configuration.Groups.Sum(group => group.Applications.Count) > 0)
 						{
-							List<string> processNames = configuration.Applications.Select(application => Path.GetFileNameWithoutExtension(application.RelativePath)).ToList();
-							List<string> runningProcesses = ProcessHandler.GetProcesses(processNames);
+							List<string> runningProcesses = ProcessHandler.GetProcesses(configuration.Applications);
 
 							var applicationsStatusList = configuration.Groups
 								.SelectMany(group => configuration.Applications

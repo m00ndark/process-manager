@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using ProcessManager;
@@ -18,8 +14,6 @@ using ProcessManager.Utilities;
 using ProcessManagerUI.Controls.Nodes;
 using ProcessManagerUI.Controls.Nodes.Support;
 using ProcessManagerUI.Support;
-using ProcessManagerUI.Utilities;
-using Application = ProcessManager.DataObjects.Application;
 
 namespace ProcessManagerUI.Forms
 {
@@ -83,6 +77,8 @@ namespace ProcessManagerUI.Forms
 			}
 			if (comboBoxGroupBy.SelectedIndex == -1)
 				comboBoxGroupBy.SelectedIndex = 0;
+
+			LayoutNodes();
 
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;
@@ -269,14 +265,7 @@ namespace ProcessManagerUI.Forms
 
 		private void HandleApplicationStatusesChangedThread(IEnumerable<ApplicationStatus> applicationStatuses)
 		{
-			foreach (ApplicationStatus applicationStatus in applicationStatuses)
-			{
-				ApplicationNode applicationNode = _applicationNodes.FirstOrDefault(node => node.ID == applicationStatus.ApplicationID
-					&& node.GroupID == applicationStatus.GroupID && node.MachineID == applicationStatus.Machine.ID);
-
-				if (applicationNode != null)
-					applicationNode.Status = applicationStatus.Status;
-			}
+			ApplyApplicationStatuses(applicationStatuses);
 		}
 
 		private void HandleConfigurationChanged(Machine machine, string configurationHash)
@@ -328,7 +317,7 @@ namespace ProcessManagerUI.Forms
 				if (action.Machine == null || action.Group == null || action.Application == null)
 					throw new Exception("Incomplete ApplicationAction object");
 
-				if (ConnectionStore.Connections[action.Machine].ServiceHandler == null)
+				if (!ConnectionStore.ConnectionCreated(action.Machine))
 					throw new Exception("No connection to machine " + action.Machine);
 
 				ConnectionStore.Connections[action.Machine].ServiceHandler.Service.TakeApplicationAction(new DTOApplicationAction(action));
@@ -339,75 +328,133 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
+		private void RetrieveAllApplicationStatuses()
+		{
+			new Thread(RetrieveAllApplicationStatusesThread).Start();
+		}
+
+		private void RetrieveAllApplicationStatusesThread()
+		{
+			List<ApplicationStatus> applicationStatuses = new List<ApplicationStatus>();
+			foreach (Machine machine in Settings.Client.Machines)
+			{
+				try
+				{
+					if (!ConnectionStore.ConnectionCreated(machine))
+						throw new Exception("No connection to machine " + machine);
+
+					applicationStatuses.AddRange(ConnectionStore.Connections[machine].ServiceHandler.Service
+						.GetAllApplicationStatuses().Select(x => x.FromDTO(machine)));
+				}
+				catch (Exception ex)
+				{
+					Logger.Add("Failed to retrieve all application statuses from machine " + machine, ex);
+				}
+			}
+			ApplyApplicationStatuses(applicationStatuses);
+		}
+
+		private delegate void ApplyApplicationStatusesDelegate(IEnumerable<ApplicationStatus> applicationStatuses);
+
+		private void ApplyApplicationStatuses(IEnumerable<ApplicationStatus> applicationStatuses)
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new ApplyApplicationStatusesDelegate(ApplyApplicationStatuses), applicationStatuses);
+				return;
+			}
+
+			lock (_applicationNodes)
+			{
+				foreach (ApplicationStatus applicationStatus in applicationStatuses)
+				{
+					ApplicationNode applicationNode = _applicationNodes.FirstOrDefault(node => node.ID == applicationStatus.ApplicationID
+						&& node.GroupID == applicationStatus.GroupID && node.MachineID == applicationStatus.Machine.ID);
+
+					if (applicationNode != null)
+						applicationNode.Status = applicationStatus.Status;
+				}
+			}
+		}
+
 		private void LayoutNodes()
 		{
 			//try{
 
-			flowLayoutPanelApplications.Controls.Clear();
-			_rootNodes.ForEach(node =>
-				{
-					node.SizeChanged -= ControlPanelRootNode_SizeChanged;
-					node.CheckedChanged -= ControlPanelNode_CheckedChanged;
-					node.ActionTaken -= ControlPanelNode_ActionTaken;
-				});
-			_allNodes.ForEach(node => node.Dispose());
-			_allNodes.Clear();
-			_rootNodes.Clear();
-			_applicationNodes.Clear();
-
-			var machinesGroupsApplications = ConnectionStore.Connections.Values
-				.Where(connection => connection.Configuration != null)
-				.SelectMany(connection =>
-					connection.Configuration.Groups.SelectMany(group =>
-						connection.Configuration.Applications
-							.Where(application => group.Applications.Contains(application.ID))
-							.Select(application => new
-								{
-									connection.Machine,
-									Group = group,
-									Application = application
-								})))
-				.GroupBy(a => a.Machine, (a, b) => new
+			lock (_applicationNodes)
+			{
+				flowLayoutPanelApplications.Controls.Clear();
+				_rootNodes.ForEach(node =>
 					{
-						Machine = a,
-						Groups = b.GroupBy(c => c.Group, (c, d) => new
-							{
-								Group = c,
-								Applications = d.Select(e => e.Application)
-							})
+						node.SizeChanged -= ControlPanelRootNode_SizeChanged;
+						node.CheckedChanged -= ControlPanelNode_CheckedChanged;
+						node.ActionTaken -= ControlPanelNode_ActionTaken;
 					});
+				_allNodes.ForEach(node => node.Dispose());
+				_allNodes.Clear();
+				_rootNodes.Clear();
+				_applicationNodes.Clear();
 
-			_rootNodes.AddRange(machinesGroupsApplications.Select(machineGroupsApplications =>
-				{
-					IEnumerable<GroupNode> groupNodes = machineGroupsApplications.Groups.Select(groupApplications =>
+				var machinesGroupsApplications = ConnectionStore.Connections.Values
+					.Where(connection => connection.Configuration != null)
+					.SelectMany(connection =>
+						connection.Configuration.Groups.SelectMany(group =>
+							connection.Configuration.Applications
+								.Where(application => group.Applications.Contains(application.ID))
+								.Select(application => new
+									{
+										connection.Machine,
+										Group = group,
+										Application = application
+									})))
+					.GroupBy(a => a.Machine, (a, b) => new
 						{
-							IEnumerable<ApplicationNode> applicationNodes = groupApplications.Applications.Select(application =>
-								new ApplicationNode(application, groupApplications.Group.ID, machineGroupsApplications.Machine.ID));
-							_applicationNodes.AddRange(applicationNodes);
-							return new GroupNode(groupApplications.Group, applicationNodes);
+							Machine = a,
+							Groups = b.GroupBy(c => c.Group, (c, d) => new
+								{
+									Group = c,
+									Applications = d.Select(e => e.Application)
+								})
 						});
-					_allNodes.AddRange(groupNodes);
-					return new MachineNode(machineGroupsApplications.Machine, groupNodes);
-				}));
 
-			_allNodes.AddRange(_rootNodes);
-			_allNodes.AddRange(_applicationNodes);
-			_rootNodes.ForEach(node =>
-				{
-					node.SizeChanged += ControlPanelRootNode_SizeChanged;
-					node.CheckedChanged += ControlPanelNode_CheckedChanged;
-					node.ActionTaken += ControlPanelNode_ActionTaken;
-				});
+				_rootNodes.AddRange(machinesGroupsApplications.Select(machineGroupsApplications =>
+					{
+						IEnumerable<GroupNode> groupNodes = machineGroupsApplications.Groups.Select(groupApplications =>
+							{
+								IEnumerable<ApplicationNode> applicationNodes = groupApplications.Applications.Select(application =>
+									new ApplicationNode(application, groupApplications.Group.ID, machineGroupsApplications.Machine.ID)).ToList();
+								_applicationNodes.AddRange(applicationNodes);
+								return new GroupNode(groupApplications.Group, applicationNodes);
+							}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
+						_allNodes.AddRange(groupNodes);
+						return new MachineNode(machineGroupsApplications.Machine, groupNodes);
+					}).ToList());
+
+				_allNodes.AddRange(_rootNodes);
+				_allNodes.AddRange(_applicationNodes);
+				_rootNodes.ForEach(node =>
+					{
+						node.SizeChanged += ControlPanelRootNode_SizeChanged;
+						node.CheckedChanged += ControlPanelNode_CheckedChanged;
+						node.ActionTaken += ControlPanelNode_ActionTaken;
+					});
+			}
 
 			if (_applicationNodes.Count > 0)
 			{
 				UpdateSize(_rootNodes.Select(node => node.LayoutNode()).ToList());
 
 				_rootNodes.ForEach(node =>
-				{
-					node.ForceWidth(flowLayoutPanelApplications.Size.Width);
-					flowLayoutPanelApplications.Controls.Add((UserControl) node);
-				});
+					{
+						node.ForceWidth(flowLayoutPanelApplications.Size.Width);
+						flowLayoutPanelApplications.Controls.Add((UserControl) node);
+					});
+
+				RetrieveAllApplicationStatuses();
+			}
+			else
+			{
+				UpdateSize(null);
 			}
 
 			labelUnavailable.Visible = (_applicationNodes.Count == 0);
@@ -419,17 +466,21 @@ namespace ProcessManagerUI.Forms
 
 		private void UpdateSize(List<Size> rootNodeSizes)
 		{
-			int totalNodesHeight = rootNodeSizes.Sum(size => size.Height);
-			int maxNodeWidth = rootNodeSizes.Max(size => size.Width);
-
 			MinimumSize = MaximumSize = new Size(0, 0);
 
-			Size = new Size(Size.Width - flowLayoutPanelApplications.Size.Width + maxNodeWidth,
-				Size.Height - flowLayoutPanelApplications.Size.Height + totalNodesHeight);
+			if (rootNodeSizes != null)
+			{
+				int totalNodesHeight = rootNodeSizes.Sum(size => size.Height);
+				int maxNodeWidth = rootNodeSizes.Max(size => size.Width);
+				Size = new Size(Size.Width - flowLayoutPanelApplications.Size.Width + maxNodeWidth,
+					Size.Height - flowLayoutPanelApplications.Size.Height + totalNodesHeight);
+			}
+			else
+			{
+				Size = new Size(415, 180);
+			}
 
-			MinimumSize = Size;
-			MaximumSize = Size;
-
+			MinimumSize = MaximumSize = Size;
 			Location = new Point(Location.X, Screen.PrimaryScreen.WorkingArea.Height - Size.Height - 8);
 		}
 
