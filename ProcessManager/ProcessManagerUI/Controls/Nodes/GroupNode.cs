@@ -21,5 +21,14 @@ namespace ProcessManagerUI.Controls.Nodes
 		protected override string NodeName { get { return Group.Name; } }
 
 		#endregion
+
+		#region Helpers
+
+		protected override void UpdateApplicationAction(ApplicationAction action)
+		{
+			action.Group = Group;
+		}
+
+		#endregion
 	}
 }

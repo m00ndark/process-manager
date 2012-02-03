@@ -56,6 +56,11 @@ namespace ProcessManager.Service.Host
 			ProcessManager.Instance.SetConfiguration(configuration.FromDTO());
 		}
 
+		public void TakeApplicationAction(DTOApplicationAction action)
+		{
+			ProcessManager.Instance.TakeApplicationAction(action.GroupID, action.ApplicationID, action.Type);
+		}
+
 		#endregion
 
 		#region Service event handlers

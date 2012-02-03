@@ -49,8 +49,10 @@
   <ItemGroup>
     <Compile Include="ConnectionStore.cs" />
     <Compile Include="DataAccess\RegistryHandler.cs" />
+    <Compile Include="DataObjects\ApplicationAction.cs" />
     <Compile Include="DataObjects\Machine.cs" />
     <Compile Include="DataObjects\MachineConnection.cs" />
+    <Compile Include="EventArguments\ApplicationActionEventArgs.cs" />
     <Compile Include="EventArguments\ApplicationStatusesEventArgs.cs" />
     <Compile Include="EventArguments\MachineConfigurationHashEventArgs.cs" />
     <Compile Include="EventArguments\ServiceHandlerConnectionChangedEventArgs.cs" />
@@ -64,6 +66,7 @@
     <Compile Include="Service\Common\IProcessManagerService.cs" />
     <Compile Include="Service\Common\IProcessManagerServiceOperator.cs" />
     <Compile Include="Service\DataObjects\DTOApplication.cs" />
+    <Compile Include="Service\DataObjects\DTOApplicationAction.cs" />
     <Compile Include="Service\DataObjects\DTOApplicationStatus.cs" />
     <Compile Include="Service\DataObjects\DTOConfiguration.cs" />
     <Compile Include="Service\DataObjects\DTOGroup.cs" />

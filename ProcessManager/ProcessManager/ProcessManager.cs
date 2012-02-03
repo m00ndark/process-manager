@@ -83,6 +83,11 @@ namespace ProcessManager
 			RaiseConfigurationChangedEvent(configuration);
 		}
 
+		public void TakeApplicationAction(Guid groupID, Guid applicationID, ApplicationActionType type)
+		{
+			
+		}
+
 		#endregion
 
 		#region Start, shut down, main thread and loop

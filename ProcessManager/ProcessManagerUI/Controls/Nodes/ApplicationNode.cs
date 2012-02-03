@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using ProcessManager.DataObjects;
+using ProcessManager.EventArguments;
 using ProcessManagerUI.Controls.Nodes.Support;
 using Application = ProcessManager.DataObjects.Application;
 
@@ -14,16 +10,19 @@ namespace ProcessManagerUI.Controls.Nodes
 {
 	public partial class ApplicationNode : UserControl, IControlPanelNode
 	{
-		private ApplicationStatusValue _applicationStatusValue;
+		private ApplicationStatusValue _status;
 		private bool _disabledEvents;
 
 		public event EventHandler CheckedChanged;
+		public event EventHandler<ApplicationActionEventArgs> ActionTaken;
 
-		public ApplicationNode(Application application)
+		public ApplicationNode(Application application, Guid groupID, Guid machineID)
 		{
 			InitializeComponent();
 			Application = application;
-			_applicationStatusValue = ApplicationStatusValue.Unknown;
+			GroupID = groupID;
+			MachineID = machineID;
+			_status = ApplicationStatusValue.Unknown;
 			_disabledEvents = false;
 			//BackColor = Color.FromArgb(255, 192, 128);
 		}
@@ -31,14 +30,16 @@ namespace ProcessManagerUI.Controls.Nodes
 		#region Properties
 
 		public Application Application { get; private set; }
+		public Guid GroupID { get; private set; }
+		public Guid MachineID { get; private set; }
 		
-		public ApplicationStatusValue ApplicationStatusValue
+		public ApplicationStatusValue Status
 		{
-			get { return _applicationStatusValue; }
+			get { return _status; }
 			set
 			{
-				_applicationStatusValue = value;
-				ApplyApplicationStatus();
+				_status = value;
+				ApplyStatus();
 			}
 		}
 
@@ -57,17 +58,17 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		private void LinkLabelStart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			DoStart();
+			DoTakeAction(ApplicationActionType.Start);
 		}
 
 		private void LinkLabelStop_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			DoStop();
+			DoTakeAction(ApplicationActionType.Stop);
 		}
 
 		private void LinkLabelRestart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			DoRestart();
+			DoTakeAction(ApplicationActionType.Restart);
 		}
 
 		#endregion
@@ -78,7 +79,7 @@ namespace ProcessManagerUI.Controls.Nodes
 		{
 			labelApplicationName.Text = Application.Name;
 			Size = new Size(labelApplicationName.Location.X + labelApplicationName.Size.Width, Size.Height);
-			ApplyApplicationStatus();
+			ApplyStatus();
 			return Size;
 		}
 
@@ -94,22 +95,10 @@ namespace ProcessManagerUI.Controls.Nodes
 			_disabledEvents = false;
 		}
 
-		public void Start()
+		public void TakeAction(ApplicationActionType type)
 		{
 			if (checkBoxSelected.Checked)
-				DoStart();
-		}
-
-		public void Stop()
-		{
-			if (checkBoxSelected.Checked)
-				DoStop();
-		}
-
-		public void Restart()
-		{
-			if (checkBoxSelected.Checked)
-				DoRestart();
+				DoTakeAction(type);
 		}
 
 		#endregion
@@ -122,13 +111,19 @@ namespace ProcessManagerUI.Controls.Nodes
 				CheckedChanged(this, new EventArgs());
 		}
 
+		private void RaiseActionTakenEvent(ApplicationAction action)
+		{
+			if (ActionTaken != null)
+				ActionTaken(this, new ApplicationActionEventArgs(action));
+		}
+
 		#endregion
 
 		#region Helpers
 
-		private void ApplyApplicationStatus()
+		private void ApplyStatus()
 		{
-			switch (ApplicationStatusValue)
+			switch (Status)
 			{
 				case ApplicationStatusValue.Running:
 					pictureBoxStatus.Image = Properties.Resources.running_16;
@@ -142,19 +137,9 @@ namespace ProcessManagerUI.Controls.Nodes
 			}
 		}
 
-		private void DoStart()
+		private void DoTakeAction(ApplicationActionType type)
 		{
-			throw new NotImplementedException();
-		}
-
-		private void DoStop()
-		{
-			throw new NotImplementedException();
-		}
-
-		private void DoRestart()
-		{
-			throw new NotImplementedException();
+			RaiseActionTakenEvent(new ApplicationAction(type, Application));
 		}
 
 		#endregion

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using ProcessManager.DataObjects;
+using ProcessManager.EventArguments;
 
 namespace ProcessManagerUI.Controls.Nodes.Support
 {
@@ -13,6 +15,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 		private bool _expanded;
 
 		public event EventHandler CheckedChanged;
+		public event EventHandler<ApplicationActionEventArgs> ActionTaken;
 
 		protected BaseRootNode(IEnumerable<IControlPanelNode> childNodes)
 		{
@@ -21,9 +24,13 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			_childrenSize = new Size(0, 0);
 			_expanded = true;
 			ChildNodes = new List<IControlPanelNode>(childNodes);
-			ChildNodes.ForEach(node => node.CheckedChanged += ControlPanelNode_CheckedChanged);
 			ChildNodes.Select(node => node as IControlPanelRootNode).Where(node => node != null).ToList()
 				.ForEach(node => node.SizeChanged += ControlPanelRootNode_SizeChanged);
+			ChildNodes.ForEach(node =>
+				{
+					node.CheckedChanged += ControlPanelNode_CheckedChanged;
+					node.ActionTaken += ControlPanelNode_ActionTaken;
+				});
 		}
 
 		#region Properties
@@ -42,8 +49,8 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		public CheckState CheckState { get { return checkBoxSelected.CheckState; } }
 
-		public virtual Guid ID { get { throw new InvalidOperationException(); } }
-		protected virtual string NodeName { get { throw new InvalidOperationException(); } }
+		public virtual Guid ID { get { throw new InvalidOperationException("Class must be inherited!"); } }
+		protected virtual string NodeName { get { throw new InvalidOperationException("Class must be inherited!"); } }
 
 		#endregion
 
@@ -67,17 +74,17 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		private void LinkLabelStart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			Start();
+			TakeAction(ApplicationActionType.Start);
 		}
 
 		private void LinkLabelStop_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			Stop();
+			TakeAction(ApplicationActionType.Stop);
 		}
 
 		private void LinkLabelRestart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			Restart();
+			TakeAction(ApplicationActionType.Restart);
 		}
 
 		#endregion
@@ -99,6 +106,13 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			int uncheckedCount = ChildNodes.Count(node => node.CheckState == CheckState.Unchecked);
 			checkBoxSelected.CheckState = (checkedCount == ChildNodes.Count ? CheckState.Checked
 				: (uncheckedCount == ChildNodes.Count ? CheckState.Unchecked : CheckState.Indeterminate));
+		}
+
+		private void ControlPanelNode_ActionTaken(object sender, ApplicationActionEventArgs e)
+		{
+			ApplicationAction action = e.Action;
+			UpdateApplicationAction(action);
+			RaiseActionTakenEvent(action);
 		}
 
 		#endregion
@@ -139,19 +153,9 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			_disableEvents = false;
 		}
 
-		public void Start()
+		public void TakeAction(ApplicationActionType type)
 		{
-			ChildNodes.ForEach(node => node.Start());
-		}
-
-		public void Stop()
-		{
-			ChildNodes.ForEach(node => node.Stop());
-		}
-
-		public void Restart()
-		{
-			ChildNodes.ForEach(node => node.Restart());
+			ChildNodes.ForEach(node => node.TakeAction(type));
 		}
 
 		#endregion
@@ -162,6 +166,12 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 		{
 			if (CheckedChanged != null)
 				CheckedChanged(this, new EventArgs());
+		}
+
+		private void RaiseActionTakenEvent(ApplicationAction action)
+		{
+			if (ActionTaken != null)
+				ActionTaken(this, new ApplicationActionEventArgs(action));
 		}
 
 		#endregion
@@ -182,6 +192,11 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			linkLabelStart.Enabled = enable;
 			linkLabelStop.Enabled = enable;
 			linkLabelRestart.Enabled = enable;
+		}
+
+		protected virtual void UpdateApplicationAction(ApplicationAction action)
+		{
+			throw new InvalidOperationException("Class must be inherited!");
 		}
 
 		#endregion

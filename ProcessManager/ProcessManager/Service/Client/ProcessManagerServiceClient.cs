@@ -41,6 +41,11 @@ namespace ProcessManager.Service.Client
 			Channel.SetConfiguration(configuration);
 		}
 
+		public void TakeApplicationAction(DTOApplicationAction action)
+		{
+			Channel.TakeApplicationAction(action);
+		}
+
 		#endregion
 	}
 }

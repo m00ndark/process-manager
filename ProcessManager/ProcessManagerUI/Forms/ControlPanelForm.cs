@@ -13,6 +13,7 @@ using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
+using ProcessManager.Service.DataObjects;
 using ProcessManager.Utilities;
 using ProcessManagerUI.Controls.Nodes;
 using ProcessManagerUI.Controls.Nodes.Support;
@@ -124,17 +125,17 @@ namespace ProcessManagerUI.Forms
 
 		private void LinkLabelStartAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_rootNodes.ForEach(node => node.Start());
+			_rootNodes.ForEach(node => node.TakeAction(ApplicationActionType.Start));
 		}
 
 		private void LinkLabelStopAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_rootNodes.ForEach(node => node.Stop());
+			_rootNodes.ForEach(node => node.TakeAction(ApplicationActionType.Stop));
 		}
 
 		private void LinkLabelRestartAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_rootNodes.ForEach(node => node.Restart());
+			_rootNodes.ForEach(node => node.TakeAction(ApplicationActionType.Restart));
 		}
 
 		private void LinkLabelExpandAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -236,6 +237,11 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
+		private void ControlPanelNode_ActionTaken(object sender, ApplicationActionEventArgs e)
+		{
+			TakeAction(e.Action);
+		}
+
 		#endregion
 
 		#region Implementation of IProcessManagerEventHandler
@@ -256,14 +262,21 @@ namespace ProcessManagerUI.Forms
 
 		#region Handling Process Manager Service events
 
-		private void HandleApplicationStatusesChanged(List<ApplicationStatus> applicationStatuses)
+		private void HandleApplicationStatusesChanged(IEnumerable<ApplicationStatus> applicationStatuses)
 		{
 			new Thread(() => HandleApplicationStatusesChangedThread(applicationStatuses)).Start();
 		}
 
-		private void HandleApplicationStatusesChangedThread(List<ApplicationStatus> applicationStatuses)
+		private void HandleApplicationStatusesChangedThread(IEnumerable<ApplicationStatus> applicationStatuses)
 		{
+			foreach (ApplicationStatus applicationStatus in applicationStatuses)
+			{
+				ApplicationNode applicationNode = _applicationNodes.FirstOrDefault(node => node.ID == applicationStatus.ApplicationID
+					&& node.GroupID == applicationStatus.GroupID && node.MachineID == applicationStatus.Machine.ID);
 
+				if (applicationNode != null)
+					applicationNode.Status = applicationStatus.Status;
+			}
 		}
 
 		private void HandleConfigurationChanged(Machine machine, string configurationHash)
@@ -308,6 +321,24 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
+		private static void TakeAction(ApplicationAction action)
+		{
+			try
+			{
+				if (action.Machine == null || action.Group == null || action.Application == null)
+					throw new Exception("Incomplete ApplicationAction object");
+
+				if (ConnectionStore.Connections[action.Machine].ServiceHandler == null)
+					throw new Exception("No connection to machine " + action.Machine);
+
+				ConnectionStore.Connections[action.Machine].ServiceHandler.Service.TakeApplicationAction(new DTOApplicationAction(action));
+			}
+			catch (Exception ex)
+			{
+				Logger.Add("Failed to take application action", ex);
+			}
+		}
+
 		private void LayoutNodes()
 		{
 			//try{
@@ -317,6 +348,7 @@ namespace ProcessManagerUI.Forms
 				{
 					node.SizeChanged -= ControlPanelRootNode_SizeChanged;
 					node.CheckedChanged -= ControlPanelNode_CheckedChanged;
+					node.ActionTaken -= ControlPanelNode_ActionTaken;
 				});
 			_allNodes.ForEach(node => node.Dispose());
 			_allNodes.Clear();
@@ -349,7 +381,8 @@ namespace ProcessManagerUI.Forms
 				{
 					IEnumerable<GroupNode> groupNodes = machineGroupsApplications.Groups.Select(groupApplications =>
 						{
-							IEnumerable<ApplicationNode> applicationNodes = groupApplications.Applications.Select(application => new ApplicationNode(application));
+							IEnumerable<ApplicationNode> applicationNodes = groupApplications.Applications.Select(application =>
+								new ApplicationNode(application, groupApplications.Group.ID, machineGroupsApplications.Machine.ID));
 							_applicationNodes.AddRange(applicationNodes);
 							return new GroupNode(groupApplications.Group, applicationNodes);
 						});
@@ -363,6 +396,7 @@ namespace ProcessManagerUI.Forms
 				{
 					node.SizeChanged += ControlPanelRootNode_SizeChanged;
 					node.CheckedChanged += ControlPanelNode_CheckedChanged;
+					node.ActionTaken += ControlPanelNode_ActionTaken;
 				});
 
 			if (_applicationNodes.Count > 0)

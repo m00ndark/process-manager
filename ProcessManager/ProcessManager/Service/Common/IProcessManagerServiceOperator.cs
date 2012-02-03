@@ -14,5 +14,8 @@ namespace ProcessManager.Service.Common
 
 		[OperationContract]
 		void SetConfiguration(DTOConfiguration configuration);
+
+		[OperationContract]
+		void TakeApplicationAction(DTOApplicationAction action);
 	}
 }

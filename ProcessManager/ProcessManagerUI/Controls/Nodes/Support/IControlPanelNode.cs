@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using ProcessManager.DataObjects;
+using ProcessManager.EventArguments;
 
 namespace ProcessManagerUI.Controls.Nodes.Support
 {
@@ -11,13 +13,12 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 		CheckState CheckState { get; }
 
 		event EventHandler CheckedChanged;
+		event EventHandler<ApplicationActionEventArgs> ActionTaken;
 
 		void Dispose();
 		Size LayoutNode();
 		void ForceWidth(int width);
 		void Check(bool @checked);
-		void Start();
-		void Stop();
-		void Restart();
+		void TakeAction(ApplicationActionType type);
 	}
 }
