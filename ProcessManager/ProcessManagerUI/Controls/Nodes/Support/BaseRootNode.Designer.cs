@@ -53,7 +53,7 @@
 			this.checkBoxSelected.Size = new System.Drawing.Size(15, 14);
 			this.checkBoxSelected.TabIndex = 1;
 			this.checkBoxSelected.UseVisualStyleBackColor = true;
-			this.checkBoxSelected.CheckedChanged += new System.EventHandler(this.CheckBoxSelected_CheckedChanged);
+			this.checkBoxSelected.CheckStateChanged += new System.EventHandler(this.CheckBoxSelected_CheckStateChanged);
 			// 
 			// linkLabelStart
 			// 

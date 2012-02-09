@@ -1,4 +1,5 @@
 ﻿using System;
+using ProcessManager.Utilities;
 
 namespace ProcessManager.DataObjects
 {
@@ -10,7 +11,7 @@ namespace ProcessManager.DataObjects
 
 		public Machine(string hostName)
 		{
-			ID = Guid.NewGuid();
+			ID = Cryptographer.CreateGUID(hostName);
 			HostName = hostName;
 		}
 

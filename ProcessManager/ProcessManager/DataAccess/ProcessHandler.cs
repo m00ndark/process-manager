@@ -13,7 +13,7 @@ namespace ProcessManager.DataAccess
 	{
 		public static List<string> GetProcesses(List<Application> applications)
 		{
-			return applications.SelectMany(application => GetProcesses(application).Select(process => process.MainModule.FileName)).ToList();
+			return applications.SelectMany(application => GetProcesses(application).Select(process => process.GetPathName())).ToList();
 		}
 
 		public static void Start(Group group, Application application)
@@ -53,7 +53,7 @@ namespace ProcessManager.DataAccess
 				catch (Exception ex)
 				{
 					success = false;
-					Logger.Add("Failed to kill process with path " + process.MainModule.FileName, ex);
+					Logger.Add("Failed to kill process with path " + process.GetPathName(), ex);
 				}
 			}
 			return success;
@@ -84,7 +84,7 @@ namespace ProcessManager.DataAccess
 				.Select(process => new
 					{
 						Process = process,
-						Path = Path.GetDirectoryName(process.MainModule.FileName)
+						Path = Path.GetDirectoryName(process.GetPathName())
 					})
 				.Where(x => x.Path != null && x.Path.Equals(fullPath, StringComparison.CurrentCultureIgnoreCase))
 				.Select(x => x.Process);

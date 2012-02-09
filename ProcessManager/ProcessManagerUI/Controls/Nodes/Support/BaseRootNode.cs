@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using ProcessManager;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
 
@@ -10,19 +11,21 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 {
 	public partial class BaseRootNode : UserControl, IControlPanelRootNode
 	{
-		private bool _disableEvents;
+		private bool _ignoreCheckedChangedEvents;
 		private Size _childrenSize;
+		private readonly ControlPanelGrouping _grouping;
 		private bool _expanded;
 
 		public event EventHandler CheckedChanged;
 		public event EventHandler<ApplicationActionEventArgs> ActionTaken;
 
-		protected BaseRootNode(IEnumerable<IControlPanelNode> childNodes)
+		protected BaseRootNode(IEnumerable<IControlPanelNode> childNodes, ControlPanelGrouping grouping, bool expanded)
 		{
 			InitializeComponent();
-			_disableEvents = false;
+			_ignoreCheckedChangedEvents = false;
 			_childrenSize = new Size(0, 0);
-			_expanded = true;
+			_grouping = grouping;
+			_expanded = expanded;
 			ChildNodes = new List<IControlPanelNode>(childNodes);
 			ChildNodes.Select(node => node as IControlPanelRootNode).Where(node => node != null).ToList()
 				.ForEach(node => node.SizeChanged += ControlPanelRootNode_SizeChanged);
@@ -59,17 +62,25 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 		private void PictureBoxExpandCollapse_MouseDown(object sender, MouseEventArgs e)
 		{
 			Expanded = !Expanded;
+
+			if (Expanded)
+				Settings.Client.CP_CollapsedNodes[_grouping].Remove(ID);
+			else if (!Settings.Client.CP_CollapsedNodes[_grouping].Contains(ID))
+				Settings.Client.CP_CollapsedNodes[_grouping].Add(ID);
 		}
 
-		private void CheckBoxSelected_CheckedChanged(object sender, EventArgs e)
+		private void CheckBoxSelected_CheckStateChanged(object sender, EventArgs e)
 		{
-			if (!_disableEvents)
-				RaiseCheckedChangedEvent();
+			RaiseCheckedChangedEvent();
 
 			EnableActionLinks(CheckState != CheckState.Unchecked);
 
 			if (CheckState != CheckState.Indeterminate)
+			{
+				_ignoreCheckedChangedEvents = true;
 				ChildNodes.ForEach(node => node.Check(CheckState == CheckState.Checked));
+				_ignoreCheckedChangedEvents = false;
+			}
 		}
 
 		private void LinkLabelStart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -102,6 +113,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		private void ControlPanelNode_CheckedChanged(object sender, EventArgs e)
 		{
+			if (_ignoreCheckedChangedEvents) return;
 			int checkedCount = ChildNodes.Count(node => node.CheckState == CheckState.Checked);
 			int uncheckedCount = ChildNodes.Count(node => node.CheckState == CheckState.Unchecked);
 			checkBoxSelected.CheckState = (checkedCount == ChildNodes.Count ? CheckState.Checked
@@ -148,9 +160,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		public void Check(bool @checked)
 		{
-			_disableEvents = true;
 			checkBoxSelected.Checked = @checked;
-			_disableEvents = false;
 		}
 
 		public void TakeAction(ApplicationActionType type)

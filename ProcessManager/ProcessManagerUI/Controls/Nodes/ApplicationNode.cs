@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using ProcessManager;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
+using ProcessManager.Utilities;
 using ProcessManagerUI.Controls.Nodes.Support;
 using Application = ProcessManager.DataObjects.Application;
 
@@ -10,8 +12,8 @@ namespace ProcessManagerUI.Controls.Nodes
 {
 	public partial class ApplicationNode : UserControl, IControlPanelNode
 	{
+		private Guid _id;
 		private ApplicationStatusValue _status;
-		private bool _disabledEvents;
 
 		public event EventHandler CheckedChanged;
 		public event EventHandler<ApplicationActionEventArgs> ActionTaken;
@@ -22,8 +24,8 @@ namespace ProcessManagerUI.Controls.Nodes
 			Application = application;
 			GroupID = groupID;
 			MachineID = machineID;
+			_id = MakeID(MachineID, GroupID, Application.ID);
 			_status = ApplicationStatusValue.Unknown;
-			_disabledEvents = false;
 			//BackColor = Color.FromArgb(255, 192, 128);
 		}
 
@@ -43,7 +45,7 @@ namespace ProcessManagerUI.Controls.Nodes
 			}
 		}
 
-		public Guid ID { get { return Application.ID; } }
+		public Guid ID { get { return _id; } }
 		public CheckState CheckState { get { return checkBoxSelected.CheckState; } }
 
 		#endregion
@@ -52,8 +54,12 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		private void CheckBoxSelected_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!_disabledEvents)
-				RaiseCheckedChangedEvent();
+			if (!checkBoxSelected.Checked)
+				Settings.Client.CP_CheckedNodes.Remove(ID);
+			else if (!Settings.Client.CP_CheckedNodes.Contains(ID))
+				Settings.Client.CP_CheckedNodes.Add(ID);
+
+			RaiseCheckedChangedEvent();
 		}
 
 		private void LinkLabelStart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -90,9 +96,7 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		public void Check(bool @checked)
 		{
-			_disabledEvents = true;
 			checkBoxSelected.Checked = @checked;
-			_disabledEvents = false;
 		}
 
 		public void TakeAction(ApplicationActionType type)
@@ -121,6 +125,11 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		#region Helpers
 
+		private static Guid MakeID(Guid machineID, Guid groupID, Guid applicationID)
+		{
+			return Cryptographer.CreateGUID(machineID.ToString() + groupID.ToString() + applicationID.ToString());
+		}
+
 		private void ApplyStatus()
 		{
 			switch (Status)
@@ -138,5 +147,15 @@ namespace ProcessManagerUI.Controls.Nodes
 		}
 
 		#endregion
+
+		public bool Matches(Guid machineID, Guid groupID, Guid applicationID)
+		{
+			return Matches(MakeID(machineID, groupID, applicationID));
+		}
+
+		public bool Matches(Guid id)
+		{
+			return (ID == id);
+		}
 	}
 }

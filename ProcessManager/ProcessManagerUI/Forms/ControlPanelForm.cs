@@ -17,18 +17,12 @@ using ProcessManagerUI.Support;
 
 namespace ProcessManagerUI.Forms
 {
-	public enum Grouping
-	{
-		MachineGroupApplication,
-		GroupMachineApplication
-	}
-
 	public partial class ControlPanelForm : Form, IProcessManagerEventHandler
 	{
-		private static readonly IDictionary<Grouping, string> _groupingDescriptions = new Dictionary<Grouping, string>()
+		private static readonly IDictionary<ControlPanelGrouping, string> _groupingDescriptions = new Dictionary<ControlPanelGrouping, string>()
 			{
-				{ Grouping.MachineGroupApplication, "Machine > Group > Application" },
-				{ Grouping.GroupMachineApplication, "Group > Machine > Application" }
+				{ ControlPanelGrouping.MachineGroupApplication, "Machine > Group > Application" },
+				{ ControlPanelGrouping.GroupMachineApplication, "Group > Machine > Application" }
 			};
 		private DateTime _formClosedAt;
 		private readonly List<IControlPanelNode> _allNodes;
@@ -70,9 +64,9 @@ namespace ProcessManagerUI.Forms
 			HideForm();
 			Settings.Client.Load();
 
-			foreach (Grouping grouping in _groupingDescriptions.Keys)
+			foreach (ControlPanelGrouping grouping in _groupingDescriptions.Keys)
 			{
-				int index = comboBoxGroupBy.Items.Add(new ComboBoxItem<Grouping>(_groupingDescriptions[grouping], grouping));
+				int index = comboBoxGroupBy.Items.Add(new ComboBoxItem<ControlPanelGrouping>(_groupingDescriptions[grouping], grouping));
 				if (Settings.Client.CP_SelectedGrouping == grouping.ToString())
 					comboBoxGroupBy.SelectedIndex = index;
 			}
@@ -100,7 +94,7 @@ namespace ProcessManagerUI.Forms
 		{
 			if (comboBoxGroupBy.SelectedIndex == -1) return;
 
-			Grouping grouping = ((ComboBoxItem<Grouping>) comboBoxGroupBy.Items[comboBoxGroupBy.SelectedIndex]).Tag;
+			ControlPanelGrouping grouping = ((ComboBoxItem<ControlPanelGrouping>) comboBoxGroupBy.Items[comboBoxGroupBy.SelectedIndex]).Tag;
 			Settings.Client.CP_SelectedGrouping = grouping.ToString();
 			Settings.Client.Save(ClientSettingsType.States);
 		}
@@ -183,6 +177,7 @@ namespace ProcessManagerUI.Forms
 
 		private void ToolStripMenuItemSystemTrayExit_Click(object sender, EventArgs e)
 		{
+			Settings.Client.Save(ClientSettingsType.States);
 			Close();
 			Environment.Exit(0);
 		}
@@ -370,8 +365,8 @@ namespace ProcessManagerUI.Forms
 			{
 				foreach (ApplicationStatus applicationStatus in applicationStatuses)
 				{
-					ApplicationNode applicationNode = _applicationNodes.FirstOrDefault(node => node.ID == applicationStatus.ApplicationID
-						&& node.GroupID == applicationStatus.GroupID && node.MachineID == applicationStatus.Machine.ID);
+					ApplicationNode applicationNode = _applicationNodes.FirstOrDefault(node =>
+						node.Matches(applicationStatus.Machine.ID, applicationStatus.GroupID, applicationStatus.ApplicationID));
 
 					if (applicationNode != null)
 						applicationNode.Status = applicationStatus.Status;
@@ -382,6 +377,9 @@ namespace ProcessManagerUI.Forms
 		private void LayoutNodes()
 		{
 			//try{
+
+			Settings.Client.Save(ClientSettingsType.States);
+			ControlPanelGrouping grouping = ((ComboBoxItem<ControlPanelGrouping>) comboBoxGroupBy.SelectedItem).Tag;
 
 			lock (_applicationNodes)
 			{
@@ -426,10 +424,10 @@ namespace ProcessManagerUI.Forms
 								IEnumerable<ApplicationNode> applicationNodes = groupApplications.Applications.Select(application =>
 									new ApplicationNode(application, groupApplications.Group.ID, machineGroupsApplications.Machine.ID)).ToList();
 								_applicationNodes.AddRange(applicationNodes);
-								return new GroupNode(groupApplications.Group, applicationNodes);
+								return new GroupNode(groupApplications.Group, applicationNodes, grouping);
 							}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
 						_allNodes.AddRange(groupNodes);
-						return new MachineNode(machineGroupsApplications.Machine, groupNodes);
+						return new MachineNode(machineGroupsApplications.Machine, groupNodes, grouping);
 					}).ToList());
 
 				_allNodes.AddRange(_rootNodes);
@@ -451,6 +449,11 @@ namespace ProcessManagerUI.Forms
 						node.ForceWidth(flowLayoutPanelApplications.Size.Width);
 						flowLayoutPanelApplications.Controls.Add((UserControl) node);
 					});
+
+				Settings.Client.CP_CheckedNodes.ToList()
+					.Select(id => _applicationNodes.FirstOrDefault(node => node.Matches(id)))
+					.Where(node => node != null)
+					.ToList().ForEach(node => node.Check(true));
 
 				RetrieveAllApplicationStatuses();
 			}

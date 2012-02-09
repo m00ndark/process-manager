@@ -64,6 +64,38 @@ namespace ProcessManager.DataAccess
 						Settings.Client.CFG_SelectedHostName = (string) statesKey.GetValue("CFG Selected Host Name", Settings.Client.Defaults.SELECTED_HOST_NAME);
 						Settings.Client.CFG_SelectedConfigurationSection = (string) statesKey.GetValue("CFG Selected Configuration Section", Settings.Client.Defaults.SELECTED_CONFIGURATION_SECTION);
 						Settings.Client.CP_SelectedGrouping = (string) statesKey.GetValue("CP Selected Grouping", Settings.Client.Defaults.SELECTED_GROUPING);
+						Settings.Client.CP_CheckedNodes.Clear();
+						RegistryKey checkedNodesKey = statesKey.OpenSubKey("Checked Nodes", false);
+						if (checkedNodesKey != null)
+						{
+							string nodeID = (string) checkedNodesKey.GetValue("Node " + Settings.Client.CP_CheckedNodes.Count.ToString("00"));
+							while (nodeID != null)
+							{
+								Settings.Client.CP_CheckedNodes.Add(new Guid(nodeID));
+								nodeID = (string) checkedNodesKey.GetValue("Node " + Settings.Client.CP_CheckedNodes.Count.ToString("00"));
+							}
+							checkedNodesKey.Close();
+						}
+						Enum.GetValues(typeof(ControlPanelGrouping)).Cast<ControlPanelGrouping>().ToList().ForEach(grouping => Settings.Client.CP_CollapsedNodes[grouping].Clear());
+						RegistryKey collapsedNodesKey = statesKey.OpenSubKey("Collapsed Nodes", false);
+						if (collapsedNodesKey != null)
+						{
+							foreach (ControlPanelGrouping grouping in Enum.GetValues(typeof(ControlPanelGrouping)))
+							{
+								RegistryKey groupingKey = collapsedNodesKey.OpenSubKey(grouping.ToString(), false);
+								if (groupingKey != null)
+								{
+									string nodeID = (string) groupingKey.GetValue("Node " + Settings.Client.CP_CollapsedNodes[grouping].Count.ToString("00"));
+									while (nodeID != null)
+									{
+										Settings.Client.CP_CollapsedNodes[grouping].Add(new Guid(nodeID));
+										nodeID = (string) groupingKey.GetValue("Node " + Settings.Client.CP_CollapsedNodes[grouping].Count.ToString("00"));
+									}
+									groupingKey.Close();
+								}
+							}
+							collapsedNodesKey.Close();
+						}
 						statesKey.Close();
 					}
 					break;
@@ -89,8 +121,7 @@ namespace ProcessManager.DataAccess
 					RegistryKey machinesKey = key.CreateSubKey("Machines");
 					if (machinesKey != null)
 					{
-						string[] subKeyNames = machinesKey.GetSubKeyNames();
-						foreach (string subKeyName in subKeyNames.Where(subKeyName => subKeyName.StartsWith("Machine ")))
+						foreach (string subKeyName in machinesKey.GetSubKeyNames().Where(subKeyName => subKeyName.StartsWith("Machine ")))
 						{
 							machinesKey.DeleteSubKeyTree(subKeyName);
 						}
@@ -121,6 +152,41 @@ namespace ProcessManager.DataAccess
 						statesKey.SetValue("CFG Selected Host Name", Settings.Client.CFG_SelectedHostName);
 						statesKey.SetValue("CFG Selected Configuration Section", Settings.Client.CFG_SelectedConfigurationSection);
 						statesKey.SetValue("CP Selected Grouping", Settings.Client.CP_SelectedGrouping);
+						RegistryKey checkedNodesKey = statesKey.CreateSubKey("Checked Nodes");
+						if (checkedNodesKey != null)
+						{
+							foreach (string valueName in checkedNodesKey.GetValueNames().Where(valueName => valueName.StartsWith("Node ")))
+							{
+								checkedNodesKey.DeleteValue(valueName);
+							}
+							for (int i = 0; i < Settings.Client.CP_CheckedNodes.Count; i++)
+							{
+								checkedNodesKey.SetValue("Node " + i.ToString("00"), Settings.Client.CP_CheckedNodes[i].ToString());
+							}
+							checkedNodesKey.Close();
+						}
+
+						RegistryKey collapsedNodesKey = statesKey.CreateSubKey("Collapsed Nodes");
+						if (collapsedNodesKey != null)
+						{
+							foreach (ControlPanelGrouping grouping in Enum.GetValues(typeof(ControlPanelGrouping)))
+							{
+								RegistryKey groupingKey = collapsedNodesKey.CreateSubKey(grouping.ToString());
+								if (groupingKey != null)
+								{
+									foreach (string valueName in groupingKey.GetValueNames().Where(valueName => valueName.StartsWith("Node ")))
+									{
+										groupingKey.DeleteValue(valueName);
+									}
+									for (int i = 0; i < Settings.Client.CP_CollapsedNodes[grouping].Count; i++)
+									{
+										groupingKey.SetValue("Node " + i.ToString("00"), Settings.Client.CP_CollapsedNodes[grouping][i].ToString());
+									}
+									groupingKey.Close();
+								}
+							}
+							collapsedNodesKey.Close();
+						}
 						statesKey.Close();
 					}
 					break;

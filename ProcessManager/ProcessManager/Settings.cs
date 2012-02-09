@@ -6,6 +6,12 @@ using ProcessManager.DataObjects;
 
 namespace ProcessManager
 {
+	public enum ControlPanelGrouping
+	{
+		MachineGroupApplication,
+		GroupMachineApplication
+	}
+
 	public static class Settings
 	{
 		#region Constants class
@@ -96,6 +102,12 @@ namespace ProcessManager
 				CFG_SelectedHostName = Defaults.SELECTED_HOST_NAME;
 				CFG_SelectedConfigurationSection = Defaults.SELECTED_CONFIGURATION_SECTION;
 				CP_SelectedGrouping = Defaults.SELECTED_GROUPING;
+				CP_CheckedNodes = new List<Guid>();
+				CP_CollapsedNodes = new Dictionary<ControlPanelGrouping, List<Guid>>()
+					{
+						{ ControlPanelGrouping.MachineGroupApplication, new List<Guid>() },
+						{ ControlPanelGrouping.GroupMachineApplication, new List<Guid>() }
+					};
 			}
 
 			#region Properties
@@ -105,6 +117,8 @@ namespace ProcessManager
 			public static string CFG_SelectedHostName { get; set; }
 			public static string CFG_SelectedConfigurationSection { get; set; }
 			public static string CP_SelectedGrouping { get; set; }
+			public static List<Guid> CP_CheckedNodes { get; private set; }
+			public static IDictionary<ControlPanelGrouping, List<Guid>> CP_CollapsedNodes { get; private set; }
 
 			#endregion
 
