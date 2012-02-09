@@ -80,8 +80,13 @@ namespace ProcessManager.Utilities
 
 		public static void Add(string logText, Exception exception)
 		{
-			Add(LogType.Error, logText);
-			Add(LogType.Error, exception.ToString());
+			if (exception == null)
+				Add(logText);
+			else
+			{
+				Add(LogType.Error, logText);
+				Add(LogType.Error, exception.ToString());
+			}
 		}
 
 		public static void Add(LogType logType, string logText)

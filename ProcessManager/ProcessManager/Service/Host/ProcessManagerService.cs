@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
@@ -13,6 +14,7 @@ namespace ProcessManager.Service.Host
 	internal class ProcessManagerService : IProcessManagerService
 	{
 		private readonly IDictionary<IProcessManagerServiceEventHandler, bool> _clients;
+		private readonly IDictionary<IProcessManagerServiceEventHandler, InstanceContext> _clientsInstances = new Dictionary<IProcessManagerServiceEventHandler, InstanceContext>();
 
 		public ProcessManagerService()
 		{
@@ -24,6 +26,7 @@ namespace ProcessManager.Service.Host
 		public void Register(bool subscribe)
 		{
 			_clients.Add(OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>(), subscribe);
+			_clientsInstances.Add(OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>(), OperationContext.Current.InstanceContext);
 			string clientAddress = ((RemoteEndpointMessageProperty) OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name]).Address;
 			Logger.Add("Client at " + clientAddress + " registered" + (subscribe ? " as subscriber" : string.Empty));
 		}
@@ -43,25 +46,30 @@ namespace ProcessManager.Service.Host
 		public void Ping()
 		{
 			// do nothing
+			Logger.Add(LogType.Debug, "Ping call received");
 		}
 
 		public DTOConfiguration GetConfiguration()
 		{
+			Logger.Add(LogType.Debug, "GetConfiguration call received");
 			return new DTOConfiguration(ProcessManager.Instance.GetConfiguration());
 		}
 
 		public void SetConfiguration(DTOConfiguration configuration)
 		{
+			Logger.Add(LogType.Debug, "SetConfiguration call received");
 			ProcessManager.Instance.SetConfiguration(configuration.FromDTO());
 		}
 
 		public List<DTOApplicationStatus> GetAllApplicationStatuses()
 		{
+			Logger.Add(LogType.Debug, "GetAllApplicationStatuses call received");
 			return ProcessManager.Instance.GetAllApplicationStatuses().Select(x => new DTOApplicationStatus(x)).ToList();
 		}
 
 		public void TakeApplicationAction(DTOApplicationAction action)
 		{
+			Logger.Add(LogType.Debug, "TakeApplicationAction call received: action = " + action.Type + ", " + action.GroupID + " / " + action.ApplicationID);
 			ProcessManager.Instance.TakeApplicationAction(action.GroupID, action.ApplicationID, action.Type);
 		}
 
@@ -71,15 +79,19 @@ namespace ProcessManager.Service.Host
 
 		public void ProcessManagerEventProvider_ApplicationStatusesChanged(object sender, ApplicationStatusesEventArgs e)
 		{
+			Logger.Add("ProcessManagerEventProvider_ApplicationStatusesChanged: client count = " + _clients.Count);
 			List<IProcessManagerServiceEventHandler> faultedClients = new List<IProcessManagerServiceEventHandler>();
 			foreach (IProcessManagerServiceEventHandler client in _clients.Where(x => x.Value).Select(x => x.Key))
 			{
 				try
 				{
+					Logger.Add(LogType.Debug, "InstanceContext.State = " + _clientsInstances[client].State);
+					Logger.Add(LogType.Debug, "Sending ApplicationStatusesChanged event: thread id = " + System.Threading.Thread.CurrentThread.ManagedThreadId + ", count = " + e.ApplicationStatuses.Count + e.ApplicationStatuses.Aggregate("", (x, y) => x + ", " + y.GroupID + " / " + y.ApplicationID));
 					client.ServiceEvent_ApplicationStatusesChanged(e.ApplicationStatuses.Select(x => new DTOApplicationStatus(x)).ToList());
 				}
-				catch
+				catch (Exception ex)
 				{
+					Logger.Add("Failed to send ApplicationStatusesChanged event: thread id = " + System.Threading.Thread.CurrentThread.ManagedThreadId + ", count = " + e.ApplicationStatuses.Count + e.ApplicationStatuses.Aggregate("", (x, y) => x + ", " + y.GroupID + " / " + y.ApplicationID), ex);
 					faultedClients.Add(client);
 				}
 			}
@@ -93,10 +105,12 @@ namespace ProcessManager.Service.Host
 			{
 				try
 				{
+					Logger.Add(LogType.Debug, "Sending ConfigurationChanged event: count = " + e.ConfigurationHash);
 					client.ServiceEvent_ConfigurationChanged(e.ConfigurationHash);
 				}
-				catch
+				catch (Exception ex)
 				{
+					Logger.Add("Failed to send ApplicationStatusesChanged event: count = " + e.ConfigurationHash, ex);
 					faultedClients.Add(client);
 				}
 			}

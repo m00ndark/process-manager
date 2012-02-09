@@ -50,12 +50,15 @@ namespace ProcessManager.Service.Client
 		{
 			try
 			{
+				Logger.Add(e.ServiceHandler.Machine + ": Initialization completed: status = " + e.ServiceHandler.Status, e.Exception);
+
 				ModifyMachineConfiguration(e.ServiceHandler, e.Status == ProcessManagerServiceHandlerStatus.Connected);
 
 				RaiseServiceHandlerInitializationCompletedEvent(e.ServiceHandler, e.ServiceHandler.Status, e.Exception);
 			}
 			catch (Exception ex)
 			{
+				Logger.Add(e.ServiceHandler.Machine + ": Initialization completed, exception occurred: status = " + e.ServiceHandler.Status, ex);
 				RaiseServiceHandlerInitializationCompletedEvent(e.ServiceHandler, e.ServiceHandler.Status, ex);
 			}
 		}
@@ -64,12 +67,15 @@ namespace ProcessManager.Service.Client
 		{
 			try
 			{
+				Logger.Add(e.ServiceHandler.Machine + ": Connection changed: status = " + e.ServiceHandler.Status, e.Exception);
+
 				ModifyMachineConfiguration(e.ServiceHandler, e.Status == ProcessManagerServiceHandlerStatus.Connected);
 
 				RaiseServiceHandlerConnectionChangedEvent(e.ServiceHandler, e.ServiceHandler.Status, e.Exception);
 			}
 			catch (Exception ex)
 			{
+				Logger.Add(e.ServiceHandler.Machine + ": Connection changed, exception occurred: status = " + e.ServiceHandler.Status, ex);
 				RaiseServiceHandlerConnectionChangedEvent(e.ServiceHandler, e.ServiceHandler.Status, ex);
 			}
 		}

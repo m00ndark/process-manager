@@ -18,7 +18,6 @@ namespace ProcessManagerUI.Forms
 {
 	public partial class ConfigurationForm : Form
 	{
-		private readonly IProcessManagerEventHandler _processManagerEventHandler;
 		private readonly Timer _initTimer;
 		private Panel _currentPanel;
 		private Machine _selectedMachine;
@@ -26,11 +25,10 @@ namespace ProcessManagerUI.Forms
 		private Application _selectedApplication;
 		private bool _disableTextChangedEvents;
 
-		public ConfigurationForm(IProcessManagerEventHandler processManagerEventHandler)
+		public ConfigurationForm()
 		{
 			InitializeComponent();
-			_processManagerEventHandler = processManagerEventHandler;
-			_processManagerEventHandler.ConfigurationChanged += ProcessManagerEventHandler_ConfigurationChanged;
+			ServiceHelper.ProcessManagerEventHandler.ConfigurationChanged += ProcessManagerEventHandler_ConfigurationChanged;
 			_currentPanel = null;
 			_selectedMachine = null;
 			_selectedGroup = null;
@@ -87,7 +85,7 @@ namespace ProcessManagerUI.Forms
 
 		private void ConfigurationForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			_processManagerEventHandler.ConfigurationChanged -= ProcessManagerEventHandler_ConfigurationChanged;
+			ServiceHelper.ProcessManagerEventHandler.ConfigurationChanged -= ProcessManagerEventHandler_ConfigurationChanged;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted -= ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged -= ServiceConnectionHandler_ServiceHandlerConnectionChanged;
 			Settings.Client.CFG_SelectedConfigurationSection =
@@ -148,7 +146,7 @@ namespace ProcessManagerUI.Forms
 					DialogResult = DialogResult.None;
 					return;
 				}
-				ReloadConfiguration();
+				ServiceHelper.ReloadConfiguration();
 			}
 			Close();
 		}
@@ -470,7 +468,7 @@ namespace ProcessManagerUI.Forms
 				Messenger.ShowWarning("Configuration changed", "The configuration for " + e.Machine + " was changed from another client."
 					+ " Configuration will be reloaded to reflect those changes.");
 
-				ReloadConfiguration(e.Machine);
+				ServiceHelper.ReloadConfiguration(e.Machine);
 			}
 		}
 
@@ -532,21 +530,8 @@ namespace ProcessManagerUI.Forms
 
 		private void ConnectMachines()
 		{
-			ConnectionStore.Connections.Keys.Where(machine => !Settings.Client.Machines.Contains(machine)).ToList().ForEach(ConnectionStore.RemoveConnection);
-
-			if (Settings.Client.Machines.Any(machine => !ConnectionStore.ConnectionCreated(machine)))
-			{
-				Worker.Do("Connecting to machines...", () =>
-					{
-						foreach (Machine machine in Settings.Client.Machines.Where(machine => !ConnectionStore.ConnectionCreated(machine)))
-						{
-							MachineConnection connection = ConnectionStore.CreateConnection(_processManagerEventHandler, machine);
-							connection.ServiceHandler.Initialize();
-						}
-					});
-			}
-
-			WaitForConfiguration(_selectedMachine);
+			ServiceHelper.ConnectMachines();
+			ServiceHelper.WaitForConfiguration(_selectedMachine);
 		}
 
 		private void PopulateMachinesComboBox(bool enableAutoSelect = true)
@@ -585,24 +570,6 @@ namespace ProcessManagerUI.Forms
 
 		#region Configuration
 
-		private static void WaitForConfiguration(Machine machine)
-		{
-			if (machine != null && ConnectionStore.Connections[machine].Configuration == null)
-				Worker.WaitFor("Retrieving configuration...", () => (ConnectionStore.Connections[machine].ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Disconnected
-					|| ConnectionStore.Connections[machine].ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Connected && ConnectionStore.Connections[machine].Configuration != null));
-		}
-
-		private static void ReloadConfiguration(Machine machine = null)
-		{
-			Worker.Do("Retrieving configuration...", () =>
-				{
-					foreach (MachineConnection connection in ConnectionStore.Connections.Values.Where(x => (machine == null || machine.Equals(x.Machine))))
-					{
-						try { connection.Configuration = connection.ServiceHandler.Service.GetConfiguration().FromDTO(); } catch { ; }
-					}
-				});
-		}
-
 		private bool SaveConfiguration()
 		{
 			UpdateSelections();
@@ -613,30 +580,9 @@ namespace ProcessManagerUI.Forms
 					return false;
 
 				// save
-				IDictionary<Machine, Exception> exceptions = new Dictionary<Machine, Exception>();
-				Worker.Do("Saving configuration...", () =>
-					{
-						foreach (MachineConnection connection in ConnectionStore.Connections.Values.Where(connection => connection.ConfigurationModified))
-						{
-							try
-							{
-								connection.Configuration.UpdateHash();
-								connection.ServiceHandler.Service.SetConfiguration(new DTOConfiguration(connection.Configuration));
-								connection.ConfigurationModified = false;
-							}
-							catch (Exception ex)
-							{
-								exceptions.Add(connection.Machine, ex);
-							}
-						}
-					});
-				if (exceptions.Count > 0)
-				{
-					Messenger.ShowError("Failed to save configuration",
-						"Could not save configuration for " + exceptions.Aggregate(string.Empty, (x, y) => x + ", " + y.Key).Trim(", ".ToCharArray()),
-						exceptions.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine + y.Value.Message).Trim());
+				if (!ServiceHelper.SaveConfiguration())
 					return false;
-				}
+
 				EnableControls();
 			}
 			return true;
@@ -871,7 +817,7 @@ namespace ProcessManagerUI.Forms
 		private void PopulateAllControls()
 		{
 			ClearAllControls();
-			WaitForConfiguration(_selectedMachine);
+			ServiceHelper.WaitForConfiguration(_selectedMachine);
 			listViewGroups.Items.Clear();
 			listViewApplications.Items.Clear();
 			listViewPlugins.Items.Clear();

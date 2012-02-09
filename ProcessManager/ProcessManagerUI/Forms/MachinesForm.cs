@@ -115,7 +115,8 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonCopyMachineSetup_Click(object sender, EventArgs e)
 		{
-
+			if (_selectedMachine != null)
+				Picker.ShowMenu(buttonCopyMachineSetup, Settings.Client.Machines.Where(machine => !machine.Equals(_selectedMachine)), ContextMenu_CopyMachineSetup_MachineClicked);
 		}
 
 		private void ButtonOK_Click(object sender, EventArgs e)
@@ -141,6 +142,16 @@ namespace ProcessManagerUI.Forms
 		private void ButtonApply_Click(object sender, EventArgs e)
 		{
 			SaveMachines();
+		}
+
+		#endregion
+
+		#region Picker event handlers
+
+		private void ContextMenu_CopyMachineSetup_MachineClicked(Machine machine)
+		{
+			if (_selectedMachine != null && machine != null)
+				CopyConfiguration(machine, _selectedMachine);
 		}
 
 		#endregion
@@ -219,6 +230,32 @@ namespace ProcessManagerUI.Forms
 		private static bool MachineIsValid(Machine machine)
 		{
 			return ConnectionStore.MachineIsValid(machine);
+		}
+
+		private static void CopyConfiguration(Machine sourceMachine, Machine destinationMachine)
+		{
+			ServiceHelper.ConnectMachines();
+			ServiceHelper.WaitForConfiguration(sourceMachine, destinationMachine);
+
+			if (ConnectionStore.Connections[sourceMachine].ServiceHandler.Status != ProcessManagerServiceHandlerStatus.Connected)
+			{
+				Messenger.ShowError("Machine disconnected", "Could not establish a connection to Process Manager service at " + sourceMachine);
+				return;
+			}
+
+			if (ConnectionStore.Connections[destinationMachine].ServiceHandler.Status != ProcessManagerServiceHandlerStatus.Connected)
+			{
+				Messenger.ShowError("Machine disconnected", "Could not establish a connection to Process Manager service at " + destinationMachine);
+				return;
+			}
+
+			Configuration configurationBackup = ConnectionStore.Connections[destinationMachine].Configuration;
+
+			ConnectionStore.Connections[destinationMachine].Configuration = ConnectionStore.Connections[sourceMachine].Configuration;
+			ConnectionStore.Connections[destinationMachine].ConfigurationModified = true;
+
+			if (!ServiceHelper.SaveConfiguration())
+				ConnectionStore.Connections[destinationMachine].Configuration = configurationBackup;
 		}
 
 		private void EnableControls(bool enable = true)

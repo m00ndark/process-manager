@@ -44,6 +44,7 @@ namespace ProcessManagerUI.Forms
 			_allNodes = new List<IControlPanelNode>();
 			_rootNodes = new List<IControlPanelRootNode>();
 			_applicationNodes = new List<ApplicationNode>();
+			ServiceHelper.Initialize(this);
 		}
 
 		#region Event raisers
@@ -146,7 +147,7 @@ namespace ProcessManagerUI.Forms
 
 		private void LinkLabelOpenConfiguration_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			new ConfigurationForm(this).Show();
+			new ConfigurationForm().Show();
 		}
 
 		#endregion
@@ -177,7 +178,7 @@ namespace ProcessManagerUI.Forms
 
 		private void ToolStripMenuItemSystemTrayConfiguration_Click(object sender, EventArgs e)
 		{
-			new ConfigurationForm(this).Show();
+			new ConfigurationForm().Show();
 		}
 
 		private void ToolStripMenuItemSystemTrayExit_Click(object sender, EventArgs e)
@@ -244,6 +245,7 @@ namespace ProcessManagerUI.Forms
 
 		public void ProcessManagerServiceEventHandler_ApplicationStatusesChanged(object sender, ApplicationStatusesEventArgs e)
 		{
+			Logger.Add(LogType.Debug, "Received ApplicationStatusesChanged event: count = " + e.ApplicationStatuses.Count + e.ApplicationStatuses.Aggregate("", (x, y) => x + ", " + y.GroupID + " / " + y.ApplicationID));
 			HandleApplicationStatusesChanged(e.ApplicationStatuses);
 		}
 

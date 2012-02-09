@@ -140,16 +140,21 @@ namespace ProcessManager.Service.Client
 				{
 					if (_processManagerServiceClient.State == CommunicationState.Faulted)
 					{
+						Logger.Add(LogType.Debug, Machine + ": ConnectionWatcher: state = Faulted");
 						_processManagerServiceClient.Abort();
 					}
 
 					if (_processManagerServiceClient.State == CommunicationState.Closed)
+					{
+						Logger.Add(LogType.Debug, Machine + ": ConnectionWatcher: state = Closed");
 						SetupClient();
+					}
 
 					if (_processManagerServiceClient.State == CommunicationState.Created)
 					{
 						try
 						{
+							Logger.Add(LogType.Debug, Machine + ": ConnectionWatcher: state = Created");
 							_processManagerServiceClient.Register(true);
 							Status = ProcessManagerServiceHandlerStatus.Connected;
 							if (!connectionAttempted)
