@@ -25,6 +25,8 @@ namespace ProcessManagerUI.Forms
 		private Application _selectedApplication;
 		private bool _disableTextChangedEvents;
 
+		public event EventHandler<MachinesEventArgs> ConfigurationChanged;
+
 		public ConfigurationForm()
 		{
 			InitializeComponent();
@@ -109,8 +111,10 @@ namespace ProcessManagerUI.Forms
 		private void ButtonMachines_Click(object sender, EventArgs e)
 		{
 			MachinesForm machinesForm = new MachinesForm(_selectedMachine);
+			machinesForm.MachinesChanged += MachinesForm_MachinesChanged;
 			machinesForm.ShowDialog(this);
-			if (machinesForm.MachinesChanged)
+			machinesForm.MachinesChanged -= MachinesForm_MachinesChanged;
+			if (machinesForm.AnyMachinesChanged)
 			{
 				if (_selectedMachine != null && !Settings.Client.Machines.Contains(_selectedMachine))
 					_selectedMachine = null;
@@ -345,8 +349,12 @@ namespace ProcessManagerUI.Forms
 			{
 				_selectedApplication = (Application) listViewApplications.SelectedItems[0].Tag;
 				ConnectionStore.Connections[_selectedMachine].Configuration.Applications.Remove(_selectedApplication);
+				ConnectionStore.Connections[_selectedMachine].Configuration.Groups.ForEach(group => group.Applications.Remove(_selectedApplication.ID));
 				ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
 				listViewApplications.Items.Remove(listViewApplications.SelectedItems[0]);
+				listViewGroupApplications.Items.Cast<ListViewItem>()
+					.Where(item => (Guid) item.Tag == _selectedApplication.ID).ToList()
+					.ForEach(item => listViewGroupApplications.Items.Remove(item));
 				_selectedApplication = null;
 				EnableControls();
 			}
@@ -524,6 +532,25 @@ namespace ProcessManagerUI.Forms
 
 		#endregion
 
+		#region Machines form event handlers
+
+		private void MachinesForm_MachinesChanged(object sender, EventArgs e)
+		{
+			RaiseConfigurationChangedEvent(null);
+		}
+
+		#endregion
+
+		#region Event raisers
+
+		private void RaiseConfigurationChangedEvent(List<Machine> machines)
+		{
+			if (ConfigurationChanged != null)
+				ConfigurationChanged(this, new MachinesEventArgs(machines));
+		}
+
+		#endregion
+
 		#region Helpers
 
 		#region Machines
@@ -579,9 +606,16 @@ namespace ProcessManagerUI.Forms
 				if (!ValidateGroups() || !ValidateApplications())
 					return false;
 
+				List<Machine> modifiedMachines = ConnectionStore.Connections.Values
+					.Where(connection => connection.ConfigurationModified)
+					.Select(connection => connection.Machine)
+					.ToList();
+
 				// save
 				if (!ServiceHelper.SaveConfiguration())
 					return false;
+
+				RaiseConfigurationChangedEvent(modifiedMachines);
 
 				EnableControls();
 			}

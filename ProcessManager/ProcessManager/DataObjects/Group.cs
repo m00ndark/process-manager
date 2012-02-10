@@ -34,6 +34,13 @@ namespace ProcessManager.DataObjects
 
 		#endregion
 
+		public Group Clone()
+		{
+			Group group = new Group() { ID = ID, Name = Name, Path = Path };
+			group.Applications.AddRange(Applications);
+			return group;
+		}
+
 		public override string ToString()
 		{
 			return Name;

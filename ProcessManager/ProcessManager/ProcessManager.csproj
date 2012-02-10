@@ -87,6 +87,7 @@
     <Compile Include="EventArguments\ApplicationActionEventArgs.cs" />
     <Compile Include="EventArguments\ApplicationStatusesEventArgs.cs" />
     <Compile Include="EventArguments\MachineConfigurationHashEventArgs.cs" />
+    <Compile Include="EventArguments\MachinesEventArgs.cs" />
     <Compile Include="EventArguments\ServiceHandlerConnectionChangedEventArgs.cs" />
     <Compile Include="IProcessManagerEventHandler.cs" />
     <Compile Include="IProcessManagerEventProvider.cs" />

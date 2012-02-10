@@ -31,6 +31,11 @@ namespace ProcessManager.DataObjects
 
 		#endregion
 
+		public Application Clone()
+		{
+			return new Application() { ID = ID, Name = Name, RelativePath = RelativePath, Arguments = Arguments };
+		}
+
 		public override string ToString()
 		{
 			return Name;

@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
+using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
 using ProcessManagerUI.Utilities;
 
@@ -16,18 +17,20 @@ namespace ProcessManagerUI.Forms
 		private Machine _selectedMachine;
 		private bool _hasUnsavedChanges;
 
+		public event EventHandler<MachinesEventArgs> MachinesChanged;
+
 		public MachinesForm(Machine initiallySelectedMachine)
 		{
 			InitializeComponent();
 			_initiallySelectedMachine = initiallySelectedMachine;
 			_selectedMachine = null;
 			_hasUnsavedChanges = false;
-			MachinesChanged = _hasUnsavedChanges;
+			AnyMachinesChanged = _hasUnsavedChanges;
 		}
 
 		#region Properties
 
-		public bool MachinesChanged { get; private set; }
+		public bool AnyMachinesChanged { get; private set; }
 
 		#endregion
 
@@ -61,7 +64,7 @@ namespace ProcessManagerUI.Forms
 		private void ButtonAddMachine_Click(object sender, EventArgs e)
 		{
 			UpdateSelectedMachine();
-			MachinesChanged = _hasUnsavedChanges = true;
+			AnyMachinesChanged = _hasUnsavedChanges = true;
 			_selectedMachine = new Machine();
 			Settings.Client.Machines.Add(_selectedMachine);
 			textBoxMachineHostName.Text = _selectedMachine.HostName;
@@ -76,7 +79,7 @@ namespace ProcessManagerUI.Forms
 		{
 			if (listViewMachines.SelectedItems.Count > 0)
 			{
-				MachinesChanged = _hasUnsavedChanges = true;
+				AnyMachinesChanged = _hasUnsavedChanges = true;
 				_selectedMachine = (Machine) listViewMachines.SelectedItems[0].Tag;
 				Settings.Client.Machines.Remove(_selectedMachine);
 				listViewMachines.Items.Remove(listViewMachines.SelectedItems[0]);
@@ -156,6 +159,21 @@ namespace ProcessManagerUI.Forms
 
 		#endregion
 
+		#region Event raisers
+
+		private void RaiseMachinesChangedEvent(Machine machine)
+		{
+			RaiseMachinesChangedEvent(new List<Machine>() { machine });
+		}
+
+		private void RaiseMachinesChangedEvent(List<Machine> machines = null)
+		{
+			if (MachinesChanged != null)
+				MachinesChanged(this, new MachinesEventArgs(machines));
+		}
+
+		#endregion
+
 		#region Helpers
 
 		private void UpdateSelectedMachine()
@@ -181,7 +199,7 @@ namespace ProcessManagerUI.Forms
 			{
 				machineChanged = (_selectedMachine.HostName != textBoxMachineHostName.Text);
 				_hasUnsavedChanges |= machineChanged;
-				MachinesChanged |= machineChanged;
+				AnyMachinesChanged |= machineChanged;
 			}
 			return machineChanged;
 		}
@@ -222,6 +240,8 @@ namespace ProcessManagerUI.Forms
 
 				Settings.Client.Save(ClientSettingsType.Machines);
 				_hasUnsavedChanges = false;
+
+				RaiseMachinesChangedEvent();
 				EnableControls();
 			}
 			return true;
@@ -232,7 +252,7 @@ namespace ProcessManagerUI.Forms
 			return ConnectionStore.MachineIsValid(machine);
 		}
 
-		private static void CopyConfiguration(Machine sourceMachine, Machine destinationMachine)
+		private void CopyConfiguration(Machine sourceMachine, Machine destinationMachine)
 		{
 			ServiceHelper.ConnectMachines();
 			ServiceHelper.WaitForConfiguration(sourceMachine, destinationMachine);
@@ -251,11 +271,13 @@ namespace ProcessManagerUI.Forms
 
 			Configuration configurationBackup = ConnectionStore.Connections[destinationMachine].Configuration;
 
-			ConnectionStore.Connections[destinationMachine].Configuration = ConnectionStore.Connections[sourceMachine].Configuration;
+			ConnectionStore.Connections[destinationMachine].Configuration = ConnectionStore.Connections[sourceMachine].Configuration.Clone(true);
 			ConnectionStore.Connections[destinationMachine].ConfigurationModified = true;
 
 			if (!ServiceHelper.SaveConfiguration())
 				ConnectionStore.Connections[destinationMachine].Configuration = configurationBackup;
+			else
+				RaiseMachinesChangedEvent(destinationMachine);
 		}
 
 		private void EnableControls(bool enable = true)

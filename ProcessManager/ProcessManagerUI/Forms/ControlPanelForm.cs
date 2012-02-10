@@ -73,7 +73,7 @@ namespace ProcessManagerUI.Forms
 			if (comboBoxGroupBy.SelectedIndex == -1)
 				comboBoxGroupBy.SelectedIndex = 0;
 
-			LayoutNodes();
+			LayoutNodes(null);
 
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;
@@ -141,7 +141,7 @@ namespace ProcessManagerUI.Forms
 
 		private void LinkLabelOpenConfiguration_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			new ConfigurationForm().Show();
+			OpenConfigurationForm();
 		}
 
 		#endregion
@@ -172,7 +172,7 @@ namespace ProcessManagerUI.Forms
 
 		private void ToolStripMenuItemSystemTrayConfiguration_Click(object sender, EventArgs e)
 		{
-			new ConfigurationForm().Show();
+			OpenConfigurationForm();
 		}
 
 		private void ToolStripMenuItemSystemTrayExit_Click(object sender, EventArgs e)
@@ -196,7 +196,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			LayoutNodes();
+			LayoutNodes(null);
 		}
 
 		private void ServiceConnectionHandler_ServiceHandlerConnectionChanged(object sender, ServiceHandlerConnectionChangedEventArgs e)
@@ -207,7 +207,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			LayoutNodes();
+			LayoutNodes(null);
 		}
 
 		#endregion
@@ -232,6 +232,16 @@ namespace ProcessManagerUI.Forms
 		private void ControlPanelNode_ActionTaken(object sender, ApplicationActionEventArgs e)
 		{
 			TakeAction(e.Action);
+		}
+
+		#endregion
+
+		#region Configuration form event handlers
+
+
+		private void ConfigurationForm_ConfigurationChanged(object sender, MachinesEventArgs e)
+		{
+			new Thread(() => LayoutNodes(e.Machines)).Start();
 		}
 
 		#endregion
@@ -294,12 +304,19 @@ namespace ProcessManagerUI.Forms
 			_formClosedAt = DateTime.Now;
 		}
 
+		private void OpenConfigurationForm()
+		{
+			ConfigurationForm configurationForm = new ConfigurationForm();
+			configurationForm.ConfigurationChanged += ConfigurationForm_ConfigurationChanged;
+			configurationForm.Show();
+		}
+
 		private void ReloadConfiguration(Machine machine)
 		{
 			try
 			{
 				ConnectionStore.Connections[machine].Configuration = ConnectionStore.Connections[machine].ServiceHandler.Service.GetConfiguration().FromDTO();
-				LayoutNodes();
+				LayoutNodes(null);
 			}
 			catch (Exception ex)
 			{
@@ -374,8 +391,16 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
-		private void LayoutNodes()
+		private delegate void LayoutNodesDelegate(List<Machine> machines);
+
+		private void LayoutNodes(List<Machine> machines)
 		{
+			if (InvokeRequired)
+			{
+				Invoke(new LayoutNodesDelegate(LayoutNodes), machines);
+				return;
+			}
+
 			//try{
 
 			Settings.Client.Save(ClientSettingsType.States);

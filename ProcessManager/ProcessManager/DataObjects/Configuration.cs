@@ -49,6 +49,31 @@ namespace ProcessManager.DataObjects
 			Hash = Cryptographer.CreateSHA512Hash(Guid.NewGuid().ToString());
 		}
 
+		public Configuration Clone(bool generateNewIDs = false)
+		{
+			Configuration configuration = new Configuration();
+			configuration.Groups.AddRange(Groups.Select(group => group.Clone()));
+			configuration.Applications.AddRange(Applications.Select(application => application.Clone()));
+			if (generateNewIDs)
+			{
+				configuration.Groups.ForEach(group => group.ID = Guid.NewGuid());
+				configuration.Applications.ForEach(application =>
+					{
+						Guid oldID = application.ID;
+						application.ID = Guid.NewGuid();
+						configuration.Groups.ForEach(group =>
+							{
+								if (group.Applications.Contains(oldID))
+								{
+									group.Applications.Remove(oldID);
+									group.Applications.Add(application.ID);
+								}
+							});
+					});
+			}
+			return configuration;
+		}
+
 		public static Configuration Read()
 		{
 			if (!File.Exists(_configFilePath))
