@@ -22,4 +22,10 @@
 			return Text;
 		}
 	}
+
+	public class ComboBoxItem : ComboBoxItem<object>
+	{
+		public ComboBoxItem(string text) : base(text) {}
+		public ComboBoxItem(string text, object tag) : base(text, tag) {}
+	}
 }

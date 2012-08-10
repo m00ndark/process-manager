@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
+using ProcessManager.Utilities;
 
 namespace ProcessManagerUI.Controls.Nodes.Support
 {
@@ -187,6 +188,11 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 		#endregion
 
 		#region Helpers
+
+		protected static Guid MakeID(Guid machineID, Guid groupID)
+		{
+			return Cryptographer.CreateGUID(machineID.ToString() + groupID.ToString());
+		}
 
 		private void ApplyExpandedCollapsed()
 		{

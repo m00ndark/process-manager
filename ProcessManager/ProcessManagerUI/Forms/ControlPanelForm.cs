@@ -15,6 +15,7 @@ using ProcessManager.Utilities;
 using ProcessManagerUI.Controls.Nodes;
 using ProcessManagerUI.Controls.Nodes.Support;
 using ProcessManagerUI.Support;
+using Application = ProcessManager.DataObjects.Application;
 
 namespace ProcessManagerUI.Forms
 {
@@ -74,6 +75,7 @@ namespace ProcessManagerUI.Forms
 			if (comboBoxGroupBy.SelectedIndex == -1)
 				comboBoxGroupBy.SelectedIndex = 0;
 
+			UpdateFilter();
 			LayoutNodes(null);
 
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
@@ -199,6 +201,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
+			UpdateFilter();
 			LayoutNodes(null);
 		}
 
@@ -210,6 +213,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
+			UpdateFilter();
 			LayoutNodes(null);
 		}
 
@@ -244,7 +248,11 @@ namespace ProcessManagerUI.Forms
 
 		private void ConfigurationForm_ConfigurationChanged(object sender, MachinesEventArgs e)
 		{
-			new Thread(() => LayoutNodes(e.Machines)).Start();
+			new Thread(() =>
+				{
+					UpdateFilter();
+					LayoutNodes(e.Machines);
+				}).Start();
 		}
 
 		#endregion
@@ -319,6 +327,7 @@ namespace ProcessManagerUI.Forms
 			try
 			{
 				ConnectionStore.Connections[machine].Configuration = ConnectionStore.Connections[machine].ServiceHandler.Service.GetConfiguration().FromDTO();
+				UpdateFilter();
 				LayoutNodes(null);
 			}
 			catch (Exception ex)
@@ -394,6 +403,68 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
+		private delegate void UpdateFilterDelegate();
+
+		private void UpdateFilter()
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new UpdateFilterDelegate(UpdateFilter));
+				return;
+			}
+
+			string selectedMachineName = (comboBoxMachineFilter.SelectedItem != null
+				? ((ComboBoxItem) comboBoxMachineFilter.SelectedItem).Text : null);
+
+			comboBoxMachineFilter.Items.Clear();
+			comboBoxMachineFilter.Items.Add(new ComboBoxItem(string.Empty));
+			comboBoxMachineFilter.SelectedIndex = 0;
+
+			foreach (Machine machine in ConnectionStore.Connections.Values
+				.Select(connection => connection.Machine)
+				.Distinct(new MachineEqualityComparer())
+				.OrderBy(machine => machine.HostName))
+			{
+				int index = comboBoxMachineFilter.Items.Add(new ComboBoxItem(machine.HostName));
+				if (!string.IsNullOrEmpty(selectedMachineName) && machine.HostName.Equals(selectedMachineName, StringComparison.CurrentCultureIgnoreCase))
+					comboBoxMachineFilter.SelectedIndex = index;
+			}
+
+			string selectedGroupName = (comboBoxGroupFilter.SelectedItem != null
+				? ((ComboBoxItem) comboBoxGroupFilter.SelectedItem).Text : null);
+
+			comboBoxGroupFilter.Items.Clear();
+			comboBoxGroupFilter.Items.Add(new ComboBoxItem(string.Empty));
+			comboBoxGroupFilter.SelectedIndex = 0;
+
+			foreach (Group group in ConnectionStore.Connections.Values
+				.SelectMany(connection => connection.Configuration.Groups)
+				.Distinct(new GroupEqualityComparer())
+				.OrderBy(group => group.Name))
+			{
+				int index = comboBoxGroupFilter.Items.Add(new ComboBoxItem(group.Name));
+				if (!string.IsNullOrEmpty(selectedGroupName) && group.Name.Equals(selectedGroupName, StringComparison.CurrentCultureIgnoreCase))
+					comboBoxGroupFilter.SelectedIndex = index;
+			}
+
+			string selectedApplicationName = (comboBoxApplicationFilter.SelectedItem != null
+				? ((ComboBoxItem) comboBoxApplicationFilter.SelectedItem).Text : null);
+
+			comboBoxApplicationFilter.Items.Clear();
+			comboBoxApplicationFilter.Items.Add(new ComboBoxItem(string.Empty));
+			comboBoxApplicationFilter.SelectedIndex = 0;
+
+			foreach (Application application in ConnectionStore.Connections.Values
+				.SelectMany(connection => connection.Configuration.Applications)
+				.Distinct(new ApplicationEqualityComparer())
+				.OrderBy(application => application.Name))
+			{
+				int index = comboBoxApplicationFilter.Items.Add(new ComboBoxItem(application.Name));
+				if (!string.IsNullOrEmpty(selectedApplicationName) && application.Name.Equals(selectedApplicationName, StringComparison.CurrentCultureIgnoreCase))
+					comboBoxApplicationFilter.SelectedIndex = index;
+			}
+		}
+
 		private delegate void LayoutNodesDelegate(List<Machine> machines);
 
 		private void LayoutNodes(List<Machine> machines)
@@ -449,7 +520,6 @@ namespace ProcessManagerUI.Forms
 											{
 												Group = c,
 												Applications = d
-												//Applications = d.Select(e => e.Application)
 											})
 									}, new MachineEqualityComparer());
 
@@ -459,12 +529,11 @@ namespace ProcessManagerUI.Forms
 										{
 											IEnumerable<ApplicationNode> applicationNodes = groupApplications.Applications.Select(application =>
 												new ApplicationNode(application.Application, application.Group.ID, application.Machine.ID)).ToList();
-												//new ApplicationNode(application, groupApplications.Group.ID, machineGroupsApplications.Machine.ID)).ToList();
 											_applicationNodes.AddRange(applicationNodes);
-											return new GroupNode(groupApplications.Group, applicationNodes, grouping);
+											return new GroupNode(groupApplications.Group, groupApplications.Applications.First().Machine.ID, applicationNodes, grouping);
 										}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
 									_allNodes.AddRange(groupNodes);
-									return new MachineNode(machineGroupsApplications.Machine, groupNodes, grouping);
+									return new MachineNode(machineGroupsApplications.Machine, null, groupNodes, grouping);
 								}).ToList());
 						}
 						break;
@@ -478,7 +547,6 @@ namespace ProcessManagerUI.Forms
 											{
 												Machine = c,
 												Applications = d
-												//Applications = d.Select(e => e.Application)
 											})
 									}, new GroupEqualityComparer());
 
@@ -488,12 +556,11 @@ namespace ProcessManagerUI.Forms
 										{
 											IEnumerable<ApplicationNode> applicationNodes = machineApplications.Applications.Select(application =>
 												new ApplicationNode(application.Application, application.Group.ID, application.Machine.ID)).ToList();
-												//new ApplicationNode(application, groupMachinesApplications.Group.ID, machineApplications.Machine.ID)).ToList();
 											_applicationNodes.AddRange(applicationNodes);
-											return new MachineNode(machineApplications.Machine, applicationNodes, grouping);
+											return new MachineNode(machineApplications.Machine, machineApplications.Applications.First().Group.ID, applicationNodes, grouping);
 										}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
 									_allNodes.AddRange(machineNodes);
-									return new GroupNode(groupMachinesApplications.Group, machineNodes, grouping);
+									return new GroupNode(groupMachinesApplications.Group, null, machineNodes, grouping);
 								}).ToList());
 						}
 						break;

@@ -12,7 +12,7 @@ namespace ProcessManagerUI.Controls.Nodes
 {
 	public partial class ApplicationNode : UserControl, IControlPanelNode
 	{
-		private Guid _id;
+		private readonly Guid _id;
 		private ApplicationStatusValue _status;
 
 		public event EventHandler CheckedChanged;
