@@ -3,7 +3,7 @@ using ProcessManager.Utilities;
 
 namespace ProcessManager.DataObjects
 {
-	public class Machine
+	public class Machine : IIDObject
 	{
 		public const string DEFAULT_HOST_NAME = "<host-name>";
 

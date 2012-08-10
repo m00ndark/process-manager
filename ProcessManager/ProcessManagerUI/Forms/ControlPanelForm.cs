@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
+using ProcessManager.DataObjects.Comparers;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
 using ProcessManager.Service.DataObjects;
@@ -97,6 +98,8 @@ namespace ProcessManagerUI.Forms
 			ControlPanelGrouping grouping = ((ComboBoxItem<ControlPanelGrouping>) comboBoxGroupBy.Items[comboBoxGroupBy.SelectedIndex]).Tag;
 			Settings.Client.CP_SelectedGrouping = grouping.ToString();
 			Settings.Client.Save(ClientSettingsType.States);
+
+			LayoutNodes(null);
 		}
 
 		private void ComboBoxMachineFilter_SelectedIndexChanged(object sender, EventArgs e)
@@ -420,7 +423,7 @@ namespace ProcessManagerUI.Forms
 				_rootNodes.Clear();
 				_applicationNodes.Clear();
 
-				var machinesGroupsApplications = ConnectionStore.Connections.Values
+				var applications = ConnectionStore.Connections.Values
 					.Where(connection => connection.Configuration != null)
 					.SelectMany(connection =>
 						connection.Configuration.Groups.SelectMany(group =>
@@ -432,28 +435,69 @@ namespace ProcessManagerUI.Forms
 										Group = group,
 										Application = application
 									})))
-					.GroupBy(a => a.Machine, (a, b) => new
-						{
-							Machine = a,
-							Groups = b.GroupBy(c => c.Group, (c, d) => new
-								{
-									Group = c,
-									Applications = d.Select(e => e.Application)
-								})
-						});
+					.ToList();
 
-				_rootNodes.AddRange(machinesGroupsApplications.Select(machineGroupsApplications =>
-					{
-						IEnumerable<GroupNode> groupNodes = machineGroupsApplications.Groups.Select(groupApplications =>
-							{
-								IEnumerable<ApplicationNode> applicationNodes = groupApplications.Applications.Select(application =>
-									new ApplicationNode(application, groupApplications.Group.ID, machineGroupsApplications.Machine.ID)).ToList();
-								_applicationNodes.AddRange(applicationNodes);
-								return new GroupNode(groupApplications.Group, applicationNodes, grouping);
-							}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
-						_allNodes.AddRange(groupNodes);
-						return new MachineNode(machineGroupsApplications.Machine, groupNodes, grouping);
-					}).ToList());
+				switch (grouping)
+				{
+					case ControlPanelGrouping.MachineGroupApplication:
+						{
+							var machinesGroupsApplications = applications
+								.GroupBy(a => a.Machine, (a, b) => new
+									{
+										Machine = a,
+										Groups = b.GroupBy(c => c.Group, (c, d) => new
+											{
+												Group = c,
+												Applications = d
+												//Applications = d.Select(e => e.Application)
+											})
+									}, new MachineEqualityComparer());
+
+							_rootNodes.AddRange(machinesGroupsApplications.Select(machineGroupsApplications =>
+								{
+									IEnumerable<GroupNode> groupNodes = machineGroupsApplications.Groups.Select(groupApplications =>
+										{
+											IEnumerable<ApplicationNode> applicationNodes = groupApplications.Applications.Select(application =>
+												new ApplicationNode(application.Application, application.Group.ID, application.Machine.ID)).ToList();
+												//new ApplicationNode(application, groupApplications.Group.ID, machineGroupsApplications.Machine.ID)).ToList();
+											_applicationNodes.AddRange(applicationNodes);
+											return new GroupNode(groupApplications.Group, applicationNodes, grouping);
+										}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
+									_allNodes.AddRange(groupNodes);
+									return new MachineNode(machineGroupsApplications.Machine, groupNodes, grouping);
+								}).ToList());
+						}
+						break;
+					case ControlPanelGrouping.GroupMachineApplication:
+						{
+							var groupsMachinesApplications = applications
+								.GroupBy(a => a.Group, (a, b) => new
+									{
+										Group = a,
+										Machines = b.GroupBy(c => c.Machine, (c, d) => new
+											{
+												Machine = c,
+												Applications = d
+												//Applications = d.Select(e => e.Application)
+											})
+									}, new GroupEqualityComparer());
+
+							_rootNodes.AddRange(groupsMachinesApplications.Select(groupMachinesApplications =>
+								{
+									IEnumerable<MachineNode> machineNodes = groupMachinesApplications.Machines.Select(machineApplications =>
+										{
+											IEnumerable<ApplicationNode> applicationNodes = machineApplications.Applications.Select(application =>
+												new ApplicationNode(application.Application, application.Group.ID, application.Machine.ID)).ToList();
+												//new ApplicationNode(application, groupMachinesApplications.Group.ID, machineApplications.Machine.ID)).ToList();
+											_applicationNodes.AddRange(applicationNodes);
+											return new MachineNode(machineApplications.Machine, applicationNodes, grouping);
+										}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
+									_allNodes.AddRange(machineNodes);
+									return new GroupNode(groupMachinesApplications.Group, machineNodes, grouping);
+								}).ToList());
+						}
+						break;
+				}
 
 				_allNodes.AddRange(_rootNodes);
 				_allNodes.AddRange(_applicationNodes);

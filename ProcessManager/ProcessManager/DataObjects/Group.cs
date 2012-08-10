@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 
 namespace ProcessManager.DataObjects
 {
-	public class Group : IXmlSerializable
+	public class Group : IIDObject, IXmlSerializable
 	{
 		public Group()
 		{

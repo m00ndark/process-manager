@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 
 namespace ProcessManager.DataObjects
 {
-	public class Application : IXmlSerializable
+	public class Application : IIDObject, IXmlSerializable
 	{
 		public Application() { }
 

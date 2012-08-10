@@ -82,6 +82,11 @@
     <Compile Include="ConnectionStore.cs" />
     <Compile Include="DataAccess\RegistryHandler.cs" />
     <Compile Include="DataObjects\ApplicationAction.cs" />
+    <Compile Include="DataObjects\Comparers\ApplicationEqualityComparer.cs" />
+    <Compile Include="DataObjects\Comparers\GroupEqualityComparer.cs" />
+    <Compile Include="DataObjects\Comparers\IDObjectEqualityComparer.cs" />
+    <Compile Include="DataObjects\Comparers\MachineEqualityComparer.cs" />
+    <Compile Include="DataObjects\IIDObject.cs" />
     <Compile Include="DataObjects\Machine.cs" />
     <Compile Include="DataObjects\MachineConnection.cs" />
     <Compile Include="EventArguments\ApplicationActionEventArgs.cs" />
