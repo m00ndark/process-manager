@@ -78,6 +78,7 @@ namespace ProcessManagerUI.Forms
 			if (comboBoxGroupBy.SelectedIndex == -1)
 				comboBoxGroupBy.SelectedIndex = 0;
 
+			DisplaySelectedTabPage();
 			UpdateFilterAndLayout();
 
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
@@ -93,6 +94,11 @@ namespace ProcessManagerUI.Forms
 		{
 			if (Opacity == 1)
 				HideForm();
+		}
+
+		private void TabControlSection_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			DisplaySelectedTabPage();
 		}
 
 		private void ComboBoxGroupBy_SelectedIndexChanged(object sender, EventArgs e)
@@ -336,6 +342,20 @@ namespace ProcessManagerUI.Forms
 				Color keyColor = Color.FromArgb(255, 255, 0, 0);
 				TransparencyKey = keyColor;
 				panelGlass.BackColor = keyColor;
+			}
+		}
+
+		private void DisplaySelectedTabPage()
+		{
+			if (tabControlSection.SelectedTab == tabPageControlPanel)
+			{
+				tableLayoutPanelControlPanel.Visible = true;
+				tableLayoutPanelPlugins.Visible = false;
+			}
+			else if (tabControlSection.SelectedTab == tabPagePlugins)
+			{
+				tableLayoutPanelControlPanel.Visible = false;
+				tableLayoutPanelPlugins.Visible = true;
 			}
 		}
 
@@ -659,7 +679,7 @@ namespace ProcessManagerUI.Forms
 			}
 			else
 			{
-				Size = new Size(415, 180);
+				Size = new Size(415, 220);
 			}
 
 			MinimumSize = MaximumSize = Size;

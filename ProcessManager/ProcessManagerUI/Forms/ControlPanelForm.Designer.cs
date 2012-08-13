@@ -35,7 +35,7 @@
 			this.toolStripMenuItemSystemTrayConfiguration = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparatorSystemTray1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripMenuItemSystemTrayExit = new System.Windows.Forms.ToolStripMenuItem();
-			this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
+			this.tableLayoutPanelControlPanel = new System.Windows.Forms.TableLayoutPanel();
 			this.panelApplications = new System.Windows.Forms.Panel();
 			this.labelUnavailable = new System.Windows.Forms.Label();
 			this.linkLabelExpandAll = new System.Windows.Forms.LinkLabel();
@@ -55,19 +55,22 @@
 			this.labelGroupBy = new System.Windows.Forms.Label();
 			this.panelGlass = new System.Windows.Forms.Panel();
 			this.tabControlSection = new System.Windows.Forms.TabControl();
-			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.panelMain = new System.Windows.Forms.Panel();
+			this.tabPageControlPanel = new System.Windows.Forms.TabPage();
+			this.tabPagePlugins = new System.Windows.Forms.TabPage();
+			this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
+			this.panelTabPageArea = new System.Windows.Forms.Panel();
 			this.horizontalPanel = new ProcessManagerUI.Controls.HorizontalPanel();
 			this.linkLabelOpenConfiguration = new System.Windows.Forms.LinkLabel();
+			this.tableLayoutPanelPlugins = new System.Windows.Forms.TableLayoutPanel();
 			this.contextMenuStripSystemTray.SuspendLayout();
-			this.tableLayoutPanelMain.SuspendLayout();
+			this.tableLayoutPanelControlPanel.SuspendLayout();
 			this.panelApplications.SuspendLayout();
 			this.panelGroupByAndFilter.SuspendLayout();
 			this.tableLayoutPanelFilter.SuspendLayout();
 			this.panelGlass.SuspendLayout();
 			this.tabControlSection.SuspendLayout();
-			this.panelMain.SuspendLayout();
+			this.tableLayoutPanelMain.SuspendLayout();
+			this.panelTabPageArea.SuspendLayout();
 			this.horizontalPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -108,23 +111,24 @@
 			this.toolStripMenuItemSystemTrayExit.Text = "Exit";
 			this.toolStripMenuItemSystemTrayExit.Click += new System.EventHandler(this.ToolStripMenuItemSystemTrayExit_Click);
 			// 
-			// tableLayoutPanelMain
+			// tableLayoutPanelControlPanel
 			// 
-			this.tableLayoutPanelMain.ColumnCount = 1;
-			this.tableLayoutPanelMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanelMain.Controls.Add(this.horizontalPanel, 0, 2);
-			this.tableLayoutPanelMain.Controls.Add(this.panelApplications, 0, 1);
-			this.tableLayoutPanelMain.Controls.Add(this.panelGroupByAndFilter, 0, 0);
-			this.tableLayoutPanelMain.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanelMain.Location = new System.Drawing.Point(0, 0);
-			this.tableLayoutPanelMain.Margin = new System.Windows.Forms.Padding(0);
-			this.tableLayoutPanelMain.Name = "tableLayoutPanelMain";
-			this.tableLayoutPanelMain.RowCount = 3;
-			this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 63F));
-			this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 43F));
-			this.tableLayoutPanelMain.Size = new System.Drawing.Size(400, 299);
-			this.tableLayoutPanelMain.TabIndex = 2;
+			this.tableLayoutPanelControlPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.tableLayoutPanelControlPanel.ColumnCount = 1;
+			this.tableLayoutPanelControlPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelControlPanel.Controls.Add(this.panelApplications, 0, 1);
+			this.tableLayoutPanelControlPanel.Controls.Add(this.panelGroupByAndFilter, 0, 0);
+			this.tableLayoutPanelControlPanel.Location = new System.Drawing.Point(0, 0);
+			this.tableLayoutPanelControlPanel.Margin = new System.Windows.Forms.Padding(0);
+			this.tableLayoutPanelControlPanel.Name = "tableLayoutPanelControlPanel";
+			this.tableLayoutPanelControlPanel.RowCount = 2;
+			this.tableLayoutPanelControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 63F));
+			this.tableLayoutPanelControlPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelControlPanel.Size = new System.Drawing.Size(400, 235);
+			this.tableLayoutPanelControlPanel.TabIndex = 2;
+			this.tableLayoutPanelControlPanel.Visible = false;
 			// 
 			// panelApplications
 			// 
@@ -140,7 +144,7 @@
 			this.panelApplications.Location = new System.Drawing.Point(0, 63);
 			this.panelApplications.Margin = new System.Windows.Forms.Padding(0);
 			this.panelApplications.Name = "panelApplications";
-			this.panelApplications.Size = new System.Drawing.Size(400, 193);
+			this.panelApplications.Size = new System.Drawing.Size(400, 172);
 			this.panelApplications.TabIndex = 2;
 			// 
 			// labelUnavailable
@@ -151,7 +155,7 @@
 			this.labelUnavailable.Location = new System.Drawing.Point(10, 10);
 			this.labelUnavailable.Margin = new System.Windows.Forms.Padding(10);
 			this.labelUnavailable.Name = "labelUnavailable";
-			this.labelUnavailable.Size = new System.Drawing.Size(380, 173);
+			this.labelUnavailable.Size = new System.Drawing.Size(380, 152);
 			this.labelUnavailable.TabIndex = 0;
 			this.labelUnavailable.Text = "No applications available";
 			this.labelUnavailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -263,7 +267,7 @@
 			this.flowLayoutPanelApplications.Location = new System.Drawing.Point(10, 30);
 			this.flowLayoutPanelApplications.Margin = new System.Windows.Forms.Padding(10);
 			this.flowLayoutPanelApplications.Name = "flowLayoutPanelApplications";
-			this.flowLayoutPanelApplications.Size = new System.Drawing.Size(380, 153);
+			this.flowLayoutPanelApplications.Size = new System.Drawing.Size(380, 132);
 			this.flowLayoutPanelApplications.TabIndex = 1;
 			// 
 			// panelGroupByAndFilter
@@ -380,44 +384,65 @@
 			// 
 			this.tabControlSection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.tabControlSection.Controls.Add(this.tabPage1);
-			this.tabControlSection.Controls.Add(this.tabPage2);
+			this.tabControlSection.Controls.Add(this.tabPageControlPanel);
+			this.tabControlSection.Controls.Add(this.tabPagePlugins);
 			this.tabControlSection.Location = new System.Drawing.Point(3, 0);
 			this.tabControlSection.Name = "tabControlSection";
 			this.tabControlSection.SelectedIndex = 0;
 			this.tabControlSection.Size = new System.Drawing.Size(410, 30);
 			this.tabControlSection.TabIndex = 0;
+			this.tabControlSection.SelectedIndexChanged += new System.EventHandler(this.TabControlSection_SelectedIndexChanged);
 			// 
-			// tabPage1
+			// tabPageControlPanel
 			// 
-			this.tabPage1.Location = new System.Drawing.Point(4, 22);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(402, 4);
-			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "tabPage1";
-			this.tabPage1.UseVisualStyleBackColor = true;
+			this.tabPageControlPanel.Location = new System.Drawing.Point(4, 22);
+			this.tabPageControlPanel.Name = "tabPageControlPanel";
+			this.tabPageControlPanel.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPageControlPanel.Size = new System.Drawing.Size(402, 4);
+			this.tabPageControlPanel.TabIndex = 0;
+			this.tabPageControlPanel.Text = "Control Panel";
+			this.tabPageControlPanel.UseVisualStyleBackColor = true;
 			// 
-			// tabPage2
+			// tabPagePlugins
 			// 
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(402, 4);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "tabPage2";
-			this.tabPage2.UseVisualStyleBackColor = true;
+			this.tabPagePlugins.Location = new System.Drawing.Point(4, 22);
+			this.tabPagePlugins.Name = "tabPagePlugins";
+			this.tabPagePlugins.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPagePlugins.Size = new System.Drawing.Size(402, 4);
+			this.tabPagePlugins.TabIndex = 1;
+			this.tabPagePlugins.Text = "Plugins";
+			this.tabPagePlugins.UseVisualStyleBackColor = true;
 			// 
-			// panelMain
+			// tableLayoutPanelMain
 			// 
-			this.panelMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.tableLayoutPanelMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelMain.Controls.Add(this.tableLayoutPanelMain);
-			this.panelMain.Location = new System.Drawing.Point(0, 21);
-			this.panelMain.Name = "panelMain";
-			this.panelMain.Size = new System.Drawing.Size(400, 299);
-			this.panelMain.TabIndex = 4;
+			this.tableLayoutPanelMain.ColumnCount = 1;
+			this.tableLayoutPanelMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelMain.Controls.Add(this.horizontalPanel, 0, 1);
+			this.tableLayoutPanelMain.Controls.Add(this.panelTabPageArea, 0, 0);
+			this.tableLayoutPanelMain.Location = new System.Drawing.Point(0, 22);
+			this.tableLayoutPanelMain.Margin = new System.Windows.Forms.Padding(0);
+			this.tableLayoutPanelMain.Name = "tableLayoutPanelMain";
+			this.tableLayoutPanelMain.RowCount = 2;
+			this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 43F));
+			this.tableLayoutPanelMain.Size = new System.Drawing.Size(400, 278);
+			this.tableLayoutPanelMain.TabIndex = 4;
+			// 
+			// panelTabPageArea
+			// 
+			this.panelTabPageArea.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelTabPageArea.Controls.Add(this.tableLayoutPanelControlPanel);
+			this.panelTabPageArea.Controls.Add(this.tableLayoutPanelPlugins);
+			this.panelTabPageArea.Location = new System.Drawing.Point(0, 0);
+			this.panelTabPageArea.Margin = new System.Windows.Forms.Padding(0);
+			this.panelTabPageArea.Name = "panelTabPageArea";
+			this.panelTabPageArea.Size = new System.Drawing.Size(400, 235);
+			this.panelTabPageArea.TabIndex = 2;
 			// 
 			// horizontalPanel
 			// 
@@ -427,7 +452,7 @@
 			this.horizontalPanel.BackColor = System.Drawing.Color.Transparent;
 			this.horizontalPanel.Controls.Add(this.linkLabelOpenConfiguration);
 			this.horizontalPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.horizontalPanel.Location = new System.Drawing.Point(0, 256);
+			this.horizontalPanel.Location = new System.Drawing.Point(0, 235);
 			this.horizontalPanel.Margin = new System.Windows.Forms.Padding(0);
 			this.horizontalPanel.Name = "horizontalPanel";
 			this.horizontalPanel.Size = new System.Drawing.Size(400, 43);
@@ -449,15 +474,32 @@
 			this.linkLabelOpenConfiguration.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.linkLabelOpenConfiguration.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelOpenConfiguration_LinkClicked);
 			// 
+			// tableLayoutPanelPlugins
+			// 
+			this.tableLayoutPanelPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.tableLayoutPanelPlugins.ColumnCount = 1;
+			this.tableLayoutPanelPlugins.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelPlugins.Location = new System.Drawing.Point(0, 0);
+			this.tableLayoutPanelPlugins.Margin = new System.Windows.Forms.Padding(0);
+			this.tableLayoutPanelPlugins.Name = "tableLayoutPanelPlugins";
+			this.tableLayoutPanelPlugins.RowCount = 2;
+			this.tableLayoutPanelPlugins.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+			this.tableLayoutPanelPlugins.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelPlugins.Size = new System.Drawing.Size(400, 235);
+			this.tableLayoutPanelPlugins.TabIndex = 3;
+			this.tableLayoutPanelPlugins.Visible = false;
+			// 
 			// ControlPanelForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
-			this.ClientSize = new System.Drawing.Size(400, 320);
+			this.ClientSize = new System.Drawing.Size(400, 300);
 			this.ControlBox = false;
-			this.Controls.Add(this.panelMain);
 			this.Controls.Add(this.panelGlass);
+			this.Controls.Add(this.tableLayoutPanelMain);
 			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -469,7 +511,7 @@
 			this.Deactivate += new System.EventHandler(this.ControlPanelForm_Deactivate);
 			this.Load += new System.EventHandler(this.ControlPanelForm_Load);
 			this.contextMenuStripSystemTray.ResumeLayout(false);
-			this.tableLayoutPanelMain.ResumeLayout(false);
+			this.tableLayoutPanelControlPanel.ResumeLayout(false);
 			this.panelApplications.ResumeLayout(false);
 			this.panelApplications.PerformLayout();
 			this.panelGroupByAndFilter.ResumeLayout(false);
@@ -477,7 +519,8 @@
 			this.tableLayoutPanelFilter.ResumeLayout(false);
 			this.panelGlass.ResumeLayout(false);
 			this.tabControlSection.ResumeLayout(false);
-			this.panelMain.ResumeLayout(false);
+			this.tableLayoutPanelMain.ResumeLayout(false);
+			this.panelTabPageArea.ResumeLayout(false);
 			this.horizontalPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -491,7 +534,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparatorSystemTray1;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayExit;
 		private Controls.HorizontalPanel horizontalPanel;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelMain;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelControlPanel;
 		private System.Windows.Forms.LinkLabel linkLabelOpenConfiguration;
 		private System.Windows.Forms.Panel panelApplications;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelApplications;
@@ -512,8 +555,10 @@
 		private System.Windows.Forms.LinkLabel linkLabelExpandAll;
 		private System.Windows.Forms.Panel panelGlass;
 		private System.Windows.Forms.TabControl tabControlSection;
-		private System.Windows.Forms.TabPage tabPage1;
-		private System.Windows.Forms.TabPage tabPage2;
-		private System.Windows.Forms.Panel panelMain;
+		private System.Windows.Forms.TabPage tabPageControlPanel;
+		private System.Windows.Forms.TabPage tabPagePlugins;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelMain;
+		private System.Windows.Forms.Panel panelTabPageArea;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelPlugins;
 	}
 }
