@@ -64,6 +64,9 @@ namespace ProcessManager.DataAccess
 						Settings.Client.CFG_SelectedHostName = (string) statesKey.GetValue("CFG Selected Host Name", Settings.Client.Defaults.SELECTED_HOST_NAME);
 						Settings.Client.CFG_SelectedConfigurationSection = (string) statesKey.GetValue("CFG Selected Configuration Section", Settings.Client.Defaults.SELECTED_CONFIGURATION_SECTION);
 						Settings.Client.CP_SelectedGrouping = (string) statesKey.GetValue("CP Selected Grouping", Settings.Client.Defaults.SELECTED_GROUPING);
+						Settings.Client.CP_SelectedFilterMachine = (string) statesKey.GetValue("CP Selected Filter Machine", Settings.Client.Defaults.SELECTED_FILTER_MACHINE);
+						Settings.Client.CP_SelectedFilterGroup = (string) statesKey.GetValue("CP Selected Filter Group", Settings.Client.Defaults.SELECTED_FILTER_GROUP);
+						Settings.Client.CP_SelectedFilterApplication = (string) statesKey.GetValue("CP Selected Filter Application", Settings.Client.Defaults.SELECTED_FILTER_APPLICATION);
 						Settings.Client.CP_CheckedNodes.Clear();
 						RegistryKey checkedNodesKey = statesKey.OpenSubKey("Checked Nodes", false);
 						if (checkedNodesKey != null)
@@ -152,6 +155,9 @@ namespace ProcessManager.DataAccess
 						statesKey.SetValue("CFG Selected Host Name", Settings.Client.CFG_SelectedHostName);
 						statesKey.SetValue("CFG Selected Configuration Section", Settings.Client.CFG_SelectedConfigurationSection);
 						statesKey.SetValue("CP Selected Grouping", Settings.Client.CP_SelectedGrouping);
+						statesKey.SetValue("CP Selected Filter Machine", Settings.Client.CP_SelectedFilterMachine);
+						statesKey.SetValue("CP Selected Filter Group", Settings.Client.CP_SelectedFilterGroup);
+						statesKey.SetValue("CP Selected Filter Application", Settings.Client.CP_SelectedFilterApplication);
 						RegistryKey checkedNodesKey = statesKey.CreateSubKey("Checked Nodes");
 						if (checkedNodesKey != null)
 						{

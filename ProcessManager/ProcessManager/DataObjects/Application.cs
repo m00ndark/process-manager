@@ -36,10 +36,23 @@ namespace ProcessManager.DataObjects
 			return new Application() { ID = ID, Name = Name, RelativePath = RelativePath, Arguments = Arguments };
 		}
 
+		#region Equality
+
+		public bool Equals(string name)
+		{
+			return (Name != null && name != null && name.Equals(Name, StringComparison.CurrentCultureIgnoreCase));
+		}
+
+		#endregion
+
+		#region ToString
+
 		public override string ToString()
 		{
 			return Name;
 		}
+
+		#endregion
 
 		#region Implementation of IXmlSerializable
 

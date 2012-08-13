@@ -30,6 +30,7 @@ namespace ProcessManagerUI.Forms
 		private readonly List<IControlPanelNode> _allNodes;
 		private readonly List<IControlPanelRootNode> _rootNodes;
 		private readonly List<ApplicationNode> _applicationNodes;
+		private bool _nodeLayoutSuspended;
 
 		public event EventHandler<MachineConfigurationHashEventArgs> ConfigurationChanged;
 
@@ -40,6 +41,7 @@ namespace ProcessManagerUI.Forms
 			_allNodes = new List<IControlPanelNode>();
 			_rootNodes = new List<IControlPanelRootNode>();
 			_applicationNodes = new List<ApplicationNode>();
+			_nodeLayoutSuspended = false;
 			ServiceHelper.Initialize(this);
 		}
 
@@ -75,8 +77,7 @@ namespace ProcessManagerUI.Forms
 			if (comboBoxGroupBy.SelectedIndex == -1)
 				comboBoxGroupBy.SelectedIndex = 0;
 
-			UpdateFilter();
-			LayoutNodes(null);
+			UpdateFilterAndLayout();
 
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;
@@ -101,22 +102,37 @@ namespace ProcessManagerUI.Forms
 			Settings.Client.CP_SelectedGrouping = grouping.ToString();
 			Settings.Client.Save(ClientSettingsType.States);
 
-			LayoutNodes(null);
+			LayoutNodes();
 		}
 
 		private void ComboBoxMachineFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (comboBoxMachineFilter.SelectedIndex == -1) return;
+
+			Settings.Client.CP_SelectedFilterMachine = ((ComboBoxItem) comboBoxMachineFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
+
+			LayoutNodes();
 		}
 
 		private void ComboBoxGroupFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (comboBoxGroupFilter.SelectedIndex == -1) return;
+
+			Settings.Client.CP_SelectedFilterGroup = ((ComboBoxItem) comboBoxGroupFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
+
+			LayoutNodes();
 		}
 
 		private void ComboBoxApplicationFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (comboBoxApplicationFilter.SelectedIndex == -1) return;
+
+			Settings.Client.CP_SelectedFilterApplication = ((ComboBoxItem) comboBoxApplicationFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
+
+			LayoutNodes();
 		}
 
 		private void LinkLabelStartAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -201,8 +217,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			UpdateFilter();
-			LayoutNodes(null);
+			UpdateFilterAndLayout();
 		}
 
 		private void ServiceConnectionHandler_ServiceHandlerConnectionChanged(object sender, ServiceHandlerConnectionChangedEventArgs e)
@@ -213,8 +228,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			UpdateFilter();
-			LayoutNodes(null);
+			UpdateFilterAndLayout();
 		}
 
 		#endregion
@@ -245,14 +259,9 @@ namespace ProcessManagerUI.Forms
 
 		#region Configuration form event handlers
 
-
 		private void ConfigurationForm_ConfigurationChanged(object sender, MachinesEventArgs e)
 		{
-			new Thread(() =>
-				{
-					UpdateFilter();
-					LayoutNodes(e.Machines);
-				}).Start();
+			new Thread(UpdateFilterAndLayout).Start();
 		}
 
 		#endregion
@@ -327,8 +336,7 @@ namespace ProcessManagerUI.Forms
 			try
 			{
 				ConnectionStore.Connections[machine].Configuration = ConnectionStore.Connections[machine].ServiceHandler.Service.GetConfiguration().FromDTO();
-				UpdateFilter();
-				LayoutNodes(null);
+				UpdateFilterAndLayout();
 			}
 			catch (Exception ex)
 			{
@@ -403,6 +411,14 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
+		private void UpdateFilterAndLayout()
+		{
+			SuspendNodeLayout();
+			UpdateFilter();
+			ResumeNodeLayout();
+			LayoutNodes();
+		}
+
 		private delegate void UpdateFilterDelegate();
 
 		private void UpdateFilter()
@@ -413,14 +429,12 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			string selectedMachineName = (comboBoxMachineFilter.SelectedItem != null
-				? ((ComboBoxItem) comboBoxMachineFilter.SelectedItem).Text : null);
-
+			string selectedMachineName = Settings.Client.CP_SelectedFilterMachine;
 			comboBoxMachineFilter.Items.Clear();
 			comboBoxMachineFilter.Items.Add(new ComboBoxItem(string.Empty));
-			comboBoxMachineFilter.SelectedIndex = 0;
 
 			foreach (Machine machine in ConnectionStore.Connections.Values
+				.Where(connection => connection.Configuration != null)
 				.Select(connection => connection.Machine)
 				.Distinct(new MachineEqualityComparer())
 				.OrderBy(machine => machine.HostName))
@@ -430,14 +444,12 @@ namespace ProcessManagerUI.Forms
 					comboBoxMachineFilter.SelectedIndex = index;
 			}
 
-			string selectedGroupName = (comboBoxGroupFilter.SelectedItem != null
-				? ((ComboBoxItem) comboBoxGroupFilter.SelectedItem).Text : null);
-
+			string selectedGroupName = Settings.Client.CP_SelectedFilterGroup;
 			comboBoxGroupFilter.Items.Clear();
 			comboBoxGroupFilter.Items.Add(new ComboBoxItem(string.Empty));
-			comboBoxGroupFilter.SelectedIndex = 0;
 
 			foreach (Group group in ConnectionStore.Connections.Values
+				.Where(connection => connection.Configuration != null)
 				.SelectMany(connection => connection.Configuration.Groups)
 				.Distinct(new GroupEqualityComparer())
 				.OrderBy(group => group.Name))
@@ -447,14 +459,12 @@ namespace ProcessManagerUI.Forms
 					comboBoxGroupFilter.SelectedIndex = index;
 			}
 
-			string selectedApplicationName = (comboBoxApplicationFilter.SelectedItem != null
-				? ((ComboBoxItem) comboBoxApplicationFilter.SelectedItem).Text : null);
-
+			string selectedApplicationName = Settings.Client.CP_SelectedFilterApplication;
 			comboBoxApplicationFilter.Items.Clear();
 			comboBoxApplicationFilter.Items.Add(new ComboBoxItem(string.Empty));
-			comboBoxApplicationFilter.SelectedIndex = 0;
 
 			foreach (Application application in ConnectionStore.Connections.Values
+				.Where(connection => connection.Configuration != null)
 				.SelectMany(connection => connection.Configuration.Applications)
 				.Distinct(new ApplicationEqualityComparer())
 				.OrderBy(application => application.Name))
@@ -465,13 +475,26 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
-		private delegate void LayoutNodesDelegate(List<Machine> machines);
-
-		private void LayoutNodes(List<Machine> machines)
+		private void SuspendNodeLayout()
 		{
+			_nodeLayoutSuspended = true;
+		}
+
+		private void ResumeNodeLayout()
+		{
+			_nodeLayoutSuspended = false;
+		}
+
+		private delegate void LayoutNodesDelegate();
+
+		private void LayoutNodes()
+		{
+			if (_nodeLayoutSuspended)
+				return;
+
 			if (InvokeRequired)
 			{
-				Invoke(new LayoutNodesDelegate(LayoutNodes), machines);
+				Invoke(new LayoutNodesDelegate(LayoutNodes));
 				return;
 			}
 
@@ -496,10 +519,13 @@ namespace ProcessManagerUI.Forms
 
 				var applications = ConnectionStore.Connections.Values
 					.Where(connection => connection.Configuration != null)
+					.Where(connection => string.IsNullOrEmpty(Settings.Client.CP_SelectedFilterMachine) || connection.Machine.Equals(Settings.Client.CP_SelectedFilterMachine))
 					.SelectMany(connection =>
-						connection.Configuration.Groups.SelectMany(group =>
-							connection.Configuration.Applications
+						connection.Configuration.Groups
+							.Where(group => string.IsNullOrEmpty(Settings.Client.CP_SelectedFilterGroup) || group.Equals(Settings.Client.CP_SelectedFilterGroup))
+							.SelectMany(group => connection.Configuration.Applications
 								.Where(application => group.Applications.Contains(application.ID))
+								.Where(application => string.IsNullOrEmpty(Settings.Client.CP_SelectedFilterApplication) || application.Equals(Settings.Client.CP_SelectedFilterApplication))
 								.Select(application => new
 									{
 										connection.Machine,

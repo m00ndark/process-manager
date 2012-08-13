@@ -91,6 +91,9 @@ namespace ProcessManager
 				public const string SELECTED_HOST_NAME = Constants.LOCALHOST;
 				public const string SELECTED_CONFIGURATION_SECTION = "";
 				public const string SELECTED_GROUPING = "";
+				public const string SELECTED_FILTER_MACHINE = "";
+				public const string SELECTED_FILTER_GROUP = "";
+				public const string SELECTED_FILTER_APPLICATION = "";
 			}
 
 			#endregion
@@ -102,6 +105,9 @@ namespace ProcessManager
 				CFG_SelectedHostName = Defaults.SELECTED_HOST_NAME;
 				CFG_SelectedConfigurationSection = Defaults.SELECTED_CONFIGURATION_SECTION;
 				CP_SelectedGrouping = Defaults.SELECTED_GROUPING;
+				CP_SelectedFilterMachine = Defaults.SELECTED_FILTER_MACHINE;
+				CP_SelectedFilterGroup = Defaults.SELECTED_FILTER_GROUP;
+				CP_SelectedFilterApplication = Defaults.SELECTED_FILTER_APPLICATION;
 				CP_CheckedNodes = new List<Guid>();
 				CP_CollapsedNodes = new Dictionary<ControlPanelGrouping, List<Guid>>()
 					{
@@ -117,6 +123,9 @@ namespace ProcessManager
 			public static string CFG_SelectedHostName { get; set; }
 			public static string CFG_SelectedConfigurationSection { get; set; }
 			public static string CP_SelectedGrouping { get; set; }
+			public static string CP_SelectedFilterMachine { get; set; }
+			public static string CP_SelectedFilterGroup { get; set; }
+			public static string CP_SelectedFilterApplication { get; set; }
 			public static List<Guid> CP_CheckedNodes { get; private set; }
 			public static IDictionary<ControlPanelGrouping, List<Guid>> CP_CollapsedNodes { get; private set; }
 

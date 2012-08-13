@@ -24,6 +24,11 @@ namespace ProcessManager.DataObjects
 
 		#region Equality
 
+		public bool Equals(string hostName)
+		{
+			return (HostName != null && hostName != null && hostName.Equals(HostName, StringComparison.CurrentCultureIgnoreCase));
+		}
+
 		public override bool Equals(object obj)
 		{
 			Machine machine = obj as Machine;
