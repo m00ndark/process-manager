@@ -36,8 +36,6 @@
 			this.toolStripSeparatorSystemTray1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripMenuItemSystemTrayExit = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
-			this.horizontalPanel = new ProcessManagerUI.Controls.HorizontalPanel();
-			this.linkLabelOpenConfiguration = new System.Windows.Forms.LinkLabel();
 			this.panelApplications = new System.Windows.Forms.Panel();
 			this.labelUnavailable = new System.Windows.Forms.Label();
 			this.linkLabelExpandAll = new System.Windows.Forms.LinkLabel();
@@ -55,12 +53,22 @@
 			this.labelFilter = new System.Windows.Forms.Label();
 			this.comboBoxGroupBy = new System.Windows.Forms.ComboBox();
 			this.labelGroupBy = new System.Windows.Forms.Label();
+			this.panelGlass = new System.Windows.Forms.Panel();
+			this.tabControlSection = new System.Windows.Forms.TabControl();
+			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.panelMain = new System.Windows.Forms.Panel();
+			this.horizontalPanel = new ProcessManagerUI.Controls.HorizontalPanel();
+			this.linkLabelOpenConfiguration = new System.Windows.Forms.LinkLabel();
 			this.contextMenuStripSystemTray.SuspendLayout();
 			this.tableLayoutPanelMain.SuspendLayout();
-			this.horizontalPanel.SuspendLayout();
 			this.panelApplications.SuspendLayout();
 			this.panelGroupByAndFilter.SuspendLayout();
 			this.tableLayoutPanelFilter.SuspendLayout();
+			this.panelGlass.SuspendLayout();
+			this.tabControlSection.SuspendLayout();
+			this.panelMain.SuspendLayout();
+			this.horizontalPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// notifyIcon
@@ -115,38 +123,8 @@
 			this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 63F));
 			this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 43F));
-			this.tableLayoutPanelMain.Size = new System.Drawing.Size(400, 277);
+			this.tableLayoutPanelMain.Size = new System.Drawing.Size(400, 299);
 			this.tableLayoutPanelMain.TabIndex = 2;
-			// 
-			// horizontalPanel
-			// 
-			this.horizontalPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.horizontalPanel.AutoModifyAddedControls = false;
-			this.horizontalPanel.BackColor = System.Drawing.Color.Transparent;
-			this.horizontalPanel.Controls.Add(this.linkLabelOpenConfiguration);
-			this.horizontalPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.horizontalPanel.Location = new System.Drawing.Point(0, 234);
-			this.horizontalPanel.Margin = new System.Windows.Forms.Padding(0);
-			this.horizontalPanel.Name = "horizontalPanel";
-			this.horizontalPanel.Size = new System.Drawing.Size(400, 43);
-			this.horizontalPanel.TabIndex = 1;
-			// 
-			// linkLabelOpenConfiguration
-			// 
-			this.linkLabelOpenConfiguration.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelOpenConfiguration.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.linkLabelOpenConfiguration.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.linkLabelOpenConfiguration.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-			this.linkLabelOpenConfiguration.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelOpenConfiguration.Location = new System.Drawing.Point(0, 0);
-			this.linkLabelOpenConfiguration.Name = "linkLabelOpenConfiguration";
-			this.linkLabelOpenConfiguration.Size = new System.Drawing.Size(400, 43);
-			this.linkLabelOpenConfiguration.TabIndex = 0;
-			this.linkLabelOpenConfiguration.TabStop = true;
-			this.linkLabelOpenConfiguration.Text = "Open Configuration";
-			this.linkLabelOpenConfiguration.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.linkLabelOpenConfiguration.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelOpenConfiguration_LinkClicked);
 			// 
 			// panelApplications
 			// 
@@ -162,7 +140,7 @@
 			this.panelApplications.Location = new System.Drawing.Point(0, 63);
 			this.panelApplications.Margin = new System.Windows.Forms.Padding(0);
 			this.panelApplications.Name = "panelApplications";
-			this.panelApplications.Size = new System.Drawing.Size(400, 171);
+			this.panelApplications.Size = new System.Drawing.Size(400, 193);
 			this.panelApplications.TabIndex = 2;
 			// 
 			// labelUnavailable
@@ -173,7 +151,7 @@
 			this.labelUnavailable.Location = new System.Drawing.Point(10, 10);
 			this.labelUnavailable.Margin = new System.Windows.Forms.Padding(10);
 			this.labelUnavailable.Name = "labelUnavailable";
-			this.labelUnavailable.Size = new System.Drawing.Size(380, 151);
+			this.labelUnavailable.Size = new System.Drawing.Size(380, 173);
 			this.labelUnavailable.TabIndex = 0;
 			this.labelUnavailable.Text = "No applications available";
 			this.labelUnavailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -285,7 +263,7 @@
 			this.flowLayoutPanelApplications.Location = new System.Drawing.Point(10, 30);
 			this.flowLayoutPanelApplications.Margin = new System.Windows.Forms.Padding(10);
 			this.flowLayoutPanelApplications.Name = "flowLayoutPanelApplications";
-			this.flowLayoutPanelApplications.Size = new System.Drawing.Size(380, 131);
+			this.flowLayoutPanelApplications.Size = new System.Drawing.Size(380, 153);
 			this.flowLayoutPanelApplications.TabIndex = 1;
 			// 
 			// panelGroupByAndFilter
@@ -388,14 +366,98 @@
 			this.labelGroupBy.TabIndex = 0;
 			this.labelGroupBy.Text = "Group by:";
 			// 
+			// panelGlass
+			// 
+			this.panelGlass.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelGlass.Controls.Add(this.tabControlSection);
+			this.panelGlass.Location = new System.Drawing.Point(0, 0);
+			this.panelGlass.Name = "panelGlass";
+			this.panelGlass.Size = new System.Drawing.Size(416, 21);
+			this.panelGlass.TabIndex = 3;
+			// 
+			// tabControlSection
+			// 
+			this.tabControlSection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.tabControlSection.Controls.Add(this.tabPage1);
+			this.tabControlSection.Controls.Add(this.tabPage2);
+			this.tabControlSection.Location = new System.Drawing.Point(3, 0);
+			this.tabControlSection.Name = "tabControlSection";
+			this.tabControlSection.SelectedIndex = 0;
+			this.tabControlSection.Size = new System.Drawing.Size(410, 30);
+			this.tabControlSection.TabIndex = 0;
+			// 
+			// tabPage1
+			// 
+			this.tabPage1.Location = new System.Drawing.Point(4, 22);
+			this.tabPage1.Name = "tabPage1";
+			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage1.Size = new System.Drawing.Size(402, 4);
+			this.tabPage1.TabIndex = 0;
+			this.tabPage1.Text = "tabPage1";
+			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// tabPage2
+			// 
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(402, 4);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "tabPage2";
+			this.tabPage2.UseVisualStyleBackColor = true;
+			// 
+			// panelMain
+			// 
+			this.panelMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelMain.Controls.Add(this.tableLayoutPanelMain);
+			this.panelMain.Location = new System.Drawing.Point(0, 21);
+			this.panelMain.Name = "panelMain";
+			this.panelMain.Size = new System.Drawing.Size(400, 299);
+			this.panelMain.TabIndex = 4;
+			// 
+			// horizontalPanel
+			// 
+			this.horizontalPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.horizontalPanel.AutoModifyAddedControls = false;
+			this.horizontalPanel.BackColor = System.Drawing.Color.Transparent;
+			this.horizontalPanel.Controls.Add(this.linkLabelOpenConfiguration);
+			this.horizontalPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.horizontalPanel.Location = new System.Drawing.Point(0, 256);
+			this.horizontalPanel.Margin = new System.Windows.Forms.Padding(0);
+			this.horizontalPanel.Name = "horizontalPanel";
+			this.horizontalPanel.Size = new System.Drawing.Size(400, 43);
+			this.horizontalPanel.TabIndex = 1;
+			// 
+			// linkLabelOpenConfiguration
+			// 
+			this.linkLabelOpenConfiguration.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelOpenConfiguration.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.linkLabelOpenConfiguration.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.linkLabelOpenConfiguration.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelOpenConfiguration.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelOpenConfiguration.Location = new System.Drawing.Point(0, 0);
+			this.linkLabelOpenConfiguration.Name = "linkLabelOpenConfiguration";
+			this.linkLabelOpenConfiguration.Size = new System.Drawing.Size(400, 43);
+			this.linkLabelOpenConfiguration.TabIndex = 0;
+			this.linkLabelOpenConfiguration.TabStop = true;
+			this.linkLabelOpenConfiguration.Text = "Open Configuration";
+			this.linkLabelOpenConfiguration.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.linkLabelOpenConfiguration.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelOpenConfiguration_LinkClicked);
+			// 
 			// ControlPanelForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
-			this.ClientSize = new System.Drawing.Size(400, 277);
+			this.ClientSize = new System.Drawing.Size(400, 320);
 			this.ControlBox = false;
-			this.Controls.Add(this.tableLayoutPanelMain);
+			this.Controls.Add(this.panelMain);
+			this.Controls.Add(this.panelGlass);
 			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -408,12 +470,15 @@
 			this.Load += new System.EventHandler(this.ControlPanelForm_Load);
 			this.contextMenuStripSystemTray.ResumeLayout(false);
 			this.tableLayoutPanelMain.ResumeLayout(false);
-			this.horizontalPanel.ResumeLayout(false);
 			this.panelApplications.ResumeLayout(false);
 			this.panelApplications.PerformLayout();
 			this.panelGroupByAndFilter.ResumeLayout(false);
 			this.panelGroupByAndFilter.PerformLayout();
 			this.tableLayoutPanelFilter.ResumeLayout(false);
+			this.panelGlass.ResumeLayout(false);
+			this.tabControlSection.ResumeLayout(false);
+			this.panelMain.ResumeLayout(false);
+			this.horizontalPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -445,5 +510,10 @@
 		private System.Windows.Forms.LinkLabel linkLabelStartAll;
 		private System.Windows.Forms.LinkLabel linkLabelRestartAll;
 		private System.Windows.Forms.LinkLabel linkLabelExpandAll;
+		private System.Windows.Forms.Panel panelGlass;
+		private System.Windows.Forms.TabControl tabControlSection;
+		private System.Windows.Forms.TabPage tabPage1;
+		private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.Panel panelMain;
 	}
 }

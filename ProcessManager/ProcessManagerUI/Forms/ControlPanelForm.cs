@@ -66,6 +66,7 @@ namespace ProcessManagerUI.Forms
 		private void ControlPanelForm_Load(object sender, EventArgs e)
 		{
 			HideForm();
+			ExtendGlass();
 			Settings.Client.Load();
 
 			foreach (ControlPanelGrouping grouping in _groupingDescriptions.Keys)
@@ -322,6 +323,20 @@ namespace ProcessManagerUI.Forms
 			Hide();
 			Opacity = 0;
 			_formClosedAt = DateTime.Now;
+		}
+
+		private void ExtendGlass()
+		{
+			bool isGlassSupported = false;
+			NativeMethods.DwmIsCompositionEnabled(ref isGlassSupported);
+			if (isGlassSupported)
+			{
+				NativeMethods.Margins margins = new NativeMethods.Margins(0, 0, panelGlass.Height, 0);
+				NativeMethods.DwmExtendFrameIntoClientArea(Handle, ref margins);
+				Color keyColor = Color.FromArgb(255, 255, 0, 0);
+				TransparencyKey = keyColor;
+				panelGlass.BackColor = keyColor;
+			}
 		}
 
 		private void OpenConfigurationForm()

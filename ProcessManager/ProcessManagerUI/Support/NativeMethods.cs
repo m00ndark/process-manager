@@ -26,6 +26,33 @@ namespace ProcessManagerUI.Support
 		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
 		public static extern IntPtr GetActiveWindow();
 
+		[DllImport("dwmapi.dll")]
+		internal static extern void DwmExtendFrameIntoClientArea(IntPtr hWnd, ref Margins pMargins);
+		[DllImport("dwmapi.dll")]
+		internal static extern void DwmIsCompositionEnabled(ref bool isEnabled);
+
+		internal struct Margins
+		{
+			public Margins(int left, int right, int top, int bottom)
+			{
+				_left = left;
+				_right = right;
+				_top = top;
+				_bottom = bottom;
+			}
+
+			public Margins(int allMargins) : this(allMargins, allMargins, allMargins, allMargins) { }
+
+			private int _left;
+			private int _right;
+			private int _top;
+			private int _bottom;
+
+			public int Left { get { return _left; } set { _left = value; } }
+			public int Right { get { return _right; } set { _right = value; } }
+			public int Top { get { return _top; } set { _top = value; } }
+			public int Bottom { get { return _bottom; } set { _bottom = value; } }
+		}
 
 
 		// window styles
