@@ -73,6 +73,18 @@ namespace ProcessManager.Service.Host
 			ProcessManager.Instance.TakeApplicationAction(action.GroupID, action.ApplicationID, action.Type);
 		}
 
+		public List<string> GetFileSystemDrives()
+		{
+			Logger.Add(LogType.Debug, "GetFileSystemDrives call received");
+			return ProcessManager.Instance.GetFileSystemDrives();
+		}
+
+		public List<DTOFileSystemEntry> GetFileSystemEntries(string path)
+		{
+			Logger.Add(LogType.Debug, "GetFileSystemEntries call received: path = " + path);
+			return ProcessManager.Instance.GetFileSystemEntries(path).Select(x => new DTOFileSystemEntry(x)).ToList();
+		}
+
 		#endregion
 
 		#region Service event handlers

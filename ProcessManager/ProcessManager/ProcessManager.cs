@@ -122,6 +122,16 @@ namespace ProcessManager
 			}
 		}
 
+		public List<string> GetFileSystemDrives()
+		{
+			return FileSystemHandler.GetDrives().ToList();
+		}
+
+		public List<FileSystemEntry> GetFileSystemEntries(string path)
+		{
+			return FileSystemHandler.GetFileSystemEntries(path).ToList();
+		}
+
 		#endregion
 
 		#region Start, shut down, main thread and loop

@@ -36,6 +36,24 @@
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.labelNothingToShow = new System.Windows.Forms.Label();
 			this.labelMachineNotAvailable = new System.Windows.Forms.Label();
+			this.panelDistributions = new ProcessManagerUI.Controls.BackgroundPanel();
+			this.buttonRemoveDistribution = new System.Windows.Forms.Button();
+			this.buttonAddDistribution = new System.Windows.Forms.Button();
+			this.panelDistribution = new System.Windows.Forms.Panel();
+			this.buttonRemoveDistributionSource = new System.Windows.Forms.Button();
+			this.buttonAddDistributionSource = new System.Windows.Forms.Button();
+			this.textBoxDistributionName = new System.Windows.Forms.TextBox();
+			this.listViewDistributionSources = new ProcessManagerUI.Controls.ListView();
+			this.columnHeaderDistributionSources = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.textBoxDistributionDestination = new System.Windows.Forms.TextBox();
+			this.labelDistributionDestination = new System.Windows.Forms.Label();
+			this.buttonBrowseDistributionDestinationPath = new System.Windows.Forms.Button();
+			this.labeledDividerDistribution = new ProcessManagerUI.Controls.LabeledDivider();
+			this.labelDistributionName = new System.Windows.Forms.Label();
+			this.labelDistributionSources = new System.Windows.Forms.Label();
+			this.labelNoDistributionSelected = new System.Windows.Forms.Label();
+			this.listViewDistributions = new ProcessManagerUI.Controls.ListView();
+			this.columnHeaderDistributions = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.panelGroups = new ProcessManagerUI.Controls.BackgroundPanel();
 			this.panelGroup = new System.Windows.Forms.Panel();
 			this.labeledDividerGroup = new ProcessManagerUI.Controls.LabeledDivider();
@@ -56,6 +74,18 @@
 			this.buttonAddGroup = new System.Windows.Forms.Button();
 			this.listViewGroups = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderGroups = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.panelPlugins = new ProcessManagerUI.Controls.BackgroundPanel();
+			this.panelPlugin = new System.Windows.Forms.Panel();
+			this.checkBoxPluginEnabled = new System.Windows.Forms.CheckBox();
+			this.labeledDividerPlugin = new ProcessManagerUI.Controls.LabeledDivider();
+			this.labelPluginDescriptionValue = new System.Windows.Forms.Label();
+			this.labelPluginName = new System.Windows.Forms.Label();
+			this.labelPluginNameValue = new System.Windows.Forms.Label();
+			this.labelPluginDescription = new System.Windows.Forms.Label();
+			this.buttonConfigurePlugin = new System.Windows.Forms.Button();
+			this.labelNoPluginSelected = new System.Windows.Forms.Label();
+			this.listViewPlugins = new ProcessManagerUI.Controls.ListView();
+			this.columnHeaderPlugins = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.panelApplications = new ProcessManagerUI.Controls.BackgroundPanel();
 			this.panelApplication = new System.Windows.Forms.Panel();
 			this.labeledDividerApplication = new ProcessManagerUI.Controls.LabeledDivider();
@@ -71,25 +101,15 @@
 			this.buttonAddApplication = new System.Windows.Forms.Button();
 			this.listViewApplications = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderApplications = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.panelPlugins = new ProcessManagerUI.Controls.BackgroundPanel();
-			this.panelPlugin = new System.Windows.Forms.Panel();
-			this.checkBoxPluginEnabled = new System.Windows.Forms.CheckBox();
-			this.labeledDividerPlugin = new ProcessManagerUI.Controls.LabeledDivider();
-			this.labelPluginDescriptionValue = new System.Windows.Forms.Label();
-			this.labelPluginName = new System.Windows.Forms.Label();
-			this.labelPluginNameValue = new System.Windows.Forms.Label();
-			this.labelPluginDescription = new System.Windows.Forms.Label();
-			this.buttonConfigurePlugin = new System.Windows.Forms.Button();
-			this.labelNoPluginSelected = new System.Windows.Forms.Label();
-			this.listViewPlugins = new ProcessManagerUI.Controls.ListView();
-			this.columnHeaderPlugins = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.treeViewConfiguration = new ProcessManagerUI.Controls.TreeView();
+			this.panelDistributions.SuspendLayout();
+			this.panelDistribution.SuspendLayout();
 			this.panelGroups.SuspendLayout();
 			this.panelGroup.SuspendLayout();
-			this.panelApplications.SuspendLayout();
-			this.panelApplication.SuspendLayout();
 			this.panelPlugins.SuspendLayout();
 			this.panelPlugin.SuspendLayout();
+			this.panelApplications.SuspendLayout();
+			this.panelApplication.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// comboBoxMachines
@@ -174,6 +194,224 @@
 			this.labelMachineNotAvailable.Text = "The selected machine is not available";
 			this.labelMachineNotAvailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.labelMachineNotAvailable.Visible = false;
+			// 
+			// panelDistributions
+			// 
+			this.panelDistributions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelDistributions.BackColor = System.Drawing.SystemColors.Window;
+			this.panelDistributions.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
+			this.panelDistributions.Controls.Add(this.buttonRemoveDistribution);
+			this.panelDistributions.Controls.Add(this.buttonAddDistribution);
+			this.panelDistributions.Controls.Add(this.panelDistribution);
+			this.panelDistributions.Controls.Add(this.labelNoDistributionSelected);
+			this.panelDistributions.Controls.Add(this.listViewDistributions);
+			this.panelDistributions.Location = new System.Drawing.Point(174, 39);
+			this.panelDistributions.Name = "panelDistributions";
+			this.panelDistributions.Padding = new System.Windows.Forms.Padding(5);
+			this.panelDistributions.Size = new System.Drawing.Size(588, 362);
+			this.panelDistributions.TabIndex = 25;
+			this.panelDistributions.Visible = false;
+			// 
+			// buttonRemoveDistribution
+			// 
+			this.buttonRemoveDistribution.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonRemoveDistribution.Location = new System.Drawing.Point(71, 331);
+			this.buttonRemoveDistribution.Name = "buttonRemoveDistribution";
+			this.buttonRemoveDistribution.Size = new System.Drawing.Size(58, 23);
+			this.buttonRemoveDistribution.TabIndex = 26;
+			this.buttonRemoveDistribution.Text = "Remove";
+			this.buttonRemoveDistribution.UseVisualStyleBackColor = true;
+			this.buttonRemoveDistribution.Click += new System.EventHandler(this.ButtonRemoveDistribution_Click);
+			// 
+			// buttonAddDistribution
+			// 
+			this.buttonAddDistribution.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonAddDistribution.Location = new System.Drawing.Point(7, 331);
+			this.buttonAddDistribution.Name = "buttonAddDistribution";
+			this.buttonAddDistribution.Size = new System.Drawing.Size(58, 23);
+			this.buttonAddDistribution.TabIndex = 25;
+			this.buttonAddDistribution.Text = "Add";
+			this.buttonAddDistribution.UseVisualStyleBackColor = true;
+			this.buttonAddDistribution.Click += new System.EventHandler(this.ButtonAddDistribution_Click);
+			// 
+			// panelDistribution
+			// 
+			this.panelDistribution.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelDistribution.Controls.Add(this.buttonRemoveDistributionSource);
+			this.panelDistribution.Controls.Add(this.buttonAddDistributionSource);
+			this.panelDistribution.Controls.Add(this.textBoxDistributionName);
+			this.panelDistribution.Controls.Add(this.listViewDistributionSources);
+			this.panelDistribution.Controls.Add(this.textBoxDistributionDestination);
+			this.panelDistribution.Controls.Add(this.labelDistributionDestination);
+			this.panelDistribution.Controls.Add(this.buttonBrowseDistributionDestinationPath);
+			this.panelDistribution.Controls.Add(this.labeledDividerDistribution);
+			this.panelDistribution.Controls.Add(this.labelDistributionName);
+			this.panelDistribution.Controls.Add(this.labelDistributionSources);
+			this.panelDistribution.Location = new System.Drawing.Point(144, 8);
+			this.panelDistribution.Margin = new System.Windows.Forms.Padding(0);
+			this.panelDistribution.Name = "panelDistribution";
+			this.panelDistribution.Size = new System.Drawing.Size(436, 345);
+			this.panelDistribution.TabIndex = 15;
+			this.panelDistribution.Visible = false;
+			// 
+			// buttonRemoveDistributionSource
+			// 
+			this.buttonRemoveDistributionSource.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonRemoveDistributionSource.Image = global::ProcessManagerUI.Properties.Resources.remove_16;
+			this.buttonRemoveDistributionSource.Location = new System.Drawing.Point(392, 80);
+			this.buttonRemoveDistributionSource.Name = "buttonRemoveDistributionSource";
+			this.buttonRemoveDistributionSource.Size = new System.Drawing.Size(38, 24);
+			this.buttonRemoveDistributionSource.TabIndex = 20;
+			this.buttonRemoveDistributionSource.UseVisualStyleBackColor = true;
+			this.buttonRemoveDistributionSource.Click += new System.EventHandler(this.ButtonRemoveDistributionSource_Click);
+			// 
+			// buttonAddDistributionSource
+			// 
+			this.buttonAddDistributionSource.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonAddDistributionSource.Image = global::ProcessManagerUI.Properties.Resources.add_16;
+			this.buttonAddDistributionSource.Location = new System.Drawing.Point(392, 50);
+			this.buttonAddDistributionSource.Name = "buttonAddDistributionSource";
+			this.buttonAddDistributionSource.Size = new System.Drawing.Size(38, 24);
+			this.buttonAddDistributionSource.TabIndex = 19;
+			this.buttonAddDistributionSource.UseVisualStyleBackColor = true;
+			this.buttonAddDistributionSource.Click += new System.EventHandler(this.ButtonAddDistributionSource_Click);
+			// 
+			// textBoxDistributionName
+			// 
+			this.textBoxDistributionName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxDistributionName.Location = new System.Drawing.Point(98, 23);
+			this.textBoxDistributionName.Name = "textBoxDistributionName";
+			this.textBoxDistributionName.Size = new System.Drawing.Size(286, 22);
+			this.textBoxDistributionName.TabIndex = 14;
+			this.textBoxDistributionName.TextChanged += new System.EventHandler(this.TextBoxDistributionName_TextChanged);
+			this.textBoxDistributionName.Leave += new System.EventHandler(this.TextBoxDistributionName_Leave);
+			// 
+			// listViewDistributionSources
+			// 
+			this.listViewDistributionSources.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.listViewDistributionSources.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderDistributionSources});
+			this.listViewDistributionSources.FullRowSelect = true;
+			this.listViewDistributionSources.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewDistributionSources.HideSelection = false;
+			this.listViewDistributionSources.Location = new System.Drawing.Point(98, 51);
+			this.listViewDistributionSources.MultiSelect = false;
+			this.listViewDistributionSources.Name = "listViewDistributionSources";
+			this.listViewDistributionSources.Size = new System.Drawing.Size(286, 226);
+			this.listViewDistributionSources.Sorting = System.Windows.Forms.SortOrder.Ascending;
+			this.listViewDistributionSources.TabIndex = 18;
+			this.listViewDistributionSources.UseCompatibleStateImageBehavior = false;
+			this.listViewDistributionSources.View = System.Windows.Forms.View.Details;
+			// 
+			// columnHeaderDistributionSources
+			// 
+			this.columnHeaderDistributionSources.Text = "DistributionSources";
+			this.columnHeaderDistributionSources.Width = 265;
+			// 
+			// textBoxDistributionDestination
+			// 
+			this.textBoxDistributionDestination.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxDistributionDestination.Location = new System.Drawing.Point(98, 283);
+			this.textBoxDistributionDestination.Name = "textBoxDistributionDestination";
+			this.textBoxDistributionDestination.Size = new System.Drawing.Size(286, 22);
+			this.textBoxDistributionDestination.TabIndex = 15;
+			this.textBoxDistributionDestination.TextChanged += new System.EventHandler(this.TextBoxDistributionDestination_TextChanged);
+			this.textBoxDistributionDestination.Leave += new System.EventHandler(this.TextBoxDistributionDestination_Leave);
+			// 
+			// labelDistributionDestination
+			// 
+			this.labelDistributionDestination.AutoSize = true;
+			this.labelDistributionDestination.Location = new System.Drawing.Point(20, 286);
+			this.labelDistributionDestination.Name = "labelDistributionDestination";
+			this.labelDistributionDestination.Size = new System.Drawing.Size(70, 13);
+			this.labelDistributionDestination.TabIndex = 17;
+			this.labelDistributionDestination.Text = "Destination:";
+			// 
+			// buttonBrowseDistributionDestinationPath
+			// 
+			this.buttonBrowseDistributionDestinationPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonBrowseDistributionDestinationPath.Location = new System.Drawing.Point(392, 282);
+			this.buttonBrowseDistributionDestinationPath.Name = "buttonBrowseDistributionDestinationPath";
+			this.buttonBrowseDistributionDestinationPath.Size = new System.Drawing.Size(38, 23);
+			this.buttonBrowseDistributionDestinationPath.TabIndex = 16;
+			this.buttonBrowseDistributionDestinationPath.Text = "...";
+			this.buttonBrowseDistributionDestinationPath.UseVisualStyleBackColor = true;
+			this.buttonBrowseDistributionDestinationPath.Click += new System.EventHandler(this.ButtonBrowseDistributionDestinationPath_Click);
+			// 
+			// labeledDividerDistribution
+			// 
+			this.labeledDividerDistribution.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labeledDividerDistribution.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDividerDistribution.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.labeledDividerDistribution.Location = new System.Drawing.Point(0, 0);
+			this.labeledDividerDistribution.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
+			this.labeledDividerDistribution.Name = "labeledDividerDistribution";
+			this.labeledDividerDistribution.Size = new System.Drawing.Size(436, 15);
+			this.labeledDividerDistribution.TabIndex = 10;
+			this.labeledDividerDistribution.Text = "Distribution";
+			// 
+			// labelDistributionName
+			// 
+			this.labelDistributionName.AutoSize = true;
+			this.labelDistributionName.Location = new System.Drawing.Point(20, 26);
+			this.labelDistributionName.Name = "labelDistributionName";
+			this.labelDistributionName.Size = new System.Drawing.Size(39, 13);
+			this.labelDistributionName.TabIndex = 5;
+			this.labelDistributionName.Text = "Name:";
+			// 
+			// labelDistributionSources
+			// 
+			this.labelDistributionSources.AutoSize = true;
+			this.labelDistributionSources.Location = new System.Drawing.Point(20, 54);
+			this.labelDistributionSources.Name = "labelDistributionSources";
+			this.labelDistributionSources.Size = new System.Drawing.Size(50, 13);
+			this.labelDistributionSources.TabIndex = 7;
+			this.labelDistributionSources.Text = "Sources:";
+			// 
+			// labelNoDistributionSelected
+			// 
+			this.labelNoDistributionSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelNoDistributionSelected.Location = new System.Drawing.Point(144, 8);
+			this.labelNoDistributionSelected.Name = "labelNoDistributionSelected";
+			this.labelNoDistributionSelected.Size = new System.Drawing.Size(436, 345);
+			this.labelNoDistributionSelected.TabIndex = 24;
+			this.labelNoDistributionSelected.Text = "No distribution selected";
+			this.labelNoDistributionSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// listViewDistributions
+			// 
+			this.listViewDistributions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.listViewDistributions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderDistributions});
+			this.listViewDistributions.FullRowSelect = true;
+			this.listViewDistributions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewDistributions.HideSelection = false;
+			this.listViewDistributions.Location = new System.Drawing.Point(8, 8);
+			this.listViewDistributions.MultiSelect = false;
+			this.listViewDistributions.Name = "listViewDistributions";
+			this.listViewDistributions.Size = new System.Drawing.Size(120, 317);
+			this.listViewDistributions.Sorting = System.Windows.Forms.SortOrder.Ascending;
+			this.listViewDistributions.TabIndex = 0;
+			this.listViewDistributions.UseCompatibleStateImageBehavior = false;
+			this.listViewDistributions.View = System.Windows.Forms.View.Details;
+			this.listViewDistributions.SelectedIndexChanged += new System.EventHandler(this.ListViewDistributions_SelectedIndexChanged);
+			// 
+			// columnHeaderDistributions
+			// 
+			this.columnHeaderDistributions.Text = "Distributions";
+			this.columnHeaderDistributions.Width = 99;
 			// 
 			// panelGroups
 			// 
@@ -420,6 +658,145 @@
 			this.columnHeaderGroups.Text = "Groups";
 			this.columnHeaderGroups.Width = 99;
 			// 
+			// panelPlugins
+			// 
+			this.panelPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelPlugins.BackColor = System.Drawing.SystemColors.Window;
+			this.panelPlugins.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
+			this.panelPlugins.Controls.Add(this.panelPlugin);
+			this.panelPlugins.Controls.Add(this.labelNoPluginSelected);
+			this.panelPlugins.Controls.Add(this.listViewPlugins);
+			this.panelPlugins.Location = new System.Drawing.Point(174, 39);
+			this.panelPlugins.Name = "panelPlugins";
+			this.panelPlugins.Padding = new System.Windows.Forms.Padding(5);
+			this.panelPlugins.Size = new System.Drawing.Size(588, 362);
+			this.panelPlugins.TabIndex = 18;
+			this.panelPlugins.Visible = false;
+			// 
+			// panelPlugin
+			// 
+			this.panelPlugin.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelPlugin.Controls.Add(this.checkBoxPluginEnabled);
+			this.panelPlugin.Controls.Add(this.labeledDividerPlugin);
+			this.panelPlugin.Controls.Add(this.labelPluginDescriptionValue);
+			this.panelPlugin.Controls.Add(this.labelPluginName);
+			this.panelPlugin.Controls.Add(this.labelPluginNameValue);
+			this.panelPlugin.Controls.Add(this.labelPluginDescription);
+			this.panelPlugin.Controls.Add(this.buttonConfigurePlugin);
+			this.panelPlugin.Location = new System.Drawing.Point(144, 8);
+			this.panelPlugin.Margin = new System.Windows.Forms.Padding(0);
+			this.panelPlugin.Name = "panelPlugin";
+			this.panelPlugin.Size = new System.Drawing.Size(436, 345);
+			this.panelPlugin.TabIndex = 15;
+			this.panelPlugin.Visible = false;
+			// 
+			// checkBoxPluginEnabled
+			// 
+			this.checkBoxPluginEnabled.AutoSize = true;
+			this.checkBoxPluginEnabled.Location = new System.Drawing.Point(3, 327);
+			this.checkBoxPluginEnabled.Name = "checkBoxPluginEnabled";
+			this.checkBoxPluginEnabled.Size = new System.Drawing.Size(68, 17);
+			this.checkBoxPluginEnabled.TabIndex = 14;
+			this.checkBoxPluginEnabled.Text = "Enabled";
+			this.checkBoxPluginEnabled.UseVisualStyleBackColor = true;
+			// 
+			// labeledDividerPlugin
+			// 
+			this.labeledDividerPlugin.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labeledDividerPlugin.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDividerPlugin.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.labeledDividerPlugin.Location = new System.Drawing.Point(0, 0);
+			this.labeledDividerPlugin.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
+			this.labeledDividerPlugin.Name = "labeledDividerPlugin";
+			this.labeledDividerPlugin.Size = new System.Drawing.Size(436, 15);
+			this.labeledDividerPlugin.TabIndex = 10;
+			this.labeledDividerPlugin.Text = "Plugin";
+			// 
+			// labelPluginDescriptionValue
+			// 
+			this.labelPluginDescriptionValue.Location = new System.Drawing.Point(95, 54);
+			this.labelPluginDescriptionValue.Name = "labelPluginDescriptionValue";
+			this.labelPluginDescriptionValue.Size = new System.Drawing.Size(336, 262);
+			this.labelPluginDescriptionValue.TabIndex = 13;
+			this.labelPluginDescriptionValue.Text = "[description]";
+			// 
+			// labelPluginName
+			// 
+			this.labelPluginName.AutoSize = true;
+			this.labelPluginName.Location = new System.Drawing.Point(20, 26);
+			this.labelPluginName.Name = "labelPluginName";
+			this.labelPluginName.Size = new System.Drawing.Size(39, 13);
+			this.labelPluginName.TabIndex = 5;
+			this.labelPluginName.Text = "Name:";
+			// 
+			// labelPluginNameValue
+			// 
+			this.labelPluginNameValue.AutoSize = true;
+			this.labelPluginNameValue.Location = new System.Drawing.Point(95, 26);
+			this.labelPluginNameValue.Name = "labelPluginNameValue";
+			this.labelPluginNameValue.Size = new System.Drawing.Size(41, 13);
+			this.labelPluginNameValue.TabIndex = 12;
+			this.labelPluginNameValue.Text = "[name]";
+			// 
+			// labelPluginDescription
+			// 
+			this.labelPluginDescription.AutoSize = true;
+			this.labelPluginDescription.Location = new System.Drawing.Point(20, 54);
+			this.labelPluginDescription.Name = "labelPluginDescription";
+			this.labelPluginDescription.Size = new System.Drawing.Size(69, 13);
+			this.labelPluginDescription.TabIndex = 7;
+			this.labelPluginDescription.Text = "Description:";
+			// 
+			// buttonConfigurePlugin
+			// 
+			this.buttonConfigurePlugin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonConfigurePlugin.Location = new System.Drawing.Point(345, 323);
+			this.buttonConfigurePlugin.Name = "buttonConfigurePlugin";
+			this.buttonConfigurePlugin.Size = new System.Drawing.Size(92, 23);
+			this.buttonConfigurePlugin.TabIndex = 11;
+			this.buttonConfigurePlugin.Text = "Configure...";
+			this.buttonConfigurePlugin.UseVisualStyleBackColor = true;
+			// 
+			// labelNoPluginSelected
+			// 
+			this.labelNoPluginSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelNoPluginSelected.Location = new System.Drawing.Point(144, 8);
+			this.labelNoPluginSelected.Name = "labelNoPluginSelected";
+			this.labelNoPluginSelected.Size = new System.Drawing.Size(436, 345);
+			this.labelNoPluginSelected.TabIndex = 24;
+			this.labelNoPluginSelected.Text = "No plugin selected";
+			this.labelNoPluginSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// listViewPlugins
+			// 
+			this.listViewPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.listViewPlugins.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderPlugins});
+			this.listViewPlugins.FullRowSelect = true;
+			this.listViewPlugins.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewPlugins.HideSelection = false;
+			this.listViewPlugins.Location = new System.Drawing.Point(8, 8);
+			this.listViewPlugins.MultiSelect = false;
+			this.listViewPlugins.Name = "listViewPlugins";
+			this.listViewPlugins.Size = new System.Drawing.Size(120, 346);
+			this.listViewPlugins.Sorting = System.Windows.Forms.SortOrder.Ascending;
+			this.listViewPlugins.TabIndex = 0;
+			this.listViewPlugins.UseCompatibleStateImageBehavior = false;
+			this.listViewPlugins.View = System.Windows.Forms.View.Details;
+			// 
+			// columnHeaderPlugins
+			// 
+			this.columnHeaderPlugins.Text = "Plugins";
+			this.columnHeaderPlugins.Width = 99;
+			// 
 			// panelApplications
 			// 
 			this.panelApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -601,145 +978,6 @@
 			this.columnHeaderApplications.Text = "Applications";
 			this.columnHeaderApplications.Width = 99;
 			// 
-			// panelPlugins
-			// 
-			this.panelPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelPlugins.BackColor = System.Drawing.SystemColors.Window;
-			this.panelPlugins.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
-			this.panelPlugins.Controls.Add(this.panelPlugin);
-			this.panelPlugins.Controls.Add(this.labelNoPluginSelected);
-			this.panelPlugins.Controls.Add(this.listViewPlugins);
-			this.panelPlugins.Location = new System.Drawing.Point(174, 39);
-			this.panelPlugins.Name = "panelPlugins";
-			this.panelPlugins.Padding = new System.Windows.Forms.Padding(5);
-			this.panelPlugins.Size = new System.Drawing.Size(588, 362);
-			this.panelPlugins.TabIndex = 18;
-			this.panelPlugins.Visible = false;
-			// 
-			// panelPlugin
-			// 
-			this.panelPlugin.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelPlugin.Controls.Add(this.checkBoxPluginEnabled);
-			this.panelPlugin.Controls.Add(this.labeledDividerPlugin);
-			this.panelPlugin.Controls.Add(this.labelPluginDescriptionValue);
-			this.panelPlugin.Controls.Add(this.labelPluginName);
-			this.panelPlugin.Controls.Add(this.labelPluginNameValue);
-			this.panelPlugin.Controls.Add(this.labelPluginDescription);
-			this.panelPlugin.Controls.Add(this.buttonConfigurePlugin);
-			this.panelPlugin.Location = new System.Drawing.Point(144, 8);
-			this.panelPlugin.Margin = new System.Windows.Forms.Padding(0);
-			this.panelPlugin.Name = "panelPlugin";
-			this.panelPlugin.Size = new System.Drawing.Size(436, 345);
-			this.panelPlugin.TabIndex = 15;
-			this.panelPlugin.Visible = false;
-			// 
-			// checkBoxPluginEnabled
-			// 
-			this.checkBoxPluginEnabled.AutoSize = true;
-			this.checkBoxPluginEnabled.Location = new System.Drawing.Point(3, 327);
-			this.checkBoxPluginEnabled.Name = "checkBoxPluginEnabled";
-			this.checkBoxPluginEnabled.Size = new System.Drawing.Size(68, 17);
-			this.checkBoxPluginEnabled.TabIndex = 14;
-			this.checkBoxPluginEnabled.Text = "Enabled";
-			this.checkBoxPluginEnabled.UseVisualStyleBackColor = true;
-			// 
-			// labeledDividerPlugin
-			// 
-			this.labeledDividerPlugin.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDividerPlugin.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDividerPlugin.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.labeledDividerPlugin.Location = new System.Drawing.Point(0, 0);
-			this.labeledDividerPlugin.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
-			this.labeledDividerPlugin.Name = "labeledDividerPlugin";
-			this.labeledDividerPlugin.Size = new System.Drawing.Size(436, 15);
-			this.labeledDividerPlugin.TabIndex = 10;
-			this.labeledDividerPlugin.Text = "Plugin";
-			// 
-			// labelPluginDescriptionValue
-			// 
-			this.labelPluginDescriptionValue.Location = new System.Drawing.Point(95, 54);
-			this.labelPluginDescriptionValue.Name = "labelPluginDescriptionValue";
-			this.labelPluginDescriptionValue.Size = new System.Drawing.Size(336, 262);
-			this.labelPluginDescriptionValue.TabIndex = 13;
-			this.labelPluginDescriptionValue.Text = "[description]";
-			// 
-			// labelPluginName
-			// 
-			this.labelPluginName.AutoSize = true;
-			this.labelPluginName.Location = new System.Drawing.Point(20, 26);
-			this.labelPluginName.Name = "labelPluginName";
-			this.labelPluginName.Size = new System.Drawing.Size(39, 13);
-			this.labelPluginName.TabIndex = 5;
-			this.labelPluginName.Text = "Name:";
-			// 
-			// labelPluginNameValue
-			// 
-			this.labelPluginNameValue.AutoSize = true;
-			this.labelPluginNameValue.Location = new System.Drawing.Point(95, 26);
-			this.labelPluginNameValue.Name = "labelPluginNameValue";
-			this.labelPluginNameValue.Size = new System.Drawing.Size(41, 13);
-			this.labelPluginNameValue.TabIndex = 12;
-			this.labelPluginNameValue.Text = "[name]";
-			// 
-			// labelPluginDescription
-			// 
-			this.labelPluginDescription.AutoSize = true;
-			this.labelPluginDescription.Location = new System.Drawing.Point(20, 54);
-			this.labelPluginDescription.Name = "labelPluginDescription";
-			this.labelPluginDescription.Size = new System.Drawing.Size(69, 13);
-			this.labelPluginDescription.TabIndex = 7;
-			this.labelPluginDescription.Text = "Description:";
-			// 
-			// buttonConfigurePlugin
-			// 
-			this.buttonConfigurePlugin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonConfigurePlugin.Location = new System.Drawing.Point(345, 323);
-			this.buttonConfigurePlugin.Name = "buttonConfigurePlugin";
-			this.buttonConfigurePlugin.Size = new System.Drawing.Size(92, 23);
-			this.buttonConfigurePlugin.TabIndex = 11;
-			this.buttonConfigurePlugin.Text = "Configure...";
-			this.buttonConfigurePlugin.UseVisualStyleBackColor = true;
-			// 
-			// labelNoPluginSelected
-			// 
-			this.labelNoPluginSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labelNoPluginSelected.Location = new System.Drawing.Point(144, 8);
-			this.labelNoPluginSelected.Name = "labelNoPluginSelected";
-			this.labelNoPluginSelected.Size = new System.Drawing.Size(436, 345);
-			this.labelNoPluginSelected.TabIndex = 24;
-			this.labelNoPluginSelected.Text = "No plugin selected";
-			this.labelNoPluginSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// listViewPlugins
-			// 
-			this.listViewPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.listViewPlugins.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeaderPlugins});
-			this.listViewPlugins.FullRowSelect = true;
-			this.listViewPlugins.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.listViewPlugins.HideSelection = false;
-			this.listViewPlugins.Location = new System.Drawing.Point(8, 8);
-			this.listViewPlugins.MultiSelect = false;
-			this.listViewPlugins.Name = "listViewPlugins";
-			this.listViewPlugins.Size = new System.Drawing.Size(120, 346);
-			this.listViewPlugins.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.listViewPlugins.TabIndex = 0;
-			this.listViewPlugins.UseCompatibleStateImageBehavior = false;
-			this.listViewPlugins.View = System.Windows.Forms.View.Details;
-			// 
-			// columnHeaderPlugins
-			// 
-			this.columnHeaderPlugins.Text = "Plugins";
-			this.columnHeaderPlugins.Width = 99;
-			// 
 			// treeViewConfiguration
 			// 
 			this.treeViewConfiguration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -760,6 +998,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(774, 442);
+			this.Controls.Add(this.panelDistributions);
 			this.Controls.Add(this.panelGroups);
 			this.Controls.Add(this.panelPlugins);
 			this.Controls.Add(this.panelApplications);
@@ -782,15 +1021,18 @@
 			this.Text = "Process Manager Configuration";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigurationForm_FormClosing);
 			this.Load += new System.EventHandler(this.ConfigurationForm_Load);
+			this.panelDistributions.ResumeLayout(false);
+			this.panelDistribution.ResumeLayout(false);
+			this.panelDistribution.PerformLayout();
 			this.panelGroups.ResumeLayout(false);
 			this.panelGroup.ResumeLayout(false);
 			this.panelGroup.PerformLayout();
-			this.panelApplications.ResumeLayout(false);
-			this.panelApplication.ResumeLayout(false);
-			this.panelApplication.PerformLayout();
 			this.panelPlugins.ResumeLayout(false);
 			this.panelPlugin.ResumeLayout(false);
 			this.panelPlugin.PerformLayout();
+			this.panelApplications.ResumeLayout(false);
+			this.panelApplication.ResumeLayout(false);
+			this.panelApplication.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -852,6 +1094,24 @@
 		private System.Windows.Forms.Label labelNoPluginSelected;
 		private System.Windows.Forms.Label labelNoApplicationSelected;
 		private System.Windows.Forms.Label labelMachineNotAvailable;
+		private Controls.BackgroundPanel panelDistributions;
+		private System.Windows.Forms.Panel panelDistribution;
+		private System.Windows.Forms.TextBox textBoxDistributionName;
+		private Controls.ListView listViewDistributionSources;
+		private System.Windows.Forms.ColumnHeader columnHeaderDistributionSources;
+		private System.Windows.Forms.TextBox textBoxDistributionDestination;
+		private System.Windows.Forms.Label labelDistributionDestination;
+		private System.Windows.Forms.Button buttonBrowseDistributionDestinationPath;
+		private Controls.LabeledDivider labeledDividerDistribution;
+		private System.Windows.Forms.Label labelDistributionName;
+		private System.Windows.Forms.Label labelDistributionSources;
+		private System.Windows.Forms.Label labelNoDistributionSelected;
+		private Controls.ListView listViewDistributions;
+		private System.Windows.Forms.ColumnHeader columnHeaderDistributions;
+		private System.Windows.Forms.Button buttonRemoveDistributionSource;
+		private System.Windows.Forms.Button buttonAddDistributionSource;
+		private System.Windows.Forms.Button buttonRemoveDistribution;
+		private System.Windows.Forms.Button buttonAddDistribution;
 
 	}
 }

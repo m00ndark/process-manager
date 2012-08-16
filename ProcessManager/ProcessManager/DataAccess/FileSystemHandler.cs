@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
+using ProcessManager.DataObjects;
 
 namespace ProcessManager.DataAccess
 {
@@ -11,7 +10,22 @@ namespace ProcessManager.DataAccess
 	{
 		private const string FILE_BACKUP_EXTENSION = ".bak";
 
-		#region Directories
+		public static IEnumerable<string> GetDrives()
+		{
+			return Directory.GetLogicalDrives();
+		}
+
+		public static IEnumerable<FileSystemEntry> GetFileSystemEntries(string path)
+		{
+			if (!Directory.Exists(path))
+				yield break;
+
+			foreach (string entry in Directory.GetDirectories(path))
+				yield return new FileSystemEntry(entry, true);
+
+			foreach (string entry in Directory.GetFiles(path))
+				yield return new FileSystemEntry(entry, false);
+		}
 
 		public static void CreateDirectory(string path)
 		{
@@ -19,15 +33,18 @@ namespace ProcessManager.DataAccess
 				Directory.CreateDirectory(path);
 		}
 
-		#endregion
-
-		#region Files
+		private static void MakeFileBackup(string filePath)
+		{
+			if (!File.Exists(filePath) || new FileInfo(filePath).Length == 0) return;
+			string backupFilePath = filePath + FILE_BACKUP_EXTENSION;
+			File.Copy(filePath, backupFilePath, true);
+		}
 
 		#region Serialization
 
 		public static void Serialize(string filePath, IXmlSerializable obj)
 		{
-			MakeBackup(filePath);
+			MakeFileBackup(filePath);
 			XmlSerializer serializer = new XmlSerializer(obj.GetType());
 			using (StreamWriter writer = new StreamWriter(filePath))
 				serializer.Serialize(writer, obj);
@@ -38,15 +55,6 @@ namespace ProcessManager.DataAccess
 			XmlSerializer serializer = new XmlSerializer(typeof(T));
 			using (StreamReader reader = new StreamReader(filePath))
 				return (T) serializer.Deserialize(reader);
-		}
-
-		#endregion
-
-		private static void MakeBackup(string filePath)
-		{
-			if (!File.Exists(filePath) || new FileInfo(filePath).Length == 0) return;
-			string backupFilePath = filePath + FILE_BACKUP_EXTENSION;
-			File.Copy(filePath, backupFilePath, true);
 		}
 
 		#endregion

@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
+using ProcessManager.DataObjects.Comparers;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
 using ProcessManager.Service.DataObjects;
@@ -23,6 +24,7 @@ namespace ProcessManagerUI.Forms
 		private Machine _selectedMachine;
 		private Group _selectedGroup;
 		private Application _selectedApplication;
+		private Distribution _selectedDistribution;
 		private bool _disableTextChangedEvents;
 
 		public event EventHandler<MachinesEventArgs> ConfigurationChanged;
@@ -35,6 +37,7 @@ namespace ProcessManagerUI.Forms
 			_selectedMachine = null;
 			_selectedGroup = null;
 			_selectedApplication = null;
+			_selectedDistribution = null;
 			_disableTextChangedEvents = false;
 			_initTimer = new Timer() { Enabled = false, Interval = 100 };
 			_initTimer.Tick += InitTimer_Tick;
@@ -74,8 +77,10 @@ namespace ProcessManagerUI.Forms
 			TreeNode setupNode = new TreeNode("Setup") { Name = "Setup" };
 			TreeNode groupsNode = new TreeNode("Groups") { Name = "Groups", Tag = panelGroups };
 			TreeNode applicationsNode = new TreeNode("Applications") { Name = "Applications", Tag = panelApplications };
+			TreeNode distributionsNode = new TreeNode("Distributions") { Name = "Distributions", Tag = panelDistributions };
 			TreeNode pluginsNode = new TreeNode("Plugins") { Name = "Plugins", Tag = panelPlugins };
 			treeViewConfiguration.Nodes.Add(setupNode);
+			treeViewConfiguration.Nodes.Add(distributionsNode);
 			treeViewConfiguration.Nodes.Add(pluginsNode);
 			setupNode.Nodes.Add(groupsNode);
 			setupNode.Nodes.Add(applicationsNode);
@@ -411,6 +416,111 @@ namespace ProcessManagerUI.Forms
 
 		#endregion
 
+		#region Distributions
+
+		private void ListViewDistributions_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (_selectedMachine == null) return;
+
+			if (listViewDistributions.SelectedItems.Count == 0)
+			{
+				panelDistribution.Visible = false;
+			}
+			else
+			{
+				_disableTextChangedEvents = true;
+				_selectedDistribution = ((Distribution) listViewDistributions.SelectedItems[0].Tag);
+				textBoxDistributionName.Text = _selectedDistribution.Name;
+				textBoxDistributionDestination.Text = _selectedDistribution.DestinationPath;
+				listViewDistributionSources.Items.Clear();
+				listViewDistributionSources.Items.AddRange(_selectedDistribution.Sources
+					.Select(source => new ListViewItem(source.Path) { Tag = source })
+					.ToArray());
+				_disableTextChangedEvents = false;
+				EnableControls();
+				panelDistribution.Visible = true;
+			}
+		}
+
+		private void ButtonAddDistribution_Click(object sender, EventArgs e)
+		{
+			if (_selectedMachine == null) return;
+
+			UpdateSelectedDistribution();
+			string distributionName = GetFirstAvailableDefaultName(
+				ConnectionStore.Connections[_selectedMachine].Configuration.Distributions.Select(distribution => distribution.Name).ToList(), "Distribution");
+			_selectedDistribution = new Distribution(distributionName);
+			ConnectionStore.Connections[_selectedMachine].Configuration.Distributions.Add(_selectedDistribution);
+			ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
+			textBoxDistributionName.Text = _selectedDistribution.Name;
+			textBoxDistributionDestination.Text = _selectedDistribution.DestinationPath;
+			listViewDistributionSources.Items.Clear();
+			ListViewItem item = listViewDistributions.Items.Add(new ListViewItem(_selectedDistribution.Name) { Tag = _selectedDistribution });
+			item.Selected = true;
+			panelDistribution.Visible = true;
+			EnableControls();
+			textBoxDistributionName.Focus();
+		}
+
+		private void ButtonRemoveDistribution_Click(object sender, EventArgs e)
+		{
+			if (_selectedMachine == null) return;
+
+			if (listViewDistributions.SelectedItems.Count > 0)
+			{
+				_selectedDistribution = (Distribution) listViewDistributions.SelectedItems[0].Tag;
+				ConnectionStore.Connections[_selectedMachine].Configuration.Distributions.Remove(_selectedDistribution);
+				ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
+				listViewDistributions.Items.Remove(listViewDistributions.SelectedItems[0]);
+				_selectedDistribution = null;
+				EnableControls();
+			}
+		}
+
+		private void TextBoxDistributionName_TextChanged(object sender, EventArgs e)
+		{
+			if (!_disableTextChangedEvents)
+			{
+				DistributionChanged();
+				EnableControls();
+			}
+		}
+
+		private void TextBoxDistributionName_Leave(object sender, EventArgs e)
+		{
+			UpdateSelectedDistribution();
+		}
+
+		private void ButtonAddDistributionSource_Click(object sender, EventArgs e)
+		{
+		}
+
+		private void ButtonRemoveDistributionSource_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void TextBoxDistributionDestination_TextChanged(object sender, EventArgs e)
+		{
+			if (!_disableTextChangedEvents)
+			{
+				DistributionChanged();
+				EnableControls();
+			}
+		}
+
+		private void TextBoxDistributionDestination_Leave(object sender, EventArgs e)
+		{
+			UpdateSelectedDistribution();
+		}
+
+		private void ButtonBrowseDistributionDestinationPath_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		#endregion
+
 		#endregion
 
 		#region Picker event handlers
@@ -603,7 +713,7 @@ namespace ProcessManagerUI.Forms
 			if (HasUnsavedConfiguration)
 			{
 				// validate
-				if (!ValidateGroups() || !ValidateApplications())
+				if (!ValidateGroups() || !ValidateApplications() || !ValidateDistributions())
 					return false;
 
 				List<Machine> modifiedMachines = ConnectionStore.Connections.Values
@@ -687,7 +797,7 @@ namespace ProcessManagerUI.Forms
 								.Select(group => new
 									{
 										Group = group,
-										Messages = GroupIsValid(group)
+										Messages = GroupIsValid(group).ToList()
 									})
 								.Where(x => x.Messages.Count > 0)
 								.ToList()
@@ -707,16 +817,14 @@ namespace ProcessManagerUI.Forms
 			return true;
 		}
 
-		private static List<string> GroupIsValid(Group group)
+		private static IEnumerable<string> GroupIsValid(Group group)
 		{
-			List<string> messages = new List<string>();
 			if (string.IsNullOrEmpty(group.Name))
-				messages.Add("Name missing");
+				yield return "Name missing";
 			if (string.IsNullOrEmpty(group.Path))
-				messages.Add("Path missing");
+				yield return "Path missing";
 			else if (!Path.IsPathRooted(group.Path))
-				messages.Add("Path must be rooted");
-			return messages;
+				yield return "Path must be rooted";
 		}
 
 		#endregion
@@ -766,7 +874,7 @@ namespace ProcessManagerUI.Forms
 							.Select(application => new
 							{
 								Application = application,
-								Messages = ApplicationIsValid(application)
+								Messages = ApplicationIsValid(application).ToList()
 							})
 							.Where(x => x.Messages.Count > 0)
 							.ToList()
@@ -786,16 +894,96 @@ namespace ProcessManagerUI.Forms
 			return true;
 		}
 
-		private static List<string> ApplicationIsValid(Application application)
+		private static IEnumerable<string> ApplicationIsValid(Application application)
 		{
-			List<string> messages = new List<string>();
 			if (string.IsNullOrEmpty(application.Name))
-				messages.Add("Name missing");
+				yield return "Name missing";
 			if (string.IsNullOrEmpty(application.RelativePath))
-				messages.Add("Relative path missing");
+				yield return "Relative path missing";
 			else if (Path.IsPathRooted(application.RelativePath.TrimStart(Path.DirectorySeparatorChar)))
-				messages.Add("Relative path can not be rooted");
-			return messages;
+				yield return "Relative path can not be rooted";
+		}
+
+		#endregion
+
+		#region Distributions
+
+		private void UpdateSelectedDistribution()
+		{
+			if (_selectedDistribution != null)
+			{
+				if (DistributionChanged())
+				{
+					_selectedDistribution.Name = textBoxDistributionName.Text;
+					_selectedDistribution.DestinationPath = textBoxDistributionDestination.Text;
+					_selectedDistribution.Sources.Clear();
+					_selectedDistribution.Sources.AddRange(listViewDistributionSources.Items.Cast<ListViewItem>().Select(x => (DistributionSource) x.Tag));
+					ListViewItem item = listViewDistributions.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedDistribution);
+					item.Text = _selectedDistribution.Name;
+					listViewDistributions.Sort();
+				}
+				textBoxDistributionName.Text = _selectedDistribution.Name;
+				EnableControls();
+			}
+		}
+
+		private bool DistributionChanged()
+		{
+			bool distributionChanged = false;
+			if (_selectedMachine != null && _selectedDistribution != null && !string.IsNullOrEmpty(textBoxDistributionName.Text))
+			{
+				int equalSourcesCount = _selectedDistribution.Sources.Intersect(listViewDistributionSources.Items
+					.Cast<ListViewItem>().Select(x => (DistributionSource) x.Tag), new IDObjectEqualityComparer<DistributionSource>()).Count();
+				distributionChanged = (_selectedDistribution.Name != textBoxDistributionName.Text
+					|| _selectedDistribution.DestinationPath != textBoxDistributionDestination.Text
+					|| equalSourcesCount != _selectedDistribution.Sources.Count || equalSourcesCount != listViewDistributionSources.Items.Count);
+				ConnectionStore.Connections[_selectedMachine].ConfigurationModified |= distributionChanged;
+			}
+			return distributionChanged;
+		}
+
+		private static bool ValidateDistributions()
+		{
+			IDictionary<Machine, Dictionary<Distribution, List<string>>> invalidDistributions =
+				ConnectionStore.Connections.Values
+					.Where(connection => connection.ConfigurationModified)
+					.Select(connection => new
+					{
+						Machine = connection.Machine,
+						Distributions = connection.Configuration.Distributions
+							.Select(distribution => new
+							{
+								Distribution = distribution,
+								Messages = DistributionIsValid(distribution).ToList()
+							})
+							.Where(x => x.Messages.Count > 0)
+							.ToList()
+					})
+					.Where(x => x.Distributions.Count > 0)
+					.ToDictionary(x => x.Machine, x => x.Distributions.ToDictionary(y => y.Distribution, y => y.Messages));
+			if (invalidDistributions.Count > 0)
+			{
+				int invalidDistributionCount = invalidDistributions.SelectMany(x => x.Value).Count();
+				Messenger.ShowError("Distribution" + (invalidDistributionCount == 1 ? string.Empty : "s") + " invalid",
+					"One or more distribution property invalid. See details for more information.",
+					invalidDistributions.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine
+						+ y.Value.SelectMany(z => z.Value, (a, b) => new { Distribution = a.Key, Message = b })
+							.Aggregate(string.Empty, (a, b) => a + Environment.NewLine + y.Key + " > " + b.Distribution + ": " + b.Message).Trim()).Trim());
+				return false;
+			}
+			return true;
+		}
+
+		private static IEnumerable<string> DistributionIsValid(Distribution distribution)
+		{
+			if (string.IsNullOrEmpty(distribution.Name))
+				yield return "Name missing";
+			if (string.IsNullOrEmpty(distribution.DestinationPath))
+				yield return "Destination path missing";
+			else if (!Path.IsPathRooted(distribution.DestinationPath))
+				yield return  "Destination path must be rooted";
+
+			// TODO: validate distribution sources?
 		}
 
 		#endregion
@@ -872,5 +1060,20 @@ namespace ProcessManagerUI.Forms
 		}
 
 		#endregion
+
+		private void buttonRemoveDistributionSource_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void buttonAddDistributionSource_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void buttonBrowseDistributionDestinationPath_Click(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

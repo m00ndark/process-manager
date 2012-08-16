@@ -21,5 +21,11 @@ namespace ProcessManager.Service.Common
 
 		[OperationContract]
 		void TakeApplicationAction(DTOApplicationAction action);
+
+		[OperationContract]
+		List<string> GetFileSystemDrives();
+
+		[OperationContract]
+		List<DTOFileSystemEntry> GetFileSystemEntries(string path);
 	}
 }

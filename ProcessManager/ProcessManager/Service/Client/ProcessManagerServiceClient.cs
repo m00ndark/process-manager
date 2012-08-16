@@ -52,6 +52,16 @@ namespace ProcessManager.Service.Client
 			Channel.TakeApplicationAction(action);
 		}
 
+		public List<string> GetFileSystemDrives()
+		{
+			return Channel.GetFileSystemDrives();
+		}
+
+		public List<DTOFileSystemEntry> GetFileSystemEntries(string path)
+		{
+			return Channel.GetFileSystemEntries(path);
+		}
+
 		#endregion
 	}
 }
