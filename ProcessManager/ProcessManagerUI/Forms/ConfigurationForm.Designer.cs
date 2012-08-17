@@ -40,11 +40,7 @@
 			this.buttonRemoveDistribution = new System.Windows.Forms.Button();
 			this.buttonAddDistribution = new System.Windows.Forms.Button();
 			this.panelDistribution = new System.Windows.Forms.Panel();
-			this.buttonRemoveDistributionSource = new System.Windows.Forms.Button();
-			this.buttonAddDistributionSource = new System.Windows.Forms.Button();
 			this.textBoxDistributionName = new System.Windows.Forms.TextBox();
-			this.listViewDistributionSources = new ProcessManagerUI.Controls.ListView();
-			this.columnHeaderDistributionSources = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.textBoxDistributionDestination = new System.Windows.Forms.TextBox();
 			this.labelDistributionDestination = new System.Windows.Forms.Label();
 			this.buttonBrowseDistributionDestinationPath = new System.Windows.Forms.Button();
@@ -102,6 +98,7 @@
 			this.listViewApplications = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderApplications = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.treeViewConfiguration = new ProcessManagerUI.Controls.TreeView();
+			this.buttonEditDistributionSources = new System.Windows.Forms.Button();
 			this.panelDistributions.SuspendLayout();
 			this.panelDistribution.SuspendLayout();
 			this.panelGroups.SuspendLayout();
@@ -241,10 +238,8 @@
 			this.panelDistribution.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelDistribution.Controls.Add(this.buttonRemoveDistributionSource);
-			this.panelDistribution.Controls.Add(this.buttonAddDistributionSource);
+			this.panelDistribution.Controls.Add(this.buttonEditDistributionSources);
 			this.panelDistribution.Controls.Add(this.textBoxDistributionName);
-			this.panelDistribution.Controls.Add(this.listViewDistributionSources);
 			this.panelDistribution.Controls.Add(this.textBoxDistributionDestination);
 			this.panelDistribution.Controls.Add(this.labelDistributionDestination);
 			this.panelDistribution.Controls.Add(this.buttonBrowseDistributionDestinationPath);
@@ -258,28 +253,6 @@
 			this.panelDistribution.TabIndex = 15;
 			this.panelDistribution.Visible = false;
 			// 
-			// buttonRemoveDistributionSource
-			// 
-			this.buttonRemoveDistributionSource.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonRemoveDistributionSource.Image = global::ProcessManagerUI.Properties.Resources.remove_16;
-			this.buttonRemoveDistributionSource.Location = new System.Drawing.Point(392, 80);
-			this.buttonRemoveDistributionSource.Name = "buttonRemoveDistributionSource";
-			this.buttonRemoveDistributionSource.Size = new System.Drawing.Size(38, 24);
-			this.buttonRemoveDistributionSource.TabIndex = 20;
-			this.buttonRemoveDistributionSource.UseVisualStyleBackColor = true;
-			this.buttonRemoveDistributionSource.Click += new System.EventHandler(this.ButtonRemoveDistributionSource_Click);
-			// 
-			// buttonAddDistributionSource
-			// 
-			this.buttonAddDistributionSource.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonAddDistributionSource.Image = global::ProcessManagerUI.Properties.Resources.add_16;
-			this.buttonAddDistributionSource.Location = new System.Drawing.Point(392, 50);
-			this.buttonAddDistributionSource.Name = "buttonAddDistributionSource";
-			this.buttonAddDistributionSource.Size = new System.Drawing.Size(38, 24);
-			this.buttonAddDistributionSource.TabIndex = 19;
-			this.buttonAddDistributionSource.UseVisualStyleBackColor = true;
-			this.buttonAddDistributionSource.Click += new System.EventHandler(this.ButtonAddDistributionSource_Click);
-			// 
 			// textBoxDistributionName
 			// 
 			this.textBoxDistributionName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -291,35 +264,11 @@
 			this.textBoxDistributionName.TextChanged += new System.EventHandler(this.TextBoxDistributionName_TextChanged);
 			this.textBoxDistributionName.Leave += new System.EventHandler(this.TextBoxDistributionName_Leave);
 			// 
-			// listViewDistributionSources
-			// 
-			this.listViewDistributionSources.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.listViewDistributionSources.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeaderDistributionSources});
-			this.listViewDistributionSources.FullRowSelect = true;
-			this.listViewDistributionSources.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.listViewDistributionSources.HideSelection = false;
-			this.listViewDistributionSources.Location = new System.Drawing.Point(98, 51);
-			this.listViewDistributionSources.MultiSelect = false;
-			this.listViewDistributionSources.Name = "listViewDistributionSources";
-			this.listViewDistributionSources.Size = new System.Drawing.Size(286, 226);
-			this.listViewDistributionSources.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.listViewDistributionSources.TabIndex = 18;
-			this.listViewDistributionSources.UseCompatibleStateImageBehavior = false;
-			this.listViewDistributionSources.View = System.Windows.Forms.View.Details;
-			// 
-			// columnHeaderDistributionSources
-			// 
-			this.columnHeaderDistributionSources.Text = "DistributionSources";
-			this.columnHeaderDistributionSources.Width = 265;
-			// 
 			// textBoxDistributionDestination
 			// 
 			this.textBoxDistributionDestination.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxDistributionDestination.Location = new System.Drawing.Point(98, 283);
+			this.textBoxDistributionDestination.Location = new System.Drawing.Point(98, 79);
 			this.textBoxDistributionDestination.Name = "textBoxDistributionDestination";
 			this.textBoxDistributionDestination.Size = new System.Drawing.Size(286, 22);
 			this.textBoxDistributionDestination.TabIndex = 15;
@@ -329,7 +278,7 @@
 			// labelDistributionDestination
 			// 
 			this.labelDistributionDestination.AutoSize = true;
-			this.labelDistributionDestination.Location = new System.Drawing.Point(20, 286);
+			this.labelDistributionDestination.Location = new System.Drawing.Point(20, 82);
 			this.labelDistributionDestination.Name = "labelDistributionDestination";
 			this.labelDistributionDestination.Size = new System.Drawing.Size(70, 13);
 			this.labelDistributionDestination.TabIndex = 17;
@@ -338,7 +287,7 @@
 			// buttonBrowseDistributionDestinationPath
 			// 
 			this.buttonBrowseDistributionDestinationPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonBrowseDistributionDestinationPath.Location = new System.Drawing.Point(392, 282);
+			this.buttonBrowseDistributionDestinationPath.Location = new System.Drawing.Point(392, 78);
 			this.buttonBrowseDistributionDestinationPath.Name = "buttonBrowseDistributionDestinationPath";
 			this.buttonBrowseDistributionDestinationPath.Size = new System.Drawing.Size(38, 23);
 			this.buttonBrowseDistributionDestinationPath.TabIndex = 16;
@@ -992,6 +941,16 @@
 			this.treeViewConfiguration.TabIndex = 2;
 			this.treeViewConfiguration.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewConfiguration_AfterSelect);
 			// 
+			// buttonEditDistributionSources
+			// 
+			this.buttonEditDistributionSources.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonEditDistributionSources.Location = new System.Drawing.Point(97, 50);
+			this.buttonEditDistributionSources.Name = "buttonEditDistributionSources";
+			this.buttonEditDistributionSources.Size = new System.Drawing.Size(58, 23);
+			this.buttonEditDistributionSources.TabIndex = 18;
+			this.buttonEditDistributionSources.Text = "Edit...";
+			this.buttonEditDistributionSources.UseVisualStyleBackColor = true;
+			// 
 			// ConfigurationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1097,8 +1056,6 @@
 		private Controls.BackgroundPanel panelDistributions;
 		private System.Windows.Forms.Panel panelDistribution;
 		private System.Windows.Forms.TextBox textBoxDistributionName;
-		private Controls.ListView listViewDistributionSources;
-		private System.Windows.Forms.ColumnHeader columnHeaderDistributionSources;
 		private System.Windows.Forms.TextBox textBoxDistributionDestination;
 		private System.Windows.Forms.Label labelDistributionDestination;
 		private System.Windows.Forms.Button buttonBrowseDistributionDestinationPath;
@@ -1108,10 +1065,9 @@
 		private System.Windows.Forms.Label labelNoDistributionSelected;
 		private Controls.ListView listViewDistributions;
 		private System.Windows.Forms.ColumnHeader columnHeaderDistributions;
-		private System.Windows.Forms.Button buttonRemoveDistributionSource;
-		private System.Windows.Forms.Button buttonAddDistributionSource;
 		private System.Windows.Forms.Button buttonRemoveDistribution;
 		private System.Windows.Forms.Button buttonAddDistribution;
+		private System.Windows.Forms.Button buttonEditDistributionSources;
 
 	}
 }

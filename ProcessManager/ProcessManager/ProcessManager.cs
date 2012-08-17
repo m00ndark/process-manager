@@ -122,7 +122,7 @@ namespace ProcessManager
 			}
 		}
 
-		public List<string> GetFileSystemDrives()
+		public List<FileSystemDrive> GetFileSystemDrives()
 		{
 			return FileSystemHandler.GetDrives().ToList();
 		}

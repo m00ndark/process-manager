@@ -23,7 +23,7 @@ namespace ProcessManager.Service.Common
 		void TakeApplicationAction(DTOApplicationAction action);
 
 		[OperationContract]
-		List<string> GetFileSystemDrives();
+		List<DTOFileSystemDrive> GetFileSystemDrives();
 
 		[OperationContract]
 		List<DTOFileSystemEntry> GetFileSystemEntries(string path);

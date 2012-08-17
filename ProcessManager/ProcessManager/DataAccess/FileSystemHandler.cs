@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.IO;
-using System.Linq;
 using System.Xml.Serialization;
 using ProcessManager.DataObjects;
 
@@ -10,9 +11,27 @@ namespace ProcessManager.DataAccess
 	{
 		private const string FILE_BACKUP_EXTENSION = ".bak";
 
-		public static IEnumerable<string> GetDrives()
+		public static IEnumerable<FileSystemDrive> GetDrives()
 		{
-			return Directory.GetLogicalDrives();
+			DataTable drivesTable = WMIHandler.GetTable("Win32_LogicalDisk", new[] { "Name", "DriveType", "ProviderName", "VolumeName" });
+			foreach (DataRow row in drivesTable.Rows)
+			{
+				int driveType = int.Parse(row["DriveType"].ToString());
+				FileSystemDriveType type = (Enum.IsDefined(typeof(FileSystemDriveType), driveType) ? (FileSystemDriveType) driveType : FileSystemDriveType.Unknown);
+				string providerName = (row["ProviderName"] != null ? row["ProviderName"].ToString().TrimEnd('\\') : string.Empty);
+				string volumeName = (row["VolumeName"] != null ? row["VolumeName"].ToString() : string.Empty);
+				string label = string.Empty;
+				if (type == FileSystemDriveType.NetworkDrive && !string.IsNullOrEmpty(providerName))
+				{
+					string labelPart = Path.GetFileName(providerName);
+					if (labelPart != null)
+						label = labelPart + " (" + providerName.Substring(0, providerName.Length - labelPart.Length).TrimEnd('\\') + ")";
+				}
+				else
+					label = (!string.IsNullOrEmpty(volumeName) ? volumeName : string.Empty);
+
+				yield return new FileSystemDrive(row["Name"].ToString(), label, type);
+			}
 		}
 
 		public static IEnumerable<FileSystemEntry> GetFileSystemEntries(string path)

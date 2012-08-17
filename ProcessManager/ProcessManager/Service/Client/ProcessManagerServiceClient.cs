@@ -52,7 +52,7 @@ namespace ProcessManager.Service.Client
 			Channel.TakeApplicationAction(action);
 		}
 
-		public List<string> GetFileSystemDrives()
+		public List<DTOFileSystemDrive> GetFileSystemDrives()
 		{
 			return Channel.GetFileSystemDrives();
 		}

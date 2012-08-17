@@ -73,10 +73,10 @@ namespace ProcessManager.Service.Host
 			ProcessManager.Instance.TakeApplicationAction(action.GroupID, action.ApplicationID, action.Type);
 		}
 
-		public List<string> GetFileSystemDrives()
+		public List<DTOFileSystemDrive> GetFileSystemDrives()
 		{
 			Logger.Add(LogType.Debug, "GetFileSystemDrives call received");
-			return ProcessManager.Instance.GetFileSystemDrives();
+			return ProcessManager.Instance.GetFileSystemDrives().Select(x => new DTOFileSystemDrive(x)).ToList();
 		}
 
 		public List<DTOFileSystemEntry> GetFileSystemEntries(string path)

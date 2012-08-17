@@ -432,10 +432,6 @@ namespace ProcessManagerUI.Forms
 				_selectedDistribution = ((Distribution) listViewDistributions.SelectedItems[0].Tag);
 				textBoxDistributionName.Text = _selectedDistribution.Name;
 				textBoxDistributionDestination.Text = _selectedDistribution.DestinationPath;
-				listViewDistributionSources.Items.Clear();
-				listViewDistributionSources.Items.AddRange(_selectedDistribution.Sources
-					.Select(source => new ListViewItem(source.Path) { Tag = source })
-					.ToArray());
 				_disableTextChangedEvents = false;
 				EnableControls();
 				panelDistribution.Visible = true;
@@ -454,7 +450,6 @@ namespace ProcessManagerUI.Forms
 			ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
 			textBoxDistributionName.Text = _selectedDistribution.Name;
 			textBoxDistributionDestination.Text = _selectedDistribution.DestinationPath;
-			listViewDistributionSources.Items.Clear();
 			ListViewItem item = listViewDistributions.Items.Add(new ListViewItem(_selectedDistribution.Name) { Tag = _selectedDistribution });
 			item.Selected = true;
 			panelDistribution.Visible = true;
@@ -491,15 +486,6 @@ namespace ProcessManagerUI.Forms
 			UpdateSelectedDistribution();
 		}
 
-		private void ButtonAddDistributionSource_Click(object sender, EventArgs e)
-		{
-		}
-
-		private void ButtonRemoveDistributionSource_Click(object sender, EventArgs e)
-		{
-
-		}
-
 		private void TextBoxDistributionDestination_TextChanged(object sender, EventArgs e)
 		{
 			if (!_disableTextChangedEvents)
@@ -516,7 +502,17 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonBrowseDistributionDestinationPath_Click(object sender, EventArgs e)
 		{
-
+			FileSystemBrowserForm fileSystemBrowser = new FileSystemBrowserForm(_selectedMachine)
+				{
+					Description = "Select a destination folder for the distribution...",
+					Path = textBoxGroupPath.Text,
+					BrowserMode = FileSystemBrowserForm.Mode.Folder
+				};
+			if (fileSystemBrowser.ShowDialog(this) == DialogResult.OK)
+			{
+				textBoxGroupPath.Text = fileSystemBrowser.Path;
+				UpdateSelectedGroup();
+			}
 		}
 
 		#endregion
@@ -916,8 +912,8 @@ namespace ProcessManagerUI.Forms
 				{
 					_selectedDistribution.Name = textBoxDistributionName.Text;
 					_selectedDistribution.DestinationPath = textBoxDistributionDestination.Text;
-					_selectedDistribution.Sources.Clear();
-					_selectedDistribution.Sources.AddRange(listViewDistributionSources.Items.Cast<ListViewItem>().Select(x => (DistributionSource) x.Tag));
+					//_selectedDistribution.Sources.Clear();
+					//_selectedDistribution.Sources.AddRange(listViewDistributionSources.Items.Cast<ListViewItem>().Select(x => (DistributionSource) x.Tag));
 					ListViewItem item = listViewDistributions.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedDistribution);
 					item.Text = _selectedDistribution.Name;
 					listViewDistributions.Sort();
@@ -932,11 +928,12 @@ namespace ProcessManagerUI.Forms
 			bool distributionChanged = false;
 			if (_selectedMachine != null && _selectedDistribution != null && !string.IsNullOrEmpty(textBoxDistributionName.Text))
 			{
-				int equalSourcesCount = _selectedDistribution.Sources.Intersect(listViewDistributionSources.Items
-					.Cast<ListViewItem>().Select(x => (DistributionSource) x.Tag), new IDObjectEqualityComparer<DistributionSource>()).Count();
+				//int equalSourcesCount = _selectedDistribution.Sources.Intersect(listViewDistributionSources.Items
+				//    .Cast<ListViewItem>().Select(x => (DistributionSource) x.Tag), new IDObjectEqualityComparer<DistributionSource>()).Count();
 				distributionChanged = (_selectedDistribution.Name != textBoxDistributionName.Text
 					|| _selectedDistribution.DestinationPath != textBoxDistributionDestination.Text
-					|| equalSourcesCount != _selectedDistribution.Sources.Count || equalSourcesCount != listViewDistributionSources.Items.Count);
+					//|| equalSourcesCount != _selectedDistribution.Sources.Count || equalSourcesCount != listViewDistributionSources.Items.Count
+					);
 				ConnectionStore.Connections[_selectedMachine].ConfigurationModified |= distributionChanged;
 			}
 			return distributionChanged;
@@ -1002,6 +999,7 @@ namespace ProcessManagerUI.Forms
 		{
 			UpdateSelectedGroup();
 			UpdateSelectedApplication();
+			UpdateSelectedDistribution();
 		}
 
 		private void ShowAllControls(bool show = true)
@@ -1029,6 +1027,12 @@ namespace ProcessManagerUI.Forms
 			textBoxApplicationName.Text = string.Empty;
 			textBoxApplicationRelativePath.Text = string.Empty;
 			textBoxApplicationArguments.Text = string.Empty;
+			// distributions
+			listViewDistributions.Items.Clear();
+			_selectedDistribution = null;
+			panelDistribution.Visible = false;
+			textBoxDistributionName.Text = string.Empty;
+			textBoxDistributionDestination.Text = string.Empty;
 			// plugins
 			listViewPlugins.Items.Clear();
 			panelPlugin.Visible = false;
@@ -1042,11 +1046,13 @@ namespace ProcessManagerUI.Forms
 			ServiceHelper.WaitForConfiguration(_selectedMachine);
 			listViewGroups.Items.Clear();
 			listViewApplications.Items.Clear();
+			listViewDistributions.Items.Clear();
 			listViewPlugins.Items.Clear();
 			if (_selectedMachine != null && ConnectionStore.Connections[_selectedMachine].Configuration != null)
 			{
 				ConnectionStore.Connections[_selectedMachine].Configuration.Groups.ForEach(group => listViewGroups.Items.Add(new ListViewItem(group.Name) { Tag = group }));
 				ConnectionStore.Connections[_selectedMachine].Configuration.Applications.ForEach(application => listViewApplications.Items.Add(new ListViewItem(application.Name) { Tag = application }));
+				ConnectionStore.Connections[_selectedMachine].Configuration.Distributions.ForEach(distribution => listViewDistributions.Items.Add(new ListViewItem(distribution.Name) { Tag = distribution }));
 			}
 			ShowAllControls(_selectedMachine != null && ConnectionStore.Connections[_selectedMachine].Configuration != null);
 		}
@@ -1054,26 +1060,11 @@ namespace ProcessManagerUI.Forms
 		private void EnableControls(bool enable = true)
 		{
 			buttonApply.Enabled = (enable && HasUnsavedConfiguration);
-			buttonAddGroupApplication.Enabled = (enable && GetNonIncludedGroupApplications().Count() > 0);
+			buttonAddGroupApplication.Enabled = (enable && GetNonIncludedGroupApplications().Any());
 			buttonRemoveGroupApplication.Enabled = (enable && listViewGroupApplications.SelectedItems.Count > 0);
-			buttonCopyGroupApplications.Enabled = (enable && GetAllGroups(true).Count() > 0);
+			buttonCopyGroupApplications.Enabled = (enable && GetAllGroups(true).Any());
 		}
 
 		#endregion
-
-		private void buttonRemoveDistributionSource_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void buttonAddDistributionSource_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void buttonBrowseDistributionDestinationPath_Click(object sender, EventArgs e)
-		{
-
-		}
 	}
 }
