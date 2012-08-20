@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -13,6 +14,8 @@ using ProcessManager;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
+using ProcessManagerUI.Properties;
+using ProcessManagerUI.Support;
 using ProcessManagerUI.Utilities;
 
 namespace ProcessManagerUI.Forms
@@ -31,24 +34,39 @@ namespace ProcessManagerUI.Forms
 		#endregion
 
 		private bool _machineAvailable;
+		private readonly IDictionary<IFileSystemEntry, IFileSystemEntry> _entryTree; // < child, parent >
+		private readonly IDictionary<IFileSystemEntry, FileSystemTreeNode> _entryNodes;
 
 		public FileSystemBrowserForm(Machine machine)
 		{
 			InitializeComponent();
 
 			Machine = machine;
-			Path = string.Empty;
+			SelectedPath = string.Empty;
 			Description = "Select a file or folder...";
 			BrowserMode = Mode.File | Mode.Folder;
 			_machineAvailable = ConnectionStore.ConnectionCreated(Machine);
+			_entryTree = new Dictionary<IFileSystemEntry, IFileSystemEntry>();
+			_entryNodes = new Dictionary<IFileSystemEntry, FileSystemTreeNode>();
+
+			imageList.Images.Add("Folder", Resources.folder_16);
+			imageList.Images.Add(FileSystemDriveType.RemovableDisk.ToString(), Resources.drive_removable_disk_16);
+			imageList.Images.Add(FileSystemDriveType.LocalDisk.ToString(), Resources.drive_local_disk_16);
+			imageList.Images.Add(FileSystemDriveType.NetworkDrive.ToString(), Resources.drive_network_16);
+			imageList.Images.Add(FileSystemDriveType.CompactDisc.ToString(), Resources.drive_compact_disc_16);
 		}
 
 		#region Properties
 
 		public Machine Machine { get; private set; }
-		public string Path { get; set; }
+		public string SelectedPath { get; set; }
 		public string Description { get; set; }
 		public Mode BrowserMode { get; set; }
+
+		public bool FolderMode
+		{
+			get { return ((BrowserMode & Mode.File) == 0); }
+		}
 
 		#endregion
 
@@ -61,7 +79,7 @@ namespace ProcessManagerUI.Forms
 			Text = Text + " [" + Machine + "]";
 			labelDescription.Text = Description;
 
-			if (BrowserMode == Mode.Folder)
+			if (FolderMode)
 			{
 				splitContainer.Panel2Collapsed = true;
 				Size = new Size(400, 420);
@@ -69,7 +87,41 @@ namespace ProcessManagerUI.Forms
 			else
 				Size = new Size(600, 420);
 
+			EnableControls();
+
 			Task.Factory.StartNew(DisplayDrives);
+		}
+
+		private void TreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+		{
+			if (e.Node.Nodes.Count == 1 && !(e.Node.Nodes[0] is FileSystemTreeNode))
+			{
+				Worker.WaitFor("Retieving folder content, please wait...", () => (e.Node.Nodes.Count != 1 || e.Node.Nodes[0] is FileSystemTreeNode));
+			}
+
+			Task.Factory.StartNew(() => RequestFolders(((FileSystemTreeNode) e.Node).ChildEntries));
+		}
+
+		private void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
+		{
+			EnableControls();
+		}
+
+		private void ButtonOK_Click(object sender, EventArgs e)
+		{
+			if (!EntrySelected())
+				return;
+
+			if (FolderMode)
+			{
+				SelectedPath = BuildPath(((FileSystemTreeNode) treeView.SelectedNode).Entry);
+			}
+			else
+			{
+
+			}
+			DialogResult = DialogResult.OK;
+			Close();
 		}
 
 		#endregion
@@ -105,33 +157,118 @@ namespace ProcessManagerUI.Forms
 
 		#region Helpers
 
+		private bool EntrySelected()
+		{
+			return (FolderMode && treeView.SelectedNode != null || !FolderMode && listView.SelectedItems.Count > 0);
+		}
+
 		private void EnableControls(bool enable = true)
 		{
 			splitContainer.Enabled = (enable && _machineAvailable);
-			buttonOK.Enabled = (enable && _machineAvailable && listView.SelectedItems.Count == 1);
+			buttonOK.Enabled = (enable && _machineAvailable && EntrySelected());
 		}
-
-		private delegate void DisplayDrivesDelegate();
 
 		private void DisplayDrives()
 		{
-			if (InvokeRequired)
-			{
-				Invoke(new DisplayDrivesDelegate(DisplayDrives));
-				return;
-			}
-
 			if (!_machineAvailable)
 				return;
 
-			Cursor = Cursors.WaitCursor; // ??
+			using (new WaitCursor())
+			{
+				List<FileSystemDrive> drives = ConnectionStore.Connections[Machine].ServiceHandler.Service
+					.GetFileSystemDrives().Select(x => x.FromDTO()).OrderBy(x => x.Name).ToList();
 
-			IEnumerable<FileSystemDrive> fileSystemDrives = ConnectionStore.Connections[Machine].ServiceHandler.Service.GetFileSystemDrives().Select(x => x.FromDTO());
+				List<FileSystemTreeNode> treeNodes = drives.Select(drive =>
+					new FileSystemTreeNode((!string.IsNullOrEmpty(drive.Label) ? drive.Label : drive.GetTypeDescription()) + " (" + drive.Name + ")")
+						{
+							ImageKey = drive.Type.ToString(),
+							SelectedImageKey = drive.Type.ToString(),
+							Entry = drive
+						}).ToList();
+
+				foreach (FileSystemTreeNode treeNode in treeNodes)
+				{
+					_entryNodes.Add(treeNode.Entry, treeNode);
+					treeNode.Nodes.Add("dummy");
+				}
+
+				SetTreeViewNodes(treeNodes);
+				Task.Factory.StartNew(() => RequestFolders(drives));
+			}
+		}
+
+		private void RequestFolders(IEnumerable<IFileSystemEntry> entries)
+		{
+			foreach (IFileSystemEntry entry in entries.Where(x => x.IsFolder))
+			{
+				if (!_machineAvailable)
+					return;
+
+				List<FileSystemEntry> childEntries = ConnectionStore.Connections[Machine].ServiceHandler.Service
+					.GetFileSystemEntries(BuildPath(entry)).Select(x => x.FromDTO()).OrderBy(x => x.Name).ToList();
+
+				childEntries.ForEach(childEntry => _entryTree.Add(childEntry, entry));
+
+				List<FileSystemTreeNode> childTreeNodes = childEntries
+					.Where(childEntry => childEntry.IsFolder)
+					.Select(childEntry => new FileSystemTreeNode(childEntry.Name) { Entry = childEntry })
+					.ToList();
+
+				foreach (FileSystemTreeNode childTreeNode in childTreeNodes)
+				{
+					_entryNodes.Add(childTreeNode.Entry, childTreeNode);
+					childTreeNode.Nodes.Add("dummy");
+				}
+
+				FileSystemTreeNode treeNode = _entryNodes[entry];
+				treeNode.ChildEntries = childEntries.Cast<IFileSystemEntry>().ToList();
+				SetTreeNodes(treeNode, childTreeNodes);
+			}
+		}
+
+		private string BuildPath(IFileSystemEntry entry)
+		{
+			string path = entry.Name;
+			IFileSystemEntry parentEntry;
+			while (_entryTree.TryGetValue(entry, out parentEntry))
+			{
+				path = Path.Combine(FixPath(parentEntry.Name), path);
+				entry = parentEntry;
+			}
+			return FixPath(path);
+		}
+
+		private static string FixPath(string path)
+		{
+			return (path.EndsWith(":") ? path + @"\" : path);
+		}
+
+		private delegate void SetTreeViewNodesDelegate(IEnumerable<FileSystemTreeNode> nodes);
+
+		private void SetTreeViewNodes(IEnumerable<FileSystemTreeNode> nodes)
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new SetTreeViewNodesDelegate(SetTreeViewNodes), nodes);
+				return;
+			}
+
 			treeView.Nodes.Clear();
-			treeView.Nodes.AddRange(fileSystemDrives.Select(drive =>
-				new TreeNode((!string.IsNullOrEmpty(drive.Label) ? drive.Label : drive.GetTypeDescription()) + " (" + drive.Name + ")") { Tag = drive }).ToArray());
+			treeView.Nodes.AddRange(nodes.Cast<TreeNode>().ToArray());
+		}
 
-			Cursor = Cursors.Default; // ??
+		private delegate void SetTreeNodesDelegate(TreeNode parentNode, IEnumerable<FileSystemTreeNode> nodes);
+
+		private void SetTreeNodes(TreeNode parentNode, IEnumerable<FileSystemTreeNode> nodes)
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new SetTreeNodesDelegate(SetTreeNodes), parentNode, nodes);
+				return;
+			}
+
+			parentNode.Nodes.Clear();
+			parentNode.Nodes.AddRange(nodes.Cast<TreeNode>().ToArray());
 		}
 
 		#endregion

@@ -92,6 +92,7 @@
     <Compile Include="DataObjects\DistributionSource.cs" />
     <Compile Include="DataObjects\FileSystemDrive.cs" />
     <Compile Include="DataObjects\FileSystemEntry.cs" />
+    <Compile Include="DataObjects\IFileSystemEntry.cs" />
     <Compile Include="DataObjects\IIDObject.cs" />
     <Compile Include="DataObjects\Machine.cs" />
     <Compile Include="DataObjects\MachineConnection.cs" />

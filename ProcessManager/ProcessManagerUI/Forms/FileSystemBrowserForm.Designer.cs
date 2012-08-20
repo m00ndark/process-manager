@@ -28,10 +28,12 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.labelDescription = new System.Windows.Forms.Label();
 			this.treeView = new ProcessManagerUI.Controls.TreeView();
+			this.imageList = new System.Windows.Forms.ImageList(this.components);
 			this.listView = new ProcessManagerUI.Controls.ListView();
 			this.splitContainer = new System.Windows.Forms.SplitContainer();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -49,6 +51,7 @@
 			this.buttonOK.TabIndex = 25;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
+			this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
 			// 
 			// buttonCancel
 			// 
@@ -74,11 +77,23 @@
 			// 
 			this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeView.HotTracking = true;
+			this.treeView.ImageIndex = 0;
+			this.treeView.ImageList = this.imageList;
+			this.treeView.ItemHeight = 20;
 			this.treeView.Location = new System.Drawing.Point(0, 0);
 			this.treeView.Name = "treeView";
+			this.treeView.SelectedImageIndex = 0;
 			this.treeView.ShowLines = false;
 			this.treeView.Size = new System.Drawing.Size(235, 307);
 			this.treeView.TabIndex = 27;
+			this.treeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.TreeView_BeforeExpand);
+			this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterSelect);
+			// 
+			// imageList
+			// 
+			this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+			this.imageList.ImageSize = new System.Drawing.Size(16, 16);
+			this.imageList.TransparentColor = System.Drawing.Color.Transparent;
 			// 
 			// listView
 			// 
@@ -145,5 +160,6 @@
 		private Controls.TreeView treeView;
 		private Controls.ListView listView;
 		private System.Windows.Forms.SplitContainer splitContainer;
+		private System.Windows.Forms.ImageList imageList;
 	}
 }

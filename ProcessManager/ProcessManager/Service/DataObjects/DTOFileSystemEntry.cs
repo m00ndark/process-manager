@@ -8,7 +8,7 @@ namespace ProcessManager.Service.DataObjects
 	{
 		public DTOFileSystemEntry(FileSystemEntry fileSystemEntry)
 		{
-			Entry = fileSystemEntry.Entry;
+			Entry = fileSystemEntry.Name;
 			IsFolder = fileSystemEntry.IsFolder;
 		}
 

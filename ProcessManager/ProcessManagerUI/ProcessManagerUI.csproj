@@ -154,6 +154,7 @@
     <Compile Include="Controls\ListView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Support\FileSystemTreeNode.cs" />
     <Compile Include="Support\NativeMethods.cs" />
     <Compile Include="Controls\TreeView.cs">
       <SubType>Component</SubType>
@@ -172,7 +173,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Support\ShellIcon.cs" />
     <Compile Include="Support\TaskDialog.cs" />
+    <Compile Include="Support\WaitCursor.cs" />
     <Compile Include="Utilities\Messenger.cs" />
     <Compile Include="Utilities\Picker.cs" />
     <Compile Include="Utilities\Worker.cs" />
@@ -240,6 +243,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\unknown-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\drive-compact-disc-16.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\drive-local-disk-16.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\drive-network-16.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\drive-removable-disk-16.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\folder-16.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

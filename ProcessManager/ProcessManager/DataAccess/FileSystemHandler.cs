@@ -36,14 +36,23 @@ namespace ProcessManager.DataAccess
 
 		public static IEnumerable<FileSystemEntry> GetFileSystemEntries(string path)
 		{
-			if (!Directory.Exists(path))
-				yield break;
+			string[] directories = new string[0], files = new string[0];
 
-			foreach (string entry in Directory.GetDirectories(path))
-				yield return new FileSystemEntry(entry, true);
+			try
+			{
+				if (!Directory.Exists(path))
+					yield break;
 
-			foreach (string entry in Directory.GetFiles(path))
-				yield return new FileSystemEntry(entry, false);
+				directories = Directory.GetDirectories(path);
+				files = Directory.GetFiles(path);
+			}
+			catch { ; }
+
+			foreach (string entry in directories)
+				yield return new FileSystemEntry(Path.GetFileName(entry), true);
+
+			foreach (string entry in files)
+				yield return new FileSystemEntry(Path.GetFileName(entry), false);
 		}
 
 		public static void CreateDirectory(string path)

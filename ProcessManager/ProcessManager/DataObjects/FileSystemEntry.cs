@@ -1,16 +1,16 @@
 ﻿namespace ProcessManager.DataObjects
 {
-	public class FileSystemEntry
+	public class FileSystemEntry : IFileSystemEntry
 	{
-		public FileSystemEntry(string entry, bool isFolder)
+		public FileSystemEntry(string name, bool isFolder)
 		{
-			Entry = entry;
+			Name = name;
 			IsFolder = isFolder;
 		}
 
 		#region Properties
 
-		public string Entry { get; set; }
+		public string Name { get; set; }
 		public bool IsFolder { get; set; }
 
 		#endregion

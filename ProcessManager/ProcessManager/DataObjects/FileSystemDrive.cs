@@ -11,7 +11,7 @@ namespace ProcessManager.DataObjects
 		CompactDisc = 5
 	}
 
-	public class FileSystemDrive
+	public class FileSystemDrive : IFileSystemEntry
 	{
 		private static readonly IDictionary<FileSystemDriveType, string> _typeDescriptions = new Dictionary<FileSystemDriveType, string>()
 			{
@@ -25,6 +25,7 @@ namespace ProcessManager.DataObjects
 		public FileSystemDrive(string name, string label, FileSystemDriveType type)
 		{
 			Name = name;
+			IsFolder = true;
 			Label = label;
 			Type = type;
 		}
@@ -32,6 +33,7 @@ namespace ProcessManager.DataObjects
 		#region Properties
 
 		public string Name { get; set; }
+		public bool IsFolder { get; private set; }
 		public string Label { get; set; }
 		public FileSystemDriveType Type { get; set; }
 
