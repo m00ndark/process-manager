@@ -40,6 +40,7 @@
 			this.buttonRemoveDistribution = new System.Windows.Forms.Button();
 			this.buttonAddDistribution = new System.Windows.Forms.Button();
 			this.panelDistribution = new System.Windows.Forms.Panel();
+			this.buttonEditDistributionSources = new System.Windows.Forms.Button();
 			this.textBoxDistributionName = new System.Windows.Forms.TextBox();
 			this.textBoxDistributionDestination = new System.Windows.Forms.TextBox();
 			this.labelDistributionDestination = new System.Windows.Forms.Label();
@@ -98,7 +99,6 @@
 			this.listViewApplications = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderApplications = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.treeViewConfiguration = new ProcessManagerUI.Controls.TreeView();
-			this.buttonEditDistributionSources = new System.Windows.Forms.Button();
 			this.panelDistributions.SuspendLayout();
 			this.panelDistribution.SuspendLayout();
 			this.panelGroups.SuspendLayout();
@@ -252,6 +252,16 @@
 			this.panelDistribution.Size = new System.Drawing.Size(436, 345);
 			this.panelDistribution.TabIndex = 15;
 			this.panelDistribution.Visible = false;
+			// 
+			// buttonEditDistributionSources
+			// 
+			this.buttonEditDistributionSources.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonEditDistributionSources.Location = new System.Drawing.Point(97, 50);
+			this.buttonEditDistributionSources.Name = "buttonEditDistributionSources";
+			this.buttonEditDistributionSources.Size = new System.Drawing.Size(58, 23);
+			this.buttonEditDistributionSources.TabIndex = 18;
+			this.buttonEditDistributionSources.Text = "Edit...";
+			this.buttonEditDistributionSources.UseVisualStyleBackColor = true;
 			// 
 			// textBoxDistributionName
 			// 
@@ -940,16 +950,6 @@
 			this.treeViewConfiguration.Size = new System.Drawing.Size(156, 362);
 			this.treeViewConfiguration.TabIndex = 2;
 			this.treeViewConfiguration.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewConfiguration_AfterSelect);
-			// 
-			// buttonEditDistributionSources
-			// 
-			this.buttonEditDistributionSources.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonEditDistributionSources.Location = new System.Drawing.Point(97, 50);
-			this.buttonEditDistributionSources.Name = "buttonEditDistributionSources";
-			this.buttonEditDistributionSources.Size = new System.Drawing.Size(58, 23);
-			this.buttonEditDistributionSources.TabIndex = 18;
-			this.buttonEditDistributionSources.Text = "Edit...";
-			this.buttonEditDistributionSources.UseVisualStyleBackColor = true;
 			// 
 			// ConfigurationForm
 			// 
