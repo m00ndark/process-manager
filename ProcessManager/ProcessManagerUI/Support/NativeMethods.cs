@@ -73,8 +73,11 @@ namespace ProcessManagerUI.Support
 
 
 		public const uint SHGFI_ICON = 0x100;
-		public const uint SHGFI_LARGEICON = 0x0; // 'Large icon
-		public const uint SHGFI_SMALLICON = 0x1; // 'Small icon
+		public const uint SHGFI_LARGEICON = 0x0;
+		public const uint SHGFI_SMALLICON = 0x1;
+    	public const uint SHGFI_USEFILEATTRIBUTES = 0x10;
+
+    	public const uint FILE_ATTRIBUTE_NORMAL = 0x80;
 
 		// window styles
 		public const int WS_EX_CONTROLPARENT = 0x00010000;

@@ -505,8 +505,8 @@ namespace ProcessManagerUI.Forms
 			FileSystemBrowserForm fileSystemBrowser = new FileSystemBrowserForm(_selectedMachine)
 				{
 					Description = "Select a destination folder for the distribution...",
-					SelectedPath = textBoxGroupPath.Text,
-					BrowserMode = FileSystemBrowserForm.Mode.Folder
+					SelectedPath = textBoxDistributionDestination.Text,
+					BrowserMode = FileSystemBrowserForm.Mode.Folder | FileSystemBrowserForm.Mode.File
 				};
 			if (fileSystemBrowser.ShowDialog(this) == DialogResult.OK)
 			{

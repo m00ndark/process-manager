@@ -154,6 +154,7 @@
     <Compile Include="Controls\ListView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Support\FileSystemListViewItem.cs" />
     <Compile Include="Support\FileSystemTreeNode.cs" />
     <Compile Include="Support\NativeMethods.cs" />
     <Compile Include="Controls\TreeView.cs">

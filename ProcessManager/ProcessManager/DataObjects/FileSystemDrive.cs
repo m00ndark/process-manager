@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ProcessManager.DataObjects
 {
@@ -36,6 +37,15 @@ namespace ProcessManager.DataObjects
 		public bool IsFolder { get; private set; }
 		public string Label { get; set; }
 		public FileSystemDriveType Type { get; set; }
+
+		#endregion
+
+		#region Equality
+
+		public bool Equals(string name)
+		{
+			return name != null && name.Equals(Name, StringComparison.CurrentCultureIgnoreCase);
+		}
 
 		#endregion
 

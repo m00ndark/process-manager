@@ -4,5 +4,7 @@ namespace ProcessManager.DataObjects
 	{
 		string Name { get; }
 		bool IsFolder { get; }
+
+		bool Equals(string name);
 	}
 }

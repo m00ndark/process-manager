@@ -4,8 +4,10 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,15 +29,19 @@ namespace ProcessManagerUI.Forms
 		[Flags]
 		public enum Mode
 		{
-			File,
-			Folder
+			File = 1,
+			Folder = 2
 		}
 
 		#endregion
 
+		private const string IMAGE_LIST_KEY_FOLDER = "Folder";
+
 		private bool _machineAvailable;
 		private readonly IDictionary<IFileSystemEntry, IFileSystemEntry> _entryTree; // < child, parent >
 		private readonly IDictionary<IFileSystemEntry, FileSystemTreeNode> _entryNodes;
+		private Queue<string> _pathExpansionQueue;
+		private TreeNode _lastAutoExpandedNode;
 
 		public FileSystemBrowserForm(Machine machine)
 		{
@@ -48,12 +54,14 @@ namespace ProcessManagerUI.Forms
 			_machineAvailable = ConnectionStore.ConnectionCreated(Machine);
 			_entryTree = new Dictionary<IFileSystemEntry, IFileSystemEntry>();
 			_entryNodes = new Dictionary<IFileSystemEntry, FileSystemTreeNode>();
+			_pathExpansionQueue = null;
+			_lastAutoExpandedNode = null;
 
-			imageList.Images.Add("Folder", Resources.folder_16);
-			imageList.Images.Add(FileSystemDriveType.RemovableDisk.ToString(), Resources.drive_removable_disk_16);
-			imageList.Images.Add(FileSystemDriveType.LocalDisk.ToString(), Resources.drive_local_disk_16);
-			imageList.Images.Add(FileSystemDriveType.NetworkDrive.ToString(), Resources.drive_network_16);
-			imageList.Images.Add(FileSystemDriveType.CompactDisc.ToString(), Resources.drive_compact_disc_16);
+			imageList.Images.Add(IMAGE_LIST_KEY_FOLDER, MakeIconImage(Resources.folder_16));
+			imageList.Images.Add(FileSystemDriveType.RemovableDisk.ToString(), MakeIconImage(Resources.drive_removable_disk_16));
+			imageList.Images.Add(FileSystemDriveType.LocalDisk.ToString(), MakeIconImage(Resources.drive_local_disk_16));
+			imageList.Images.Add(FileSystemDriveType.NetworkDrive.ToString(), MakeIconImage(Resources.drive_network_16));
+			imageList.Images.Add(FileSystemDriveType.CompactDisc.ToString(), MakeIconImage(Resources.drive_compact_disc_16));
 		}
 
 		#region Properties
@@ -76,7 +84,7 @@ namespace ProcessManagerUI.Forms
 		{
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;
 
-			Text = Text + " [" + Machine + "]";
+			Text += " [" + Machine + "]";
 			labelDescription.Text = Description;
 
 			if (FolderMode)
@@ -85,24 +93,30 @@ namespace ProcessManagerUI.Forms
 				Size = new Size(400, 420);
 			}
 			else
-				Size = new Size(600, 420);
+				Size = new Size(700, 420);
 
 			EnableControls();
+
+			if (!string.IsNullOrEmpty(SelectedPath))
+				PreparePathExpansion(SelectedPath);
 
 			Task.Factory.StartNew(DisplayDrives);
 		}
 
 		private void TreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e)
 		{
-			if (e.Node.Nodes.Count == 1 && !(e.Node.Nodes[0] is FileSystemTreeNode))
-			{
-				Worker.WaitFor("Retieving folder content, please wait...", () => (e.Node.Nodes.Count != 1 || e.Node.Nodes[0] is FileSystemTreeNode));
-			}
-
-			Task.Factory.StartNew(() => RequestFolders(((FileSystemTreeNode) e.Node).ChildEntries));
+			PrepareExpand(e.Node);
 		}
 
 		private void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
+		{
+			if (!FolderMode)
+				DisplayFiles((FileSystemTreeNode) e.Node);
+
+			EnableControls();
+		}
+
+		private void ListView_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			EnableControls();
 		}
@@ -112,14 +126,7 @@ namespace ProcessManagerUI.Forms
 			if (!EntrySelected())
 				return;
 
-			if (FolderMode)
-			{
-				SelectedPath = BuildPath(((FileSystemTreeNode) treeView.SelectedNode).Entry);
-			}
-			else
-			{
-
-			}
+			SelectedPath = BuildPath(FolderMode ? ((FileSystemTreeNode) treeView.SelectedNode).Entry : ((FileSystemListViewItem) listView.SelectedItems[0]).Entry);
 			DialogResult = DialogResult.OK;
 			Close();
 		}
@@ -168,6 +175,32 @@ namespace ProcessManagerUI.Forms
 			buttonOK.Enabled = (enable && _machineAvailable && EntrySelected());
 		}
 
+		private void PreparePathExpansion(string path)
+		{
+			if (!Path.IsPathRooted(path) || path[1] != ':')
+				return;
+
+			string[] pathSplit = path.Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
+
+			if (pathSplit[0].Length != 2 || !pathSplit[0].EndsWith(":"))
+				return;
+
+			_pathExpansionQueue = new Queue<string>(pathSplit);
+		}
+
+		private void PrepareExpand(TreeNode node)
+		{
+			if (node.Nodes.Count == 1 && !(node.Nodes[0] is FileSystemTreeNode))
+			{
+				using (new WaitCursor())
+				{
+					Worker.WaitFor(() => (node.Nodes.Count != 1 || node.Nodes[0] is FileSystemTreeNode));
+				}
+			}
+
+			Task.Factory.StartNew(() => RequestFolders(((FileSystemTreeNode) node).ChildEntries));
+		}
+
 		private void DisplayDrives()
 		{
 			if (!_machineAvailable)
@@ -176,7 +209,9 @@ namespace ProcessManagerUI.Forms
 			using (new WaitCursor())
 			{
 				List<FileSystemDrive> drives = ConnectionStore.Connections[Machine].ServiceHandler.Service
-					.GetFileSystemDrives().Select(x => x.FromDTO()).OrderBy(x => x.Name).ToList();
+					.GetFileSystemDrives().Select(x => x.FromDTO())
+					//.Where(x => treeView.Nodes.Cast<FileSystemTreeNode>().Select(y => y.Entry).All(y => y != x))
+					.OrderBy(x => x.Name).ToList();
 
 				List<FileSystemTreeNode> treeNodes = drives.Select(drive =>
 					new FileSystemTreeNode((!string.IsNullOrEmpty(drive.Label) ? drive.Label : drive.GetTypeDescription()) + " (" + drive.Name + ")")
@@ -204,8 +239,12 @@ namespace ProcessManagerUI.Forms
 				if (!_machineAvailable)
 					return;
 
+				FileSystemTreeNode treeNode = _entryNodes[entry];
+
 				List<FileSystemEntry> childEntries = ConnectionStore.Connections[Machine].ServiceHandler.Service
-					.GetFileSystemEntries(BuildPath(entry)).Select(x => x.FromDTO()).OrderBy(x => x.Name).ToList();
+					.GetFileSystemEntries(BuildPath(entry)).Select(x => x.FromDTO())
+					//.Where(x => treeNode.ChildEntries.All(y => y != x))
+					.OrderBy(x => x.Name).ToList();
 
 				childEntries.ForEach(childEntry => _entryTree.Add(childEntry, entry));
 
@@ -220,10 +259,11 @@ namespace ProcessManagerUI.Forms
 					childTreeNode.Nodes.Add("dummy");
 				}
 
-				FileSystemTreeNode treeNode = _entryNodes[entry];
 				treeNode.ChildEntries = childEntries.Cast<IFileSystemEntry>().ToList();
 				SetTreeNodes(treeNode, childTreeNodes);
 			}
+
+			AutoExpandPath();
 		}
 
 		private string BuildPath(IFileSystemEntry entry)
@@ -241,6 +281,82 @@ namespace ProcessManagerUI.Forms
 		private static string FixPath(string path)
 		{
 			return (path.EndsWith(":") ? path + @"\" : path);
+		}
+
+		private void AutoExpandPath()
+		{
+			if (_pathExpansionQueue != null && _pathExpansionQueue.Count > 0)
+			{
+				TreeNodeCollection nodes = (_lastAutoExpandedNode == null ? treeView.Nodes : _lastAutoExpandedNode.Nodes);
+				string pathPart = _pathExpansionQueue.Dequeue();
+				_lastAutoExpandedNode = nodes.Cast<FileSystemTreeNode>().FirstOrDefault(node => node.Entry.Equals(pathPart));
+				if (_lastAutoExpandedNode != null)
+				{
+					if (_pathExpansionQueue.Count == 0)
+						SelectTreeNode(_lastAutoExpandedNode);
+					else
+						ExpandTreeNode(_lastAutoExpandedNode);
+				}
+				else
+				{
+					_pathExpansionQueue = null;
+				}
+			}
+		}
+
+		private void DisplayFiles(FileSystemTreeNode node)
+		{
+			using (new WaitCursor())
+			{
+				listView.Items.Clear();
+				LoadFileIcons(node.ChildEntries);
+				listView.Items.AddRange(node.ChildEntries
+					.Where(x => x is FileSystemEntry)
+					.Cast<FileSystemEntry>()
+					.OrderByDescending(x => x.IsFolder)
+					.ThenBy(x => x.Name)
+					.Select(x => new FileSystemListViewItem(new[] { x.Name, MakeFileSize(x), MakeFileDate(x) })
+						{
+							ImageKey = (x.IsFolder ? IMAGE_LIST_KEY_FOLDER : Path.GetExtension(x.Name)),
+							Entry = x
+						})
+					.Cast<ListViewItem>().ToArray());
+			}
+		}
+
+		private static string MakeFileSize(FileSystemEntry entry)
+		{
+			if (entry.IsFolder) return string.Empty;
+			const int KILO_BYTES = 1024;
+			return string.Format("{0:#,##0} KB", decimal.Divide((entry.Bytes == 0 ? 0 : (entry.Bytes < KILO_BYTES ? KILO_BYTES : entry.Bytes)), KILO_BYTES));
+		}
+
+		private static string MakeFileDate(FileSystemEntry entry)
+		{
+			return entry.ModifiedDate.ToString("yyyy-MM-dd HH:mm");
+		}
+
+		private void LoadFileIcons(IEnumerable<IFileSystemEntry> entries)
+		{
+			Console.WriteLine(_entryNodes.Count);
+			treeView.BeginUpdate();
+			foreach (IFileSystemEntry entry in entries.Where(entry => !entry.IsFolder))
+			{
+				string key = Path.GetExtension(entry.Name);
+				if (!imageList.Images.ContainsKey(key))
+					imageList.Images.Add(key, MakeIconImage(ShellIcon.GetSmallIcon(entry.Name)));
+			}
+			treeView.EndUpdate();
+		}
+
+		private static Image MakeIconImage(Icon icon)
+		{
+			Bitmap image = new Bitmap(16, 20);
+			using (Graphics graphics = Graphics.FromImage(image))
+			{
+				graphics.DrawIconUnstretched(icon, new Rectangle(0, 2, 16, 16));
+			}
+			return image;
 		}
 
 		private delegate void SetTreeViewNodesDelegate(IEnumerable<FileSystemTreeNode> nodes);
@@ -269,6 +385,33 @@ namespace ProcessManagerUI.Forms
 
 			parentNode.Nodes.Clear();
 			parentNode.Nodes.AddRange(nodes.Cast<TreeNode>().ToArray());
+		}
+
+		private delegate void ExpandTreeNodeDelegate(TreeNode node);
+
+		private void ExpandTreeNode(TreeNode node)
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new ExpandTreeNodeDelegate(ExpandTreeNode), node);
+				return;
+			}
+
+			node.Expand();
+		}
+
+		private delegate void SelectTreeNodeDelegate(TreeNode node);
+
+		private void SelectTreeNode(TreeNode node)
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new SelectTreeNodeDelegate(SelectTreeNode), node);
+				return;
+			}
+
+			treeView.SelectedNode = node;
+			treeView.Focus();
 		}
 
 		#endregion

@@ -19,7 +19,8 @@ namespace ProcessManagerUI.Support
 		private static Icon GetIcon(string fileName, uint flags)
 		{
 			NativeMethods.SHFILEINFO shinfo = new NativeMethods.SHFILEINFO();
-			IntPtr hImgSmall = NativeMethods.SHGetFileInfo(fileName, 0, ref shinfo, (uint) Marshal.SizeOf(shinfo), NativeMethods.SHGFI_ICON | flags);
+			IntPtr hImgSmall = NativeMethods.SHGetFileInfo(fileName, NativeMethods.FILE_ATTRIBUTE_NORMAL, ref shinfo,
+				(uint) Marshal.SizeOf(shinfo), NativeMethods.SHGFI_USEFILEATTRIBUTES | NativeMethods.SHGFI_ICON | flags);
 			Icon icon = (Icon) Icon.FromHandle(shinfo.hIcon).Clone();
 			NativeMethods.DestroyIcon(shinfo.hIcon);
 			return icon;

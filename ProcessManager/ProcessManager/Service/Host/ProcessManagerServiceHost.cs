@@ -18,7 +18,13 @@ namespace ProcessManager.Service.Host
 				_processManagerEventProvider = processManagerEventProvider;
 				_processManagerEventProvider.ApplicationStatusesChanged += _processManagerService.ProcessManagerEventProvider_ApplicationStatusesChanged;
 				_processManagerEventProvider.ConfigurationChanged += _processManagerService.ProcessManagerEventProvider_ConfigurationChanged;
-				NetTcpBinding binding = new NetTcpBinding() { Security = { Mode = SecurityMode.None } };
+				NetTcpBinding binding = new NetTcpBinding()
+					{
+						MaxBufferSize = Constants.MAX_MESSAGE_SIZE,
+						MaxBufferPoolSize = Constants.MAX_MESSAGE_SIZE * 2,
+						MaxReceivedMessageSize = Constants.MAX_MESSAGE_SIZE,
+						Security = { Mode = SecurityMode.None }
+					};
 				_serviceHost = new ServiceHost(_processManagerService, new Uri("net.tcp://" + Environment.MachineName + "/ProcessManagerService"));
 				_serviceHost.AddServiceEndpoint(typeof(IProcessManagerService), binding, string.Empty);
 				_serviceHost.Open();

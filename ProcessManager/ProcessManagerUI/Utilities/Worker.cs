@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using ProcessManager;
+using ProcessManager.Utilities;
 using ProcessManagerUI.Support;
 
 namespace ProcessManagerUI.Utilities
@@ -23,14 +24,28 @@ namespace ProcessManagerUI.Utilities
 		private void ExceuteDo(object inParam)
 		{
 			Action work = (Action) inParam;
-			work();
+			try
+			{
+				work();
+			}
+			catch (Exception ex)
+			{
+				Logger.Add("Work generated unhandled exception", ex);
+			}
 			ExecuteCompleted = true;
 		}
 
 		private void ExceuteWaitFor(object inParam)
 		{
 			Func<bool> signal = (Func<bool>) inParam;
-			while (!signal()) Thread.Sleep(200);
+			try
+			{
+				while (!signal()) Thread.Sleep(200);
+			}
+			catch (Exception ex)
+			{
+				Logger.Add("Signal generated unhandled exception", ex);
+			}
 			ExecuteCompleted = true;
 		}
 
@@ -47,6 +62,11 @@ namespace ProcessManagerUI.Utilities
 			Wait(message, worker);
 		}
 
+		public static void WaitFor(Func<bool> signal)
+		{
+			WaitFor(null, signal);
+		}
+
 		public static void WaitFor(string message, Func<bool> signal)
 		{
 			if (signal()) return;
@@ -57,7 +77,7 @@ namespace ProcessManagerUI.Utilities
 
 		private static void Wait(string message, Worker worker)
 		{
-			if (TaskDialog.IsPlatformSupported)
+			if (TaskDialog.IsPlatformSupported && message != null)
 				TaskDialog.Show(worker.ID, Settings.Constants.APPLICATION_NAME, message, string.Empty, null, 0, worker.Tick);
 
 			while (!worker.ExecuteCompleted)

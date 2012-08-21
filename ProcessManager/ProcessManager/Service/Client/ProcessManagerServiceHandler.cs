@@ -115,7 +115,13 @@ namespace ProcessManager.Service.Client
 
 		private void SetupClient()
 		{
-			NetTcpBinding binding = new NetTcpBinding() { Security = { Mode = SecurityMode.None } };
+			NetTcpBinding binding = new NetTcpBinding()
+			{
+				MaxBufferSize = Constants.MAX_MESSAGE_SIZE,
+				MaxBufferPoolSize = Constants.MAX_MESSAGE_SIZE * 2,
+				MaxReceivedMessageSize = Constants.MAX_MESSAGE_SIZE,
+				Security = { Mode = SecurityMode.None }
+			};
 			EndpointAddress endpointAddress = new EndpointAddress(new Uri("net.tcp://" + Machine.HostName + "/ProcessManagerService"));
 			InstanceContext context = new InstanceContext(_processManagerServiceEventHandler);
 			_processManagerServiceClient = new ProcessManagerServiceClient(context, binding, endpointAddress);

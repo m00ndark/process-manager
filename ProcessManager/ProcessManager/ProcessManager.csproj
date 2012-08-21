@@ -110,6 +110,7 @@
     <Compile Include="Service\Common\IProcessManagerServiceEventHandler.cs" />
     <Compile Include="Service\Common\IProcessManagerService.cs" />
     <Compile Include="Service\Common\IProcessManagerServiceOperator.cs" />
+    <Compile Include="Service\Common\Constants.cs" />
     <Compile Include="Service\DataObjects\DTOApplication.cs" />
     <Compile Include="Service\DataObjects\DTOApplicationAction.cs" />
     <Compile Include="Service\DataObjects\DTOApplicationStatus.cs" />

@@ -49,10 +49,16 @@ namespace ProcessManager.DataAccess
 			catch { ; }
 
 			foreach (string entry in directories)
-				yield return new FileSystemEntry(Path.GetFileName(entry), true);
+			{
+				DirectoryInfo info = new DirectoryInfo(entry);
+				yield return new FileSystemEntry(Path.GetFileName(entry), true, info.LastWriteTime);
+			}
 
 			foreach (string entry in files)
-				yield return new FileSystemEntry(Path.GetFileName(entry), false);
+			{
+				FileInfo info = new FileInfo(entry);
+				yield return new FileSystemEntry(Path.GetFileName(entry), false, info.LastWriteTime, info.Length);
+			}
 		}
 
 		public static void CreateDirectory(string path)
