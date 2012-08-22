@@ -506,7 +506,7 @@ namespace ProcessManagerUI.Forms
 				{
 					Description = "Select a destination folder for the distribution...",
 					SelectedPath = textBoxDistributionDestination.Text,
-					BrowserMode = FileSystemBrowserForm.Mode.Folder | FileSystemBrowserForm.Mode.File
+					BrowserMode = FileSystemBrowserForm.Mode.Folder
 				};
 			if (fileSystemBrowser.ShowDialog(this) == DialogResult.OK)
 			{

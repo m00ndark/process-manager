@@ -130,6 +130,13 @@ namespace ProcessManagerUI.Properties {
             }
         }
         
+        internal static System.Drawing.Icon machine_16 {
+            get {
+                object obj = ResourceManager.GetObject("machine_16", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap remove_16 {
             get {
                 object obj = ResourceManager.GetObject("remove_16", resourceCulture);

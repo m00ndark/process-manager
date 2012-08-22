@@ -105,9 +105,11 @@
 			// 
 			this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeView.FullRowSelect = true;
+			this.treeView.HideSelection = false;
 			this.treeView.HotTracking = true;
 			this.treeView.ImageIndex = 0;
 			this.treeView.ImageList = this.imageList;
+			this.treeView.Indent = 10;
 			this.treeView.ItemHeight = 20;
 			this.treeView.Location = new System.Drawing.Point(0, 0);
 			this.treeView.Name = "treeView";
@@ -116,6 +118,8 @@
 			this.treeView.Size = new System.Drawing.Size(225, 307);
 			this.treeView.TabIndex = 27;
 			this.treeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.TreeView_BeforeExpand);
+			this.treeView.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterExpand);
+			this.treeView.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.TreeView_BeforeSelect);
 			this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterSelect);
 			// 
 			// listView
@@ -136,6 +140,7 @@
 			this.listView.UseCompatibleStateImageBehavior = false;
 			this.listView.View = System.Windows.Forms.View.Details;
 			this.listView.SelectedIndexChanged += new System.EventHandler(this.ListView_SelectedIndexChanged);
+			this.listView.DoubleClick += new System.EventHandler(this.ListView_DoubleClick);
 			// 
 			// columnHeaderName
 			// 
