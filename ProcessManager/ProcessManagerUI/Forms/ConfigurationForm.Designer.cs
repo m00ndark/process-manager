@@ -262,6 +262,7 @@
 			this.buttonEditDistributionSources.TabIndex = 18;
 			this.buttonEditDistributionSources.Text = "Edit...";
 			this.buttonEditDistributionSources.UseVisualStyleBackColor = true;
+			this.buttonEditDistributionSources.Click += new System.EventHandler(this.ButtonEditDistributionSources_Click);
 			// 
 			// textBoxDistributionName
 			// 

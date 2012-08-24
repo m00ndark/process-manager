@@ -210,6 +210,11 @@ namespace ProcessManagerUI.Forms
 				});
 		}
 
+		private void FileSystemBrowserForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged -= ServiceConnectionHandler_ServiceHandlerConnectionChanged;
+		}
+
 		private void TreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e)
 		{
 			e.Cancel = PerformDependentWork(e.Node, () => ExpandTreeNode(e.Node));
@@ -314,8 +319,8 @@ namespace ProcessManagerUI.Forms
 
 		private void EnableControls(bool enable = true)
 		{
-			splitContainer.Enabled = (enable && _machineAvailable);
-			buttonOK.Enabled = (enable && _machineAvailable && EntrySelected());
+			splitContainer.Enabled = (_machineAvailable && enable);
+			buttonOK.Enabled = (_machineAvailable && enable && EntrySelected());
 		}
 
 		private void PreparePathExpansion(string path)

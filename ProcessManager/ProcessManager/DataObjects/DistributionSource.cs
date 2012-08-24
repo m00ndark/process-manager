@@ -11,6 +11,10 @@ namespace ProcessManager.DataObjects
 		public DistributionSource()
 		{
 			ID = Guid.NewGuid();
+			Path = null;
+			Filter = "*";
+			Recursive = false;
+			Inclusive = true;
 		}
 
 		public DistributionSource(XmlReader reader)
@@ -22,8 +26,8 @@ namespace ProcessManager.DataObjects
 
 		public Guid ID { get; set; }
 		public string Path { get; set; }
-		public bool Recursive { get; set; }
 		public string Filter { get; set; }
+		public bool Recursive { get; set; }
 		public bool Inclusive { get; set; }
 
 		#endregion

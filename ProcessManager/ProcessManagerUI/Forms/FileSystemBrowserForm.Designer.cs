@@ -177,6 +177,7 @@
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "File System Browser";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FileSystemBrowserForm_FormClosing);
 			this.Load += new System.EventHandler(this.FileSystemBrowserForm_Load);
 			this.splitContainer.Panel1.ResumeLayout(false);
 			this.splitContainer.Panel2.ResumeLayout(false);

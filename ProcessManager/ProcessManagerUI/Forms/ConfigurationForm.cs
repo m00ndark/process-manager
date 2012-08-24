@@ -429,7 +429,7 @@ namespace ProcessManagerUI.Forms
 			else
 			{
 				_disableTextChangedEvents = true;
-				_selectedDistribution = ((Distribution) listViewDistributions.SelectedItems[0].Tag);
+				_selectedDistribution = (Distribution) listViewDistributions.SelectedItems[0].Tag;
 				textBoxDistributionName.Text = _selectedDistribution.Name;
 				textBoxDistributionDestination.Text = _selectedDistribution.DestinationPath;
 				_disableTextChangedEvents = false;
@@ -486,6 +486,23 @@ namespace ProcessManagerUI.Forms
 			UpdateSelectedDistribution();
 		}
 
+		private void ButtonEditDistributionSources_Click(object sender, EventArgs e)
+		{
+			DistributionSourcesForm distributionSourcesForm = new DistributionSourcesForm(_selectedMachine, _selectedDistribution);
+			if (distributionSourcesForm.ShowDialog(this) == DialogResult.OK)
+			{
+				if (distributionSourcesForm.DistributionSourcesChanged)
+				{
+					if (_selectedMachine == null) return;
+
+					_selectedDistribution.Sources.Where(x => distributionSourcesForm.DistributionSources.All(y => y != x))
+						.ToList().ForEach(x => _selectedDistribution.Sources.Remove(x));
+
+					// todo: here!!
+				}
+			}
+		}
+
 		private void TextBoxDistributionDestination_TextChanged(object sender, EventArgs e)
 		{
 			if (!_disableTextChangedEvents)
@@ -511,7 +528,7 @@ namespace ProcessManagerUI.Forms
 			if (fileSystemBrowser.ShowDialog(this) == DialogResult.OK)
 			{
 				textBoxDistributionDestination.Text = fileSystemBrowser.SelectedPath;
-				UpdateSelectedGroup();
+				UpdateSelectedDistribution();
 			}
 		}
 
@@ -979,8 +996,6 @@ namespace ProcessManagerUI.Forms
 				yield return "Destination path missing";
 			else if (!Path.IsPathRooted(distribution.DestinationPath))
 				yield return  "Destination path must be rooted";
-
-			// TODO: validate distribution sources?
 		}
 
 		#endregion
