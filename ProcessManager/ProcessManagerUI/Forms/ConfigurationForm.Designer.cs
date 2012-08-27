@@ -40,6 +40,7 @@
 			this.buttonRemoveDistribution = new System.Windows.Forms.Button();
 			this.buttonAddDistribution = new System.Windows.Forms.Button();
 			this.panelDistribution = new System.Windows.Forms.Panel();
+			this.labelDistributionSourcesCount = new System.Windows.Forms.Label();
 			this.buttonEditDistributionSources = new System.Windows.Forms.Button();
 			this.textBoxDistributionName = new System.Windows.Forms.TextBox();
 			this.textBoxDistributionDestination = new System.Windows.Forms.TextBox();
@@ -238,6 +239,7 @@
 			this.panelDistribution.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelDistribution.Controls.Add(this.labelDistributionSourcesCount);
 			this.panelDistribution.Controls.Add(this.buttonEditDistributionSources);
 			this.panelDistribution.Controls.Add(this.textBoxDistributionName);
 			this.panelDistribution.Controls.Add(this.textBoxDistributionDestination);
@@ -253,9 +255,19 @@
 			this.panelDistribution.TabIndex = 15;
 			this.panelDistribution.Visible = false;
 			// 
+			// labelDistributionSourcesCount
+			// 
+			this.labelDistributionSourcesCount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelDistributionSourcesCount.Location = new System.Drawing.Point(161, 54);
+			this.labelDistributionSourcesCount.Name = "labelDistributionSourcesCount";
+			this.labelDistributionSourcesCount.Size = new System.Drawing.Size(223, 13);
+			this.labelDistributionSourcesCount.TabIndex = 19;
+			this.labelDistributionSourcesCount.Text = "[source count]";
+			this.labelDistributionSourcesCount.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
 			// buttonEditDistributionSources
 			// 
-			this.buttonEditDistributionSources.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonEditDistributionSources.Location = new System.Drawing.Point(97, 50);
 			this.buttonEditDistributionSources.Name = "buttonEditDistributionSources";
 			this.buttonEditDistributionSources.Size = new System.Drawing.Size(58, 23);
@@ -958,8 +970,8 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(774, 442);
-			this.Controls.Add(this.panelDistributions);
 			this.Controls.Add(this.panelGroups);
+			this.Controls.Add(this.panelDistributions);
 			this.Controls.Add(this.panelPlugins);
 			this.Controls.Add(this.panelApplications);
 			this.Controls.Add(this.buttonOK);
@@ -1069,6 +1081,7 @@
 		private System.Windows.Forms.Button buttonRemoveDistribution;
 		private System.Windows.Forms.Button buttonAddDistribution;
 		private System.Windows.Forms.Button buttonEditDistributionSources;
+		private System.Windows.Forms.Label labelDistributionSourcesCount;
 
 	}
 }

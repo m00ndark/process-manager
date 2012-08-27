@@ -73,7 +73,11 @@ namespace ProcessManager.DataObjects
 								}
 							});
 					});
-				configuration.Distributions.ForEach(distribution => distribution.ID = Guid.NewGuid());
+				configuration.Distributions.ForEach(distribution =>
+					{
+						distribution.ID = Guid.NewGuid();
+						distribution.Sources.ForEach(source => source.ID = Guid.NewGuid());
+					});
 			}
 			return configuration;
 		}

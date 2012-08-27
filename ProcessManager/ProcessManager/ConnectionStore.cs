@@ -20,7 +20,12 @@ namespace ProcessManager
 
 		public static bool ConnectionCreated(Machine machine)
 		{
-			return (Connections.ContainsKey(machine) && Connections[machine].ServiceHandler != null);
+			return (Connections.ContainsKey(machine) && Connections[machine].ServiceHandler != null && Connections[machine].ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Connected);
+		}
+
+		public static bool ConfigurationAvailable(Machine machine)
+		{
+			return (ConnectionCreated(machine) && Connections[machine].Configuration != null);
 		}
 
 		public static MachineConnection CreateConnection(IProcessManagerEventHandler processManagerEventHandler, Machine machine)

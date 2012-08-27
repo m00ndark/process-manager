@@ -115,6 +115,8 @@
     <Compile Include="Service\DataObjects\DTOApplicationAction.cs" />
     <Compile Include="Service\DataObjects\DTOApplicationStatus.cs" />
     <Compile Include="Service\DataObjects\DTOConfiguration.cs" />
+    <Compile Include="Service\DataObjects\DTODistribution.cs" />
+    <Compile Include="Service\DataObjects\DTODistributionSource.cs" />
     <Compile Include="Service\DataObjects\DTOFileSystemDrive.cs" />
     <Compile Include="Service\DataObjects\DTOFileSystemEntry.cs" />
     <Compile Include="Service\DataObjects\DTOGroup.cs" />

@@ -260,14 +260,15 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonBrowseGroupPath_Click(object sender, EventArgs e)
 		{
-			FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog()
+			FileSystemBrowserForm fileSystemBrowser = new FileSystemBrowserForm(_selectedMachine)
 				{
 					Description = "Select a root folder for this group...",
-					SelectedPath = textBoxGroupPath.Text
+					SelectedPath = textBoxGroupPath.Text,
+					BrowserMode = FileSystemBrowserForm.Mode.Folder
 				};
-			if (folderBrowserDialog.ShowDialog(this) == DialogResult.OK)
+			if (fileSystemBrowser.ShowDialog(this) == DialogResult.OK)
 			{
-				textBoxGroupPath.Text = folderBrowserDialog.SelectedPath;
+				textBoxGroupPath.Text = fileSystemBrowser.SelectedPath;
 				UpdateSelectedGroup();
 			}
 		}
@@ -432,6 +433,7 @@ namespace ProcessManagerUI.Forms
 				_selectedDistribution = (Distribution) listViewDistributions.SelectedItems[0].Tag;
 				textBoxDistributionName.Text = _selectedDistribution.Name;
 				textBoxDistributionDestination.Text = _selectedDistribution.DestinationPath;
+				DisplayDistributionSourceCount();
 				_disableTextChangedEvents = false;
 				EnableControls();
 				panelDistribution.Visible = true;
@@ -450,6 +452,7 @@ namespace ProcessManagerUI.Forms
 			ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
 			textBoxDistributionName.Text = _selectedDistribution.Name;
 			textBoxDistributionDestination.Text = _selectedDistribution.DestinationPath;
+			DisplayDistributionSourceCount();
 			ListViewItem item = listViewDistributions.Items.Add(new ListViewItem(_selectedDistribution.Name) { Tag = _selectedDistribution });
 			item.Selected = true;
 			panelDistribution.Visible = true;
@@ -495,10 +498,26 @@ namespace ProcessManagerUI.Forms
 				{
 					if (_selectedMachine == null) return;
 
-					_selectedDistribution.Sources.Where(x => distributionSourcesForm.DistributionSources.All(y => y != x))
+					_selectedDistribution.Sources.Where(x => distributionSourcesForm.DistributionSources.All(y => y.ID != x.ID))
 						.ToList().ForEach(x => _selectedDistribution.Sources.Remove(x));
 
-					// todo: here!!
+					distributionSourcesForm.DistributionSources
+						.Select(x => new
+							{
+								New = x,
+								Old = _selectedDistribution.Sources.FirstOrDefault(y => y.ID == x.ID)
+							})
+						.Where(x => x.Old != null)
+						.ToList()
+						.ForEach(x => x.New.CopyTo(x.Old));
+
+					distributionSourcesForm.DistributionSources.Where(x => _selectedDistribution.Sources.All(y => y.ID != x.ID))
+						.ToList().ForEach(x => _selectedDistribution.Sources.Add(x));
+
+					DisplayDistributionSourceCount();
+
+					ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
+					EnableControls();
 				}
 			}
 		}
@@ -561,25 +580,43 @@ namespace ProcessManagerUI.Forms
 
 		private void ContextMenu_BrowseApplicationRelativePath_GroupClicked(Group group)
 		{
-			OpenFileDialog openFileDialog = new OpenFileDialog()
+			FileSystemBrowserForm fileSystemBrowser = new FileSystemBrowserForm(_selectedMachine)
 				{
-					Title = "Select an application",
-					InitialDirectory = (string.IsNullOrEmpty(textBoxApplicationRelativePath.Text) ? group.Path
-						: Path.GetDirectoryName(Path.Combine(group.Path, textBoxApplicationRelativePath.Text.Trim(Path.DirectorySeparatorChar)))),
-					FileName = (string.IsNullOrEmpty(textBoxApplicationRelativePath.Text) ? string.Empty : Path.GetFileName(textBoxApplicationRelativePath.Text)),
-					Filter = "Applications (*.exe)|*.exe|All files (*.*)|*.*",
-					CheckFileExists = true
+					Description = "Select an application...",
+					SelectedPath = Path.Combine(group.Path, textBoxApplicationRelativePath.Text.Trim(Path.DirectorySeparatorChar)),
+					BrowserMode = FileSystemBrowserForm.Mode.File
 				};
-			if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+			if (fileSystemBrowser.ShowDialog(this) == DialogResult.OK)
 			{
-				if (!openFileDialog.FileName.StartsWith(group.Path, StringComparison.CurrentCultureIgnoreCase))
+				if (!fileSystemBrowser.SelectedPath.StartsWith(group.Path, StringComparison.CurrentCultureIgnoreCase))
 					Messenger.ShowError("Invalid application path", "The selected application's path must start with the selected group's path; " + group.Path);
 				else
 				{
-					textBoxApplicationRelativePath.Text = openFileDialog.FileName.Substring(group.Path.TrimEnd(Path.DirectorySeparatorChar).Length);
+					textBoxApplicationRelativePath.Text = fileSystemBrowser.SelectedPath.Substring(group.Path.TrimEnd(Path.DirectorySeparatorChar).Length);
 					UpdateSelectedApplication();
 				}
 			}
+
+	
+			//OpenFileDialog openFileDialog = new OpenFileDialog()
+			//    {
+			//        Title = "Select an application",
+			//        InitialDirectory = (string.IsNullOrEmpty(textBoxApplicationRelativePath.Text) ? group.Path
+			//            : Path.GetDirectoryName(Path.Combine(group.Path, textBoxApplicationRelativePath.Text.Trim(Path.DirectorySeparatorChar)))),
+			//        FileName = (string.IsNullOrEmpty(textBoxApplicationRelativePath.Text) ? string.Empty : Path.GetFileName(textBoxApplicationRelativePath.Text)),
+			//        Filter = "Applications (*.exe)|*.exe|All files (*.*)|*.*",
+			//        CheckFileExists = true
+			//    };
+			//if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+			//{
+			//    if (!openFileDialog.FileName.StartsWith(group.Path, StringComparison.CurrentCultureIgnoreCase))
+			//        Messenger.ShowError("Invalid application path", "The selected application's path must start with the selected group's path; " + group.Path);
+			//    else
+			//    {
+			//        textBoxApplicationRelativePath.Text = openFileDialog.FileName.Substring(group.Path.TrimEnd(Path.DirectorySeparatorChar).Length);
+			//        UpdateSelectedApplication();
+			//    }
+			//}
 		}
 
 		#endregion
@@ -783,7 +820,8 @@ namespace ProcessManagerUI.Forms
 
 		private IEnumerable<Application> GetNonIncludedGroupApplications()
 		{
-			if (_selectedMachine == null) return new List<Application>();
+			if (_selectedMachine == null || !ConnectionStore.ConfigurationAvailable(_selectedMachine))
+				return new List<Application>();
 
 			return ConnectionStore.Connections[_selectedMachine].Configuration.Applications
 				.Except(ConnectionStore.Connections[_selectedMachine].Configuration.Applications
@@ -792,7 +830,8 @@ namespace ProcessManagerUI.Forms
 
 		private IEnumerable<Group> GetAllGroups(bool exceptCurrent)
 		{
-			if (_selectedMachine == null) return new List<Group>();
+			if (_selectedMachine == null || !ConnectionStore.ConfigurationAvailable(_selectedMachine))
+				return new List<Group>();
 
 			List<Group> groups = ConnectionStore.Connections[_selectedMachine].Configuration.Groups;
 			return (exceptCurrent ? (_selectedGroup == null ? new List<Group>() : groups.Except(new List<Group>() { _selectedGroup })) : groups);
@@ -921,6 +960,12 @@ namespace ProcessManagerUI.Forms
 
 		#region Distributions
 
+		private void DisplayDistributionSourceCount()
+		{
+			labelDistributionSourcesCount.Text = _selectedDistribution.Sources.Count
+				+ " source" + (_selectedDistribution.Sources.Count == 1 ? string.Empty : "s");
+		}
+
 		private void UpdateSelectedDistribution()
 		{
 			if (_selectedDistribution != null)
@@ -929,8 +974,6 @@ namespace ProcessManagerUI.Forms
 				{
 					_selectedDistribution.Name = textBoxDistributionName.Text;
 					_selectedDistribution.DestinationPath = textBoxDistributionDestination.Text;
-					//_selectedDistribution.Sources.Clear();
-					//_selectedDistribution.Sources.AddRange(listViewDistributionSources.Items.Cast<ListViewItem>().Select(x => (DistributionSource) x.Tag));
 					ListViewItem item = listViewDistributions.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedDistribution);
 					item.Text = _selectedDistribution.Name;
 					listViewDistributions.Sort();
@@ -945,12 +988,8 @@ namespace ProcessManagerUI.Forms
 			bool distributionChanged = false;
 			if (_selectedMachine != null && _selectedDistribution != null && !string.IsNullOrEmpty(textBoxDistributionName.Text))
 			{
-				//int equalSourcesCount = _selectedDistribution.Sources.Intersect(listViewDistributionSources.Items
-				//    .Cast<ListViewItem>().Select(x => (DistributionSource) x.Tag), new IDObjectEqualityComparer<DistributionSource>()).Count();
 				distributionChanged = (_selectedDistribution.Name != textBoxDistributionName.Text
-					|| _selectedDistribution.DestinationPath != textBoxDistributionDestination.Text
-					//|| equalSourcesCount != _selectedDistribution.Sources.Count || equalSourcesCount != listViewDistributionSources.Items.Count
-					);
+					|| _selectedDistribution.DestinationPath != textBoxDistributionDestination.Text);
 				ConnectionStore.Connections[_selectedMachine].ConfigurationModified |= distributionChanged;
 			}
 			return distributionChanged;
@@ -1063,13 +1102,13 @@ namespace ProcessManagerUI.Forms
 			listViewApplications.Items.Clear();
 			listViewDistributions.Items.Clear();
 			listViewPlugins.Items.Clear();
-			if (_selectedMachine != null && ConnectionStore.Connections[_selectedMachine].Configuration != null)
+			if (_selectedMachine != null && ConnectionStore.ConfigurationAvailable(_selectedMachine))
 			{
 				ConnectionStore.Connections[_selectedMachine].Configuration.Groups.ForEach(group => listViewGroups.Items.Add(new ListViewItem(group.Name) { Tag = group }));
 				ConnectionStore.Connections[_selectedMachine].Configuration.Applications.ForEach(application => listViewApplications.Items.Add(new ListViewItem(application.Name) { Tag = application }));
 				ConnectionStore.Connections[_selectedMachine].Configuration.Distributions.ForEach(distribution => listViewDistributions.Items.Add(new ListViewItem(distribution.Name) { Tag = distribution }));
 			}
-			ShowAllControls(_selectedMachine != null && ConnectionStore.Connections[_selectedMachine].Configuration != null);
+			ShowAllControls(_selectedMachine != null && ConnectionStore.ConfigurationAvailable(_selectedMachine));
 		}
 
 		private void EnableControls(bool enable = true)

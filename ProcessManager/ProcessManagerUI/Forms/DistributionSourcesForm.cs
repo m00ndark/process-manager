@@ -30,7 +30,7 @@ namespace ProcessManagerUI.Forms
 
 			Machine = machine;
 			Distribution = distribution;
-			DistributionSources = new List<DistributionSource>(distribution.Sources);
+			DistributionSources = new List<DistributionSource>(distribution.Sources.Select(source => source.Clone()));
 			DistributionSourcesChanged = false;
 			_machineAvailable = ConnectionStore.ConnectionCreated(Machine);
 			_selectedSource = null;

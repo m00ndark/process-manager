@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -36,7 +37,7 @@ namespace ProcessManager.DataObjects
 		public Distribution Clone()
 		{
 			Distribution distribution = new Distribution() { ID = ID, Name = Name, DestinationPath = DestinationPath };
-			distribution.Sources.AddRange(Sources);
+			distribution.Sources.AddRange(Sources.Select(source => source.Clone()));
 			return distribution;
 		}
 

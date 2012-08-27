@@ -56,9 +56,9 @@ namespace ProcessManagerUI
 
 		public static void WaitForConfiguration(List<Machine> machines)
 		{
-			if (machines != null && machines.Any(machine => machine != null && ConnectionStore.Connections[machine].Configuration == null))
+			if (machines != null && machines.Any(machine => machine != null && !ConnectionStore.ConfigurationAvailable(machine)))
 				Worker.WaitFor("Retrieving configuration...", () => machines.All(machine => ConnectionStore.Connections[machine].ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Disconnected
-					|| ConnectionStore.Connections[machine].ServiceHandler.Status == ProcessManagerServiceHandlerStatus.Connected && ConnectionStore.Connections[machine].Configuration != null));
+					|| ConnectionStore.ConfigurationAvailable(machine)));
 		}
 
 		public static void ReloadConfiguration(Machine machine = null)

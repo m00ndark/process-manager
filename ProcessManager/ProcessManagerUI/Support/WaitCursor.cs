@@ -1,25 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace ProcessManagerUI.Support
 {
 	public class WaitCursor : IDisposable
 	{
-		private static int _instanceCounter = 0;
 		private static readonly object _lock = new object();
+		private static readonly IDictionary<object, int> _instanceCounters = new Dictionary<object, int>();
 
+		private readonly Form _owner;
 		private readonly Action<Cursor> _setCursor;
 
-		public WaitCursor(Action<Cursor> customSetCursor = null)
+		public WaitCursor(Form owner, Action<Cursor> customSetCursor = null)
 		{
+			_owner = owner;
 			_setCursor = customSetCursor ?? (cursor => { Cursor.Current = cursor; });
 
 			lock (_lock)
 			{
-				if (_instanceCounter == 0)
+				if (!_instanceCounters.ContainsKey(_owner))
+					_instanceCounters.Add(_owner, 0);
+
+				if (_instanceCounters[_owner] == 0)
 					_setCursor(Cursors.WaitCursor);
 
-				_instanceCounter++;
+				_instanceCounters[_owner]++;
 			}
 		}
 
@@ -27,10 +33,13 @@ namespace ProcessManagerUI.Support
 		{
 			lock (_lock)
 			{
-				_instanceCounter--;
+				_instanceCounters[_owner]--;
 
-				if (_instanceCounter == 0)
+				if (_instanceCounters[_owner] == 0)
+				{
 					_setCursor(Cursors.Default);
+					_instanceCounters.Remove(_owner);
+				}
 			}
 		}
 	}

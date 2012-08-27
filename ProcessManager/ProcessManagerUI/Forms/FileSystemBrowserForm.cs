@@ -203,11 +203,11 @@ namespace ProcessManagerUI.Forms
 			if (!string.IsNullOrEmpty(SelectedPath))
 				PreparePathExpansion(SelectedPath);
 
-			Task.Factory.StartNew(() =>
+			Task.Factory.StartNew(() => TaskActionWrapper.Do(() =>
 				{
 					DisplayDrives();
 					ExpandTreeNode(_machineNode);
-				});
+				}));
 		}
 
 		private void FileSystemBrowserForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -225,7 +225,7 @@ namespace ProcessManagerUI.Forms
 			FileSystemTreeNode node = (FileSystemTreeNode) e.Node;
 
 			if (node.Entry != null)
-				Task.Factory.StartNew(() => RequestFolders(node.ChildEntries));
+				Task.Factory.StartNew(() => TaskActionWrapper.Do(() => RequestFolders(node.ChildEntries)));
 		}
 
 		private void TreeView_BeforeSelect(object sender, TreeViewCancelEventArgs e)
@@ -239,7 +239,7 @@ namespace ProcessManagerUI.Forms
 			EnableControls();
 
 			if (!FolderMode)
-				Task.Factory.StartNew(() => DisplayFiles((FileSystemTreeNode) e.Node));
+				Task.Factory.StartNew(() => TaskActionWrapper.Do(() => DisplayFiles((FileSystemTreeNode) e.Node)));
 		}
 
 		private void ListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -257,11 +257,11 @@ namespace ProcessManagerUI.Forms
 			if (entry.IsFolder)
 			{
 				FileSystemTreeNode treeNode = _entryNodes[entry];
-				Task.Factory.StartNew(() =>
+				Task.Factory.StartNew(() => TaskActionWrapper.Do(() =>
 					{
 						ExpandTreeNode(treeNode.Parent);
 						SelectTreeNode(treeNode);
-					});
+					}));
 			}
 			else
 				buttonOK.PerformClick();
@@ -336,7 +336,7 @@ namespace ProcessManagerUI.Forms
 			_pathExpansionQueue = new Queue<string>(pathSplit);
 
 			if (_pathExpansionQueue.Count > 0)
-				_pathExpansionWaitCursor = new WaitCursor(SetCursor);
+				_pathExpansionWaitCursor = new WaitCursor(this, SetCursor);
 		}
 
 		private bool PerformDependentWork(TreeNode node, Action work = null)
@@ -346,15 +346,15 @@ namespace ProcessManagerUI.Forms
 			if (cancel)
 				_entryQueue.IncreasePriority(((FileSystemTreeNode) node).Entry);
 
-			Task.Factory.StartNew(() =>
+			Task.Factory.StartNew(() => TaskActionWrapper.Do(() =>
 				{
 					if (cancel)
-						using (new WaitCursor(SetCursor))
+						using (new WaitCursor(this, SetCursor))
 							Worker.WaitFor(() => NodeHasChildren(node));
 
 					if (work != null)
 						work();
-				});
+				}));
 
 			return cancel;
 		}
@@ -369,7 +369,7 @@ namespace ProcessManagerUI.Forms
 			if (!_machineAvailable)
 				return;
 
-			using (new WaitCursor(SetCursor))
+			using (new WaitCursor(this, SetCursor))
 			{
 				List<FileSystemDrive> drives = ConnectionStore.Connections[Machine].ServiceHandler.Service
 					.GetFileSystemDrives().Select(x => x.FromDTO())
@@ -391,7 +391,7 @@ namespace ProcessManagerUI.Forms
 
 				_machineNode.ChildEntries = drives.Cast<IFileSystemEntry>().ToList();
 				SetTreeViewNodes(_machineNode, treeNodes);
-				Task.Factory.StartNew(() => RequestFolders(drives));
+				Task.Factory.StartNew(() => TaskActionWrapper.Do(() => RequestFolders(drives)));
 			}
 		}
 
@@ -437,8 +437,6 @@ namespace ProcessManagerUI.Forms
 				treeNode.ChildEntries = childEntries.Cast<IFileSystemEntry>().ToList();
 				SetTreeViewNodes(treeNode, childTreeNodes);
 			}
-
-			//AutoExpandPath();
 		}
 
 		private string BuildPath(IFileSystemEntry entry)
@@ -455,7 +453,7 @@ namespace ProcessManagerUI.Forms
 
 		private static string FixPath(string path)
 		{
-			return (path.EndsWith(":") ? path + @"\" : path);
+			return (path.EndsWith(":") ? path + Path.DirectorySeparatorChar : path);
 		}
 
 		private void AutoExpandPath()
@@ -471,7 +469,8 @@ namespace ProcessManagerUI.Forms
 				string pathPart = _pathExpansionQueue.Dequeue();
 				if (!FolderMode && _pathExpansionQueue.Count == 0)
 				{
-					FileSystemListViewItem targetItem = GetListViewItems().FirstOrDefault(item => item.Entry.Equals(pathPart));
+					List<FileSystemListViewItem> items = GetListViewItems();
+					FileSystemListViewItem targetItem = items.FirstOrDefault(item => item.Entry.Equals(pathPart));
 					if (targetItem != null)
 						SelectListViewItem(targetItem);
 				}
@@ -504,7 +503,7 @@ namespace ProcessManagerUI.Forms
 
 		private void DisplayFiles(FileSystemTreeNode node)
 		{
-			using (new WaitCursor(SetCursor))
+			using (new WaitCursor(this, SetCursor))
 			{
 				if (node == _machineNode)
 				{
@@ -629,7 +628,8 @@ namespace ProcessManagerUI.Forms
 
 			node.EnsureVisible();
 			treeView.SelectedNode = node;
-			treeView.Focus();
+			if (treeView.SelectedNode != null)
+				treeView.Focus();
 		}
 
 		private delegate List<FileSystemListViewItem> GetListViewItemsDelegate();
@@ -681,8 +681,8 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			treeView.Cursor = cursor;
-			listView.Cursor = cursor;
+			splitContainer.Enabled = (cursor != Cursors.WaitCursor);
+			Cursor = cursor;
 		}
 
 		#endregion

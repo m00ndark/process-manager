@@ -32,6 +32,20 @@ namespace ProcessManager.DataObjects
 
 		#endregion
 
+		public DistributionSource Clone()
+		{
+			return new DistributionSource() { ID = ID, Path = Path, Filter = Filter, Recursive = Recursive, Inclusive = Inclusive };
+		}
+
+		public void CopyTo(DistributionSource source)
+		{
+			source.ID = ID;
+			source.Path = Path;
+			source.Filter = Filter;
+			source.Recursive = Recursive;
+			source.Inclusive = Inclusive;
+		}
+
 		#region Implementation of IXmlSerializable
 
 		public XmlSchema GetSchema()

@@ -18,14 +18,14 @@ namespace ProcessManager.DataAccess
 			{
 				int driveType = int.Parse(row["DriveType"].ToString());
 				FileSystemDriveType type = (Enum.IsDefined(typeof(FileSystemDriveType), driveType) ? (FileSystemDriveType) driveType : FileSystemDriveType.Unknown);
-				string providerName = (row["ProviderName"] != null ? row["ProviderName"].ToString().TrimEnd('\\') : string.Empty);
+				string providerName = (row["ProviderName"] != null ? row["ProviderName"].ToString().TrimEnd(Path.DirectorySeparatorChar) : string.Empty);
 				string volumeName = (row["VolumeName"] != null ? row["VolumeName"].ToString() : string.Empty);
 				string label = string.Empty;
 				if (type == FileSystemDriveType.NetworkDrive && !string.IsNullOrEmpty(providerName))
 				{
 					string labelPart = Path.GetFileName(providerName);
 					if (labelPart != null)
-						label = labelPart + " (" + providerName.Substring(0, providerName.Length - labelPart.Length).TrimEnd('\\') + ")";
+						label = labelPart + " (" + providerName.Substring(0, providerName.Length - labelPart.Length).TrimEnd(Path.DirectorySeparatorChar) + ")";
 				}
 				else
 					label = (!string.IsNullOrEmpty(volumeName) ? volumeName : string.Empty);
