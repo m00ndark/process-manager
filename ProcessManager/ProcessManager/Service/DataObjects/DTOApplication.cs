@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using ProcessManager.DataObjects;
 
@@ -13,6 +15,8 @@ namespace ProcessManager.Service.DataObjects
 			Name = application.Name;
 			RelativePath = application.RelativePath;
 			Arguments = application.Arguments;
+			Sources = new List<DTODistributionSource>();
+			Sources.AddRange(application.Sources.Select(source => new DTODistributionSource(source)));
 		}
 
 		#region Properties
@@ -29,11 +33,16 @@ namespace ProcessManager.Service.DataObjects
 		[DataMember]
 		public string Arguments { get; set; }
 
+		[DataMember]
+		public List<DTODistributionSource> Sources { get; private set; }
+
 		#endregion
 
 		public Application FromDTO()
 		{
-			return new Application() { ID = ID, Name = Name, RelativePath = RelativePath, Arguments = Arguments };
+			Application application = new Application() { ID = ID, Name = Name, RelativePath = RelativePath, Arguments = Arguments };
+			application.Sources.AddRange(Sources.Select(source => source.FromDTO()));
+			return application;
 		}
 	}
 }

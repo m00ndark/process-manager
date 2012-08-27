@@ -24,7 +24,6 @@ namespace ProcessManagerUI.Forms
 		private Machine _selectedMachine;
 		private Group _selectedGroup;
 		private Application _selectedApplication;
-		private Distribution _selectedDistribution;
 		private bool _disableTextChangedEvents;
 
 		public event EventHandler<MachinesEventArgs> ConfigurationChanged;
@@ -37,7 +36,6 @@ namespace ProcessManagerUI.Forms
 			_selectedMachine = null;
 			_selectedGroup = null;
 			_selectedApplication = null;
-			_selectedDistribution = null;
 			_disableTextChangedEvents = false;
 			_initTimer = new Timer() { Enabled = false, Interval = 100 };
 			_initTimer.Tick += InitTimer_Tick;
@@ -77,10 +75,8 @@ namespace ProcessManagerUI.Forms
 			TreeNode setupNode = new TreeNode("Setup") { Name = "Setup" };
 			TreeNode groupsNode = new TreeNode("Groups") { Name = "Groups", Tag = panelGroups };
 			TreeNode applicationsNode = new TreeNode("Applications") { Name = "Applications", Tag = panelApplications };
-			TreeNode distributionsNode = new TreeNode("Distributions") { Name = "Distributions", Tag = panelDistributions };
 			TreeNode pluginsNode = new TreeNode("Plugins") { Name = "Plugins", Tag = panelPlugins };
 			treeViewConfiguration.Nodes.Add(setupNode);
-			treeViewConfiguration.Nodes.Add(distributionsNode);
 			treeViewConfiguration.Nodes.Add(pluginsNode);
 			setupNode.Nodes.Add(groupsNode);
 			setupNode.Nodes.Add(applicationsNode);
@@ -321,6 +317,7 @@ namespace ProcessManagerUI.Forms
 				textBoxApplicationName.Text = _selectedApplication.Name;
 				textBoxApplicationRelativePath.Text = _selectedApplication.RelativePath;
 				textBoxApplicationArguments.Text = _selectedApplication.Arguments;
+				DisplayDistributionSourceCount();
 				_disableTextChangedEvents = false;
 				EnableControls();
 				panelApplication.Visible = true;
@@ -340,6 +337,7 @@ namespace ProcessManagerUI.Forms
 			textBoxApplicationName.Text = _selectedApplication.Name;
 			textBoxApplicationRelativePath.Text = _selectedApplication.RelativePath;
 			textBoxApplicationArguments.Text = _selectedApplication.Arguments;
+			DisplayDistributionSourceCount();
 			ListViewItem item = listViewApplications.Items.Add(new ListViewItem(_selectedApplication.Name) { Tag = _selectedApplication });
 			item.Selected = true;
 			panelApplication.Visible = true;
@@ -415,139 +413,37 @@ namespace ProcessManagerUI.Forms
 			UpdateSelectedApplication();
 		}
 
-		#endregion
-
-		#region Distributions
-
-		private void ListViewDistributions_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (_selectedMachine == null) return;
-
-			if (listViewDistributions.SelectedItems.Count == 0)
-			{
-				panelDistribution.Visible = false;
-			}
-			else
-			{
-				_disableTextChangedEvents = true;
-				_selectedDistribution = (Distribution) listViewDistributions.SelectedItems[0].Tag;
-				textBoxDistributionName.Text = _selectedDistribution.Name;
-				textBoxDistributionDestination.Text = _selectedDistribution.DestinationPath;
-				DisplayDistributionSourceCount();
-				_disableTextChangedEvents = false;
-				EnableControls();
-				panelDistribution.Visible = true;
-			}
-		}
-
-		private void ButtonAddDistribution_Click(object sender, EventArgs e)
-		{
-			if (_selectedMachine == null) return;
-
-			UpdateSelectedDistribution();
-			string distributionName = GetFirstAvailableDefaultName(
-				ConnectionStore.Connections[_selectedMachine].Configuration.Distributions.Select(distribution => distribution.Name).ToList(), "Distribution");
-			_selectedDistribution = new Distribution(distributionName);
-			ConnectionStore.Connections[_selectedMachine].Configuration.Distributions.Add(_selectedDistribution);
-			ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
-			textBoxDistributionName.Text = _selectedDistribution.Name;
-			textBoxDistributionDestination.Text = _selectedDistribution.DestinationPath;
-			DisplayDistributionSourceCount();
-			ListViewItem item = listViewDistributions.Items.Add(new ListViewItem(_selectedDistribution.Name) { Tag = _selectedDistribution });
-			item.Selected = true;
-			panelDistribution.Visible = true;
-			EnableControls();
-			textBoxDistributionName.Focus();
-		}
-
-		private void ButtonRemoveDistribution_Click(object sender, EventArgs e)
-		{
-			if (_selectedMachine == null) return;
-
-			if (listViewDistributions.SelectedItems.Count > 0)
-			{
-				_selectedDistribution = (Distribution) listViewDistributions.SelectedItems[0].Tag;
-				ConnectionStore.Connections[_selectedMachine].Configuration.Distributions.Remove(_selectedDistribution);
-				ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
-				listViewDistributions.Items.Remove(listViewDistributions.SelectedItems[0]);
-				_selectedDistribution = null;
-				EnableControls();
-			}
-		}
-
-		private void TextBoxDistributionName_TextChanged(object sender, EventArgs e)
-		{
-			if (!_disableTextChangedEvents)
-			{
-				DistributionChanged();
-				EnableControls();
-			}
-		}
-
-		private void TextBoxDistributionName_Leave(object sender, EventArgs e)
-		{
-			UpdateSelectedDistribution();
-		}
-
 		private void ButtonEditDistributionSources_Click(object sender, EventArgs e)
 		{
-			DistributionSourcesForm distributionSourcesForm = new DistributionSourcesForm(_selectedMachine, _selectedDistribution);
+			DistributionSourcesForm distributionSourcesForm = new DistributionSourcesForm(_selectedMachine, _selectedApplication, () => GetAllGroups(false));
 			if (distributionSourcesForm.ShowDialog(this) == DialogResult.OK)
 			{
 				if (distributionSourcesForm.DistributionSourcesChanged)
 				{
-					if (_selectedMachine == null) return;
+					if (_selectedMachine == null)
+						return;
 
-					_selectedDistribution.Sources.Where(x => distributionSourcesForm.DistributionSources.All(y => y.ID != x.ID))
-						.ToList().ForEach(x => _selectedDistribution.Sources.Remove(x));
+					_selectedApplication.Sources.Where(x => distributionSourcesForm.DistributionSources.All(y => y.ID != x.ID))
+						.ToList().ForEach(x => _selectedApplication.Sources.Remove(x));
 
 					distributionSourcesForm.DistributionSources
 						.Select(x => new
-							{
-								New = x,
-								Old = _selectedDistribution.Sources.FirstOrDefault(y => y.ID == x.ID)
-							})
+						{
+							New = x,
+							Old = _selectedApplication.Sources.FirstOrDefault(y => y.ID == x.ID)
+						})
 						.Where(x => x.Old != null)
 						.ToList()
 						.ForEach(x => x.New.CopyTo(x.Old));
 
-					distributionSourcesForm.DistributionSources.Where(x => _selectedDistribution.Sources.All(y => y.ID != x.ID))
-						.ToList().ForEach(x => _selectedDistribution.Sources.Add(x));
+					distributionSourcesForm.DistributionSources.Where(x => _selectedApplication.Sources.All(y => y.ID != x.ID))
+						.ToList().ForEach(x => _selectedApplication.Sources.Add(x));
 
 					DisplayDistributionSourceCount();
 
 					ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
 					EnableControls();
 				}
-			}
-		}
-
-		private void TextBoxDistributionDestination_TextChanged(object sender, EventArgs e)
-		{
-			if (!_disableTextChangedEvents)
-			{
-				DistributionChanged();
-				EnableControls();
-			}
-		}
-
-		private void TextBoxDistributionDestination_Leave(object sender, EventArgs e)
-		{
-			UpdateSelectedDistribution();
-		}
-
-		private void ButtonBrowseDistributionDestinationPath_Click(object sender, EventArgs e)
-		{
-			FileSystemBrowserForm fileSystemBrowser = new FileSystemBrowserForm(_selectedMachine)
-				{
-					Description = "Select a destination folder for the distribution...",
-					SelectedPath = textBoxDistributionDestination.Text,
-					BrowserMode = FileSystemBrowserForm.Mode.Folder
-				};
-			if (fileSystemBrowser.ShowDialog(this) == DialogResult.OK)
-			{
-				textBoxDistributionDestination.Text = fileSystemBrowser.SelectedPath;
-				UpdateSelectedDistribution();
 			}
 		}
 
@@ -584,6 +480,7 @@ namespace ProcessManagerUI.Forms
 				{
 					Description = "Select an application...",
 					SelectedPath = Path.Combine(group.Path, textBoxApplicationRelativePath.Text.Trim(Path.DirectorySeparatorChar)),
+					Filter = "Applications (*.exe)|*.exe|All files (*.*)|*.*",
 					BrowserMode = FileSystemBrowserForm.Mode.File
 				};
 			if (fileSystemBrowser.ShowDialog(this) == DialogResult.OK)
@@ -596,27 +493,6 @@ namespace ProcessManagerUI.Forms
 					UpdateSelectedApplication();
 				}
 			}
-
-	
-			//OpenFileDialog openFileDialog = new OpenFileDialog()
-			//    {
-			//        Title = "Select an application",
-			//        InitialDirectory = (string.IsNullOrEmpty(textBoxApplicationRelativePath.Text) ? group.Path
-			//            : Path.GetDirectoryName(Path.Combine(group.Path, textBoxApplicationRelativePath.Text.Trim(Path.DirectorySeparatorChar)))),
-			//        FileName = (string.IsNullOrEmpty(textBoxApplicationRelativePath.Text) ? string.Empty : Path.GetFileName(textBoxApplicationRelativePath.Text)),
-			//        Filter = "Applications (*.exe)|*.exe|All files (*.*)|*.*",
-			//        CheckFileExists = true
-			//    };
-			//if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-			//{
-			//    if (!openFileDialog.FileName.StartsWith(group.Path, StringComparison.CurrentCultureIgnoreCase))
-			//        Messenger.ShowError("Invalid application path", "The selected application's path must start with the selected group's path; " + group.Path);
-			//    else
-			//    {
-			//        textBoxApplicationRelativePath.Text = openFileDialog.FileName.Substring(group.Path.TrimEnd(Path.DirectorySeparatorChar).Length);
-			//        UpdateSelectedApplication();
-			//    }
-			//}
 		}
 
 		#endregion
@@ -763,7 +639,7 @@ namespace ProcessManagerUI.Forms
 			if (HasUnsavedConfiguration)
 			{
 				// validate
-				if (!ValidateGroups() || !ValidateApplications() || !ValidateDistributions())
+				if (!ValidateGroups() || !ValidateApplications())
 					return false;
 
 				List<Machine> modifiedMachines = ConnectionStore.Connections.Values
@@ -956,85 +832,10 @@ namespace ProcessManagerUI.Forms
 				yield return "Relative path can not be rooted";
 		}
 
-		#endregion
-
-		#region Distributions
-
 		private void DisplayDistributionSourceCount()
 		{
-			labelDistributionSourcesCount.Text = _selectedDistribution.Sources.Count
-				+ " source" + (_selectedDistribution.Sources.Count == 1 ? string.Empty : "s");
-		}
-
-		private void UpdateSelectedDistribution()
-		{
-			if (_selectedDistribution != null)
-			{
-				if (DistributionChanged())
-				{
-					_selectedDistribution.Name = textBoxDistributionName.Text;
-					_selectedDistribution.DestinationPath = textBoxDistributionDestination.Text;
-					ListViewItem item = listViewDistributions.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedDistribution);
-					item.Text = _selectedDistribution.Name;
-					listViewDistributions.Sort();
-				}
-				textBoxDistributionName.Text = _selectedDistribution.Name;
-				EnableControls();
-			}
-		}
-
-		private bool DistributionChanged()
-		{
-			bool distributionChanged = false;
-			if (_selectedMachine != null && _selectedDistribution != null && !string.IsNullOrEmpty(textBoxDistributionName.Text))
-			{
-				distributionChanged = (_selectedDistribution.Name != textBoxDistributionName.Text
-					|| _selectedDistribution.DestinationPath != textBoxDistributionDestination.Text);
-				ConnectionStore.Connections[_selectedMachine].ConfigurationModified |= distributionChanged;
-			}
-			return distributionChanged;
-		}
-
-		private static bool ValidateDistributions()
-		{
-			IDictionary<Machine, Dictionary<Distribution, List<string>>> invalidDistributions =
-				ConnectionStore.Connections.Values
-					.Where(connection => connection.ConfigurationModified)
-					.Select(connection => new
-					{
-						Machine = connection.Machine,
-						Distributions = connection.Configuration.Distributions
-							.Select(distribution => new
-							{
-								Distribution = distribution,
-								Messages = DistributionIsValid(distribution).ToList()
-							})
-							.Where(x => x.Messages.Count > 0)
-							.ToList()
-					})
-					.Where(x => x.Distributions.Count > 0)
-					.ToDictionary(x => x.Machine, x => x.Distributions.ToDictionary(y => y.Distribution, y => y.Messages));
-			if (invalidDistributions.Count > 0)
-			{
-				int invalidDistributionCount = invalidDistributions.SelectMany(x => x.Value).Count();
-				Messenger.ShowError("Distribution" + (invalidDistributionCount == 1 ? string.Empty : "s") + " invalid",
-					"One or more distribution property invalid. See details for more information.",
-					invalidDistributions.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine
-						+ y.Value.SelectMany(z => z.Value, (a, b) => new { Distribution = a.Key, Message = b })
-							.Aggregate(string.Empty, (a, b) => a + Environment.NewLine + y.Key + " > " + b.Distribution + ": " + b.Message).Trim()).Trim());
-				return false;
-			}
-			return true;
-		}
-
-		private static IEnumerable<string> DistributionIsValid(Distribution distribution)
-		{
-			if (string.IsNullOrEmpty(distribution.Name))
-				yield return "Name missing";
-			if (string.IsNullOrEmpty(distribution.DestinationPath))
-				yield return "Destination path missing";
-			else if (!Path.IsPathRooted(distribution.DestinationPath))
-				yield return  "Destination path must be rooted";
+			labelDistributionSourcesCount.Text = _selectedApplication.Sources.Count
+				+ " source" + (_selectedApplication.Sources.Count == 1 ? string.Empty : "s");
 		}
 
 		#endregion
@@ -1053,7 +854,6 @@ namespace ProcessManagerUI.Forms
 		{
 			UpdateSelectedGroup();
 			UpdateSelectedApplication();
-			UpdateSelectedDistribution();
 		}
 
 		private void ShowAllControls(bool show = true)
@@ -1081,12 +881,6 @@ namespace ProcessManagerUI.Forms
 			textBoxApplicationName.Text = string.Empty;
 			textBoxApplicationRelativePath.Text = string.Empty;
 			textBoxApplicationArguments.Text = string.Empty;
-			// distributions
-			listViewDistributions.Items.Clear();
-			_selectedDistribution = null;
-			panelDistribution.Visible = false;
-			textBoxDistributionName.Text = string.Empty;
-			textBoxDistributionDestination.Text = string.Empty;
 			// plugins
 			listViewPlugins.Items.Clear();
 			panelPlugin.Visible = false;
@@ -1100,13 +894,11 @@ namespace ProcessManagerUI.Forms
 			ServiceHelper.WaitForConfiguration(_selectedMachine);
 			listViewGroups.Items.Clear();
 			listViewApplications.Items.Clear();
-			listViewDistributions.Items.Clear();
 			listViewPlugins.Items.Clear();
 			if (_selectedMachine != null && ConnectionStore.ConfigurationAvailable(_selectedMachine))
 			{
 				ConnectionStore.Connections[_selectedMachine].Configuration.Groups.ForEach(group => listViewGroups.Items.Add(new ListViewItem(group.Name) { Tag = group }));
 				ConnectionStore.Connections[_selectedMachine].Configuration.Applications.ForEach(application => listViewApplications.Items.Add(new ListViewItem(application.Name) { Tag = application }));
-				ConnectionStore.Connections[_selectedMachine].Configuration.Distributions.ForEach(distribution => listViewDistributions.Items.Add(new ListViewItem(distribution.Name) { Tag = distribution }));
 			}
 			ShowAllControls(_selectedMachine != null && ConnectionStore.ConfigurationAvailable(_selectedMachine));
 		}

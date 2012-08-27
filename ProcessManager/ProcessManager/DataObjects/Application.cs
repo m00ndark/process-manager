@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -7,7 +9,10 @@ namespace ProcessManager.DataObjects
 {
 	public class Application : IIDObject, IXmlSerializable
 	{
-		public Application() { }
+		public Application()
+		{
+			Sources = new List<DistributionSource>();
+		}
 
 		public Application(string name) : this()
 		{
@@ -28,12 +33,15 @@ namespace ProcessManager.DataObjects
 		public string Name { get; set; }
 		public string RelativePath { get; set; }
 		public string Arguments { get; set; }
+		public List<DistributionSource> Sources { get; set; }
 
 		#endregion
 
 		public Application Clone()
 		{
-			return new Application() { ID = ID, Name = Name, RelativePath = RelativePath, Arguments = Arguments };
+			Application application = new Application() { ID = ID, Name = Name, RelativePath = RelativePath, Arguments = Arguments };
+			application.Sources.AddRange(Sources.Select(source => source.Clone()));
+			return application;
 		}
 
 		#region Equality
@@ -86,6 +94,19 @@ namespace ProcessManager.DataObjects
 			}
 
 			reader.MoveToElement();
+			if (reader.IsEmptyElement)
+				return;
+
+			while (reader.Read())
+			{
+				if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "Application")
+					break;
+
+				if (reader.NodeType == XmlNodeType.Element && reader.Name == "Source")
+					Sources.Add(new DistributionSource(reader));
+
+				reader.MoveToElement();
+			}
 		}
 
 		public void WriteXml(XmlWriter writer)
@@ -97,6 +118,8 @@ namespace ProcessManager.DataObjects
 			writer.WriteAttributeString("Name", Name);
 			writer.WriteAttributeString("RelativePath", RelativePath);
 			writer.WriteAttributeString("Arguments", Arguments);
+			foreach (DistributionSource source in Sources)
+				source.WriteXml(writer);
 			writer.WriteEndElement();
 		}
 

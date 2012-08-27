@@ -121,6 +121,7 @@ namespace ProcessManagerUI.Forms
 
 		private const string IMAGE_LIST_KEY_MACHINE = "Machine";
 		private const string IMAGE_LIST_KEY_FOLDER = "Folder";
+		private const string DEFAULT_FILTER = "All files (*.*)|*.*";
 
 		private static readonly object _lock = new object();
 		private bool _machineAvailable;
@@ -140,6 +141,7 @@ namespace ProcessManagerUI.Forms
 			SelectedPath = string.Empty;
 			Description = "Select a file or folder...";
 			BrowserMode = Mode.File | Mode.Folder;
+			Filter = DEFAULT_FILTER;
 			_machineAvailable = ConnectionStore.ConnectionCreated(Machine);
 			_entryTree = new Dictionary<IFileSystemEntry, IFileSystemEntry>();
 			_entryNodes = new Dictionary<IFileSystemEntry, FileSystemTreeNode>();
@@ -163,6 +165,7 @@ namespace ProcessManagerUI.Forms
 		public string SelectedPath { get; set; }
 		public string Description { get; set; }
 		public Mode BrowserMode { get; set; }
+		public string Filter { get; set; }
 
 		public bool FolderMode
 		{
@@ -189,6 +192,8 @@ namespace ProcessManagerUI.Forms
 					SelectedImageKey = IMAGE_LIST_KEY_MACHINE
 				};
 			treeView.Nodes.Add(_machineNode);
+
+			PopulateFilter();
 
 			if (FolderMode)
 			{
@@ -267,6 +272,14 @@ namespace ProcessManagerUI.Forms
 				buttonOK.PerformClick();
 		}
 
+		private void ComboBoxFilter_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (treeView.SelectedNode == null)
+				return;
+
+			// todo: here!!!
+		}
+
 		private void ButtonOK_Click(object sender, EventArgs e)
 		{
 			if (!EntrySelected())
@@ -321,6 +334,21 @@ namespace ProcessManagerUI.Forms
 		{
 			splitContainer.Enabled = (_machineAvailable && enable);
 			buttonOK.Enabled = (_machineAvailable && enable && EntrySelected());
+		}
+
+		private void PopulateFilter()
+		{
+			if (string.IsNullOrEmpty(Filter))
+				Filter = DEFAULT_FILTER;
+
+			string[] filterSplit = Filter.Split('|');
+			if (filterSplit.Length % 2 != 0)
+				filterSplit = DEFAULT_FILTER.Split('|');
+
+			for (int i = 0; i < filterSplit.Length; i += 2)
+				comboBoxFilter.Items.Add(new ComboBoxItem<string>(filterSplit[i], filterSplit[i + 1]));
+
+			comboBoxFilter.SelectedIndex = 0;
 		}
 
 		private void PreparePathExpansion(string path)
@@ -413,7 +441,7 @@ namespace ProcessManagerUI.Forms
 					continue;
 
 				List<FileSystemEntry> childEntries = ConnectionStore.Connections[Machine].ServiceHandler.Service
-					.GetFileSystemEntries(BuildPath(entry)).Select(x => x.FromDTO())
+					.GetFileSystemEntries(BuildPath(entry), FolderMode ? null : GetSelectedFilter()).Select(x => x.FromDTO())
 					.OrderBy(x => x.Name).ToList();
 
 				childEntries.ForEach(childEntry => _entryTree.Add(childEntry, entry));
@@ -669,6 +697,18 @@ namespace ProcessManagerUI.Forms
 			item.EnsureVisible();
 			item.Selected = true;
 			listView.Focus();
+		}
+
+		private delegate string GetSelectedFilterDelegate();
+
+		private string GetSelectedFilter()
+		{
+			if (comboBoxFilter.InvokeRequired)
+			{
+				return (string) comboBoxFilter.Invoke(new GetSelectedFilterDelegate(GetSelectedFilter));
+			}
+
+			return (comboBoxFilter.SelectedIndex != -1 ? ((ComboBoxItem<string>) comboBoxFilter.SelectedItem).Tag : "*");
 		}
 
 		private delegate void SetCursorDelegate(Cursor cursor);

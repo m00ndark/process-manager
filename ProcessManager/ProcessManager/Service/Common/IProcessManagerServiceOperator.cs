@@ -26,6 +26,6 @@ namespace ProcessManager.Service.Common
 		List<DTOFileSystemDrive> GetFileSystemDrives();
 
 		[OperationContract]
-		List<DTOFileSystemEntry> GetFileSystemEntries(string path);
+		List<DTOFileSystemEntry> GetFileSystemEntries(string path, string filter = null);
 	}
 }

@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
 using ProcessManagerUI.Utilities;
+using Application = ProcessManager.DataObjects.Application;
 
 namespace ProcessManagerUI.Forms
 {
@@ -20,27 +18,29 @@ namespace ProcessManagerUI.Forms
 	{
 		private const string UNSPECIFIED_PATH = "<unspecified>";
 
+		private readonly Func<IEnumerable<Group>> _getAllGroups;
 		private bool _machineAvailable;
 		private DistributionSource _selectedSource;
-		private bool _disableTextChangedEvents;
+		private bool _disableStateChangedEvents;
 
-		public DistributionSourcesForm(Machine machine, Distribution distribution)
+		public DistributionSourcesForm(Machine machine, Application application, Func<IEnumerable<Group>> getAllGroups)
 		{
 			InitializeComponent();
 
 			Machine = machine;
-			Distribution = distribution;
-			DistributionSources = new List<DistributionSource>(distribution.Sources.Select(source => source.Clone()));
+			Application = application;
+			DistributionSources = new List<DistributionSource>(application.Sources.Select(source => source.Clone()));
 			DistributionSourcesChanged = false;
+			_getAllGroups = getAllGroups;
 			_machineAvailable = ConnectionStore.ConnectionCreated(Machine);
 			_selectedSource = null;
-			_disableTextChangedEvents = false;
+			_disableStateChangedEvents = false;
 		}
 
 		#region Properties
 
 		public Machine Machine { get; private set; }
-		public Distribution Distribution { get; private set; }
+		public Application Application { get; private set; }
 		public List<DistributionSource> DistributionSources { get; private set; }
 		public bool DistributionSourcesChanged { get; private set; }
 
@@ -80,13 +80,13 @@ namespace ProcessManagerUI.Forms
 			}
 			else
 			{
-				_disableTextChangedEvents = true;
+				_disableStateChangedEvents = true;
 				_selectedSource = (DistributionSource) listViewSources.SelectedItems[0].Tag;
 				DisplayPath(_selectedSource.Path);
 				textBoxFilter.Text = _selectedSource.Filter;
 				checkBoxRecursive.Checked = _selectedSource.Recursive;
 				checkBoxInclusive.Checked = _selectedSource.Inclusive;
-				_disableTextChangedEvents = false;
+				_disableStateChangedEvents = false;
 				EnableControls();
 				panelSource.Visible = true;
 			}
@@ -133,7 +133,7 @@ namespace ProcessManagerUI.Forms
 
 		private void TextBoxPath_TextChanged(object sender, EventArgs e)
 		{
-			if (!_disableTextChangedEvents)
+			if (!_disableStateChangedEvents)
 			{
 				SourceChanged();
 				EnableControls();
@@ -153,22 +153,14 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonBrowseSourcePath_Click(object sender, EventArgs e)
 		{
-			FileSystemBrowserForm fileSystemBrowser = new FileSystemBrowserForm(Machine)
-				{
-					Description = "Select a source path for the distribution...",
-					SelectedPath = (textBoxPath.ForeColor == Color.Silver ? string.Empty : textBoxPath.Text),
-					BrowserMode = FileSystemBrowserForm.Mode.Folder | FileSystemBrowserForm.Mode.File
-				};
-			if (fileSystemBrowser.ShowDialog(this) == DialogResult.OK)
-			{
-				DisplayPath(fileSystemBrowser.SelectedPath);
-				UpdateSelectedSource();
-			}
+			if (!_machineAvailable) return;
+
+			Picker.ShowMenu(buttonBrowseSourcePath, _getAllGroups(), ContextMenu_BrowseSourcePath_GroupClicked);
 		}
 
 		private void TextBoxFilter_TextChanged(object sender, EventArgs e)
 		{
-			if (!_disableTextChangedEvents)
+			if (!_disableStateChangedEvents)
 			{
 				SourceChanged();
 				EnableControls();
@@ -182,12 +174,14 @@ namespace ProcessManagerUI.Forms
 
 		private void CheckBoxRecursive_CheckedChanged(object sender, EventArgs e)
 		{
-			UpdateSelectedSource();
+			if (!_disableStateChangedEvents)
+				UpdateSelectedSource();
 		}
 
 		private void CheckBoxInclusive_CheckedChanged(object sender, EventArgs e)
 		{
-			UpdateSelectedSource();
+			if (!_disableStateChangedEvents)
+				UpdateSelectedSource();
 		}
 
 		private void ButtonOK_Click(object sender, EventArgs e)
@@ -201,6 +195,29 @@ namespace ProcessManagerUI.Forms
 			Close();
 		}
 
+		#endregion
+
+		#region Picker event handlers
+
+		private void ContextMenu_BrowseSourcePath_GroupClicked(Group group)
+		{
+			FileSystemBrowserForm fileSystemBrowser = new FileSystemBrowserForm(Machine)
+				{
+					Description = "Select a source path for the distribution...",
+					SelectedPath = Path.Combine(group.Path, (textBoxPath.ForeColor == Color.Silver ? string.Empty : textBoxPath.Text.Trim(Path.DirectorySeparatorChar))),
+					BrowserMode = FileSystemBrowserForm.Mode.Folder | FileSystemBrowserForm.Mode.File
+				};
+			if (fileSystemBrowser.ShowDialog(this) == DialogResult.OK)
+			{
+				if (!fileSystemBrowser.SelectedPath.StartsWith(group.Path, StringComparison.CurrentCultureIgnoreCase))
+					Messenger.ShowError("Invalid source path", "The selected source path must start with the selected group's path; " + group.Path);
+				else
+				{
+					DisplayPath(fileSystemBrowser.SelectedPath.Substring(group.Path.TrimEnd(Path.DirectorySeparatorChar).Length));
+					UpdateSelectedSource();
+				}
+			}
+		}
 		#endregion
 
 		#region Service handler event handlers
@@ -296,7 +313,7 @@ namespace ProcessManagerUI.Forms
 					"One or more distribution source property invalid. See details for more information.",
 					invalidSources.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine
 						+ y.Value.Select(z => new { Source = y.Key, Message = z })
-							.Aggregate(string.Empty, (a, b) => a + Environment.NewLine + Machine + " > " + Distribution + ": " + b.Message).Trim()).Trim());
+							.Aggregate(string.Empty, (a, b) => a + Environment.NewLine + Machine + " > " + Application + ": " + b.Message).Trim()).Trim());
 				return false;
 			}
 			return true;

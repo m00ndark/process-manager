@@ -33,7 +33,6 @@ namespace ProcessManager.DataObjects
 			Hash = hash;
 			Groups = new List<Group>();
 			Applications = new List<Application>();
-			Distributions = new List<Distribution>();
 			if (Hash == null) UpdateHash();
 		}
 
@@ -42,7 +41,6 @@ namespace ProcessManager.DataObjects
 		public string Hash { get; private set; }
 		public List<Group> Groups { get; private set; }
 		public List<Application> Applications { get; private set; }
-		public List<Distribution> Distributions { get; private set; }
 
 		#endregion
 
@@ -56,7 +54,6 @@ namespace ProcessManager.DataObjects
 			Configuration configuration = new Configuration();
 			configuration.Groups.AddRange(Groups.Select(group => group.Clone()));
 			configuration.Applications.AddRange(Applications.Select(application => application.Clone()));
-			configuration.Distributions.AddRange(Distributions.Select(distribution => distribution.Clone()));
 			if (generateNewIDs)
 			{
 				configuration.Groups.ForEach(group => group.ID = Guid.NewGuid());
@@ -64,6 +61,7 @@ namespace ProcessManager.DataObjects
 					{
 						Guid oldID = application.ID;
 						application.ID = Guid.NewGuid();
+						application.Sources.ForEach(source => source.ID = Guid.NewGuid());
 						configuration.Groups.ForEach(group =>
 							{
 								if (group.Applications.Contains(oldID))
@@ -72,11 +70,6 @@ namespace ProcessManager.DataObjects
 									group.Applications.Add(application.ID);
 								}
 							});
-					});
-				configuration.Distributions.ForEach(distribution =>
-					{
-						distribution.ID = Guid.NewGuid();
-						distribution.Sources.ForEach(source => source.ID = Guid.NewGuid());
 					});
 			}
 			return configuration;
@@ -146,18 +139,6 @@ namespace ProcessManager.DataObjects
 							Applications.Add(new Application(reader));
 					}
 				}
-
-				if (reader.NodeType == XmlNodeType.Element && reader.Name == "Distributions")
-				{
-					while (reader.Read())
-					{
-						if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "Distributions")
-							break;
-
-						if (reader.NodeType == XmlNodeType.Element && reader.Name == "Distribution")
-							Distributions.Add(new Distribution(reader));
-					}
-				}
 			}
 		}
 
@@ -171,11 +152,6 @@ namespace ProcessManager.DataObjects
 			writer.WriteStartElement("Applications");
 			foreach (Application application in Applications)
 				application.WriteXml(writer);
-			writer.WriteEndElement();
-
-			writer.WriteStartElement("Distributions");
-			foreach (Distribution distribution in Distributions)
-				distribution.WriteXml(writer);
 			writer.WriteEndElement();
 		}
 

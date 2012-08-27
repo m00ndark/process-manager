@@ -35,6 +35,7 @@
 			this.imageList = new System.Windows.Forms.ImageList(this.components);
 			this.splitContainer = new System.Windows.Forms.SplitContainer();
 			this.treeView = new ProcessManagerUI.Controls.TreeView();
+			this.comboBoxFilter = new System.Windows.Forms.ComboBox();
 			this.listView = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeaderSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -96,6 +97,7 @@
 			// 
 			// splitContainer.Panel2
 			// 
+			this.splitContainer.Panel2.Controls.Add(this.comboBoxFilter);
 			this.splitContainer.Panel2.Controls.Add(this.listView);
 			this.splitContainer.Size = new System.Drawing.Size(660, 307);
 			this.splitContainer.SplitterDistance = 225;
@@ -122,19 +124,33 @@
 			this.treeView.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.TreeView_BeforeSelect);
 			this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterSelect);
 			// 
+			// comboBoxFilter
+			// 
+			this.comboBoxFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.comboBoxFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxFilter.FormattingEnabled = true;
+			this.comboBoxFilter.Location = new System.Drawing.Point(0, 286);
+			this.comboBoxFilter.Name = "comboBoxFilter";
+			this.comboBoxFilter.Size = new System.Drawing.Size(431, 21);
+			this.comboBoxFilter.TabIndex = 29;
+			this.comboBoxFilter.SelectedIndexChanged += new System.EventHandler(this.ComboBoxFilter_SelectedIndexChanged);
+			// 
 			// listView
 			// 
+			this.listView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderName,
             this.columnHeaderSize,
             this.columnHeaderModifiedDate});
-			this.listView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.listView.FullRowSelect = true;
 			this.listView.HideSelection = false;
 			this.listView.Location = new System.Drawing.Point(0, 0);
 			this.listView.MultiSelect = false;
 			this.listView.Name = "listView";
-			this.listView.Size = new System.Drawing.Size(431, 307);
+			this.listView.Size = new System.Drawing.Size(431, 282);
 			this.listView.SmallImageList = this.imageList;
 			this.listView.TabIndex = 28;
 			this.listView.UseCompatibleStateImageBehavior = false;
@@ -200,5 +216,6 @@
 		private System.Windows.Forms.ColumnHeader columnHeaderName;
 		private System.Windows.Forms.ColumnHeader columnHeaderSize;
 		private System.Windows.Forms.ColumnHeader columnHeaderModifiedDate;
+		private System.Windows.Forms.ComboBox comboBoxFilter;
 	}
 }

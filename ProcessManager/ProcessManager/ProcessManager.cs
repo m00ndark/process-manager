@@ -127,9 +127,9 @@ namespace ProcessManager
 			return FileSystemHandler.GetDrives().ToList();
 		}
 
-		public List<FileSystemEntry> GetFileSystemEntries(string path)
+		public List<FileSystemEntry> GetFileSystemEntries(string path, string filter)
 		{
-			return FileSystemHandler.GetFileSystemEntries(path).ToList();
+			return FileSystemHandler.GetFileSystemEntries(path, filter).ToList();
 		}
 
 		#endregion

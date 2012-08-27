@@ -79,10 +79,10 @@ namespace ProcessManager.Service.Host
 			return ProcessManager.Instance.GetFileSystemDrives().Select(x => new DTOFileSystemDrive(x)).ToList();
 		}
 
-		public List<DTOFileSystemEntry> GetFileSystemEntries(string path)
+		public List<DTOFileSystemEntry> GetFileSystemEntries(string path, string filter)
 		{
-			Logger.Add(LogType.Debug, "GetFileSystemEntries call received: path = " + path);
-			return ProcessManager.Instance.GetFileSystemEntries(path).Select(x => new DTOFileSystemEntry(x)).ToList();
+			Logger.Add(LogType.Debug, "GetFileSystemEntries call received: path = " + path + ", filter = " + filter);
+			return ProcessManager.Instance.GetFileSystemEntries(path, filter).Select(x => new DTOFileSystemEntry(x)).ToList();
 		}
 
 		#endregion

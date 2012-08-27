@@ -88,7 +88,6 @@
     <Compile Include="DataObjects\Comparers\GroupEqualityComparer.cs" />
     <Compile Include="DataObjects\Comparers\IDObjectEqualityComparer.cs" />
     <Compile Include="DataObjects\Comparers\MachineEqualityComparer.cs" />
-    <Compile Include="DataObjects\Distribution.cs" />
     <Compile Include="DataObjects\DistributionSource.cs" />
     <Compile Include="DataObjects\FileSystemDrive.cs" />
     <Compile Include="DataObjects\FileSystemEntry.cs" />
@@ -115,7 +114,6 @@
     <Compile Include="Service\DataObjects\DTOApplicationAction.cs" />
     <Compile Include="Service\DataObjects\DTOApplicationStatus.cs" />
     <Compile Include="Service\DataObjects\DTOConfiguration.cs" />
-    <Compile Include="Service\DataObjects\DTODistribution.cs" />
     <Compile Include="Service\DataObjects\DTODistributionSource.cs" />
     <Compile Include="Service\DataObjects\DTOFileSystemDrive.cs" />
     <Compile Include="Service\DataObjects\DTOFileSystemEntry.cs" />

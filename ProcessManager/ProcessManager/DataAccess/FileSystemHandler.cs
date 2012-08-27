@@ -34,7 +34,7 @@ namespace ProcessManager.DataAccess
 			}
 		}
 
-		public static IEnumerable<FileSystemEntry> GetFileSystemEntries(string path)
+		public static IEnumerable<FileSystemEntry> GetFileSystemEntries(string path, string filter)
 		{
 			string[] directories = new string[0], files = new string[0];
 
@@ -44,7 +44,9 @@ namespace ProcessManager.DataAccess
 					yield break;
 
 				directories = Directory.GetDirectories(path);
-				files = Directory.GetFiles(path);
+
+				if (filter != null)
+					files = Directory.GetFiles(path, filter);
 			}
 			catch { ; }
 
