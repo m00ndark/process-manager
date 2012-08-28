@@ -127,6 +127,7 @@ namespace ProcessManagerUI.Forms
 		private bool _machineAvailable;
 		private readonly IDictionary<IFileSystemEntry, IFileSystemEntry> _entryTree; // < child, parent >
 		private readonly IDictionary<IFileSystemEntry, FileSystemTreeNode> _entryNodes;
+		private readonly IDictionary<IFileSystemEntry, string> _entryFilter;
 		private readonly PrioritizedEntryQueue _entryQueue;
 		private Queue<string> _pathExpansionQueue;
 		private WaitCursor _pathExpansionWaitCursor;
@@ -145,6 +146,7 @@ namespace ProcessManagerUI.Forms
 			_machineAvailable = ConnectionStore.ConnectionCreated(Machine);
 			_entryTree = new Dictionary<IFileSystemEntry, IFileSystemEntry>();
 			_entryNodes = new Dictionary<IFileSystemEntry, FileSystemTreeNode>();
+			_entryFilter = new Dictionary<IFileSystemEntry, string>();
 			_entryQueue = new PrioritizedEntryQueue();
 			_pathExpansionQueue = null;
 			_pathExpansionWaitCursor = null;
@@ -277,7 +279,7 @@ namespace ProcessManagerUI.Forms
 			if (treeView.SelectedNode == null)
 				return;
 
-			// todo: here!!!
+			DisplayFiles((FileSystemTreeNode) treeView.SelectedNode);
 		}
 
 		private void ButtonOK_Click(object sender, EventArgs e)
@@ -356,7 +358,7 @@ namespace ProcessManagerUI.Forms
 			if (!Path.IsPathRooted(path) || path[1] != ':')
 				return;
 
-			string[] pathSplit = path.Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] pathSplit = path.Split(new[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
 
 			if (pathSplit[0].Length != 2 || !pathSplit[0].EndsWith(":"))
 				return;
@@ -440,11 +442,14 @@ namespace ProcessManagerUI.Forms
 				if (NodeHasChildren(treeNode))
 					continue;
 
+				_entryFilter[entry] = GetSelectedFilter();
+
 				List<FileSystemEntry> childEntries = ConnectionStore.Connections[Machine].ServiceHandler.Service
-					.GetFileSystemEntries(BuildPath(entry), FolderMode ? null : GetSelectedFilter()).Select(x => x.FromDTO())
+					.GetFileSystemEntries(BuildPath(entry), FolderMode ? null : _entryFilter[entry]).Select(x => x.FromDTO())
 					.OrderBy(x => x.Name).ToList();
 
-				childEntries.ForEach(childEntry => _entryTree.Add(childEntry, entry));
+				childEntries.Where(childEntry => childEntry.IsFolder).ToList()
+					.ForEach(childEntry => _entryTree.Add(childEntry, entry));
 
 				List<FileSystemTreeNode> childTreeNodes = childEntries
 					.Where(childEntry => childEntry.IsFolder)
@@ -465,6 +470,25 @@ namespace ProcessManagerUI.Forms
 				treeNode.ChildEntries = childEntries.Cast<IFileSystemEntry>().ToList();
 				SetTreeViewNodes(treeNode, childTreeNodes);
 			}
+		}
+
+		private void RequestFiles(IFileSystemEntry entry)
+		{
+			if (!_machineAvailable)
+				return;
+
+			if (FolderMode)
+				return;
+
+			_entryFilter[entry] = GetSelectedFilter();
+
+			List<FileSystemEntry> childEntries = ConnectionStore.Connections[Machine].ServiceHandler.Service
+				.GetFileSystemEntries(BuildPath(entry), _entryFilter[entry]).Select(x => x.FromDTO())
+				.Where(x => !x.IsFolder).OrderBy(x => x.Name).ToList();
+
+			FileSystemTreeNode treeNode = _entryNodes[entry];
+
+			treeNode.ChildEntries = treeNode.ChildEntries.Where(x => x.IsFolder).Concat(childEntries).ToList();
 		}
 
 		private string BuildPath(IFileSystemEntry entry)
@@ -547,6 +571,9 @@ namespace ProcessManagerUI.Forms
 				}
 				else
 				{
+					if (_entryFilter[node.Entry] != GetSelectedFilter())
+						RequestFiles(node.Entry);
+
 					LoadFileIcons(node.ChildEntries);
 					SetListViewItems(node.ChildEntries
 						.Where(x => x is FileSystemEntry)
