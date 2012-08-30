@@ -14,7 +14,7 @@ namespace ProcessManagerUI.Support
 				if (action != null)
 					action();
 			}
-			catch (InvalidAsynchronousStateException) { }
+			catch (InvalidAsynchronousStateException) { /*  */ }
 			catch (Exception ex)
 			{
 				Logger.Add("Unhandled exception:", ex);

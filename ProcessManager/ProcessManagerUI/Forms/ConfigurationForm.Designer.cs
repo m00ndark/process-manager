@@ -623,6 +623,7 @@
 			// 
 			this.labelDistributionSourcesCount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelDistributionSourcesCount.ForeColor = System.Drawing.Color.Gray;
 			this.labelDistributionSourcesCount.Location = new System.Drawing.Point(161, 151);
 			this.labelDistributionSourcesCount.Name = "labelDistributionSourcesCount";
 			this.labelDistributionSourcesCount.Size = new System.Drawing.Size(223, 13);

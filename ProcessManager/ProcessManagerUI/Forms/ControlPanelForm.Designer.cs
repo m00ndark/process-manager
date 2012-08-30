@@ -45,7 +45,7 @@
 			this.linkLabelRestartAll = new System.Windows.Forms.LinkLabel();
 			this.labelAllSelected = new System.Windows.Forms.Label();
 			this.flowLayoutPanelApplications = new System.Windows.Forms.FlowLayoutPanel();
-			this.panelGroupByAndFilter = new System.Windows.Forms.Panel();
+			this.panelControlPanelGroupByAndFilter = new System.Windows.Forms.Panel();
 			this.tableLayoutPanelFilter = new System.Windows.Forms.TableLayoutPanel();
 			this.comboBoxMachineFilter = new System.Windows.Forms.ComboBox();
 			this.comboBoxApplicationFilter = new System.Windows.Forms.ComboBox();
@@ -56,22 +56,33 @@
 			this.panelGlass = new System.Windows.Forms.Panel();
 			this.tabControlSection = new System.Windows.Forms.TabControl();
 			this.tabPageControlPanel = new System.Windows.Forms.TabPage();
-			this.tabPagePlugins = new System.Windows.Forms.TabPage();
+			this.tabPageDistribution = new System.Windows.Forms.TabPage();
 			this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
 			this.panelTabPageArea = new System.Windows.Forms.Panel();
+			this.tableLayoutPanelDistribution = new System.Windows.Forms.TableLayoutPanel();
 			this.horizontalPanel = new ProcessManagerUI.Controls.HorizontalPanel();
 			this.linkLabelOpenConfiguration = new System.Windows.Forms.LinkLabel();
-			this.tableLayoutPanelPlugins = new System.Windows.Forms.TableLayoutPanel();
+			this.panelDistributionGroupByAndFilter = new System.Windows.Forms.Panel();
+			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+			this.comboBox1 = new System.Windows.Forms.ComboBox();
+			this.comboBox2 = new System.Windows.Forms.ComboBox();
+			this.comboBox3 = new System.Windows.Forms.ComboBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.comboBox4 = new System.Windows.Forms.ComboBox();
+			this.label2 = new System.Windows.Forms.Label();
 			this.contextMenuStripSystemTray.SuspendLayout();
 			this.tableLayoutPanelControlPanel.SuspendLayout();
 			this.panelApplications.SuspendLayout();
-			this.panelGroupByAndFilter.SuspendLayout();
+			this.panelControlPanelGroupByAndFilter.SuspendLayout();
 			this.tableLayoutPanelFilter.SuspendLayout();
 			this.panelGlass.SuspendLayout();
 			this.tabControlSection.SuspendLayout();
 			this.tableLayoutPanelMain.SuspendLayout();
 			this.panelTabPageArea.SuspendLayout();
+			this.tableLayoutPanelDistribution.SuspendLayout();
 			this.horizontalPanel.SuspendLayout();
+			this.panelDistributionGroupByAndFilter.SuspendLayout();
+			this.tableLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// notifyIcon
@@ -119,7 +130,7 @@
 			this.tableLayoutPanelControlPanel.ColumnCount = 1;
 			this.tableLayoutPanelControlPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanelControlPanel.Controls.Add(this.panelApplications, 0, 1);
-			this.tableLayoutPanelControlPanel.Controls.Add(this.panelGroupByAndFilter, 0, 0);
+			this.tableLayoutPanelControlPanel.Controls.Add(this.panelControlPanelGroupByAndFilter, 0, 0);
 			this.tableLayoutPanelControlPanel.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanelControlPanel.Margin = new System.Windows.Forms.Padding(0);
 			this.tableLayoutPanelControlPanel.Name = "tableLayoutPanelControlPanel";
@@ -270,19 +281,19 @@
 			this.flowLayoutPanelApplications.Size = new System.Drawing.Size(380, 132);
 			this.flowLayoutPanelApplications.TabIndex = 1;
 			// 
-			// panelGroupByAndFilter
+			// panelControlPanelGroupByAndFilter
 			// 
-			this.panelGroupByAndFilter.Controls.Add(this.tableLayoutPanelFilter);
-			this.panelGroupByAndFilter.Controls.Add(this.labelFilter);
-			this.panelGroupByAndFilter.Controls.Add(this.comboBoxGroupBy);
-			this.panelGroupByAndFilter.Controls.Add(this.labelGroupBy);
-			this.panelGroupByAndFilter.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelGroupByAndFilter.Location = new System.Drawing.Point(0, 0);
-			this.panelGroupByAndFilter.Margin = new System.Windows.Forms.Padding(0);
-			this.panelGroupByAndFilter.Name = "panelGroupByAndFilter";
-			this.panelGroupByAndFilter.Padding = new System.Windows.Forms.Padding(10);
-			this.panelGroupByAndFilter.Size = new System.Drawing.Size(400, 63);
-			this.panelGroupByAndFilter.TabIndex = 3;
+			this.panelControlPanelGroupByAndFilter.Controls.Add(this.tableLayoutPanelFilter);
+			this.panelControlPanelGroupByAndFilter.Controls.Add(this.labelFilter);
+			this.panelControlPanelGroupByAndFilter.Controls.Add(this.comboBoxGroupBy);
+			this.panelControlPanelGroupByAndFilter.Controls.Add(this.labelGroupBy);
+			this.panelControlPanelGroupByAndFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelControlPanelGroupByAndFilter.Location = new System.Drawing.Point(0, 0);
+			this.panelControlPanelGroupByAndFilter.Margin = new System.Windows.Forms.Padding(0);
+			this.panelControlPanelGroupByAndFilter.Name = "panelControlPanelGroupByAndFilter";
+			this.panelControlPanelGroupByAndFilter.Padding = new System.Windows.Forms.Padding(10);
+			this.panelControlPanelGroupByAndFilter.Size = new System.Drawing.Size(400, 63);
+			this.panelControlPanelGroupByAndFilter.TabIndex = 3;
 			// 
 			// tableLayoutPanelFilter
 			// 
@@ -385,7 +396,7 @@
 			this.tabControlSection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabControlSection.Controls.Add(this.tabPageControlPanel);
-			this.tabControlSection.Controls.Add(this.tabPagePlugins);
+			this.tabControlSection.Controls.Add(this.tabPageDistribution);
 			this.tabControlSection.Location = new System.Drawing.Point(3, 0);
 			this.tabControlSection.Name = "tabControlSection";
 			this.tabControlSection.SelectedIndex = 0;
@@ -403,15 +414,15 @@
 			this.tabPageControlPanel.Text = "Control Panel";
 			this.tabPageControlPanel.UseVisualStyleBackColor = true;
 			// 
-			// tabPagePlugins
+			// tabPageDistribution
 			// 
-			this.tabPagePlugins.Location = new System.Drawing.Point(4, 22);
-			this.tabPagePlugins.Name = "tabPagePlugins";
-			this.tabPagePlugins.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPagePlugins.Size = new System.Drawing.Size(402, 4);
-			this.tabPagePlugins.TabIndex = 1;
-			this.tabPagePlugins.Text = "Plugins";
-			this.tabPagePlugins.UseVisualStyleBackColor = true;
+			this.tabPageDistribution.Location = new System.Drawing.Point(4, 22);
+			this.tabPageDistribution.Name = "tabPageDistribution";
+			this.tabPageDistribution.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPageDistribution.Size = new System.Drawing.Size(402, 4);
+			this.tabPageDistribution.TabIndex = 1;
+			this.tabPageDistribution.Text = "Distribution";
+			this.tabPageDistribution.UseVisualStyleBackColor = true;
 			// 
 			// tableLayoutPanelMain
 			// 
@@ -436,13 +447,31 @@
 			this.panelTabPageArea.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelTabPageArea.Controls.Add(this.tableLayoutPanelDistribution);
 			this.panelTabPageArea.Controls.Add(this.tableLayoutPanelControlPanel);
-			this.panelTabPageArea.Controls.Add(this.tableLayoutPanelPlugins);
 			this.panelTabPageArea.Location = new System.Drawing.Point(0, 0);
 			this.panelTabPageArea.Margin = new System.Windows.Forms.Padding(0);
 			this.panelTabPageArea.Name = "panelTabPageArea";
 			this.panelTabPageArea.Size = new System.Drawing.Size(400, 235);
 			this.panelTabPageArea.TabIndex = 2;
+			// 
+			// tableLayoutPanelDistribution
+			// 
+			this.tableLayoutPanelDistribution.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.tableLayoutPanelDistribution.ColumnCount = 1;
+			this.tableLayoutPanelDistribution.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelDistribution.Controls.Add(this.panelDistributionGroupByAndFilter, 0, 0);
+			this.tableLayoutPanelDistribution.Location = new System.Drawing.Point(0, 0);
+			this.tableLayoutPanelDistribution.Margin = new System.Windows.Forms.Padding(0);
+			this.tableLayoutPanelDistribution.Name = "tableLayoutPanelDistribution";
+			this.tableLayoutPanelDistribution.RowCount = 2;
+			this.tableLayoutPanelDistribution.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 63F));
+			this.tableLayoutPanelDistribution.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelDistribution.Size = new System.Drawing.Size(400, 235);
+			this.tableLayoutPanelDistribution.TabIndex = 3;
+			this.tableLayoutPanelDistribution.Visible = false;
 			// 
 			// horizontalPanel
 			// 
@@ -474,22 +503,101 @@
 			this.linkLabelOpenConfiguration.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.linkLabelOpenConfiguration.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelOpenConfiguration_LinkClicked);
 			// 
-			// tableLayoutPanelPlugins
+			// panelDistributionGroupByAndFilter
 			// 
-			this.tableLayoutPanelPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+			this.panelDistributionGroupByAndFilter.Controls.Add(this.tableLayoutPanel1);
+			this.panelDistributionGroupByAndFilter.Controls.Add(this.label1);
+			this.panelDistributionGroupByAndFilter.Controls.Add(this.comboBox4);
+			this.panelDistributionGroupByAndFilter.Controls.Add(this.label2);
+			this.panelDistributionGroupByAndFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelDistributionGroupByAndFilter.Location = new System.Drawing.Point(0, 0);
+			this.panelDistributionGroupByAndFilter.Margin = new System.Windows.Forms.Padding(0);
+			this.panelDistributionGroupByAndFilter.Name = "panelDistributionGroupByAndFilter";
+			this.panelDistributionGroupByAndFilter.Padding = new System.Windows.Forms.Padding(10);
+			this.panelDistributionGroupByAndFilter.Size = new System.Drawing.Size(400, 63);
+			this.panelDistributionGroupByAndFilter.TabIndex = 4;
+			// 
+			// tableLayoutPanel1
+			// 
+			this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.tableLayoutPanelPlugins.ColumnCount = 1;
-			this.tableLayoutPanelPlugins.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanelPlugins.Location = new System.Drawing.Point(0, 0);
-			this.tableLayoutPanelPlugins.Margin = new System.Windows.Forms.Padding(0);
-			this.tableLayoutPanelPlugins.Name = "tableLayoutPanelPlugins";
-			this.tableLayoutPanelPlugins.RowCount = 2;
-			this.tableLayoutPanelPlugins.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-			this.tableLayoutPanelPlugins.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanelPlugins.Size = new System.Drawing.Size(400, 235);
-			this.tableLayoutPanelPlugins.TabIndex = 3;
-			this.tableLayoutPanelPlugins.Visible = false;
+			this.tableLayoutPanel1.ColumnCount = 5;
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33332F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 6F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 6F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+			this.tableLayoutPanel1.Controls.Add(this.comboBox1, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(this.comboBox2, 4, 0);
+			this.tableLayoutPanel1.Controls.Add(this.comboBox3, 2, 0);
+			this.tableLayoutPanel1.Location = new System.Drawing.Point(71, 37);
+			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+			this.tableLayoutPanel1.RowCount = 1;
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(319, 21);
+			this.tableLayoutPanel1.TabIndex = 6;
+			// 
+			// comboBox1
+			// 
+			this.comboBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBox1.FormattingEnabled = true;
+			this.comboBox1.Location = new System.Drawing.Point(0, 0);
+			this.comboBox1.Margin = new System.Windows.Forms.Padding(0);
+			this.comboBox1.Name = "comboBox1";
+			this.comboBox1.Size = new System.Drawing.Size(102, 21);
+			this.comboBox1.TabIndex = 3;
+			// 
+			// comboBox2
+			// 
+			this.comboBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBox2.FormattingEnabled = true;
+			this.comboBox2.Location = new System.Drawing.Point(216, 0);
+			this.comboBox2.Margin = new System.Windows.Forms.Padding(0);
+			this.comboBox2.Name = "comboBox2";
+			this.comboBox2.Size = new System.Drawing.Size(103, 21);
+			this.comboBox2.TabIndex = 5;
+			// 
+			// comboBox3
+			// 
+			this.comboBox3.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBox3.FormattingEnabled = true;
+			this.comboBox3.Location = new System.Drawing.Point(108, 0);
+			this.comboBox3.Margin = new System.Windows.Forms.Padding(0);
+			this.comboBox3.Name = "comboBox3";
+			this.comboBox3.Size = new System.Drawing.Size(102, 21);
+			this.comboBox3.TabIndex = 4;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(7, 40);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(36, 13);
+			this.label1.TabIndex = 2;
+			this.label1.Text = "Filter:";
+			// 
+			// comboBox4
+			// 
+			this.comboBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.comboBox4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBox4.FormattingEnabled = true;
+			this.comboBox4.Location = new System.Drawing.Point(71, 10);
+			this.comboBox4.Name = "comboBox4";
+			this.comboBox4.Size = new System.Drawing.Size(319, 21);
+			this.comboBox4.TabIndex = 1;
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(7, 13);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(58, 13);
+			this.label2.TabIndex = 0;
+			this.label2.Text = "Group by:";
 			// 
 			// ControlPanelForm
 			// 
@@ -514,14 +622,18 @@
 			this.tableLayoutPanelControlPanel.ResumeLayout(false);
 			this.panelApplications.ResumeLayout(false);
 			this.panelApplications.PerformLayout();
-			this.panelGroupByAndFilter.ResumeLayout(false);
-			this.panelGroupByAndFilter.PerformLayout();
+			this.panelControlPanelGroupByAndFilter.ResumeLayout(false);
+			this.panelControlPanelGroupByAndFilter.PerformLayout();
 			this.tableLayoutPanelFilter.ResumeLayout(false);
 			this.panelGlass.ResumeLayout(false);
 			this.tabControlSection.ResumeLayout(false);
 			this.tableLayoutPanelMain.ResumeLayout(false);
 			this.panelTabPageArea.ResumeLayout(false);
+			this.tableLayoutPanelDistribution.ResumeLayout(false);
 			this.horizontalPanel.ResumeLayout(false);
+			this.panelDistributionGroupByAndFilter.ResumeLayout(false);
+			this.panelDistributionGroupByAndFilter.PerformLayout();
+			this.tableLayoutPanel1.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -539,7 +651,7 @@
 		private System.Windows.Forms.Panel panelApplications;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelApplications;
 		private System.Windows.Forms.Label labelUnavailable;
-		private System.Windows.Forms.Panel panelGroupByAndFilter;
+		private System.Windows.Forms.Panel panelControlPanelGroupByAndFilter;
 		private System.Windows.Forms.ComboBox comboBoxApplicationFilter;
 		private System.Windows.Forms.ComboBox comboBoxGroupFilter;
 		private System.Windows.Forms.ComboBox comboBoxMachineFilter;
@@ -556,9 +668,17 @@
 		private System.Windows.Forms.Panel panelGlass;
 		private System.Windows.Forms.TabControl tabControlSection;
 		private System.Windows.Forms.TabPage tabPageControlPanel;
-		private System.Windows.Forms.TabPage tabPagePlugins;
+		private System.Windows.Forms.TabPage tabPageDistribution;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelMain;
 		private System.Windows.Forms.Panel panelTabPageArea;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelPlugins;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelDistribution;
+		private System.Windows.Forms.Panel panelDistributionGroupByAndFilter;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+		private System.Windows.Forms.ComboBox comboBox1;
+		private System.Windows.Forms.ComboBox comboBox2;
+		private System.Windows.Forms.ComboBox comboBox3;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.ComboBox comboBox4;
+		private System.Windows.Forms.Label label2;
 	}
 }

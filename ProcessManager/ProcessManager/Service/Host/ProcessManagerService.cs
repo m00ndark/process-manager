@@ -14,19 +14,30 @@ namespace ProcessManager.Service.Host
 	internal class ProcessManagerService : IProcessManagerService
 	{
 		private readonly IDictionary<IProcessManagerServiceEventHandler, bool> _clients;
-		private readonly IDictionary<IProcessManagerServiceEventHandler, InstanceContext> _clientsInstances = new Dictionary<IProcessManagerServiceEventHandler, InstanceContext>();
+		//private readonly IDictionary<IProcessManagerServiceEventHandler, InstanceContext> _clientsInstances = new Dictionary<IProcessManagerServiceEventHandler, InstanceContext>();
 
 		public ProcessManagerService()
 		{
 			_clients = new Dictionary<IProcessManagerServiceEventHandler, bool>();
 		}
 
+		#region Properties
+
+		private List<IProcessManagerServiceEventHandler> SubscribingClients
+		{
+			get { lock (_clients) return _clients.Where(x => x.Value).Select(x => x.Key).ToList(); }
+		}
+
+		#endregion
+
 		#region Implementation of IProcessManagerService
 
 		public void Register(bool subscribe)
 		{
-			_clients.Add(OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>(), subscribe);
-			_clientsInstances.Add(OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>(), OperationContext.Current.InstanceContext);
+			lock (_clients)
+				_clients.Add(OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>(), subscribe);
+
+			//_clientsInstances.Add(OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>(), OperationContext.Current.InstanceContext);
 			string clientAddress = ((RemoteEndpointMessageProperty) OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name]).Address;
 			Logger.Add("Client at " + clientAddress + " registered" + (subscribe ? " as subscriber" : string.Empty));
 		}
@@ -34,7 +45,10 @@ namespace ProcessManager.Service.Host
 		public void Unregister()
 		{
 			IProcessManagerServiceEventHandler caller = OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>();
-			_clients.Where(x => (x.Key == caller)).ToList().ForEach(x => _clients.Remove(x));
+
+			lock (_clients)
+				_clients.Where(x => (x.Key == caller)).ToList().ForEach(x => _clients.Remove(x));
+
 			string clientAddress = ((RemoteEndpointMessageProperty) OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name]).Address;
 			Logger.Add("Client at " + clientAddress + " unregistered");
 		}
@@ -45,8 +59,8 @@ namespace ProcessManager.Service.Host
 
 		public void Ping()
 		{
-			// do nothing
 			Logger.Add(LogType.Debug, "Ping call received");
+			// do nothing
 		}
 
 		public DTOConfiguration GetConfiguration()
@@ -91,13 +105,13 @@ namespace ProcessManager.Service.Host
 
 		public void ProcessManagerEventProvider_ApplicationStatusesChanged(object sender, ApplicationStatusesEventArgs e)
 		{
-			Logger.Add("ProcessManagerEventProvider_ApplicationStatusesChanged: client count = " + _clients.Count);
+			//Logger.Add("ProcessManagerEventProvider_ApplicationStatusesChanged: client count = " + _clients.Count);
 			List<IProcessManagerServiceEventHandler> faultedClients = new List<IProcessManagerServiceEventHandler>();
-			foreach (IProcessManagerServiceEventHandler client in _clients.Where(x => x.Value).Select(x => x.Key))
+			foreach (IProcessManagerServiceEventHandler client in SubscribingClients)
 			{
 				try
 				{
-					Logger.Add(LogType.Debug, "InstanceContext.State = " + _clientsInstances[client].State);
+					//Logger.Add(LogType.Debug, "InstanceContext.State = " + _clientsInstances[client].State);
 					Logger.Add(LogType.Debug, "Sending ApplicationStatusesChanged event: thread id = " + System.Threading.Thread.CurrentThread.ManagedThreadId + ", count = " + e.ApplicationStatuses.Count + e.ApplicationStatuses.Aggregate("", (x, y) => x + ", " + y.GroupID + " / " + y.ApplicationID));
 					client.ServiceEvent_ApplicationStatusesChanged(e.ApplicationStatuses.Select(x => new DTOApplicationStatus(x)).ToList());
 				}
@@ -113,7 +127,7 @@ namespace ProcessManager.Service.Host
 		public void ProcessManagerEventProvider_ConfigurationChanged(object sender, MachineConfigurationHashEventArgs e)
 		{
 			List<IProcessManagerServiceEventHandler> faultedClients = new List<IProcessManagerServiceEventHandler>();
-			foreach (IProcessManagerServiceEventHandler client in _clients.Where(x => x.Value).Select(x => x.Key))
+			foreach (IProcessManagerServiceEventHandler client in SubscribingClients)
 			{
 				try
 				{
@@ -133,7 +147,9 @@ namespace ProcessManager.Service.Host
 
 		private void RemoveFaultedClients(List<IProcessManagerServiceEventHandler> faultedClients)
 		{
-			faultedClients.ForEach(client => _clients.Remove(client));
+			lock (_clients)
+				faultedClients.ForEach(client => _clients.Remove(client));
+
 			if (faultedClients.Count > 0)
 				Logger.Add(LogType.Error, "Removed " + faultedClients.Count + " faulted clients");
 		}

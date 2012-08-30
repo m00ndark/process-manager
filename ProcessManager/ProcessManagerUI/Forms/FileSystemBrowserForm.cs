@@ -448,8 +448,7 @@ namespace ProcessManagerUI.Forms
 					.GetFileSystemEntries(BuildPath(entry), FolderMode ? null : _entryFilter[entry]).Select(x => x.FromDTO())
 					.OrderBy(x => x.Name).ToList();
 
-				childEntries.Where(childEntry => childEntry.IsFolder).ToList()
-					.ForEach(childEntry => _entryTree.Add(childEntry, entry));
+				childEntries.ForEach(childEntry => _entryTree.Add(childEntry, entry));
 
 				List<FileSystemTreeNode> childTreeNodes = childEntries
 					.Where(childEntry => childEntry.IsFolder)
@@ -485,6 +484,9 @@ namespace ProcessManagerUI.Forms
 			List<FileSystemEntry> childEntries = ConnectionStore.Connections[Machine].ServiceHandler.Service
 				.GetFileSystemEntries(BuildPath(entry), _entryFilter[entry]).Select(x => x.FromDTO())
 				.Where(x => !x.IsFolder).OrderBy(x => x.Name).ToList();
+
+			_entryTree.Where(x => x.Value == entry && !x.Key.IsFolder).ToList().ForEach(x => _entryTree.Remove(x));
+			childEntries.ForEach(childEntry => _entryTree.Add(childEntry, entry));
 
 			FileSystemTreeNode treeNode = _entryNodes[entry];
 

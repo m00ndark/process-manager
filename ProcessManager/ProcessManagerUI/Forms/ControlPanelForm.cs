@@ -350,12 +350,12 @@ namespace ProcessManagerUI.Forms
 			if (tabControlSection.SelectedTab == tabPageControlPanel)
 			{
 				tableLayoutPanelControlPanel.Visible = true;
-				tableLayoutPanelPlugins.Visible = false;
+				tableLayoutPanelDistribution.Visible = false;
 			}
-			else if (tabControlSection.SelectedTab == tabPagePlugins)
+			else if (tabControlSection.SelectedTab == tabPageDistribution)
 			{
 				tableLayoutPanelControlPanel.Visible = false;
-				tableLayoutPanelPlugins.Visible = true;
+				tableLayoutPanelDistribution.Visible = true;
 			}
 		}
 

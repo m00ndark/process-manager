@@ -269,6 +269,12 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
+			if (Messenger.ShowWarningQuestion("Confirm setup copy", "Are you sure you want to copy the setup from "
+				+ sourceMachine + " to " + destinationMachine + ", overwriting the existing setup?") == DialogResult.No)
+			{
+				return;
+			}
+
 			Configuration configurationBackup = ConnectionStore.Connections[destinationMachine].Configuration;
 
 			ConnectionStore.Connections[destinationMachine].Configuration = ConnectionStore.Connections[sourceMachine].Configuration.Clone(true);
