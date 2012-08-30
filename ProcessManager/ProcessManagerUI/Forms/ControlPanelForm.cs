@@ -71,12 +71,12 @@ namespace ProcessManagerUI.Forms
 
 			foreach (ControlPanelGrouping grouping in _groupingDescriptions.Keys)
 			{
-				int index = comboBoxGroupBy.Items.Add(new ComboBoxItem<ControlPanelGrouping>(_groupingDescriptions[grouping], grouping));
+				int index = comboBoxControlPanelGroupBy.Items.Add(new ComboBoxItem<ControlPanelGrouping>(_groupingDescriptions[grouping], grouping));
 				if (Settings.Client.CP_SelectedGrouping == grouping.ToString())
-					comboBoxGroupBy.SelectedIndex = index;
+					comboBoxControlPanelGroupBy.SelectedIndex = index;
 			}
-			if (comboBoxGroupBy.SelectedIndex == -1)
-				comboBoxGroupBy.SelectedIndex = 0;
+			if (comboBoxControlPanelGroupBy.SelectedIndex == -1)
+				comboBoxControlPanelGroupBy.SelectedIndex = 0;
 
 			DisplaySelectedTabPage();
 			UpdateFilterAndLayout();
@@ -103,9 +103,9 @@ namespace ProcessManagerUI.Forms
 
 		private void ComboBoxGroupBy_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (comboBoxGroupBy.SelectedIndex == -1) return;
+			if (comboBoxControlPanelGroupBy.SelectedIndex == -1) return;
 
-			ControlPanelGrouping grouping = ((ComboBoxItem<ControlPanelGrouping>) comboBoxGroupBy.Items[comboBoxGroupBy.SelectedIndex]).Tag;
+			ControlPanelGrouping grouping = ((ComboBoxItem<ControlPanelGrouping>) comboBoxControlPanelGroupBy.Items[comboBoxControlPanelGroupBy.SelectedIndex]).Tag;
 			Settings.Client.CP_SelectedGrouping = grouping.ToString();
 			Settings.Client.Save(ClientSettingsType.States);
 
@@ -114,9 +114,9 @@ namespace ProcessManagerUI.Forms
 
 		private void ComboBoxMachineFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (comboBoxMachineFilter.SelectedIndex == -1) return;
+			if (comboBoxControlPanelMachineFilter.SelectedIndex == -1) return;
 
-			Settings.Client.CP_SelectedFilterMachine = ((ComboBoxItem) comboBoxMachineFilter.SelectedItem).Text;
+			Settings.Client.CP_SelectedFilterMachine = ((ComboBoxItem) comboBoxControlPanelMachineFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
 
 			LayoutNodes();
@@ -124,9 +124,9 @@ namespace ProcessManagerUI.Forms
 
 		private void ComboBoxGroupFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (comboBoxGroupFilter.SelectedIndex == -1) return;
+			if (comboBoxControlPanelGroupFilter.SelectedIndex == -1) return;
 
-			Settings.Client.CP_SelectedFilterGroup = ((ComboBoxItem) comboBoxGroupFilter.SelectedItem).Text;
+			Settings.Client.CP_SelectedFilterGroup = ((ComboBoxItem) comboBoxControlPanelGroupFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
 
 			LayoutNodes();
@@ -134,9 +134,9 @@ namespace ProcessManagerUI.Forms
 
 		private void ComboBoxApplicationFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (comboBoxApplicationFilter.SelectedIndex == -1) return;
+			if (comboBoxControlPanelApplicationFilter.SelectedIndex == -1) return;
 
-			Settings.Client.CP_SelectedFilterApplication = ((ComboBoxItem) comboBoxApplicationFilter.SelectedItem).Text;
+			Settings.Client.CP_SelectedFilterApplication = ((ComboBoxItem) comboBoxControlPanelApplicationFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
 
 			LayoutNodes();
@@ -244,13 +244,13 @@ namespace ProcessManagerUI.Forms
 
 		private void ControlPanelRootNode_SizeChanged(object sender, EventArgs e)
 		{
-			if (flowLayoutPanelApplications.Controls.Count > 0)
+			if (flowLayoutPanelControlPanelApplications.Controls.Count > 0)
 				UpdateSize(_rootNodes.Select(node => node.Size).ToList());
 		}
 
 		private void ControlPanelNode_CheckedChanged(object sender, EventArgs e)
 		{
-			if (flowLayoutPanelApplications.Controls.Count > 0)
+			if (flowLayoutPanelControlPanelApplications.Controls.Count > 0)
 			{
 				int uncheckedCount = _rootNodes.Count(node => node.CheckState == CheckState.Unchecked);
 				EnableActionLinks(uncheckedCount != _rootNodes.Count);
@@ -465,8 +465,8 @@ namespace ProcessManagerUI.Forms
 			}
 
 			string selectedMachineName = Settings.Client.CP_SelectedFilterMachine;
-			comboBoxMachineFilter.Items.Clear();
-			comboBoxMachineFilter.Items.Add(new ComboBoxItem(string.Empty));
+			comboBoxControlPanelMachineFilter.Items.Clear();
+			comboBoxControlPanelMachineFilter.Items.Add(new ComboBoxItem(string.Empty));
 
 			foreach (Machine machine in ConnectionStore.Connections.Values
 				.Where(connection => connection.Configuration != null)
@@ -474,14 +474,14 @@ namespace ProcessManagerUI.Forms
 				.Distinct(new MachineEqualityComparer())
 				.OrderBy(machine => machine.HostName))
 			{
-				int index = comboBoxMachineFilter.Items.Add(new ComboBoxItem(machine.HostName));
+				int index = comboBoxControlPanelMachineFilter.Items.Add(new ComboBoxItem(machine.HostName));
 				if (!string.IsNullOrEmpty(selectedMachineName) && machine.HostName.Equals(selectedMachineName, StringComparison.CurrentCultureIgnoreCase))
-					comboBoxMachineFilter.SelectedIndex = index;
+					comboBoxControlPanelMachineFilter.SelectedIndex = index;
 			}
 
 			string selectedGroupName = Settings.Client.CP_SelectedFilterGroup;
-			comboBoxGroupFilter.Items.Clear();
-			comboBoxGroupFilter.Items.Add(new ComboBoxItem(string.Empty));
+			comboBoxControlPanelGroupFilter.Items.Clear();
+			comboBoxControlPanelGroupFilter.Items.Add(new ComboBoxItem(string.Empty));
 
 			foreach (Group group in ConnectionStore.Connections.Values
 				.Where(connection => connection.Configuration != null)
@@ -489,14 +489,14 @@ namespace ProcessManagerUI.Forms
 				.Distinct(new GroupEqualityComparer())
 				.OrderBy(group => group.Name))
 			{
-				int index = comboBoxGroupFilter.Items.Add(new ComboBoxItem(group.Name));
+				int index = comboBoxControlPanelGroupFilter.Items.Add(new ComboBoxItem(group.Name));
 				if (!string.IsNullOrEmpty(selectedGroupName) && group.Name.Equals(selectedGroupName, StringComparison.CurrentCultureIgnoreCase))
-					comboBoxGroupFilter.SelectedIndex = index;
+					comboBoxControlPanelGroupFilter.SelectedIndex = index;
 			}
 
 			string selectedApplicationName = Settings.Client.CP_SelectedFilterApplication;
-			comboBoxApplicationFilter.Items.Clear();
-			comboBoxApplicationFilter.Items.Add(new ComboBoxItem(string.Empty));
+			comboBoxControlPanelApplicationFilter.Items.Clear();
+			comboBoxControlPanelApplicationFilter.Items.Add(new ComboBoxItem(string.Empty));
 
 			foreach (Application application in ConnectionStore.Connections.Values
 				.Where(connection => connection.Configuration != null)
@@ -504,9 +504,9 @@ namespace ProcessManagerUI.Forms
 				.Distinct(new ApplicationEqualityComparer())
 				.OrderBy(application => application.Name))
 			{
-				int index = comboBoxApplicationFilter.Items.Add(new ComboBoxItem(application.Name));
+				int index = comboBoxControlPanelApplicationFilter.Items.Add(new ComboBoxItem(application.Name));
 				if (!string.IsNullOrEmpty(selectedApplicationName) && application.Name.Equals(selectedApplicationName, StringComparison.CurrentCultureIgnoreCase))
-					comboBoxApplicationFilter.SelectedIndex = index;
+					comboBoxControlPanelApplicationFilter.SelectedIndex = index;
 			}
 		}
 
@@ -536,11 +536,11 @@ namespace ProcessManagerUI.Forms
 			//try{
 
 			Settings.Client.Save(ClientSettingsType.States);
-			ControlPanelGrouping grouping = ((ComboBoxItem<ControlPanelGrouping>) comboBoxGroupBy.SelectedItem).Tag;
+			ControlPanelGrouping grouping = ((ComboBoxItem<ControlPanelGrouping>) comboBoxControlPanelGroupBy.SelectedItem).Tag;
 
 			lock (_applicationNodes)
 			{
-				flowLayoutPanelApplications.Controls.Clear();
+				flowLayoutPanelControlPanelApplications.Controls.Clear();
 				_rootNodes.ForEach(node =>
 					{
 						node.SizeChanged -= ControlPanelRootNode_SizeChanged;
@@ -643,8 +643,8 @@ namespace ProcessManagerUI.Forms
 
 				_rootNodes.ForEach(node =>
 					{
-						node.ForceWidth(flowLayoutPanelApplications.Size.Width);
-						flowLayoutPanelApplications.Controls.Add((UserControl) node);
+						node.ForceWidth(flowLayoutPanelControlPanelApplications.Size.Width);
+						flowLayoutPanelControlPanelApplications.Controls.Add((UserControl) node);
 					});
 
 				Settings.Client.CP_CheckedNodes.ToList()
@@ -659,7 +659,7 @@ namespace ProcessManagerUI.Forms
 				UpdateSize(null);
 			}
 
-			labelUnavailable.Visible = (_applicationNodes.Count == 0);
+			labelControlPanelUnavailable.Visible = (_applicationNodes.Count == 0);
 			//}
 			//catch (Exception ex)
 			//{
@@ -674,8 +674,8 @@ namespace ProcessManagerUI.Forms
 			{
 				int totalNodesHeight = rootNodeSizes.Sum(size => size.Height);
 				int maxNodeWidth = rootNodeSizes.Max(size => size.Width);
-				Size = new Size(Size.Width - flowLayoutPanelApplications.Size.Width + maxNodeWidth,
-					Size.Height - flowLayoutPanelApplications.Size.Height + totalNodesHeight);
+				Size = new Size(Size.Width - flowLayoutPanelControlPanelApplications.Size.Width + maxNodeWidth,
+					Size.Height - flowLayoutPanelControlPanelApplications.Size.Height + totalNodesHeight);
 			}
 			else
 			{
@@ -688,9 +688,9 @@ namespace ProcessManagerUI.Forms
 
 		private void EnableActionLinks(bool enable)
 		{
-			linkLabelStartAll.Enabled = enable;
-			linkLabelStopAll.Enabled = enable;
-			linkLabelRestartAll.Enabled = enable;
+			linkLabelControlPanelStartAll.Enabled = enable;
+			linkLabelControlPanelStopAll.Enabled = enable;
+			linkLabelControlPanelRestartAll.Enabled = enable;
 		}
 
 		#endregion

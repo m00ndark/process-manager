@@ -36,23 +36,23 @@
 			this.toolStripSeparatorSystemTray1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripMenuItemSystemTrayExit = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanelControlPanel = new System.Windows.Forms.TableLayoutPanel();
-			this.panelApplications = new System.Windows.Forms.Panel();
-			this.labelUnavailable = new System.Windows.Forms.Label();
-			this.linkLabelExpandAll = new System.Windows.Forms.LinkLabel();
-			this.linkLabelCollapseAll = new System.Windows.Forms.LinkLabel();
-			this.linkLabelStopAll = new System.Windows.Forms.LinkLabel();
-			this.linkLabelStartAll = new System.Windows.Forms.LinkLabel();
-			this.linkLabelRestartAll = new System.Windows.Forms.LinkLabel();
-			this.labelAllSelected = new System.Windows.Forms.Label();
-			this.flowLayoutPanelApplications = new System.Windows.Forms.FlowLayoutPanel();
+			this.panelControlPanelApplications = new System.Windows.Forms.Panel();
+			this.labelControlPanelUnavailable = new System.Windows.Forms.Label();
+			this.linkLabelControlPanelExpandAll = new System.Windows.Forms.LinkLabel();
+			this.linkLabelControlPanelCollapseAll = new System.Windows.Forms.LinkLabel();
+			this.linkLabelControlPanelStopAll = new System.Windows.Forms.LinkLabel();
+			this.linkLabelControlPanelStartAll = new System.Windows.Forms.LinkLabel();
+			this.linkLabelControlPanelRestartAll = new System.Windows.Forms.LinkLabel();
+			this.labelControlPanelAllSelected = new System.Windows.Forms.Label();
+			this.flowLayoutPanelControlPanelApplications = new System.Windows.Forms.FlowLayoutPanel();
 			this.panelControlPanelGroupByAndFilter = new System.Windows.Forms.Panel();
-			this.tableLayoutPanelFilter = new System.Windows.Forms.TableLayoutPanel();
-			this.comboBoxMachineFilter = new System.Windows.Forms.ComboBox();
-			this.comboBoxApplicationFilter = new System.Windows.Forms.ComboBox();
-			this.comboBoxGroupFilter = new System.Windows.Forms.ComboBox();
-			this.labelFilter = new System.Windows.Forms.Label();
-			this.comboBoxGroupBy = new System.Windows.Forms.ComboBox();
-			this.labelGroupBy = new System.Windows.Forms.Label();
+			this.tableLayoutPanelControlPanelFilter = new System.Windows.Forms.TableLayoutPanel();
+			this.comboBoxControlPanelMachineFilter = new System.Windows.Forms.ComboBox();
+			this.comboBoxControlPanelApplicationFilter = new System.Windows.Forms.ComboBox();
+			this.comboBoxControlPanelGroupFilter = new System.Windows.Forms.ComboBox();
+			this.labelControlPanelFilter = new System.Windows.Forms.Label();
+			this.comboBoxControlPanelGroupBy = new System.Windows.Forms.ComboBox();
+			this.labelControlPanelGroupBy = new System.Windows.Forms.Label();
 			this.panelGlass = new System.Windows.Forms.Panel();
 			this.tabControlSection = new System.Windows.Forms.TabControl();
 			this.tabPageControlPanel = new System.Windows.Forms.TabPage();
@@ -63,18 +63,18 @@
 			this.horizontalPanel = new ProcessManagerUI.Controls.HorizontalPanel();
 			this.linkLabelOpenConfiguration = new System.Windows.Forms.LinkLabel();
 			this.panelDistributionGroupByAndFilter = new System.Windows.Forms.Panel();
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.comboBox1 = new System.Windows.Forms.ComboBox();
-			this.comboBox2 = new System.Windows.Forms.ComboBox();
-			this.comboBox3 = new System.Windows.Forms.ComboBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.comboBox4 = new System.Windows.Forms.ComboBox();
-			this.label2 = new System.Windows.Forms.Label();
+			this.tableLayoutPanelDistributionFilter = new System.Windows.Forms.TableLayoutPanel();
+			this.comboBoxDistributionMachineFilter = new System.Windows.Forms.ComboBox();
+			this.comboBoxDistributionApplicationFilter = new System.Windows.Forms.ComboBox();
+			this.comboBoxDistributionGroupFilter = new System.Windows.Forms.ComboBox();
+			this.labelDistributionFilter = new System.Windows.Forms.Label();
+			this.comboBoxDistributionGroupBy = new System.Windows.Forms.ComboBox();
+			this.labelDistributionGroupBy = new System.Windows.Forms.Label();
 			this.contextMenuStripSystemTray.SuspendLayout();
 			this.tableLayoutPanelControlPanel.SuspendLayout();
-			this.panelApplications.SuspendLayout();
+			this.panelControlPanelApplications.SuspendLayout();
 			this.panelControlPanelGroupByAndFilter.SuspendLayout();
-			this.tableLayoutPanelFilter.SuspendLayout();
+			this.tableLayoutPanelControlPanelFilter.SuspendLayout();
 			this.panelGlass.SuspendLayout();
 			this.tabControlSection.SuspendLayout();
 			this.tableLayoutPanelMain.SuspendLayout();
@@ -82,7 +82,7 @@
 			this.tableLayoutPanelDistribution.SuspendLayout();
 			this.horizontalPanel.SuspendLayout();
 			this.panelDistributionGroupByAndFilter.SuspendLayout();
-			this.tableLayoutPanel1.SuspendLayout();
+			this.tableLayoutPanelDistributionFilter.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// notifyIcon
@@ -129,7 +129,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tableLayoutPanelControlPanel.ColumnCount = 1;
 			this.tableLayoutPanelControlPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanelControlPanel.Controls.Add(this.panelApplications, 0, 1);
+			this.tableLayoutPanelControlPanel.Controls.Add(this.panelControlPanelApplications, 0, 1);
 			this.tableLayoutPanelControlPanel.Controls.Add(this.panelControlPanelGroupByAndFilter, 0, 0);
 			this.tableLayoutPanelControlPanel.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanelControlPanel.Margin = new System.Windows.Forms.Padding(0);
@@ -141,152 +141,152 @@
 			this.tableLayoutPanelControlPanel.TabIndex = 2;
 			this.tableLayoutPanelControlPanel.Visible = false;
 			// 
-			// panelApplications
+			// panelControlPanelApplications
 			// 
-			this.panelApplications.Controls.Add(this.labelUnavailable);
-			this.panelApplications.Controls.Add(this.linkLabelExpandAll);
-			this.panelApplications.Controls.Add(this.linkLabelCollapseAll);
-			this.panelApplications.Controls.Add(this.linkLabelStopAll);
-			this.panelApplications.Controls.Add(this.linkLabelStartAll);
-			this.panelApplications.Controls.Add(this.linkLabelRestartAll);
-			this.panelApplications.Controls.Add(this.labelAllSelected);
-			this.panelApplications.Controls.Add(this.flowLayoutPanelApplications);
-			this.panelApplications.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelApplications.Location = new System.Drawing.Point(0, 63);
-			this.panelApplications.Margin = new System.Windows.Forms.Padding(0);
-			this.panelApplications.Name = "panelApplications";
-			this.panelApplications.Size = new System.Drawing.Size(400, 172);
-			this.panelApplications.TabIndex = 2;
+			this.panelControlPanelApplications.Controls.Add(this.labelControlPanelUnavailable);
+			this.panelControlPanelApplications.Controls.Add(this.linkLabelControlPanelExpandAll);
+			this.panelControlPanelApplications.Controls.Add(this.linkLabelControlPanelCollapseAll);
+			this.panelControlPanelApplications.Controls.Add(this.linkLabelControlPanelStopAll);
+			this.panelControlPanelApplications.Controls.Add(this.linkLabelControlPanelStartAll);
+			this.panelControlPanelApplications.Controls.Add(this.linkLabelControlPanelRestartAll);
+			this.panelControlPanelApplications.Controls.Add(this.labelControlPanelAllSelected);
+			this.panelControlPanelApplications.Controls.Add(this.flowLayoutPanelControlPanelApplications);
+			this.panelControlPanelApplications.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelControlPanelApplications.Location = new System.Drawing.Point(0, 63);
+			this.panelControlPanelApplications.Margin = new System.Windows.Forms.Padding(0);
+			this.panelControlPanelApplications.Name = "panelControlPanelApplications";
+			this.panelControlPanelApplications.Size = new System.Drawing.Size(400, 172);
+			this.panelControlPanelApplications.TabIndex = 2;
 			// 
-			// labelUnavailable
+			// labelControlPanelUnavailable
 			// 
-			this.labelUnavailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.labelControlPanelUnavailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.labelUnavailable.Location = new System.Drawing.Point(10, 10);
-			this.labelUnavailable.Margin = new System.Windows.Forms.Padding(10);
-			this.labelUnavailable.Name = "labelUnavailable";
-			this.labelUnavailable.Size = new System.Drawing.Size(380, 152);
-			this.labelUnavailable.TabIndex = 0;
-			this.labelUnavailable.Text = "No applications available";
-			this.labelUnavailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.labelControlPanelUnavailable.Location = new System.Drawing.Point(10, 10);
+			this.labelControlPanelUnavailable.Margin = new System.Windows.Forms.Padding(10);
+			this.labelControlPanelUnavailable.Name = "labelControlPanelUnavailable";
+			this.labelControlPanelUnavailable.Size = new System.Drawing.Size(380, 152);
+			this.labelControlPanelUnavailable.TabIndex = 0;
+			this.labelControlPanelUnavailable.Text = "No applications available";
+			this.labelControlPanelUnavailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// linkLabelExpandAll
+			// linkLabelControlPanelExpandAll
 			// 
-			this.linkLabelExpandAll.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelExpandAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.linkLabelExpandAll.AutoSize = true;
-			this.linkLabelExpandAll.DisabledLinkColor = System.Drawing.Color.Gray;
-			this.linkLabelExpandAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-			this.linkLabelExpandAll.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelExpandAll.Location = new System.Drawing.Point(261, 10);
-			this.linkLabelExpandAll.Name = "linkLabelExpandAll";
-			this.linkLabelExpandAll.Size = new System.Drawing.Size(61, 13);
-			this.linkLabelExpandAll.TabIndex = 16;
-			this.linkLabelExpandAll.TabStop = true;
-			this.linkLabelExpandAll.Text = "Expand All";
-			this.linkLabelExpandAll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.linkLabelExpandAll.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelExpandAll.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelExpandAll_LinkClicked);
+			this.linkLabelControlPanelExpandAll.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelControlPanelExpandAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.linkLabelControlPanelExpandAll.AutoSize = true;
+			this.linkLabelControlPanelExpandAll.DisabledLinkColor = System.Drawing.Color.Gray;
+			this.linkLabelControlPanelExpandAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelControlPanelExpandAll.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelControlPanelExpandAll.Location = new System.Drawing.Point(261, 10);
+			this.linkLabelControlPanelExpandAll.Name = "linkLabelControlPanelExpandAll";
+			this.linkLabelControlPanelExpandAll.Size = new System.Drawing.Size(61, 13);
+			this.linkLabelControlPanelExpandAll.TabIndex = 16;
+			this.linkLabelControlPanelExpandAll.TabStop = true;
+			this.linkLabelControlPanelExpandAll.Text = "Expand All";
+			this.linkLabelControlPanelExpandAll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.linkLabelControlPanelExpandAll.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelControlPanelExpandAll.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelExpandAll_LinkClicked);
 			// 
-			// linkLabelCollapseAll
+			// linkLabelControlPanelCollapseAll
 			// 
-			this.linkLabelCollapseAll.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelCollapseAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.linkLabelCollapseAll.AutoSize = true;
-			this.linkLabelCollapseAll.DisabledLinkColor = System.Drawing.Color.Gray;
-			this.linkLabelCollapseAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-			this.linkLabelCollapseAll.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelCollapseAll.Location = new System.Drawing.Point(323, 10);
-			this.linkLabelCollapseAll.Name = "linkLabelCollapseAll";
-			this.linkLabelCollapseAll.Size = new System.Drawing.Size(67, 13);
-			this.linkLabelCollapseAll.TabIndex = 15;
-			this.linkLabelCollapseAll.TabStop = true;
-			this.linkLabelCollapseAll.Text = "Collapse All";
-			this.linkLabelCollapseAll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.linkLabelCollapseAll.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelCollapseAll.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelCollapseAll_LinkClicked);
+			this.linkLabelControlPanelCollapseAll.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelControlPanelCollapseAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.linkLabelControlPanelCollapseAll.AutoSize = true;
+			this.linkLabelControlPanelCollapseAll.DisabledLinkColor = System.Drawing.Color.Gray;
+			this.linkLabelControlPanelCollapseAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelControlPanelCollapseAll.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelControlPanelCollapseAll.Location = new System.Drawing.Point(323, 10);
+			this.linkLabelControlPanelCollapseAll.Name = "linkLabelControlPanelCollapseAll";
+			this.linkLabelControlPanelCollapseAll.Size = new System.Drawing.Size(67, 13);
+			this.linkLabelControlPanelCollapseAll.TabIndex = 15;
+			this.linkLabelControlPanelCollapseAll.TabStop = true;
+			this.linkLabelControlPanelCollapseAll.Text = "Collapse All";
+			this.linkLabelControlPanelCollapseAll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.linkLabelControlPanelCollapseAll.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelControlPanelCollapseAll.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelCollapseAll_LinkClicked);
 			// 
-			// linkLabelStopAll
+			// linkLabelControlPanelStopAll
 			// 
-			this.linkLabelStopAll.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelStopAll.AutoSize = true;
-			this.linkLabelStopAll.DisabledLinkColor = System.Drawing.Color.Gray;
-			this.linkLabelStopAll.Enabled = false;
-			this.linkLabelStopAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-			this.linkLabelStopAll.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelStopAll.Location = new System.Drawing.Point(109, 10);
-			this.linkLabelStopAll.Name = "linkLabelStopAll";
-			this.linkLabelStopAll.Size = new System.Drawing.Size(31, 13);
-			this.linkLabelStopAll.TabIndex = 13;
-			this.linkLabelStopAll.TabStop = true;
-			this.linkLabelStopAll.Text = "Stop";
-			this.linkLabelStopAll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.linkLabelStopAll.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelStopAll.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelStopAll_LinkClicked);
+			this.linkLabelControlPanelStopAll.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelControlPanelStopAll.AutoSize = true;
+			this.linkLabelControlPanelStopAll.DisabledLinkColor = System.Drawing.Color.Gray;
+			this.linkLabelControlPanelStopAll.Enabled = false;
+			this.linkLabelControlPanelStopAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelControlPanelStopAll.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelControlPanelStopAll.Location = new System.Drawing.Point(109, 10);
+			this.linkLabelControlPanelStopAll.Name = "linkLabelControlPanelStopAll";
+			this.linkLabelControlPanelStopAll.Size = new System.Drawing.Size(31, 13);
+			this.linkLabelControlPanelStopAll.TabIndex = 13;
+			this.linkLabelControlPanelStopAll.TabStop = true;
+			this.linkLabelControlPanelStopAll.Text = "Stop";
+			this.linkLabelControlPanelStopAll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.linkLabelControlPanelStopAll.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelControlPanelStopAll.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelStopAll_LinkClicked);
 			// 
-			// linkLabelStartAll
+			// linkLabelControlPanelStartAll
 			// 
-			this.linkLabelStartAll.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelStartAll.AutoSize = true;
-			this.linkLabelStartAll.DisabledLinkColor = System.Drawing.Color.Gray;
-			this.linkLabelStartAll.Enabled = false;
-			this.linkLabelStartAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-			this.linkLabelStartAll.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelStartAll.Location = new System.Drawing.Point(79, 10);
-			this.linkLabelStartAll.Name = "linkLabelStartAll";
-			this.linkLabelStartAll.Size = new System.Drawing.Size(31, 13);
-			this.linkLabelStartAll.TabIndex = 12;
-			this.linkLabelStartAll.TabStop = true;
-			this.linkLabelStartAll.Text = "Start";
-			this.linkLabelStartAll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.linkLabelStartAll.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelStartAll.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelStartAll_LinkClicked);
+			this.linkLabelControlPanelStartAll.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelControlPanelStartAll.AutoSize = true;
+			this.linkLabelControlPanelStartAll.DisabledLinkColor = System.Drawing.Color.Gray;
+			this.linkLabelControlPanelStartAll.Enabled = false;
+			this.linkLabelControlPanelStartAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelControlPanelStartAll.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelControlPanelStartAll.Location = new System.Drawing.Point(79, 10);
+			this.linkLabelControlPanelStartAll.Name = "linkLabelControlPanelStartAll";
+			this.linkLabelControlPanelStartAll.Size = new System.Drawing.Size(31, 13);
+			this.linkLabelControlPanelStartAll.TabIndex = 12;
+			this.linkLabelControlPanelStartAll.TabStop = true;
+			this.linkLabelControlPanelStartAll.Text = "Start";
+			this.linkLabelControlPanelStartAll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.linkLabelControlPanelStartAll.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelControlPanelStartAll.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelStartAll_LinkClicked);
 			// 
-			// linkLabelRestartAll
+			// linkLabelControlPanelRestartAll
 			// 
-			this.linkLabelRestartAll.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelRestartAll.AutoSize = true;
-			this.linkLabelRestartAll.DisabledLinkColor = System.Drawing.Color.Gray;
-			this.linkLabelRestartAll.Enabled = false;
-			this.linkLabelRestartAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-			this.linkLabelRestartAll.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelRestartAll.Location = new System.Drawing.Point(139, 10);
-			this.linkLabelRestartAll.Name = "linkLabelRestartAll";
-			this.linkLabelRestartAll.Size = new System.Drawing.Size(43, 13);
-			this.linkLabelRestartAll.TabIndex = 14;
-			this.linkLabelRestartAll.TabStop = true;
-			this.linkLabelRestartAll.Text = "Restart";
-			this.linkLabelRestartAll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.linkLabelRestartAll.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelRestartAll.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelRestartAll_LinkClicked);
+			this.linkLabelControlPanelRestartAll.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelControlPanelRestartAll.AutoSize = true;
+			this.linkLabelControlPanelRestartAll.DisabledLinkColor = System.Drawing.Color.Gray;
+			this.linkLabelControlPanelRestartAll.Enabled = false;
+			this.linkLabelControlPanelRestartAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelControlPanelRestartAll.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelControlPanelRestartAll.Location = new System.Drawing.Point(139, 10);
+			this.linkLabelControlPanelRestartAll.Name = "linkLabelControlPanelRestartAll";
+			this.linkLabelControlPanelRestartAll.Size = new System.Drawing.Size(43, 13);
+			this.linkLabelControlPanelRestartAll.TabIndex = 14;
+			this.linkLabelControlPanelRestartAll.TabStop = true;
+			this.linkLabelControlPanelRestartAll.Text = "Restart";
+			this.linkLabelControlPanelRestartAll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.linkLabelControlPanelRestartAll.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelControlPanelRestartAll.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelRestartAll_LinkClicked);
 			// 
-			// labelAllSelected
+			// labelControlPanelAllSelected
 			// 
-			this.labelAllSelected.AutoSize = true;
-			this.labelAllSelected.Location = new System.Drawing.Point(7, 10);
-			this.labelAllSelected.Name = "labelAllSelected";
-			this.labelAllSelected.Size = new System.Drawing.Size(69, 13);
-			this.labelAllSelected.TabIndex = 2;
-			this.labelAllSelected.Text = "All Selected:";
+			this.labelControlPanelAllSelected.AutoSize = true;
+			this.labelControlPanelAllSelected.Location = new System.Drawing.Point(7, 10);
+			this.labelControlPanelAllSelected.Name = "labelControlPanelAllSelected";
+			this.labelControlPanelAllSelected.Size = new System.Drawing.Size(69, 13);
+			this.labelControlPanelAllSelected.TabIndex = 2;
+			this.labelControlPanelAllSelected.Text = "All Selected:";
 			// 
-			// flowLayoutPanelApplications
+			// flowLayoutPanelControlPanelApplications
 			// 
-			this.flowLayoutPanelApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.flowLayoutPanelControlPanelApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.flowLayoutPanelApplications.Location = new System.Drawing.Point(10, 30);
-			this.flowLayoutPanelApplications.Margin = new System.Windows.Forms.Padding(10);
-			this.flowLayoutPanelApplications.Name = "flowLayoutPanelApplications";
-			this.flowLayoutPanelApplications.Size = new System.Drawing.Size(380, 132);
-			this.flowLayoutPanelApplications.TabIndex = 1;
+			this.flowLayoutPanelControlPanelApplications.Location = new System.Drawing.Point(10, 30);
+			this.flowLayoutPanelControlPanelApplications.Margin = new System.Windows.Forms.Padding(10);
+			this.flowLayoutPanelControlPanelApplications.Name = "flowLayoutPanelControlPanelApplications";
+			this.flowLayoutPanelControlPanelApplications.Size = new System.Drawing.Size(380, 132);
+			this.flowLayoutPanelControlPanelApplications.TabIndex = 1;
 			// 
 			// panelControlPanelGroupByAndFilter
 			// 
-			this.panelControlPanelGroupByAndFilter.Controls.Add(this.tableLayoutPanelFilter);
-			this.panelControlPanelGroupByAndFilter.Controls.Add(this.labelFilter);
-			this.panelControlPanelGroupByAndFilter.Controls.Add(this.comboBoxGroupBy);
-			this.panelControlPanelGroupByAndFilter.Controls.Add(this.labelGroupBy);
+			this.panelControlPanelGroupByAndFilter.Controls.Add(this.tableLayoutPanelControlPanelFilter);
+			this.panelControlPanelGroupByAndFilter.Controls.Add(this.labelControlPanelFilter);
+			this.panelControlPanelGroupByAndFilter.Controls.Add(this.comboBoxControlPanelGroupBy);
+			this.panelControlPanelGroupByAndFilter.Controls.Add(this.labelControlPanelGroupBy);
 			this.panelControlPanelGroupByAndFilter.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panelControlPanelGroupByAndFilter.Location = new System.Drawing.Point(0, 0);
 			this.panelControlPanelGroupByAndFilter.Margin = new System.Windows.Forms.Padding(0);
@@ -295,91 +295,91 @@
 			this.panelControlPanelGroupByAndFilter.Size = new System.Drawing.Size(400, 63);
 			this.panelControlPanelGroupByAndFilter.TabIndex = 3;
 			// 
-			// tableLayoutPanelFilter
+			// tableLayoutPanelControlPanelFilter
 			// 
-			this.tableLayoutPanelFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tableLayoutPanelControlPanelFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.tableLayoutPanelFilter.ColumnCount = 5;
-			this.tableLayoutPanelFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33332F));
-			this.tableLayoutPanelFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 6F));
-			this.tableLayoutPanelFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-			this.tableLayoutPanelFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 6F));
-			this.tableLayoutPanelFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-			this.tableLayoutPanelFilter.Controls.Add(this.comboBoxMachineFilter, 0, 0);
-			this.tableLayoutPanelFilter.Controls.Add(this.comboBoxApplicationFilter, 4, 0);
-			this.tableLayoutPanelFilter.Controls.Add(this.comboBoxGroupFilter, 2, 0);
-			this.tableLayoutPanelFilter.Location = new System.Drawing.Point(71, 37);
-			this.tableLayoutPanelFilter.Name = "tableLayoutPanelFilter";
-			this.tableLayoutPanelFilter.RowCount = 1;
-			this.tableLayoutPanelFilter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanelFilter.Size = new System.Drawing.Size(319, 21);
-			this.tableLayoutPanelFilter.TabIndex = 6;
+			this.tableLayoutPanelControlPanelFilter.ColumnCount = 5;
+			this.tableLayoutPanelControlPanelFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33332F));
+			this.tableLayoutPanelControlPanelFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 6F));
+			this.tableLayoutPanelControlPanelFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+			this.tableLayoutPanelControlPanelFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 6F));
+			this.tableLayoutPanelControlPanelFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+			this.tableLayoutPanelControlPanelFilter.Controls.Add(this.comboBoxControlPanelMachineFilter, 0, 0);
+			this.tableLayoutPanelControlPanelFilter.Controls.Add(this.comboBoxControlPanelApplicationFilter, 4, 0);
+			this.tableLayoutPanelControlPanelFilter.Controls.Add(this.comboBoxControlPanelGroupFilter, 2, 0);
+			this.tableLayoutPanelControlPanelFilter.Location = new System.Drawing.Point(71, 37);
+			this.tableLayoutPanelControlPanelFilter.Name = "tableLayoutPanelControlPanelFilter";
+			this.tableLayoutPanelControlPanelFilter.RowCount = 1;
+			this.tableLayoutPanelControlPanelFilter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelControlPanelFilter.Size = new System.Drawing.Size(319, 21);
+			this.tableLayoutPanelControlPanelFilter.TabIndex = 6;
 			// 
-			// comboBoxMachineFilter
+			// comboBoxControlPanelMachineFilter
 			// 
-			this.comboBoxMachineFilter.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.comboBoxMachineFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxMachineFilter.FormattingEnabled = true;
-			this.comboBoxMachineFilter.Location = new System.Drawing.Point(0, 0);
-			this.comboBoxMachineFilter.Margin = new System.Windows.Forms.Padding(0);
-			this.comboBoxMachineFilter.Name = "comboBoxMachineFilter";
-			this.comboBoxMachineFilter.Size = new System.Drawing.Size(102, 21);
-			this.comboBoxMachineFilter.TabIndex = 3;
-			this.comboBoxMachineFilter.SelectedIndexChanged += new System.EventHandler(this.ComboBoxMachineFilter_SelectedIndexChanged);
+			this.comboBoxControlPanelMachineFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.comboBoxControlPanelMachineFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxControlPanelMachineFilter.FormattingEnabled = true;
+			this.comboBoxControlPanelMachineFilter.Location = new System.Drawing.Point(0, 0);
+			this.comboBoxControlPanelMachineFilter.Margin = new System.Windows.Forms.Padding(0);
+			this.comboBoxControlPanelMachineFilter.Name = "comboBoxControlPanelMachineFilter";
+			this.comboBoxControlPanelMachineFilter.Size = new System.Drawing.Size(102, 21);
+			this.comboBoxControlPanelMachineFilter.TabIndex = 3;
+			this.comboBoxControlPanelMachineFilter.SelectedIndexChanged += new System.EventHandler(this.ComboBoxMachineFilter_SelectedIndexChanged);
 			// 
-			// comboBoxApplicationFilter
+			// comboBoxControlPanelApplicationFilter
 			// 
-			this.comboBoxApplicationFilter.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.comboBoxApplicationFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxApplicationFilter.FormattingEnabled = true;
-			this.comboBoxApplicationFilter.Location = new System.Drawing.Point(216, 0);
-			this.comboBoxApplicationFilter.Margin = new System.Windows.Forms.Padding(0);
-			this.comboBoxApplicationFilter.Name = "comboBoxApplicationFilter";
-			this.comboBoxApplicationFilter.Size = new System.Drawing.Size(103, 21);
-			this.comboBoxApplicationFilter.TabIndex = 5;
-			this.comboBoxApplicationFilter.SelectedIndexChanged += new System.EventHandler(this.ComboBoxApplicationFilter_SelectedIndexChanged);
+			this.comboBoxControlPanelApplicationFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.comboBoxControlPanelApplicationFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxControlPanelApplicationFilter.FormattingEnabled = true;
+			this.comboBoxControlPanelApplicationFilter.Location = new System.Drawing.Point(216, 0);
+			this.comboBoxControlPanelApplicationFilter.Margin = new System.Windows.Forms.Padding(0);
+			this.comboBoxControlPanelApplicationFilter.Name = "comboBoxControlPanelApplicationFilter";
+			this.comboBoxControlPanelApplicationFilter.Size = new System.Drawing.Size(103, 21);
+			this.comboBoxControlPanelApplicationFilter.TabIndex = 5;
+			this.comboBoxControlPanelApplicationFilter.SelectedIndexChanged += new System.EventHandler(this.ComboBoxApplicationFilter_SelectedIndexChanged);
 			// 
-			// comboBoxGroupFilter
+			// comboBoxControlPanelGroupFilter
 			// 
-			this.comboBoxGroupFilter.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.comboBoxGroupFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxGroupFilter.FormattingEnabled = true;
-			this.comboBoxGroupFilter.Location = new System.Drawing.Point(108, 0);
-			this.comboBoxGroupFilter.Margin = new System.Windows.Forms.Padding(0);
-			this.comboBoxGroupFilter.Name = "comboBoxGroupFilter";
-			this.comboBoxGroupFilter.Size = new System.Drawing.Size(102, 21);
-			this.comboBoxGroupFilter.TabIndex = 4;
-			this.comboBoxGroupFilter.SelectedIndexChanged += new System.EventHandler(this.ComboBoxGroupFilter_SelectedIndexChanged);
+			this.comboBoxControlPanelGroupFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.comboBoxControlPanelGroupFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxControlPanelGroupFilter.FormattingEnabled = true;
+			this.comboBoxControlPanelGroupFilter.Location = new System.Drawing.Point(108, 0);
+			this.comboBoxControlPanelGroupFilter.Margin = new System.Windows.Forms.Padding(0);
+			this.comboBoxControlPanelGroupFilter.Name = "comboBoxControlPanelGroupFilter";
+			this.comboBoxControlPanelGroupFilter.Size = new System.Drawing.Size(102, 21);
+			this.comboBoxControlPanelGroupFilter.TabIndex = 4;
+			this.comboBoxControlPanelGroupFilter.SelectedIndexChanged += new System.EventHandler(this.ComboBoxGroupFilter_SelectedIndexChanged);
 			// 
-			// labelFilter
+			// labelControlPanelFilter
 			// 
-			this.labelFilter.AutoSize = true;
-			this.labelFilter.Location = new System.Drawing.Point(7, 40);
-			this.labelFilter.Name = "labelFilter";
-			this.labelFilter.Size = new System.Drawing.Size(36, 13);
-			this.labelFilter.TabIndex = 2;
-			this.labelFilter.Text = "Filter:";
+			this.labelControlPanelFilter.AutoSize = true;
+			this.labelControlPanelFilter.Location = new System.Drawing.Point(7, 40);
+			this.labelControlPanelFilter.Name = "labelControlPanelFilter";
+			this.labelControlPanelFilter.Size = new System.Drawing.Size(36, 13);
+			this.labelControlPanelFilter.TabIndex = 2;
+			this.labelControlPanelFilter.Text = "Filter:";
 			// 
-			// comboBoxGroupBy
+			// comboBoxControlPanelGroupBy
 			// 
-			this.comboBoxGroupBy.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.comboBoxControlPanelGroupBy.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.comboBoxGroupBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxGroupBy.FormattingEnabled = true;
-			this.comboBoxGroupBy.Location = new System.Drawing.Point(71, 10);
-			this.comboBoxGroupBy.Name = "comboBoxGroupBy";
-			this.comboBoxGroupBy.Size = new System.Drawing.Size(319, 21);
-			this.comboBoxGroupBy.TabIndex = 1;
-			this.comboBoxGroupBy.SelectedIndexChanged += new System.EventHandler(this.ComboBoxGroupBy_SelectedIndexChanged);
+			this.comboBoxControlPanelGroupBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxControlPanelGroupBy.FormattingEnabled = true;
+			this.comboBoxControlPanelGroupBy.Location = new System.Drawing.Point(71, 10);
+			this.comboBoxControlPanelGroupBy.Name = "comboBoxControlPanelGroupBy";
+			this.comboBoxControlPanelGroupBy.Size = new System.Drawing.Size(319, 21);
+			this.comboBoxControlPanelGroupBy.TabIndex = 1;
+			this.comboBoxControlPanelGroupBy.SelectedIndexChanged += new System.EventHandler(this.ComboBoxGroupBy_SelectedIndexChanged);
 			// 
-			// labelGroupBy
+			// labelControlPanelGroupBy
 			// 
-			this.labelGroupBy.AutoSize = true;
-			this.labelGroupBy.Location = new System.Drawing.Point(7, 13);
-			this.labelGroupBy.Name = "labelGroupBy";
-			this.labelGroupBy.Size = new System.Drawing.Size(58, 13);
-			this.labelGroupBy.TabIndex = 0;
-			this.labelGroupBy.Text = "Group by:";
+			this.labelControlPanelGroupBy.AutoSize = true;
+			this.labelControlPanelGroupBy.Location = new System.Drawing.Point(7, 13);
+			this.labelControlPanelGroupBy.Name = "labelControlPanelGroupBy";
+			this.labelControlPanelGroupBy.Size = new System.Drawing.Size(58, 13);
+			this.labelControlPanelGroupBy.TabIndex = 0;
+			this.labelControlPanelGroupBy.Text = "Group by:";
 			// 
 			// panelGlass
 			// 
@@ -447,8 +447,8 @@
 			this.panelTabPageArea.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelTabPageArea.Controls.Add(this.tableLayoutPanelDistribution);
 			this.panelTabPageArea.Controls.Add(this.tableLayoutPanelControlPanel);
+			this.panelTabPageArea.Controls.Add(this.tableLayoutPanelDistribution);
 			this.panelTabPageArea.Location = new System.Drawing.Point(0, 0);
 			this.panelTabPageArea.Margin = new System.Windows.Forms.Padding(0);
 			this.panelTabPageArea.Name = "panelTabPageArea";
@@ -505,10 +505,10 @@
 			// 
 			// panelDistributionGroupByAndFilter
 			// 
-			this.panelDistributionGroupByAndFilter.Controls.Add(this.tableLayoutPanel1);
-			this.panelDistributionGroupByAndFilter.Controls.Add(this.label1);
-			this.panelDistributionGroupByAndFilter.Controls.Add(this.comboBox4);
-			this.panelDistributionGroupByAndFilter.Controls.Add(this.label2);
+			this.panelDistributionGroupByAndFilter.Controls.Add(this.tableLayoutPanelDistributionFilter);
+			this.panelDistributionGroupByAndFilter.Controls.Add(this.labelDistributionFilter);
+			this.panelDistributionGroupByAndFilter.Controls.Add(this.comboBoxDistributionGroupBy);
+			this.panelDistributionGroupByAndFilter.Controls.Add(this.labelDistributionGroupBy);
 			this.panelDistributionGroupByAndFilter.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panelDistributionGroupByAndFilter.Location = new System.Drawing.Point(0, 0);
 			this.panelDistributionGroupByAndFilter.Margin = new System.Windows.Forms.Padding(0);
@@ -517,87 +517,87 @@
 			this.panelDistributionGroupByAndFilter.Size = new System.Drawing.Size(400, 63);
 			this.panelDistributionGroupByAndFilter.TabIndex = 4;
 			// 
-			// tableLayoutPanel1
+			// tableLayoutPanelDistributionFilter
 			// 
-			this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tableLayoutPanelDistributionFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.tableLayoutPanel1.ColumnCount = 5;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33332F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 6F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 6F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-			this.tableLayoutPanel1.Controls.Add(this.comboBox1, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.comboBox2, 4, 0);
-			this.tableLayoutPanel1.Controls.Add(this.comboBox3, 2, 0);
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(71, 37);
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 1;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(319, 21);
-			this.tableLayoutPanel1.TabIndex = 6;
+			this.tableLayoutPanelDistributionFilter.ColumnCount = 5;
+			this.tableLayoutPanelDistributionFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33332F));
+			this.tableLayoutPanelDistributionFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 6F));
+			this.tableLayoutPanelDistributionFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+			this.tableLayoutPanelDistributionFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 6F));
+			this.tableLayoutPanelDistributionFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+			this.tableLayoutPanelDistributionFilter.Controls.Add(this.comboBoxDistributionMachineFilter, 0, 0);
+			this.tableLayoutPanelDistributionFilter.Controls.Add(this.comboBoxDistributionApplicationFilter, 4, 0);
+			this.tableLayoutPanelDistributionFilter.Controls.Add(this.comboBoxDistributionGroupFilter, 2, 0);
+			this.tableLayoutPanelDistributionFilter.Location = new System.Drawing.Point(71, 37);
+			this.tableLayoutPanelDistributionFilter.Name = "tableLayoutPanelDistributionFilter";
+			this.tableLayoutPanelDistributionFilter.RowCount = 1;
+			this.tableLayoutPanelDistributionFilter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelDistributionFilter.Size = new System.Drawing.Size(319, 21);
+			this.tableLayoutPanelDistributionFilter.TabIndex = 6;
 			// 
-			// comboBox1
+			// comboBoxDistributionMachineFilter
 			// 
-			this.comboBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBox1.FormattingEnabled = true;
-			this.comboBox1.Location = new System.Drawing.Point(0, 0);
-			this.comboBox1.Margin = new System.Windows.Forms.Padding(0);
-			this.comboBox1.Name = "comboBox1";
-			this.comboBox1.Size = new System.Drawing.Size(102, 21);
-			this.comboBox1.TabIndex = 3;
+			this.comboBoxDistributionMachineFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.comboBoxDistributionMachineFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxDistributionMachineFilter.FormattingEnabled = true;
+			this.comboBoxDistributionMachineFilter.Location = new System.Drawing.Point(0, 0);
+			this.comboBoxDistributionMachineFilter.Margin = new System.Windows.Forms.Padding(0);
+			this.comboBoxDistributionMachineFilter.Name = "comboBoxDistributionMachineFilter";
+			this.comboBoxDistributionMachineFilter.Size = new System.Drawing.Size(102, 21);
+			this.comboBoxDistributionMachineFilter.TabIndex = 3;
 			// 
-			// comboBox2
+			// comboBoxDistributionApplicationFilter
 			// 
-			this.comboBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBox2.FormattingEnabled = true;
-			this.comboBox2.Location = new System.Drawing.Point(216, 0);
-			this.comboBox2.Margin = new System.Windows.Forms.Padding(0);
-			this.comboBox2.Name = "comboBox2";
-			this.comboBox2.Size = new System.Drawing.Size(103, 21);
-			this.comboBox2.TabIndex = 5;
+			this.comboBoxDistributionApplicationFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.comboBoxDistributionApplicationFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxDistributionApplicationFilter.FormattingEnabled = true;
+			this.comboBoxDistributionApplicationFilter.Location = new System.Drawing.Point(216, 0);
+			this.comboBoxDistributionApplicationFilter.Margin = new System.Windows.Forms.Padding(0);
+			this.comboBoxDistributionApplicationFilter.Name = "comboBoxDistributionApplicationFilter";
+			this.comboBoxDistributionApplicationFilter.Size = new System.Drawing.Size(103, 21);
+			this.comboBoxDistributionApplicationFilter.TabIndex = 5;
 			// 
-			// comboBox3
+			// comboBoxDistributionGroupFilter
 			// 
-			this.comboBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBox3.FormattingEnabled = true;
-			this.comboBox3.Location = new System.Drawing.Point(108, 0);
-			this.comboBox3.Margin = new System.Windows.Forms.Padding(0);
-			this.comboBox3.Name = "comboBox3";
-			this.comboBox3.Size = new System.Drawing.Size(102, 21);
-			this.comboBox3.TabIndex = 4;
+			this.comboBoxDistributionGroupFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.comboBoxDistributionGroupFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxDistributionGroupFilter.FormattingEnabled = true;
+			this.comboBoxDistributionGroupFilter.Location = new System.Drawing.Point(108, 0);
+			this.comboBoxDistributionGroupFilter.Margin = new System.Windows.Forms.Padding(0);
+			this.comboBoxDistributionGroupFilter.Name = "comboBoxDistributionGroupFilter";
+			this.comboBoxDistributionGroupFilter.Size = new System.Drawing.Size(102, 21);
+			this.comboBoxDistributionGroupFilter.TabIndex = 4;
 			// 
-			// label1
+			// labelDistributionFilter
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(7, 40);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(36, 13);
-			this.label1.TabIndex = 2;
-			this.label1.Text = "Filter:";
+			this.labelDistributionFilter.AutoSize = true;
+			this.labelDistributionFilter.Location = new System.Drawing.Point(7, 40);
+			this.labelDistributionFilter.Name = "labelDistributionFilter";
+			this.labelDistributionFilter.Size = new System.Drawing.Size(36, 13);
+			this.labelDistributionFilter.TabIndex = 2;
+			this.labelDistributionFilter.Text = "Filter:";
 			// 
-			// comboBox4
+			// comboBoxDistributionGroupBy
 			// 
-			this.comboBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.comboBoxDistributionGroupBy.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.comboBox4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBox4.FormattingEnabled = true;
-			this.comboBox4.Location = new System.Drawing.Point(71, 10);
-			this.comboBox4.Name = "comboBox4";
-			this.comboBox4.Size = new System.Drawing.Size(319, 21);
-			this.comboBox4.TabIndex = 1;
+			this.comboBoxDistributionGroupBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxDistributionGroupBy.FormattingEnabled = true;
+			this.comboBoxDistributionGroupBy.Location = new System.Drawing.Point(71, 10);
+			this.comboBoxDistributionGroupBy.Name = "comboBoxDistributionGroupBy";
+			this.comboBoxDistributionGroupBy.Size = new System.Drawing.Size(319, 21);
+			this.comboBoxDistributionGroupBy.TabIndex = 1;
 			// 
-			// label2
+			// labelDistributionGroupBy
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(7, 13);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(58, 13);
-			this.label2.TabIndex = 0;
-			this.label2.Text = "Group by:";
+			this.labelDistributionGroupBy.AutoSize = true;
+			this.labelDistributionGroupBy.Location = new System.Drawing.Point(7, 13);
+			this.labelDistributionGroupBy.Name = "labelDistributionGroupBy";
+			this.labelDistributionGroupBy.Size = new System.Drawing.Size(58, 13);
+			this.labelDistributionGroupBy.TabIndex = 0;
+			this.labelDistributionGroupBy.Text = "Group by:";
 			// 
 			// ControlPanelForm
 			// 
@@ -620,11 +620,11 @@
 			this.Load += new System.EventHandler(this.ControlPanelForm_Load);
 			this.contextMenuStripSystemTray.ResumeLayout(false);
 			this.tableLayoutPanelControlPanel.ResumeLayout(false);
-			this.panelApplications.ResumeLayout(false);
-			this.panelApplications.PerformLayout();
+			this.panelControlPanelApplications.ResumeLayout(false);
+			this.panelControlPanelApplications.PerformLayout();
 			this.panelControlPanelGroupByAndFilter.ResumeLayout(false);
 			this.panelControlPanelGroupByAndFilter.PerformLayout();
-			this.tableLayoutPanelFilter.ResumeLayout(false);
+			this.tableLayoutPanelControlPanelFilter.ResumeLayout(false);
 			this.panelGlass.ResumeLayout(false);
 			this.tabControlSection.ResumeLayout(false);
 			this.tableLayoutPanelMain.ResumeLayout(false);
@@ -633,7 +633,7 @@
 			this.horizontalPanel.ResumeLayout(false);
 			this.panelDistributionGroupByAndFilter.ResumeLayout(false);
 			this.panelDistributionGroupByAndFilter.PerformLayout();
-			this.tableLayoutPanel1.ResumeLayout(false);
+			this.tableLayoutPanelDistributionFilter.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -648,23 +648,23 @@
 		private Controls.HorizontalPanel horizontalPanel;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelControlPanel;
 		private System.Windows.Forms.LinkLabel linkLabelOpenConfiguration;
-		private System.Windows.Forms.Panel panelApplications;
-		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelApplications;
-		private System.Windows.Forms.Label labelUnavailable;
+		private System.Windows.Forms.Panel panelControlPanelApplications;
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelControlPanelApplications;
+		private System.Windows.Forms.Label labelControlPanelUnavailable;
 		private System.Windows.Forms.Panel panelControlPanelGroupByAndFilter;
-		private System.Windows.Forms.ComboBox comboBoxApplicationFilter;
-		private System.Windows.Forms.ComboBox comboBoxGroupFilter;
-		private System.Windows.Forms.ComboBox comboBoxMachineFilter;
-		private System.Windows.Forms.Label labelFilter;
-		private System.Windows.Forms.ComboBox comboBoxGroupBy;
-		private System.Windows.Forms.Label labelGroupBy;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelFilter;
-		private System.Windows.Forms.Label labelAllSelected;
-		private System.Windows.Forms.LinkLabel linkLabelCollapseAll;
-		private System.Windows.Forms.LinkLabel linkLabelStopAll;
-		private System.Windows.Forms.LinkLabel linkLabelStartAll;
-		private System.Windows.Forms.LinkLabel linkLabelRestartAll;
-		private System.Windows.Forms.LinkLabel linkLabelExpandAll;
+		private System.Windows.Forms.ComboBox comboBoxControlPanelApplicationFilter;
+		private System.Windows.Forms.ComboBox comboBoxControlPanelGroupFilter;
+		private System.Windows.Forms.ComboBox comboBoxControlPanelMachineFilter;
+		private System.Windows.Forms.Label labelControlPanelFilter;
+		private System.Windows.Forms.ComboBox comboBoxControlPanelGroupBy;
+		private System.Windows.Forms.Label labelControlPanelGroupBy;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelControlPanelFilter;
+		private System.Windows.Forms.Label labelControlPanelAllSelected;
+		private System.Windows.Forms.LinkLabel linkLabelControlPanelCollapseAll;
+		private System.Windows.Forms.LinkLabel linkLabelControlPanelStopAll;
+		private System.Windows.Forms.LinkLabel linkLabelControlPanelStartAll;
+		private System.Windows.Forms.LinkLabel linkLabelControlPanelRestartAll;
+		private System.Windows.Forms.LinkLabel linkLabelControlPanelExpandAll;
 		private System.Windows.Forms.Panel panelGlass;
 		private System.Windows.Forms.TabControl tabControlSection;
 		private System.Windows.Forms.TabPage tabPageControlPanel;
@@ -673,12 +673,12 @@
 		private System.Windows.Forms.Panel panelTabPageArea;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelDistribution;
 		private System.Windows.Forms.Panel panelDistributionGroupByAndFilter;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-		private System.Windows.Forms.ComboBox comboBox1;
-		private System.Windows.Forms.ComboBox comboBox2;
-		private System.Windows.Forms.ComboBox comboBox3;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.ComboBox comboBox4;
-		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelDistributionFilter;
+		private System.Windows.Forms.ComboBox comboBoxDistributionMachineFilter;
+		private System.Windows.Forms.ComboBox comboBoxDistributionApplicationFilter;
+		private System.Windows.Forms.ComboBox comboBoxDistributionGroupFilter;
+		private System.Windows.Forms.Label labelDistributionFilter;
+		private System.Windows.Forms.ComboBox comboBoxDistributionGroupBy;
+		private System.Windows.Forms.Label labelDistributionGroupBy;
 	}
 }
