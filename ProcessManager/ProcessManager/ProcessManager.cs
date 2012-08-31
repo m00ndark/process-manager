@@ -90,7 +90,7 @@ namespace ProcessManager
 				return _applicationStatuses.Values.SelectMany(x => x.Values).ToList();
 		}
 
-		public void TakeApplicationAction(Guid groupID, Guid applicationID, ApplicationActionType type)
+		public void TakeApplicationAction(Guid groupID, Guid applicationID, ActionType type)
 		{
 			Configuration configuration = Configuration.Read();
 			Group group = configuration.Groups.FirstOrDefault(x => x.ID == groupID);
@@ -110,13 +110,13 @@ namespace ProcessManager
 
 			switch (type)
 			{
-				case ApplicationActionType.Start:
+				case ActionType.Start:
 					ProcessHandler.Start(group, application);
 					break;
-				case ApplicationActionType.Stop:
+				case ActionType.Stop:
 					ProcessHandler.Stop(group, application);
 					break;
-				case ApplicationActionType.Restart:
+				case ActionType.Restart:
 					ProcessHandler.Restart(group, application);
 					break;
 			}

@@ -8,15 +8,9 @@ namespace ProcessManagerUI.Controls.Nodes
 {
 	public class DistributionGroupNode : BaseDistributionRootNode
 	{
-		private readonly Guid _id;
-
-		public DistributionGroupNode(Group group, Guid? machineID, IEnumerable<INode> childNodes, ControlPanelGrouping grouping)
-			: this((machineID.HasValue ? MakeID(group.ID, machineID.Value) : group.ID), group, childNodes, grouping) { }
-
-		private DistributionGroupNode(Guid id, Group group, IEnumerable<INode> childNodes, ControlPanelGrouping grouping)
-			: base(childNodes, grouping, !Settings.Client.CP_CollapsedNodes[grouping].Contains(id))
+		private DistributionGroupNode(Group group, IEnumerable<INode> childNodes, DistributionGrouping grouping)
+			: base(childNodes, grouping, !Settings.Client.D_CollapsedNodes[grouping].Contains(group.ID))
 		{
-			_id = id;
 			Group = group;
 			//BackColor = Color.FromArgb(255, 208, 160);
 		}
@@ -25,16 +19,16 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		public Group Group { get; private set; }
 
-		public override Guid ID { get { return _id; } }
+		public override Guid ID { get { return Group.ID; } }
 		protected override string NodeName { get { return Group.Name; } }
 
 		#endregion
 
 		#region Helpers
 
-		protected override void UpdateApplicationAction(ApplicationAction action)
+		protected override void UpdateDistributionAction(DistributionAction action)
 		{
-			action.Group = Group;
+			action.SourceGroup = Group;
 		}
 
 		#endregion

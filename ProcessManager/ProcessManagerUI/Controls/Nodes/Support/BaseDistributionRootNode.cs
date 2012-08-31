@@ -14,13 +14,13 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 	{
 		private bool _ignoreCheckedChangedEvents;
 		private Size _childrenSize;
-		private readonly ControlPanelGrouping _grouping;
+		private readonly DistributionGrouping _grouping;
 		private bool _expanded;
 
 		public event EventHandler CheckedChanged;
-		public event EventHandler<ApplicationActionEventArgs> ActionTaken;
+		public event EventHandler<ActionEventArgs> ActionTaken;
 
-		protected BaseDistributionRootNode(IEnumerable<INode> childNodes, ControlPanelGrouping grouping, bool expanded)
+		protected BaseDistributionRootNode(IEnumerable<INode> childNodes, DistributionGrouping grouping, bool expanded)
 		{
 			InitializeComponent();
 			_ignoreCheckedChangedEvents = false;
@@ -29,11 +29,11 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			_expanded = expanded;
 			ChildNodes = new List<INode>(childNodes);
 			ChildNodes.Select(node => node as IRootNode).Where(node => node != null).ToList()
-				.ForEach(node => node.SizeChanged += ControlPanelRootNode_SizeChanged);
+				.ForEach(node => node.SizeChanged += RootNode_SizeChanged);
 			ChildNodes.ForEach(node =>
 				{
-					node.CheckedChanged += ControlPanelNode_CheckedChanged;
-					node.ActionTaken += ControlPanelNode_ActionTaken;
+					node.CheckedChanged += Node_CheckedChanged;
+					node.ActionTaken += Node_ActionTaken;
 				});
 		}
 
@@ -65,9 +65,9 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			Expanded = !Expanded;
 
 			if (Expanded)
-				Settings.Client.CP_CollapsedNodes[_grouping].Remove(ID);
-			else if (!Settings.Client.CP_CollapsedNodes[_grouping].Contains(ID))
-				Settings.Client.CP_CollapsedNodes[_grouping].Add(ID);
+				Settings.Client.D_CollapsedNodes[_grouping].Remove(ID);
+			else if (!Settings.Client.D_CollapsedNodes[_grouping].Contains(ID))
+				Settings.Client.D_CollapsedNodes[_grouping].Add(ID);
 		}
 
 		private void CheckBoxSelected_CheckStateChanged(object sender, EventArgs e)
@@ -84,26 +84,16 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			}
 		}
 
-		private void LinkLabelStart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabelDistribute_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			TakeAction(ApplicationActionType.Start);
-		}
-
-		private void LinkLabelStop_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			TakeAction(ApplicationActionType.Stop);
-		}
-
-		private void LinkLabelRestart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			TakeAction(ApplicationActionType.Restart);
+			TakeAction(ActionType.Distribute);
 		}
 
 		#endregion
 
-		#region Control panel node event handlers
+		#region Node event handlers
 
-		private void ControlPanelRootNode_SizeChanged(object sender, EventArgs e)
+		private void RootNode_SizeChanged(object sender, EventArgs e)
 		{
 			if (flowLayoutPanel.Controls.Count > 0)
 			{
@@ -112,7 +102,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			}
 		}
 
-		private void ControlPanelNode_CheckedChanged(object sender, EventArgs e)
+		private void Node_CheckedChanged(object sender, EventArgs e)
 		{
 			if (_ignoreCheckedChangedEvents) return;
 			int checkedCount = ChildNodes.Count(node => node.CheckState == CheckState.Checked);
@@ -121,16 +111,16 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 				: (uncheckedCount == ChildNodes.Count ? CheckState.Unchecked : CheckState.Indeterminate));
 		}
 
-		private void ControlPanelNode_ActionTaken(object sender, ApplicationActionEventArgs e)
+		private void Node_ActionTaken(object sender, ActionEventArgs e)
 		{
-			ApplicationAction action = e.Action;
-			UpdateApplicationAction(action);
+			DistributionAction action = (DistributionAction) e.Action;
+			UpdateDistributionAction(action);
 			RaiseActionTakenEvent(action);
 		}
 
 		#endregion
 
-		#region Implementation of IControlPanelRootNode
+		#region Implementation of IRootNode
 
 		public void ExpandAll(bool expanded)
 		{
@@ -140,7 +130,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		#endregion
 
-		#region Implementation of IControlPanelNode
+		#region Implementation of INode
 
 		public Size LayoutNode()
 		{
@@ -164,7 +154,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			checkBoxSelected.Checked = @checked;
 		}
 
-		public void TakeAction(ApplicationActionType type)
+		public void TakeAction(ActionType type)
 		{
 			ChildNodes.ForEach(node => node.TakeAction(type));
 		}
@@ -179,10 +169,10 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 				CheckedChanged(this, new EventArgs());
 		}
 
-		private void RaiseActionTakenEvent(ApplicationAction action)
+		private void RaiseActionTakenEvent(IAction action)
 		{
 			if (ActionTaken != null)
-				ActionTaken(this, new ApplicationActionEventArgs(action));
+				ActionTaken(this, new ActionEventArgs(action));
 		}
 
 		#endregion
@@ -208,7 +198,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			linkLabelDistribute.Enabled = enable;
 		}
 
-		protected virtual void UpdateApplicationAction(ApplicationAction action)
+		protected virtual void UpdateDistributionAction(DistributionAction action)
 		{
 			throw new InvalidOperationException("Class must be inherited!");
 		}

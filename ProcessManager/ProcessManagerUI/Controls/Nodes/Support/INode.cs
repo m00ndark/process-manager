@@ -13,12 +13,12 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 		CheckState CheckState { get; }
 
 		event EventHandler CheckedChanged;
-		event EventHandler<ApplicationActionEventArgs> ActionTaken;
+		event EventHandler<ActionEventArgs> ActionTaken;
 
 		void Dispose();
 		Size LayoutNode();
 		void ForceWidth(int width);
 		void Check(bool @checked);
-		void TakeAction(ApplicationActionType type);
+		void TakeAction(ActionType type);
 	}
 }

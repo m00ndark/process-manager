@@ -71,7 +71,7 @@
 			this.linkLabelDistribute.Text = "Distribute";
 			this.linkLabelDistribute.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.linkLabelDistribute.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelDistribute.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelStart_LinkClicked);
+			this.linkLabelDistribute.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelDistribute_LinkClicked);
 			// 
 			// labelNodeName
 			// 

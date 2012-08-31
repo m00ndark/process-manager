@@ -6,34 +6,33 @@ using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
 using ProcessManager.Utilities;
 using ProcessManagerUI.Controls.Nodes.Support;
-using Application = ProcessManager.DataObjects.Application;
 
 namespace ProcessManagerUI.Controls.Nodes
 {
 	public partial class DistributionDestinationMachineNode : UserControl, INode
 	{
 		private readonly Guid _id;
-		private ApplicationStatusValue _status;
 
 		public event EventHandler CheckedChanged;
-		public event EventHandler<ApplicationActionEventArgs> ActionTaken;
+		public event EventHandler<ActionEventArgs> ActionTaken;
 
-		public DistributionDestinationMachineNode(Application application, Guid groupID, Guid machineID)
+		public DistributionDestinationMachineNode(Machine destinationMachine, Guid sourceApplicationID, Guid sourceGroupID, Guid sourceMachineID)
 		{
 			InitializeComponent();
-			Application = application;
-			GroupID = groupID;
-			MachineID = machineID;
-			_id = MakeID(MachineID, GroupID, Application.ID);
-			_status = ApplicationStatusValue.Unknown;
+			DestinationMachine = destinationMachine;
+			SourceApplicationID = sourceApplicationID;
+			SourceGroupID = sourceGroupID;
+			SourceMachineID = sourceMachineID;
+			_id = MakeID(SourceMachineID, SourceGroupID, SourceApplicationID, DestinationMachine.ID);
 			//BackColor = Color.FromArgb(255, 192, 128);
 		}
 
 		#region Properties
 
-		public Application Application { get; private set; }
-		public Guid GroupID { get; private set; }
-		public Guid MachineID { get; private set; }
+		public Machine DestinationMachine { get; private set; }
+		public Guid SourceApplicationID { get; private set; }
+		public Guid SourceGroupID { get; private set; }
+		public Guid SourceMachineID { get; private set; }
 
 		public Guid ID { get { return _id; } }
 		public CheckState CheckState { get { return checkBoxSelected.CheckState; } }
@@ -45,35 +44,25 @@ namespace ProcessManagerUI.Controls.Nodes
 		private void CheckBoxSelected_CheckedChanged(object sender, EventArgs e)
 		{
 			if (!checkBoxSelected.Checked)
-				Settings.Client.CP_CheckedNodes.Remove(ID);
-			else if (!Settings.Client.CP_CheckedNodes.Contains(ID))
-				Settings.Client.CP_CheckedNodes.Add(ID);
+				Settings.Client.D_CheckedNodes.Remove(ID);
+			else if (!Settings.Client.D_CheckedNodes.Contains(ID))
+				Settings.Client.D_CheckedNodes.Add(ID);
 
 			RaiseCheckedChangedEvent();
 		}
 
-		private void LinkLabelStart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabelDistribute_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			RaiseActionTakenEvent(new ApplicationAction(ApplicationActionType.Start, Application));
-		}
-
-		private void LinkLabelStop_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			RaiseActionTakenEvent(new ApplicationAction(ApplicationActionType.Stop, Application));
-		}
-
-		private void LinkLabelRestart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			RaiseActionTakenEvent(new ApplicationAction(ApplicationActionType.Restart, Application));
+			RaiseActionTakenEvent(new DistributionAction(DestinationMachine));
 		}
 
 		#endregion
 
-		#region Implementation of IControlPanelNode
+		#region Implementation of INode
 
 		public Size LayoutNode()
 		{
-			labelMachineName.Text = Application.Name;
+			labelMachineName.Text = DestinationMachine.HostName;
 			Size = new Size(labelMachineName.Location.X + labelMachineName.Size.Width, Size.Height);
 			return Size;
 		}
@@ -88,10 +77,13 @@ namespace ProcessManagerUI.Controls.Nodes
 			checkBoxSelected.Checked = @checked;
 		}
 
-		public void TakeAction(ApplicationActionType type)
+		public void TakeAction(ActionType type)
 		{
+			if (type != ActionType.Distribute)
+				throw new ArgumentException("Invalid action type");
+
 			if (checkBoxSelected.Checked)
-				RaiseActionTakenEvent(new ApplicationAction(type, Application));
+				RaiseActionTakenEvent(new DistributionAction(DestinationMachine));
 		}
 
 		#endregion
@@ -104,26 +96,27 @@ namespace ProcessManagerUI.Controls.Nodes
 				CheckedChanged(this, new EventArgs());
 		}
 
-		private void RaiseActionTakenEvent(ApplicationAction action)
+		private void RaiseActionTakenEvent(IAction action)
 		{
 			if (ActionTaken != null)
-				ActionTaken(this, new ApplicationActionEventArgs(action));
+				ActionTaken(this, new ActionEventArgs(action));
 		}
 
 		#endregion
 
 		#region Helpers
 
-		private static Guid MakeID(Guid machineID, Guid groupID, Guid applicationID)
+		private static Guid MakeID(Guid sourceMachineID, Guid sourceGroupID, Guid sourceApplicationID, Guid destinationMachineID)
 		{
-			return Cryptographer.CreateGUID(machineID.ToString() + groupID.ToString() + applicationID.ToString());
+			return Cryptographer.CreateGUID(sourceMachineID.ToString() + sourceGroupID.ToString()
+				+ sourceApplicationID.ToString() + destinationMachineID.ToString());
 		}
 
 		#endregion
 
-		public bool Matches(Guid machineID, Guid groupID, Guid applicationID)
+		public bool Matches(Guid sourceMachineID, Guid sourceGroupID, Guid sourceApplicationID, Guid destinationMachineID)
 		{
-			return Matches(MakeID(machineID, groupID, applicationID));
+			return Matches(MakeID(sourceMachineID, sourceGroupID, sourceApplicationID, destinationMachineID));
 		}
 
 		public bool Matches(Guid id)

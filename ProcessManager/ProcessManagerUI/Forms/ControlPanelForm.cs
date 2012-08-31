@@ -21,10 +21,15 @@ namespace ProcessManagerUI.Forms
 {
 	public partial class ControlPanelForm : Form, IProcessManagerEventHandler
 	{
-		private static readonly IDictionary<ControlPanelGrouping, string> _groupingDescriptions = new Dictionary<ControlPanelGrouping, string>()
+		private static readonly IDictionary<ControlPanelGrouping, string> _controlPanelGroupingDescriptions = new Dictionary<ControlPanelGrouping, string>()
 			{
 				{ ControlPanelGrouping.MachineGroupApplication, "Machine > Group > Application" },
 				{ ControlPanelGrouping.GroupMachineApplication, "Group > Machine > Application" }
+			};
+		private static readonly IDictionary<DistributionGrouping, string> _distributionGroupingDescriptions = new Dictionary<DistributionGrouping, string>()
+			{
+				{ DistributionGrouping.MachineGroupApplicationMachine, "Machine > Group > Application > Machine" },
+				//{ DistributionGrouping.MachineGroupMachine, "Machine > Group > Machine" }
 			};
 		private DateTime _formClosedAt;
 		private readonly List<INode> _allNodes;
@@ -69,14 +74,23 @@ namespace ProcessManagerUI.Forms
 			ExtendGlass();
 			Settings.Client.Load();
 
-			foreach (ControlPanelGrouping grouping in _groupingDescriptions.Keys)
+			foreach (ControlPanelGrouping grouping in _controlPanelGroupingDescriptions.Keys)
 			{
-				int index = comboBoxControlPanelGroupBy.Items.Add(new ComboBoxItem<ControlPanelGrouping>(_groupingDescriptions[grouping], grouping));
+				int index = comboBoxControlPanelGroupBy.Items.Add(new ComboBoxItem<ControlPanelGrouping>(_controlPanelGroupingDescriptions[grouping], grouping));
 				if (Settings.Client.CP_SelectedGrouping == grouping.ToString())
 					comboBoxControlPanelGroupBy.SelectedIndex = index;
 			}
 			if (comboBoxControlPanelGroupBy.SelectedIndex == -1)
 				comboBoxControlPanelGroupBy.SelectedIndex = 0;
+
+			foreach (DistributionGrouping grouping in _distributionGroupingDescriptions.Keys)
+			{
+				int index = comboBoxDistributionGroupBy.Items.Add(new ComboBoxItem<DistributionGrouping>(_distributionGroupingDescriptions[grouping], grouping));
+				if (Settings.Client.D_SelectedGrouping == grouping.ToString())
+					comboBoxDistributionGroupBy.SelectedIndex = index;
+			}
+			if (comboBoxDistributionGroupBy.SelectedIndex == -1)
+				comboBoxDistributionGroupBy.SelectedIndex = 0;
 
 			DisplaySelectedTabPage();
 			UpdateFilterAndLayout();
@@ -144,17 +158,17 @@ namespace ProcessManagerUI.Forms
 
 		private void LinkLabelStartAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_rootNodes.ForEach(node => node.TakeAction(ApplicationActionType.Start));
+			_rootNodes.ForEach(node => node.TakeAction(ActionType.Start));
 		}
 
 		private void LinkLabelStopAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_rootNodes.ForEach(node => node.TakeAction(ApplicationActionType.Stop));
+			_rootNodes.ForEach(node => node.TakeAction(ActionType.Stop));
 		}
 
 		private void LinkLabelRestartAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_rootNodes.ForEach(node => node.TakeAction(ApplicationActionType.Restart));
+			_rootNodes.ForEach(node => node.TakeAction(ActionType.Restart));
 		}
 
 		private void LinkLabelExpandAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -257,9 +271,9 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
-		private void ControlPanelNode_ActionTaken(object sender, ApplicationActionEventArgs e)
+		private void ControlPanelNode_ActionTaken(object sender, ActionEventArgs e)
 		{
-			TakeAction(e.Action);
+			TakeApplicationAction((ApplicationAction) e.Action);
 		}
 
 		#endregion
@@ -379,7 +393,7 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
-		private static void TakeAction(ApplicationAction action)
+		private static void TakeApplicationAction(ApplicationAction action)
 		{
 			try
 			{

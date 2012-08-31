@@ -88,14 +88,16 @@
     <Compile Include="DataObjects\Comparers\GroupEqualityComparer.cs" />
     <Compile Include="DataObjects\Comparers\IDObjectEqualityComparer.cs" />
     <Compile Include="DataObjects\Comparers\MachineEqualityComparer.cs" />
+    <Compile Include="DataObjects\DistributionAction.cs" />
     <Compile Include="DataObjects\DistributionSource.cs" />
     <Compile Include="DataObjects\FileSystemDrive.cs" />
     <Compile Include="DataObjects\FileSystemEntry.cs" />
+    <Compile Include="DataObjects\IAction.cs" />
     <Compile Include="DataObjects\IFileSystemEntry.cs" />
     <Compile Include="DataObjects\IIDObject.cs" />
     <Compile Include="DataObjects\Machine.cs" />
     <Compile Include="DataObjects\MachineConnection.cs" />
-    <Compile Include="EventArguments\ApplicationActionEventArgs.cs" />
+    <Compile Include="EventArguments\ActionEventArgs.cs" />
     <Compile Include="EventArguments\ApplicationStatusesEventArgs.cs" />
     <Compile Include="EventArguments\MachineConfigurationHashEventArgs.cs" />
     <Compile Include="EventArguments\MachinesEventArgs.cs" />

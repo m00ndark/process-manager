@@ -3,16 +3,16 @@ using ProcessManager.DataObjects;
 
 namespace ProcessManager.EventArguments
 {
-	public class ApplicationActionEventArgs : EventArgs
+	public class ActionEventArgs : EventArgs
 	{
-		public ApplicationActionEventArgs(ApplicationAction action)
+		public ActionEventArgs(IAction action)
 		{
 			Action = action;
 		}
 
 		#region Properties
 
-		public ApplicationAction Action { get; private set; }
+		public IAction Action { get; private set; }
 
 		#endregion
 	}

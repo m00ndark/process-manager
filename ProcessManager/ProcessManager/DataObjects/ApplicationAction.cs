@@ -1,23 +1,21 @@
-﻿namespace ProcessManager.DataObjects
-{
-	public enum ApplicationActionType
-	{
-		Start,
-		Stop,
-		Restart
-	}
+﻿using System;
 
-	public class ApplicationAction
+namespace ProcessManager.DataObjects
+{
+	public class ApplicationAction : IAction
 	{
-		public ApplicationAction(ApplicationActionType type, Application application)
+		public ApplicationAction(ActionType type, Application application)
 		{
+			if (type == ActionType.Distribute)
+				throw new ArgumentException("Invalid application action type");
+
 			Type = type;
 			Application = application;
 		}
 
 		#region Properties
 
-		public ApplicationActionType Type { get; private set; }
+		public ActionType Type { get; private set; }
 		public Machine Machine { get; set; }
 		public Group Group { get; set; }
 		public Application Application { get; set; }

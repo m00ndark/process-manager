@@ -23,7 +23,7 @@ namespace ProcessManager.Service.DataObjects
 		public Guid ApplicationID { get; private set; }
 
 		[DataMember]
-		public ApplicationActionType Type { get; private set; }
+		public ActionType Type { get; private set; }
 
 		#endregion
 	}

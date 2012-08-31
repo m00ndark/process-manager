@@ -18,7 +18,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 		private bool _expanded;
 
 		public event EventHandler CheckedChanged;
-		public event EventHandler<ApplicationActionEventArgs> ActionTaken;
+		public event EventHandler<ActionEventArgs> ActionTaken;
 
 		protected BaseControlPanelRootNode(IEnumerable<INode> childNodes, ControlPanelGrouping grouping, bool expanded)
 		{
@@ -86,17 +86,17 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		private void LinkLabelStart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			TakeAction(ApplicationActionType.Start);
+			TakeAction(ActionType.Start);
 		}
 
 		private void LinkLabelStop_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			TakeAction(ApplicationActionType.Stop);
+			TakeAction(ActionType.Stop);
 		}
 
 		private void LinkLabelRestart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			TakeAction(ApplicationActionType.Restart);
+			TakeAction(ActionType.Restart);
 		}
 
 		#endregion
@@ -121,9 +121,9 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 				: (uncheckedCount == ChildNodes.Count ? CheckState.Unchecked : CheckState.Indeterminate));
 		}
 
-		private void ControlPanelNode_ActionTaken(object sender, ApplicationActionEventArgs e)
+		private void ControlPanelNode_ActionTaken(object sender, ActionEventArgs e)
 		{
-			ApplicationAction action = e.Action;
+			ApplicationAction action = (ApplicationAction) e.Action;
 			UpdateApplicationAction(action);
 			RaiseActionTakenEvent(action);
 		}
@@ -164,7 +164,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			checkBoxSelected.Checked = @checked;
 		}
 
-		public void TakeAction(ApplicationActionType type)
+		public void TakeAction(ActionType type)
 		{
 			ChildNodes.ForEach(node => node.TakeAction(type));
 		}
@@ -182,7 +182,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 		private void RaiseActionTakenEvent(ApplicationAction action)
 		{
 			if (ActionTaken != null)
-				ActionTaken(this, new ApplicationActionEventArgs(action));
+				ActionTaken(this, new ActionEventArgs(action));
 		}
 
 		#endregion

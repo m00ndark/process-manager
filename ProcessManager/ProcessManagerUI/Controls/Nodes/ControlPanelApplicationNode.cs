@@ -16,7 +16,7 @@ namespace ProcessManagerUI.Controls.Nodes
 		private ApplicationStatusValue _status;
 
 		public event EventHandler CheckedChanged;
-		public event EventHandler<ApplicationActionEventArgs> ActionTaken;
+		public event EventHandler<ActionEventArgs> ActionTaken;
 
 		public ControlPanelApplicationNode(Application application, Guid groupID, Guid machineID)
 		{
@@ -64,17 +64,17 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		private void LinkLabelStart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			RaiseActionTakenEvent(new ApplicationAction(ApplicationActionType.Start, Application));
+			RaiseActionTakenEvent(new ApplicationAction(ActionType.Start, Application));
 		}
 
 		private void LinkLabelStop_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			RaiseActionTakenEvent(new ApplicationAction(ApplicationActionType.Stop, Application));
+			RaiseActionTakenEvent(new ApplicationAction(ActionType.Stop, Application));
 		}
 
 		private void LinkLabelRestart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			RaiseActionTakenEvent(new ApplicationAction(ApplicationActionType.Restart, Application));
+			RaiseActionTakenEvent(new ApplicationAction(ActionType.Restart, Application));
 		}
 
 		#endregion
@@ -99,7 +99,7 @@ namespace ProcessManagerUI.Controls.Nodes
 			checkBoxSelected.Checked = @checked;
 		}
 
-		public void TakeAction(ApplicationActionType type)
+		public void TakeAction(ActionType type)
 		{
 			if (checkBoxSelected.Checked)
 				RaiseActionTakenEvent(new ApplicationAction(type, Application));
@@ -118,7 +118,7 @@ namespace ProcessManagerUI.Controls.Nodes
 		private void RaiseActionTakenEvent(ApplicationAction action)
 		{
 			if (ActionTaken != null)
-				ActionTaken(this, new ApplicationActionEventArgs(action));
+				ActionTaken(this, new ActionEventArgs(action));
 		}
 
 		#endregion
