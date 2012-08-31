@@ -10,7 +10,7 @@ using Application = ProcessManager.DataObjects.Application;
 
 namespace ProcessManagerUI.Controls.Nodes
 {
-	public partial class ApplicationNode : UserControl, IControlPanelNode
+	public partial class DistributionDestinationMachineNode : UserControl, INode
 	{
 		private readonly Guid _id;
 		private ApplicationStatusValue _status;
@@ -18,7 +18,7 @@ namespace ProcessManagerUI.Controls.Nodes
 		public event EventHandler CheckedChanged;
 		public event EventHandler<ApplicationActionEventArgs> ActionTaken;
 
-		public ApplicationNode(Application application, Guid groupID, Guid machineID)
+		public DistributionDestinationMachineNode(Application application, Guid groupID, Guid machineID)
 		{
 			InitializeComponent();
 			Application = application;
@@ -34,16 +34,6 @@ namespace ProcessManagerUI.Controls.Nodes
 		public Application Application { get; private set; }
 		public Guid GroupID { get; private set; }
 		public Guid MachineID { get; private set; }
-		
-		public ApplicationStatusValue Status
-		{
-			get { return _status; }
-			set
-			{
-				_status = value;
-				ApplyStatus();
-			}
-		}
 
 		public Guid ID { get { return _id; } }
 		public CheckState CheckState { get { return checkBoxSelected.CheckState; } }
@@ -83,9 +73,8 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		public Size LayoutNode()
 		{
-			labelApplicationName.Text = Application.Name;
-			Size = new Size(labelApplicationName.Location.X + labelApplicationName.Size.Width, Size.Height);
-			ApplyStatus();
+			labelMachineName.Text = Application.Name;
+			Size = new Size(labelMachineName.Location.X + labelMachineName.Size.Width, Size.Height);
 			return Size;
 		}
 
@@ -128,22 +117,6 @@ namespace ProcessManagerUI.Controls.Nodes
 		private static Guid MakeID(Guid machineID, Guid groupID, Guid applicationID)
 		{
 			return Cryptographer.CreateGUID(machineID.ToString() + groupID.ToString() + applicationID.ToString());
-		}
-
-		private void ApplyStatus()
-		{
-			switch (Status)
-			{
-				case ApplicationStatusValue.Running:
-					pictureBoxStatus.Image = Properties.Resources.running_16;
-					break;
-				case ApplicationStatusValue.Stopped:
-					pictureBoxStatus.Image = Properties.Resources.stopped_16;
-					break;
-				default:
-					pictureBoxStatus.Image = Properties.Resources.unknown_16;
-					break;
-			}
 		}
 
 		#endregion

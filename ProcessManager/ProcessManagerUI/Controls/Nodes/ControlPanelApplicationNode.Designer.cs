@@ -1,6 +1,6 @@
 ﻿namespace ProcessManagerUI.Controls.Nodes
 {
-	partial class ApplicationNode
+	partial class ControlPanelApplicationNode
 	{
 		/// <summary> 
 		/// Required designer variable.

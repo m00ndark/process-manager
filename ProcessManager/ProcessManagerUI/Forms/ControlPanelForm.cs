@@ -27,9 +27,9 @@ namespace ProcessManagerUI.Forms
 				{ ControlPanelGrouping.GroupMachineApplication, "Group > Machine > Application" }
 			};
 		private DateTime _formClosedAt;
-		private readonly List<IControlPanelNode> _allNodes;
-		private readonly List<IControlPanelRootNode> _rootNodes;
-		private readonly List<ApplicationNode> _applicationNodes;
+		private readonly List<INode> _allNodes;
+		private readonly List<IRootNode> _rootNodes;
+		private readonly List<ControlPanelApplicationNode> _applicationNodes;
 		private bool _nodeLayoutSuspended;
 
 		public event EventHandler<MachineConfigurationHashEventArgs> ConfigurationChanged;
@@ -38,9 +38,9 @@ namespace ProcessManagerUI.Forms
 		{
 			InitializeComponent();
 			_formClosedAt = DateTime.MinValue;
-			_allNodes = new List<IControlPanelNode>();
-			_rootNodes = new List<IControlPanelRootNode>();
-			_applicationNodes = new List<ApplicationNode>();
+			_allNodes = new List<INode>();
+			_rootNodes = new List<IRootNode>();
+			_applicationNodes = new List<ControlPanelApplicationNode>();
 			_nodeLayoutSuspended = false;
 			ServiceHelper.Initialize(this);
 		}
@@ -437,7 +437,7 @@ namespace ProcessManagerUI.Forms
 			{
 				foreach (ApplicationStatus applicationStatus in applicationStatuses)
 				{
-					ApplicationNode applicationNode = _applicationNodes.FirstOrDefault(node =>
+					ControlPanelApplicationNode applicationNode = _applicationNodes.FirstOrDefault(node =>
 						node.Matches(applicationStatus.Machine.ID, applicationStatus.GroupID, applicationStatus.ApplicationID));
 
 					if (applicationNode != null)
@@ -586,15 +586,15 @@ namespace ProcessManagerUI.Forms
 
 							_rootNodes.AddRange(machinesGroupsApplications.Select(machineGroupsApplications =>
 								{
-									IEnumerable<GroupNode> groupNodes = machineGroupsApplications.Groups.Select(groupApplications =>
+									IEnumerable<ControlPanelGroupNode> groupNodes = machineGroupsApplications.Groups.Select(groupApplications =>
 										{
-											IEnumerable<ApplicationNode> applicationNodes = groupApplications.Applications.Select(application =>
-												new ApplicationNode(application.Application, application.Group.ID, application.Machine.ID)).ToList();
+											IEnumerable<ControlPanelApplicationNode> applicationNodes = groupApplications.Applications.Select(application =>
+												new ControlPanelApplicationNode(application.Application, application.Group.ID, application.Machine.ID)).ToList();
 											_applicationNodes.AddRange(applicationNodes);
-											return new GroupNode(groupApplications.Group, groupApplications.Applications.First().Machine.ID, applicationNodes, grouping);
+											return new ControlPanelGroupNode(groupApplications.Group, groupApplications.Applications.First().Machine.ID, applicationNodes, grouping);
 										}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
 									_allNodes.AddRange(groupNodes);
-									return new MachineNode(machineGroupsApplications.Machine, null, groupNodes, grouping);
+									return new ControlPanelMachineNode(machineGroupsApplications.Machine, null, groupNodes, grouping);
 								}).ToList());
 						}
 						break;
@@ -613,15 +613,15 @@ namespace ProcessManagerUI.Forms
 
 							_rootNodes.AddRange(groupsMachinesApplications.Select(groupMachinesApplications =>
 								{
-									IEnumerable<MachineNode> machineNodes = groupMachinesApplications.Machines.Select(machineApplications =>
+									IEnumerable<ControlPanelMachineNode> machineNodes = groupMachinesApplications.Machines.Select(machineApplications =>
 										{
-											IEnumerable<ApplicationNode> applicationNodes = machineApplications.Applications.Select(application =>
-												new ApplicationNode(application.Application, application.Group.ID, application.Machine.ID)).ToList();
+											IEnumerable<ControlPanelApplicationNode> applicationNodes = machineApplications.Applications.Select(application =>
+												new ControlPanelApplicationNode(application.Application, application.Group.ID, application.Machine.ID)).ToList();
 											_applicationNodes.AddRange(applicationNodes);
-											return new MachineNode(machineApplications.Machine, machineApplications.Applications.First().Group.ID, applicationNodes, grouping);
+											return new ControlPanelMachineNode(machineApplications.Machine, machineApplications.Applications.First().Group.ID, applicationNodes, grouping);
 										}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
 									_allNodes.AddRange(machineNodes);
-									return new GroupNode(groupMachinesApplications.Group, null, machineNodes, grouping);
+									return new ControlPanelGroupNode(groupMachinesApplications.Group, null, machineNodes, grouping);
 								}).ToList());
 						}
 						break;

@@ -12,6 +12,12 @@ namespace ProcessManager
 		GroupMachineApplication
 	}
 
+	public enum DistributionGrouping
+	{
+		MachineGroupApplicationMachine,
+		//MachineGroupMachine
+	}
+
 	public static class Settings
 	{
 		#region Constants class
@@ -114,6 +120,16 @@ namespace ProcessManager
 						{ ControlPanelGrouping.MachineGroupApplication, new List<Guid>() },
 						{ ControlPanelGrouping.GroupMachineApplication, new List<Guid>() }
 					};
+				D_SelectedGrouping = Defaults.SELECTED_GROUPING;
+				D_SelectedFilterMachine = Defaults.SELECTED_FILTER_MACHINE;
+				D_SelectedFilterGroup = Defaults.SELECTED_FILTER_GROUP;
+				D_SelectedFilterApplication = Defaults.SELECTED_FILTER_APPLICATION;
+				D_CheckedNodes = new List<Guid>();
+				D_CollapsedNodes = new Dictionary<DistributionGrouping, List<Guid>>()
+					{
+						{ DistributionGrouping.MachineGroupApplicationMachine, new List<Guid>() },
+						//{ DistributionGrouping.MachineGroupMachine, new List<Guid>() }
+					};
 			}
 
 			#region Properties
@@ -128,6 +144,12 @@ namespace ProcessManager
 			public static string CP_SelectedFilterApplication { get; set; }
 			public static List<Guid> CP_CheckedNodes { get; private set; }
 			public static IDictionary<ControlPanelGrouping, List<Guid>> CP_CollapsedNodes { get; private set; }
+			public static string D_SelectedGrouping { get; set; }
+			public static string D_SelectedFilterMachine { get; set; }
+			public static string D_SelectedFilterGroup { get; set; }
+			public static string D_SelectedFilterApplication { get; set; }
+			public static List<Guid> D_CheckedNodes { get; private set; }
+			public static IDictionary<DistributionGrouping, List<Guid>> D_CollapsedNodes { get; private set; }
 
 			#endregion
 

@@ -10,7 +10,7 @@ using ProcessManager.Utilities;
 
 namespace ProcessManagerUI.Controls.Nodes.Support
 {
-	public partial class BaseRootNode : UserControl, IControlPanelRootNode
+	public partial class BaseDistributionRootNode : UserControl, IRootNode
 	{
 		private bool _ignoreCheckedChangedEvents;
 		private Size _childrenSize;
@@ -20,15 +20,15 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 		public event EventHandler CheckedChanged;
 		public event EventHandler<ApplicationActionEventArgs> ActionTaken;
 
-		protected BaseRootNode(IEnumerable<IControlPanelNode> childNodes, ControlPanelGrouping grouping, bool expanded)
+		protected BaseDistributionRootNode(IEnumerable<INode> childNodes, ControlPanelGrouping grouping, bool expanded)
 		{
 			InitializeComponent();
 			_ignoreCheckedChangedEvents = false;
 			_childrenSize = new Size(0, 0);
 			_grouping = grouping;
 			_expanded = expanded;
-			ChildNodes = new List<IControlPanelNode>(childNodes);
-			ChildNodes.Select(node => node as IControlPanelRootNode).Where(node => node != null).ToList()
+			ChildNodes = new List<INode>(childNodes);
+			ChildNodes.Select(node => node as IRootNode).Where(node => node != null).ToList()
 				.ForEach(node => node.SizeChanged += ControlPanelRootNode_SizeChanged);
 			ChildNodes.ForEach(node =>
 				{
@@ -39,7 +39,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		#region Properties
 
-		public List<IControlPanelNode> ChildNodes { get; private set; }
+		public List<INode> ChildNodes { get; private set; }
 
 		public bool Expanded
 		{
@@ -134,7 +134,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		public void ExpandAll(bool expanded)
 		{
-			ChildNodes.Select(node => node as IControlPanelRootNode).Where(node => node != null).ToList().ForEach(node => node.ExpandAll(expanded));
+			ChildNodes.Select(node => node as IRootNode).Where(node => node != null).ToList().ForEach(node => node.ExpandAll(expanded));
 			Expanded = expanded;
 		}
 
@@ -205,9 +205,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		private void EnableActionLinks(bool enable)
 		{
-			linkLabelStart.Enabled = enable;
-			linkLabelStop.Enabled = enable;
-			linkLabelRestart.Enabled = enable;
+			linkLabelDistribute.Enabled = enable;
 		}
 
 		protected virtual void UpdateApplicationAction(ApplicationAction action)

@@ -74,7 +74,7 @@ namespace ProcessManager.DataAccess
 
 		private static bool ProcessExists(Group group, Application application)
 		{
-			return (GetProcesses(group, application).Count() > 0);
+			return GetProcesses(group, application).Any();
 		}
 
 		private static IEnumerable<Process> GetProcesses(Group group, Application application)

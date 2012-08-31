@@ -6,14 +6,14 @@ using ProcessManagerUI.Controls.Nodes.Support;
 
 namespace ProcessManagerUI.Controls.Nodes
 {
-	public class GroupNode : BaseRootNode
+	public class ControlPanelGroupNode : BaseControlPanelRootNode
 	{
 		private readonly Guid _id;
 
-		public GroupNode(Group group, Guid? machineID, IEnumerable<IControlPanelNode> childNodes, ControlPanelGrouping grouping)
+		public ControlPanelGroupNode(Group group, Guid? machineID, IEnumerable<INode> childNodes, ControlPanelGrouping grouping)
 			: this((machineID.HasValue ? MakeID(group.ID, machineID.Value) : group.ID), group, childNodes, grouping) { }
 
-		private GroupNode(Guid id, Group group, IEnumerable<IControlPanelNode> childNodes, ControlPanelGrouping grouping)
+		private ControlPanelGroupNode(Guid id, Group group, IEnumerable<INode> childNodes, ControlPanelGrouping grouping)
 			: base(childNodes, grouping, !Settings.Client.CP_CollapsedNodes[grouping].Contains(id))
 		{
 			_id = id;

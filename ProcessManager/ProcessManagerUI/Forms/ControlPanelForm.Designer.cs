@@ -70,6 +70,15 @@
 			this.labelDistributionFilter = new System.Windows.Forms.Label();
 			this.comboBoxDistributionGroupBy = new System.Windows.Forms.ComboBox();
 			this.labelDistributionGroupBy = new System.Windows.Forms.Label();
+			this.panelDistributionApplications = new System.Windows.Forms.Panel();
+			this.labelDistributionUnavailable = new System.Windows.Forms.Label();
+			this.linkLabelDistributionExpandAll = new System.Windows.Forms.LinkLabel();
+			this.linkLabelDistributionCollapseAll = new System.Windows.Forms.LinkLabel();
+			this.linkLabelDistributionStopAll = new System.Windows.Forms.LinkLabel();
+			this.linkLabelDistributionStartAll = new System.Windows.Forms.LinkLabel();
+			this.linkLabelDistributionRestartAll = new System.Windows.Forms.LinkLabel();
+			this.labelDistributionAllSelected = new System.Windows.Forms.Label();
+			this.flowLayoutPanelDistributionApplications = new System.Windows.Forms.FlowLayoutPanel();
 			this.contextMenuStripSystemTray.SuspendLayout();
 			this.tableLayoutPanelControlPanel.SuspendLayout();
 			this.panelControlPanelApplications.SuspendLayout();
@@ -83,6 +92,7 @@
 			this.horizontalPanel.SuspendLayout();
 			this.panelDistributionGroupByAndFilter.SuspendLayout();
 			this.tableLayoutPanelDistributionFilter.SuspendLayout();
+			this.panelDistributionApplications.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// notifyIcon
@@ -447,8 +457,8 @@
 			this.panelTabPageArea.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelTabPageArea.Controls.Add(this.tableLayoutPanelControlPanel);
 			this.panelTabPageArea.Controls.Add(this.tableLayoutPanelDistribution);
+			this.panelTabPageArea.Controls.Add(this.tableLayoutPanelControlPanel);
 			this.panelTabPageArea.Location = new System.Drawing.Point(0, 0);
 			this.panelTabPageArea.Margin = new System.Windows.Forms.Padding(0);
 			this.panelTabPageArea.Name = "panelTabPageArea";
@@ -462,6 +472,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tableLayoutPanelDistribution.ColumnCount = 1;
 			this.tableLayoutPanelDistribution.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelDistribution.Controls.Add(this.panelDistributionApplications, 0, 1);
 			this.tableLayoutPanelDistribution.Controls.Add(this.panelDistributionGroupByAndFilter, 0, 0);
 			this.tableLayoutPanelDistribution.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanelDistribution.Margin = new System.Windows.Forms.Padding(0);
@@ -599,6 +610,141 @@
 			this.labelDistributionGroupBy.TabIndex = 0;
 			this.labelDistributionGroupBy.Text = "Group by:";
 			// 
+			// panelDistributionApplications
+			// 
+			this.panelDistributionApplications.Controls.Add(this.labelDistributionUnavailable);
+			this.panelDistributionApplications.Controls.Add(this.linkLabelDistributionExpandAll);
+			this.panelDistributionApplications.Controls.Add(this.linkLabelDistributionCollapseAll);
+			this.panelDistributionApplications.Controls.Add(this.linkLabelDistributionStopAll);
+			this.panelDistributionApplications.Controls.Add(this.linkLabelDistributionStartAll);
+			this.panelDistributionApplications.Controls.Add(this.linkLabelDistributionRestartAll);
+			this.panelDistributionApplications.Controls.Add(this.labelDistributionAllSelected);
+			this.panelDistributionApplications.Controls.Add(this.flowLayoutPanelDistributionApplications);
+			this.panelDistributionApplications.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelDistributionApplications.Location = new System.Drawing.Point(0, 63);
+			this.panelDistributionApplications.Margin = new System.Windows.Forms.Padding(0);
+			this.panelDistributionApplications.Name = "panelDistributionApplications";
+			this.panelDistributionApplications.Size = new System.Drawing.Size(400, 172);
+			this.panelDistributionApplications.TabIndex = 5;
+			// 
+			// labelDistributionUnavailable
+			// 
+			this.labelDistributionUnavailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelDistributionUnavailable.Location = new System.Drawing.Point(10, 10);
+			this.labelDistributionUnavailable.Margin = new System.Windows.Forms.Padding(10);
+			this.labelDistributionUnavailable.Name = "labelDistributionUnavailable";
+			this.labelDistributionUnavailable.Size = new System.Drawing.Size(380, 152);
+			this.labelDistributionUnavailable.TabIndex = 0;
+			this.labelDistributionUnavailable.Text = "No applications available";
+			this.labelDistributionUnavailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// linkLabelDistributionExpandAll
+			// 
+			this.linkLabelDistributionExpandAll.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelDistributionExpandAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.linkLabelDistributionExpandAll.AutoSize = true;
+			this.linkLabelDistributionExpandAll.DisabledLinkColor = System.Drawing.Color.Gray;
+			this.linkLabelDistributionExpandAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelDistributionExpandAll.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelDistributionExpandAll.Location = new System.Drawing.Point(261, 10);
+			this.linkLabelDistributionExpandAll.Name = "linkLabelDistributionExpandAll";
+			this.linkLabelDistributionExpandAll.Size = new System.Drawing.Size(61, 13);
+			this.linkLabelDistributionExpandAll.TabIndex = 16;
+			this.linkLabelDistributionExpandAll.TabStop = true;
+			this.linkLabelDistributionExpandAll.Text = "Expand All";
+			this.linkLabelDistributionExpandAll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.linkLabelDistributionExpandAll.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			// 
+			// linkLabelDistributionCollapseAll
+			// 
+			this.linkLabelDistributionCollapseAll.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelDistributionCollapseAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.linkLabelDistributionCollapseAll.AutoSize = true;
+			this.linkLabelDistributionCollapseAll.DisabledLinkColor = System.Drawing.Color.Gray;
+			this.linkLabelDistributionCollapseAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelDistributionCollapseAll.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelDistributionCollapseAll.Location = new System.Drawing.Point(323, 10);
+			this.linkLabelDistributionCollapseAll.Name = "linkLabelDistributionCollapseAll";
+			this.linkLabelDistributionCollapseAll.Size = new System.Drawing.Size(67, 13);
+			this.linkLabelDistributionCollapseAll.TabIndex = 15;
+			this.linkLabelDistributionCollapseAll.TabStop = true;
+			this.linkLabelDistributionCollapseAll.Text = "Collapse All";
+			this.linkLabelDistributionCollapseAll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.linkLabelDistributionCollapseAll.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			// 
+			// linkLabelDistributionStopAll
+			// 
+			this.linkLabelDistributionStopAll.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelDistributionStopAll.AutoSize = true;
+			this.linkLabelDistributionStopAll.DisabledLinkColor = System.Drawing.Color.Gray;
+			this.linkLabelDistributionStopAll.Enabled = false;
+			this.linkLabelDistributionStopAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelDistributionStopAll.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelDistributionStopAll.Location = new System.Drawing.Point(109, 10);
+			this.linkLabelDistributionStopAll.Name = "linkLabelDistributionStopAll";
+			this.linkLabelDistributionStopAll.Size = new System.Drawing.Size(31, 13);
+			this.linkLabelDistributionStopAll.TabIndex = 13;
+			this.linkLabelDistributionStopAll.TabStop = true;
+			this.linkLabelDistributionStopAll.Text = "Stop";
+			this.linkLabelDistributionStopAll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.linkLabelDistributionStopAll.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			// 
+			// linkLabelDistributionStartAll
+			// 
+			this.linkLabelDistributionStartAll.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelDistributionStartAll.AutoSize = true;
+			this.linkLabelDistributionStartAll.DisabledLinkColor = System.Drawing.Color.Gray;
+			this.linkLabelDistributionStartAll.Enabled = false;
+			this.linkLabelDistributionStartAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelDistributionStartAll.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelDistributionStartAll.Location = new System.Drawing.Point(79, 10);
+			this.linkLabelDistributionStartAll.Name = "linkLabelDistributionStartAll";
+			this.linkLabelDistributionStartAll.Size = new System.Drawing.Size(31, 13);
+			this.linkLabelDistributionStartAll.TabIndex = 12;
+			this.linkLabelDistributionStartAll.TabStop = true;
+			this.linkLabelDistributionStartAll.Text = "Start";
+			this.linkLabelDistributionStartAll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.linkLabelDistributionStartAll.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			// 
+			// linkLabelDistributionRestartAll
+			// 
+			this.linkLabelDistributionRestartAll.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelDistributionRestartAll.AutoSize = true;
+			this.linkLabelDistributionRestartAll.DisabledLinkColor = System.Drawing.Color.Gray;
+			this.linkLabelDistributionRestartAll.Enabled = false;
+			this.linkLabelDistributionRestartAll.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelDistributionRestartAll.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelDistributionRestartAll.Location = new System.Drawing.Point(139, 10);
+			this.linkLabelDistributionRestartAll.Name = "linkLabelDistributionRestartAll";
+			this.linkLabelDistributionRestartAll.Size = new System.Drawing.Size(43, 13);
+			this.linkLabelDistributionRestartAll.TabIndex = 14;
+			this.linkLabelDistributionRestartAll.TabStop = true;
+			this.linkLabelDistributionRestartAll.Text = "Restart";
+			this.linkLabelDistributionRestartAll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.linkLabelDistributionRestartAll.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			// 
+			// labelDistributionAllSelected
+			// 
+			this.labelDistributionAllSelected.AutoSize = true;
+			this.labelDistributionAllSelected.Location = new System.Drawing.Point(7, 10);
+			this.labelDistributionAllSelected.Name = "labelDistributionAllSelected";
+			this.labelDistributionAllSelected.Size = new System.Drawing.Size(69, 13);
+			this.labelDistributionAllSelected.TabIndex = 2;
+			this.labelDistributionAllSelected.Text = "All Selected:";
+			// 
+			// flowLayoutPanelDistributionApplications
+			// 
+			this.flowLayoutPanelDistributionApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.flowLayoutPanelDistributionApplications.Location = new System.Drawing.Point(10, 30);
+			this.flowLayoutPanelDistributionApplications.Margin = new System.Windows.Forms.Padding(10);
+			this.flowLayoutPanelDistributionApplications.Name = "flowLayoutPanelDistributionApplications";
+			this.flowLayoutPanelDistributionApplications.Size = new System.Drawing.Size(380, 132);
+			this.flowLayoutPanelDistributionApplications.TabIndex = 1;
+			// 
 			// ControlPanelForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -634,6 +780,8 @@
 			this.panelDistributionGroupByAndFilter.ResumeLayout(false);
 			this.panelDistributionGroupByAndFilter.PerformLayout();
 			this.tableLayoutPanelDistributionFilter.ResumeLayout(false);
+			this.panelDistributionApplications.ResumeLayout(false);
+			this.panelDistributionApplications.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -680,5 +828,14 @@
 		private System.Windows.Forms.Label labelDistributionFilter;
 		private System.Windows.Forms.ComboBox comboBoxDistributionGroupBy;
 		private System.Windows.Forms.Label labelDistributionGroupBy;
+		private System.Windows.Forms.Panel panelDistributionApplications;
+		private System.Windows.Forms.Label labelDistributionUnavailable;
+		private System.Windows.Forms.LinkLabel linkLabelDistributionExpandAll;
+		private System.Windows.Forms.LinkLabel linkLabelDistributionCollapseAll;
+		private System.Windows.Forms.LinkLabel linkLabelDistributionStopAll;
+		private System.Windows.Forms.LinkLabel linkLabelDistributionStartAll;
+		private System.Windows.Forms.LinkLabel linkLabelDistributionRestartAll;
+		private System.Windows.Forms.Label labelDistributionAllSelected;
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelDistributionApplications;
 	}
 }

@@ -1,6 +1,6 @@
 ﻿namespace ProcessManagerUI.Controls.Nodes.Support
 {
-	partial class BaseRootNode
+	partial class BaseDistributionRootNode
 	{
 		/// <summary> 
 		/// Required designer variable.
@@ -29,14 +29,12 @@
 		private void InitializeComponent()
 		{
 			this.checkBoxSelected = new System.Windows.Forms.CheckBox();
-			this.linkLabelStart = new System.Windows.Forms.LinkLabel();
+			this.linkLabelDistribute = new System.Windows.Forms.LinkLabel();
 			this.labelNodeName = new System.Windows.Forms.Label();
 			this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
 			this.panelMachineName = new System.Windows.Forms.Panel();
 			this.panelControl = new System.Windows.Forms.Panel();
 			this.labeledDivider = new ProcessManagerUI.Controls.LabeledDivider();
-			this.linkLabelRestart = new System.Windows.Forms.LinkLabel();
-			this.linkLabelStop = new System.Windows.Forms.LinkLabel();
 			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.pictureBoxExpandCollapse = new System.Windows.Forms.PictureBox();
 			this.tableLayoutPanel.SuspendLayout();
@@ -55,25 +53,25 @@
 			this.checkBoxSelected.UseVisualStyleBackColor = true;
 			this.checkBoxSelected.CheckStateChanged += new System.EventHandler(this.CheckBoxSelected_CheckStateChanged);
 			// 
-			// linkLabelStart
+			// linkLabelDistribute
 			// 
-			this.linkLabelStart.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelStart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.linkLabelDistribute.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelDistribute.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-			this.linkLabelStart.AutoSize = true;
-			this.linkLabelStart.DisabledLinkColor = System.Drawing.Color.Gray;
-			this.linkLabelStart.Enabled = false;
-			this.linkLabelStart.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-			this.linkLabelStart.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelStart.Location = new System.Drawing.Point(3, 4);
-			this.linkLabelStart.Name = "linkLabelStart";
-			this.linkLabelStart.Size = new System.Drawing.Size(31, 15);
-			this.linkLabelStart.TabIndex = 3;
-			this.linkLabelStart.TabStop = true;
-			this.linkLabelStart.Text = "Start";
-			this.linkLabelStart.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.linkLabelStart.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelStart.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelStart_LinkClicked);
+			this.linkLabelDistribute.AutoSize = true;
+			this.linkLabelDistribute.DisabledLinkColor = System.Drawing.Color.Gray;
+			this.linkLabelDistribute.Enabled = false;
+			this.linkLabelDistribute.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelDistribute.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelDistribute.Location = new System.Drawing.Point(3, 4);
+			this.linkLabelDistribute.Name = "linkLabelDistribute";
+			this.linkLabelDistribute.Size = new System.Drawing.Size(58, 15);
+			this.linkLabelDistribute.TabIndex = 3;
+			this.linkLabelDistribute.TabStop = true;
+			this.linkLabelDistribute.Text = "Distribute";
+			this.linkLabelDistribute.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.linkLabelDistribute.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelDistribute.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelStart_LinkClicked);
 			// 
 			// labelNodeName
 			// 
@@ -118,9 +116,7 @@
 			// panelControl
 			// 
 			this.panelControl.Controls.Add(this.labeledDivider);
-			this.panelControl.Controls.Add(this.linkLabelRestart);
-			this.panelControl.Controls.Add(this.linkLabelStop);
-			this.panelControl.Controls.Add(this.linkLabelStart);
+			this.panelControl.Controls.Add(this.linkLabelDistribute);
 			this.panelControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panelControl.Location = new System.Drawing.Point(93, 0);
 			this.panelControl.Margin = new System.Windows.Forms.Padding(0);
@@ -135,51 +131,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labeledDivider.BackColor = System.Drawing.Color.Transparent;
 			this.labeledDivider.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDivider.Location = new System.Drawing.Point(108, 4);
+			this.labeledDivider.Location = new System.Drawing.Point(63, 4);
 			this.labeledDivider.Name = "labeledDivider";
-			this.labeledDivider.Size = new System.Drawing.Size(105, 15);
+			this.labeledDivider.Size = new System.Drawing.Size(150, 15);
 			this.labeledDivider.TabIndex = 6;
 			this.labeledDivider.Text = "";
-			// 
-			// linkLabelRestart
-			// 
-			this.linkLabelRestart.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelRestart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.linkLabelRestart.AutoSize = true;
-			this.linkLabelRestart.DisabledLinkColor = System.Drawing.Color.Gray;
-			this.linkLabelRestart.Enabled = false;
-			this.linkLabelRestart.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-			this.linkLabelRestart.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelRestart.Location = new System.Drawing.Point(63, 4);
-			this.linkLabelRestart.Name = "linkLabelRestart";
-			this.linkLabelRestart.Size = new System.Drawing.Size(43, 15);
-			this.linkLabelRestart.TabIndex = 5;
-			this.linkLabelRestart.TabStop = true;
-			this.linkLabelRestart.Text = "Restart";
-			this.linkLabelRestart.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.linkLabelRestart.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelRestart.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelRestart_LinkClicked);
-			// 
-			// linkLabelStop
-			// 
-			this.linkLabelStop.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelStop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.linkLabelStop.AutoSize = true;
-			this.linkLabelStop.DisabledLinkColor = System.Drawing.Color.Gray;
-			this.linkLabelStop.Enabled = false;
-			this.linkLabelStop.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-			this.linkLabelStop.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelStop.Location = new System.Drawing.Point(33, 4);
-			this.linkLabelStop.Name = "linkLabelStop";
-			this.linkLabelStop.Size = new System.Drawing.Size(31, 15);
-			this.linkLabelStop.TabIndex = 4;
-			this.linkLabelStop.TabStop = true;
-			this.linkLabelStop.Text = "Stop";
-			this.linkLabelStop.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.linkLabelStop.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelStop.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelStop_LinkClicked);
 			// 
 			// flowLayoutPanel
 			// 
@@ -201,7 +157,7 @@
 			this.pictureBoxExpandCollapse.TabStop = false;
 			this.pictureBoxExpandCollapse.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PictureBoxExpandCollapse_MouseDown);
 			// 
-			// BaseRootNode
+			// BaseDistributionRootNode
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -212,7 +168,7 @@
 			this.Controls.Add(this.pictureBoxExpandCollapse);
 			this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Margin = new System.Windows.Forms.Padding(0);
-			this.Name = "BaseRootNode";
+			this.Name = "BaseDistributionRootNode";
 			this.Size = new System.Drawing.Size(350, 100);
 			this.tableLayoutPanel.ResumeLayout(false);
 			this.panelMachineName.ResumeLayout(false);
@@ -229,12 +185,10 @@
 
 		private System.Windows.Forms.PictureBox pictureBoxExpandCollapse;
 		private System.Windows.Forms.CheckBox checkBoxSelected;
-		private System.Windows.Forms.LinkLabel linkLabelStart;
+		private System.Windows.Forms.LinkLabel linkLabelDistribute;
 		private System.Windows.Forms.Label labelNodeName;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
 		private System.Windows.Forms.Panel panelControl;
-		private System.Windows.Forms.LinkLabel linkLabelRestart;
-		private System.Windows.Forms.LinkLabel linkLabelStop;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
 		private LabeledDivider labeledDivider;
 		private System.Windows.Forms.Panel panelMachineName;

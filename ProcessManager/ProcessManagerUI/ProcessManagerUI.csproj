@@ -102,26 +102,47 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\Nodes\Support\BaseRootNode.cs">
+    <Compile Include="Controls\Nodes\DistributionApplicationNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Nodes\ApplicationNode.cs">
+    <Compile Include="Controls\Nodes\DistributionDestinationMachineNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Nodes\ApplicationNode.Designer.cs">
-      <DependentUpon>ApplicationNode.cs</DependentUpon>
+    <Compile Include="Controls\Nodes\DistributionDestinationMachineNode.Designer.cs">
+      <DependentUpon>DistributionDestinationMachineNode.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Nodes\GroupNode.cs">
+    <Compile Include="Controls\Nodes\DistributionGroupNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Nodes\Support\BaseRootNode.Designer.cs">
-      <DependentUpon>BaseRootNode.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Nodes\Support\IControlPanelNode.cs" />
-    <Compile Include="Controls\Nodes\MachineNode.cs">
+    <Compile Include="Controls\Nodes\DistributionSourceMachineNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Nodes\Support\IControlPanelRootNode.cs" />
+    <Compile Include="Controls\Nodes\Support\BaseControlPanelRootNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\ControlPanelApplicationNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\ControlPanelApplicationNode.Designer.cs">
+      <DependentUpon>ControlPanelApplicationNode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Nodes\ControlPanelGroupNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\Support\BaseControlPanelRootNode.Designer.cs">
+      <DependentUpon>BaseControlPanelRootNode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Nodes\Support\BaseDistributionRootNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\Support\BaseDistributionRootNode.Designer.cs">
+      <DependentUpon>BaseDistributionRootNode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Nodes\Support\INode.cs" />
+    <Compile Include="Controls\Nodes\ControlPanelMachineNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\Support\IRootNode.cs" />
     <Compile Include="Forms\DistributionSourcesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -181,11 +202,17 @@
     <Compile Include="Utilities\Messenger.cs" />
     <Compile Include="Utilities\Picker.cs" />
     <Compile Include="Utilities\Worker.cs" />
-    <EmbeddedResource Include="Controls\Nodes\ApplicationNode.resx">
-      <DependentUpon>ApplicationNode.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\Nodes\ControlPanelApplicationNode.resx">
+      <DependentUpon>ControlPanelApplicationNode.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Nodes\Support\BaseRootNode.resx">
-      <DependentUpon>BaseRootNode.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\Nodes\DistributionDestinationMachineNode.resx">
+      <DependentUpon>DistributionDestinationMachineNode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Nodes\Support\BaseControlPanelRootNode.resx">
+      <DependentUpon>BaseControlPanelRootNode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Nodes\Support\BaseDistributionRootNode.resx">
+      <DependentUpon>BaseDistributionRootNode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ConfigurationForm.resx">
       <DependentUpon>ConfigurationForm.cs</DependentUpon>

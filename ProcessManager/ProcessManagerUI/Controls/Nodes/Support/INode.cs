@@ -6,7 +6,7 @@ using ProcessManager.EventArguments;
 
 namespace ProcessManagerUI.Controls.Nodes.Support
 {
-	public interface IControlPanelNode
+	public interface INode
 	{
 		Guid ID { get; }
 		Size Size { get; }

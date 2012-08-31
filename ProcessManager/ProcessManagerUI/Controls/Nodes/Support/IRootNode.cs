@@ -2,7 +2,7 @@
 
 namespace ProcessManagerUI.Controls.Nodes.Support
 {
-	public interface IControlPanelRootNode : IControlPanelNode
+	public interface IRootNode : INode
 	{
 		event EventHandler SizeChanged;
 
