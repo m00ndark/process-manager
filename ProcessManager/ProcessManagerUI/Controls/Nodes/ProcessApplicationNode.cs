@@ -10,22 +10,22 @@ using Application = ProcessManager.DataObjects.Application;
 
 namespace ProcessManagerUI.Controls.Nodes
 {
-	public partial class ControlPanelApplicationNode : UserControl, INode
+	public partial class ProcessApplicationNode : UserControl, INode
 	{
 		private readonly Guid _id;
-		private ApplicationStatusValue _status;
+		private ProcessStatusValue _status;
 
 		public event EventHandler CheckedChanged;
 		public event EventHandler<ActionEventArgs> ActionTaken;
 
-		public ControlPanelApplicationNode(Application application, Guid groupID, Guid machineID)
+		public ProcessApplicationNode(Application application, Guid groupID, Guid machineID)
 		{
 			InitializeComponent();
 			Application = application;
 			GroupID = groupID;
 			MachineID = machineID;
 			_id = MakeID(MachineID, GroupID, Application.ID);
-			_status = ApplicationStatusValue.Unknown;
+			_status = ProcessStatusValue.Unknown;
 			//BackColor = Color.FromArgb(255, 192, 128);
 		}
 
@@ -35,7 +35,7 @@ namespace ProcessManagerUI.Controls.Nodes
 		public Guid GroupID { get; private set; }
 		public Guid MachineID { get; private set; }
 		
-		public ApplicationStatusValue Status
+		public ProcessStatusValue Status
 		{
 			get { return _status; }
 			set
@@ -55,31 +55,31 @@ namespace ProcessManagerUI.Controls.Nodes
 		private void CheckBoxSelected_CheckedChanged(object sender, EventArgs e)
 		{
 			if (!checkBoxSelected.Checked)
-				Settings.Client.CP_CheckedNodes.Remove(ID);
-			else if (!Settings.Client.CP_CheckedNodes.Contains(ID))
-				Settings.Client.CP_CheckedNodes.Add(ID);
+				Settings.Client.P_CheckedNodes.Remove(ID);
+			else if (!Settings.Client.P_CheckedNodes.Contains(ID))
+				Settings.Client.P_CheckedNodes.Add(ID);
 
 			RaiseCheckedChangedEvent();
 		}
 
 		private void LinkLabelStart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			RaiseActionTakenEvent(new ApplicationAction(ActionType.Start, Application));
+			RaiseActionTakenEvent(new ProcessAction(ActionType.Start, Application));
 		}
 
 		private void LinkLabelStop_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			RaiseActionTakenEvent(new ApplicationAction(ActionType.Stop, Application));
+			RaiseActionTakenEvent(new ProcessAction(ActionType.Stop, Application));
 		}
 
 		private void LinkLabelRestart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			RaiseActionTakenEvent(new ApplicationAction(ActionType.Restart, Application));
+			RaiseActionTakenEvent(new ProcessAction(ActionType.Restart, Application));
 		}
 
 		#endregion
 
-		#region Implementation of IControlPanelNode
+		#region Implementation of INode
 
 		public Size LayoutNode()
 		{
@@ -102,7 +102,7 @@ namespace ProcessManagerUI.Controls.Nodes
 		public void TakeAction(ActionType type)
 		{
 			if (checkBoxSelected.Checked)
-				RaiseActionTakenEvent(new ApplicationAction(type, Application));
+				RaiseActionTakenEvent(new ProcessAction(type, Application));
 		}
 
 		#endregion
@@ -115,7 +115,7 @@ namespace ProcessManagerUI.Controls.Nodes
 				CheckedChanged(this, new EventArgs());
 		}
 
-		private void RaiseActionTakenEvent(ApplicationAction action)
+		private void RaiseActionTakenEvent(ProcessAction action)
 		{
 			if (ActionTaken != null)
 				ActionTaken(this, new ActionEventArgs(action));
@@ -134,10 +134,10 @@ namespace ProcessManagerUI.Controls.Nodes
 		{
 			switch (Status)
 			{
-				case ApplicationStatusValue.Running:
+				case ProcessStatusValue.Running:
 					pictureBoxStatus.Image = Properties.Resources.running_16;
 					break;
-				case ApplicationStatusValue.Stopped:
+				case ProcessStatusValue.Stopped:
 					pictureBoxStatus.Image = Properties.Resources.stopped_16;
 					break;
 				default:

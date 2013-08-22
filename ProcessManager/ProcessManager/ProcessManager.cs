@@ -6,7 +6,6 @@ using System.Threading;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
-using ProcessManager.Service.DataObjects;
 using ProcessManager.Service.Host;
 using ProcessManager.Utilities;
 
@@ -18,17 +17,17 @@ namespace ProcessManager
 		private static readonly object _lock = new object();
 
 		private Thread _mainThread;
-		private Dictionary<Guid, Dictionary<Guid, ApplicationStatus>> _applicationStatuses;
+		private Dictionary<Guid, Dictionary<Guid, ProcessStatus>> _processStatuses;
 
 		private ProcessManager()
 		{
 			_mainThread = null;
-			_applicationStatuses = new Dictionary<Guid, Dictionary<Guid, ApplicationStatus>>();
+			_processStatuses = new Dictionary<Guid, Dictionary<Guid, ProcessStatus>>();
 		}
 
 		#region Events
 
-		public event EventHandler<ApplicationStatusesEventArgs> ApplicationStatusesChanged;
+		public event EventHandler<ProcessStatusesEventArgs> ProcessStatusesChanged;
 		public event EventHandler<MachineConfigurationHashEventArgs> ConfigurationChanged;
 
 		#endregion
@@ -57,10 +56,10 @@ namespace ProcessManager
 
 		#region Event raisers
 
-		private void RaiseApplicationStatusesChangedEvent(List<ApplicationStatus> applicationStatuses)
+		private void RaiseProcessStatusesChangedEvent(List<ProcessStatus> processStatuses)
 		{
-			if (ApplicationStatusesChanged != null)
-				ApplicationStatusesChanged(this, new ApplicationStatusesEventArgs(applicationStatuses));
+			if (ProcessStatusesChanged != null)
+				ProcessStatusesChanged(this, new ProcessStatusesEventArgs(processStatuses));
 		}
 
 		private void RaiseConfigurationChangedEvent(Configuration configuration)
@@ -84,13 +83,13 @@ namespace ProcessManager
 			RaiseConfigurationChangedEvent(configuration);
 		}
 
-		public List<ApplicationStatus> GetAllApplicationStatuses()
+		public List<ProcessStatus> GetAllProcessStatuses()
 		{
-			lock (_applicationStatuses)
-				return _applicationStatuses.Values.SelectMany(x => x.Values).ToList();
+			lock (_processStatuses)
+				return _processStatuses.Values.SelectMany(x => x.Values).ToList();
 		}
 
-		public void TakeApplicationAction(Guid groupID, Guid applicationID, ActionType type)
+		public void TakeProcessAction(Guid groupID, Guid applicationID, ActionType type)
 		{
 			Configuration configuration = Configuration.Read();
 			Group group = configuration.Groups.FirstOrDefault(x => x.ID == groupID);
@@ -192,7 +191,7 @@ namespace ProcessManager
 						{
 							List<string> runningProcesses = ProcessHandler.GetProcesses(configuration.Applications);
 
-							var applicationsStatusList = configuration.Groups
+							var processesStatusList = configuration.Groups
 								.SelectMany(group => configuration.Applications
 									.Where(application => group.Applications.Contains(application.ID))
 									.Select(application => new
@@ -205,28 +204,28 @@ namespace ProcessManager
 									{
 										x.Group,
 										x.Application,
-										ApplicationStatus = new ApplicationStatus(x.Group.ID, x.Application.ID,
+										Status = new ProcessStatus(x.Group.ID, x.Application.ID,
 											runningProcesses.Any(runningProcess => runningProcess.Equals(x.Path, StringComparison.CurrentCultureIgnoreCase))
-												? ApplicationStatusValue.Running : ApplicationStatusValue.Stopped)
+												? ProcessStatusValue.Running : ProcessStatusValue.Stopped)
 									})
 								.ToList();
 
-							List<ApplicationStatus> changedApplicationStatuses;
-							lock (_applicationStatuses)
+							List<ProcessStatus> changedProcessStatuses;
+							lock (_processStatuses)
 							{
-								changedApplicationStatuses = applicationsStatusList
-									.Where(x => !_applicationStatuses.ContainsKey(x.Group.ID) || !_applicationStatuses[x.Group.ID].ContainsKey(x.Application.ID)
-										|| _applicationStatuses[x.Group.ID][x.Application.ID].Status != x.ApplicationStatus.Status)
-									.Select(x => x.ApplicationStatus)
+								changedProcessStatuses = processesStatusList
+									.Where(x => !_processStatuses.ContainsKey(x.Group.ID) || !_processStatuses[x.Group.ID].ContainsKey(x.Application.ID)
+										|| _processStatuses[x.Group.ID][x.Application.ID].Value != x.Status.Value)
+									.Select(x => x.Status)
 									.ToList();
 
-								_applicationStatuses = applicationsStatusList
+								_processStatuses = processesStatusList
 									.GroupBy(x => x.Group.ID)
-									.ToDictionary(x => x.Key, x => x.ToDictionary(y => y.Application.ID, y => y.ApplicationStatus));
+									.ToDictionary(x => x.Key, x => x.ToDictionary(y => y.Application.ID, y => y.Status));
 							}
 
-							if (changedApplicationStatuses.Count > 0)
-								RaiseApplicationStatusesChangedEvent(changedApplicationStatuses);
+							if (changedProcessStatuses.Count > 0)
+								RaiseProcessStatusesChangedEvent(changedProcessStatuses);
 						}
 					}
 					catch (ThreadAbortException) { throw; }

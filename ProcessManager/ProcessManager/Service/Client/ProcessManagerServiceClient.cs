@@ -42,14 +42,14 @@ namespace ProcessManager.Service.Client
 			Channel.SetConfiguration(configuration);
 		}
 
-		public List<DTOApplicationStatus> GetAllApplicationStatuses()
+		public List<DTOProcessStatus> GetAllProcessStatuses()
 		{
-			return Channel.GetAllApplicationStatuses();
+			return Channel.GetAllProcessStatuses();
 		}
 
-		public void TakeApplicationAction(DTOApplicationAction action)
+		public void TakeProcessAction(DTOProcessAction processAction)
 		{
-			Channel.TakeApplicationAction(action);
+			Channel.TakeProcessAction(processAction);
 		}
 
 		public List<DTOFileSystemDrive> GetFileSystemDrives()

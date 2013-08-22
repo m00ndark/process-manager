@@ -7,7 +7,7 @@ namespace ProcessManager.Service.Common
 	public interface IProcessManagerServiceEventHandler
 	{
 		[OperationContract(IsOneWay = true)]
-		void ServiceEvent_ApplicationStatusesChanged(List<DTOApplicationStatus> applicationStatuses);
+		void ServiceEvent_ProcessStatusesChanged(List<DTOProcessStatus> processStatuses);
 
 		[OperationContract(IsOneWay = true)]
 		void ServiceEvent_ConfigurationChanged(string configurationHash);

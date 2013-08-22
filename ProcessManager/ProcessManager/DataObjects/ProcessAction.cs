@@ -2,12 +2,12 @@
 
 namespace ProcessManager.DataObjects
 {
-	public class ApplicationAction : IAction
+	public class ProcessAction : IAction
 	{
-		public ApplicationAction(ActionType type, Application application)
+		public ProcessAction(ActionType type, Application application)
 		{
 			if (type == ActionType.Distribute)
-				throw new ArgumentException("Invalid application action type");
+				throw new ArgumentException("Invalid process action type");
 
 			Type = type;
 			Application = application;

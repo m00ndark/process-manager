@@ -17,10 +17,10 @@ namespace ProcessManager.Service.Common
 		void SetConfiguration(DTOConfiguration configuration);
 
 		[OperationContract]
-		List<DTOApplicationStatus> GetAllApplicationStatuses();
+		List<DTOProcessStatus> GetAllProcessStatuses();
 
 		[OperationContract]
-		void TakeApplicationAction(DTOApplicationAction action);
+		void TakeProcessAction(DTOProcessAction processAction);
 
 		[OperationContract]
 		List<DTOFileSystemDrive> GetFileSystemDrives();

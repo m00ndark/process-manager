@@ -13,7 +13,7 @@ namespace ProcessManager.DataObjects
 			Machine = machine;
 			ServiceHandler = serviceHandler;
 			Configuration = null;
-			ApplicationStatuses = null;
+			ProcessStatuses = null;
 		}
 
 		#region Properties
@@ -21,7 +21,7 @@ namespace ProcessManager.DataObjects
 		public Machine Machine { get; private set; }
 		public ProcessManagerServiceHandler ServiceHandler { get; set; }
 		public bool ConfigurationModified { get; set; }
-		public Dictionary<Guid, Dictionary<Guid, ApplicationStatus>> ApplicationStatuses { get; set; }
+		public Dictionary<Guid, Dictionary<Guid, ProcessStatus>> ProcessStatuses { get; set; }
 
 		public Configuration Configuration
 		{

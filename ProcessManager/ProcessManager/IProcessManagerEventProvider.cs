@@ -5,7 +5,7 @@ namespace ProcessManager
 {
 	public interface IProcessManagerEventProvider
 	{
-		event EventHandler<ApplicationStatusesEventArgs> ApplicationStatusesChanged;
+		event EventHandler<ProcessStatusesEventArgs> ProcessStatusesChanged;
 		event EventHandler<MachineConfigurationHashEventArgs> ConfigurationChanged;
 	}
 }

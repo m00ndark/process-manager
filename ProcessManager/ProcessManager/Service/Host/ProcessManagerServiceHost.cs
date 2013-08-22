@@ -16,7 +16,7 @@ namespace ProcessManager.Service.Host
 			{
 				_processManagerService = new ProcessManagerService();
 				_processManagerEventProvider = processManagerEventProvider;
-				_processManagerEventProvider.ApplicationStatusesChanged += _processManagerService.ProcessManagerEventProvider_ApplicationStatusesChanged;
+				_processManagerEventProvider.ProcessStatusesChanged += _processManagerService.ProcessManagerEventProvider_ProcessStatusesChanged;
 				_processManagerEventProvider.ConfigurationChanged += _processManagerService.ProcessManagerEventProvider_ConfigurationChanged;
 				NetTcpBinding binding = new NetTcpBinding()
 					{
@@ -37,7 +37,7 @@ namespace ProcessManager.Service.Host
 			{
 				_serviceHost.Close();
 				_serviceHost = null;
-				_processManagerEventProvider.ApplicationStatusesChanged -= _processManagerService.ProcessManagerEventProvider_ApplicationStatusesChanged;
+				_processManagerEventProvider.ProcessStatusesChanged -= _processManagerService.ProcessManagerEventProvider_ProcessStatusesChanged;
 				_processManagerEventProvider.ConfigurationChanged -= _processManagerService.ProcessManagerEventProvider_ConfigurationChanged;
 				_processManagerService = null;
 			}

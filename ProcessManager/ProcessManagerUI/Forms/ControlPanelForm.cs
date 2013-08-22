@@ -21,10 +21,10 @@ namespace ProcessManagerUI.Forms
 {
 	public partial class ControlPanelForm : Form, IProcessManagerEventHandler
 	{
-		private static readonly IDictionary<ControlPanelGrouping, string> _controlPanelGroupingDescriptions = new Dictionary<ControlPanelGrouping, string>()
+		private static readonly IDictionary<ProcessGrouping, string> _processGroupingDescriptions = new Dictionary<ProcessGrouping, string>()
 			{
-				{ ControlPanelGrouping.MachineGroupApplication, "Machine > Group > Application" },
-				{ ControlPanelGrouping.GroupMachineApplication, "Group > Machine > Application" }
+				{ ProcessGrouping.MachineGroupApplication, "Machine > Group > Application" },
+				{ ProcessGrouping.GroupMachineApplication, "Group > Machine > Application" }
 			};
 		private static readonly IDictionary<DistributionGrouping, string> _distributionGroupingDescriptions = new Dictionary<DistributionGrouping, string>()
 			{
@@ -32,10 +32,13 @@ namespace ProcessManagerUI.Forms
 				//{ DistributionGrouping.MachineGroupMachine, "Machine > Group > Machine" }
 			};
 		private DateTime _formClosedAt;
-		private readonly List<INode> _allNodes;
-		private readonly List<IRootNode> _rootNodes;
-		private readonly List<ControlPanelApplicationNode> _applicationNodes;
-		private bool _controlPanelNodeLayoutSuspended;
+		private readonly List<INode> _allProcessNodes;
+		private readonly List<IRootNode> _processRootNodes;
+		private readonly List<ProcessApplicationNode> _processApplicationNodes;
+		private readonly List<INode> _allDistributionNodes;
+		private readonly List<IRootNode> _distributionRootNodes;
+		private readonly List<DistributionDestinationMachineNode> _distributionDestinationMachineNodes;
+		private bool _processNodeLayoutSuspended;
 		private bool _distributionNodeLayoutSuspended;
 
 		public event EventHandler<MachineConfigurationHashEventArgs> ConfigurationChanged;
@@ -43,11 +46,18 @@ namespace ProcessManagerUI.Forms
 		public ControlPanelForm()
 		{
 			InitializeComponent();
+			tabPageProcess.Tag = ControlPanelTab.Process;
+			tabPageProcess.Text = tabPageProcess.Tag.ToString();
+			tabPageDistribution.Tag = ControlPanelTab.Distribution;
+			tabPageDistribution.Text = tabPageDistribution.Tag.ToString();
 			_formClosedAt = DateTime.MinValue;
-			_allNodes = new List<INode>();
-			_rootNodes = new List<IRootNode>();
-			_applicationNodes = new List<ControlPanelApplicationNode>();
-			_controlPanelNodeLayoutSuspended = false;
+			_allProcessNodes = new List<INode>();
+			_processRootNodes = new List<IRootNode>();
+			_processApplicationNodes = new List<ProcessApplicationNode>();
+			_allDistributionNodes = new List<INode>();
+			_distributionRootNodes = new List<IRootNode>();
+			_distributionDestinationMachineNodes = new List<DistributionDestinationMachineNode>();
+			_processNodeLayoutSuspended = false;
 			_distributionNodeLayoutSuspended = false;
 			ServiceHelper.Initialize(this);
 		}
@@ -76,14 +86,20 @@ namespace ProcessManagerUI.Forms
 			ExtendGlass();
 			Settings.Client.Load();
 
-			foreach (ControlPanelGrouping grouping in _controlPanelGroupingDescriptions.Keys)
+			foreach (TabPage tabPage in tabControlSection.TabPages)
 			{
-				int index = comboBoxControlPanelGroupBy.Items.Add(new ComboBoxItem<ControlPanelGrouping>(_controlPanelGroupingDescriptions[grouping], grouping));
-				if (Settings.Client.CP_SelectedGrouping == grouping.ToString())
-					comboBoxControlPanelGroupBy.SelectedIndex = index;
+				if (tabPage.Tag.ToString() == Settings.Client.CP_SelectedTab)
+					tabControlSection.SelectedTab = tabPage;
 			}
-			if (comboBoxControlPanelGroupBy.SelectedIndex == -1)
-				comboBoxControlPanelGroupBy.SelectedIndex = 0;
+
+			foreach (ProcessGrouping grouping in _processGroupingDescriptions.Keys)
+			{
+				int index = comboBoxProcessGroupBy.Items.Add(new ComboBoxItem<ProcessGrouping>(_processGroupingDescriptions[grouping], grouping));
+				if (Settings.Client.P_SelectedGrouping == grouping.ToString())
+					comboBoxProcessGroupBy.SelectedIndex = index;
+			}
+			if (comboBoxProcessGroupBy.SelectedIndex == -1)
+				comboBoxProcessGroupBy.SelectedIndex = 0;
 
 			foreach (DistributionGrouping grouping in _distributionGroupingDescriptions.Keys)
 			{
@@ -95,7 +111,7 @@ namespace ProcessManagerUI.Forms
 				comboBoxDistributionGroupBy.SelectedIndex = 0;
 
 			DisplaySelectedTabPage();
-			UpdateControlPanelFilterAndLayout();
+			UpdateProcessFilterAndLayout();
 
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;
@@ -114,73 +130,76 @@ namespace ProcessManagerUI.Forms
 
 		private void TabControlSection_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			Settings.Client.CP_SelectedTab = tabControlSection.SelectedTab.Tag.ToString();
+			Settings.Client.Save(ClientSettingsType.States);
+
 			DisplaySelectedTabPage();
 		}
 
-		private void ComboBoxControlPanelGroupBy_SelectedIndexChanged(object sender, EventArgs e)
+		private void ComboBoxProcessGroupBy_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (comboBoxControlPanelGroupBy.SelectedIndex == -1) return;
+			if (comboBoxProcessGroupBy.SelectedIndex == -1) return;
 
-			ControlPanelGrouping grouping = ((ComboBoxItem<ControlPanelGrouping>) comboBoxControlPanelGroupBy.Items[comboBoxControlPanelGroupBy.SelectedIndex]).Tag;
-			Settings.Client.CP_SelectedGrouping = grouping.ToString();
+			ProcessGrouping grouping = ((ComboBoxItem<ProcessGrouping>) comboBoxProcessGroupBy.Items[comboBoxProcessGroupBy.SelectedIndex]).Tag;
+			Settings.Client.P_SelectedGrouping = grouping.ToString();
 			Settings.Client.Save(ClientSettingsType.States);
 
-			LayoutControlPanelNodes();
+			LayoutProcessNodes();
 		}
 
-		private void ComboBoxControlPanelMachineFilter_SelectedIndexChanged(object sender, EventArgs e)
+		private void ComboBoxProcessMachineFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (comboBoxControlPanelMachineFilter.SelectedIndex == -1) return;
+			if (comboBoxProcessMachineFilter.SelectedIndex == -1) return;
 
-			Settings.Client.CP_SelectedFilterMachine = ((ComboBoxItem) comboBoxControlPanelMachineFilter.SelectedItem).Text;
+			Settings.Client.P_SelectedFilterMachine = ((ComboBoxItem) comboBoxProcessMachineFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
 
-			LayoutControlPanelNodes();
+			LayoutProcessNodes();
 		}
 
-		private void ComboBoxControlPanelGroupFilter_SelectedIndexChanged(object sender, EventArgs e)
+		private void ComboBoxProcessGroupFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (comboBoxControlPanelGroupFilter.SelectedIndex == -1) return;
+			if (comboBoxProcessGroupFilter.SelectedIndex == -1) return;
 
-			Settings.Client.CP_SelectedFilterGroup = ((ComboBoxItem) comboBoxControlPanelGroupFilter.SelectedItem).Text;
+			Settings.Client.P_SelectedFilterGroup = ((ComboBoxItem) comboBoxProcessGroupFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
 
-			LayoutControlPanelNodes();
+			LayoutProcessNodes();
 		}
 
-		private void ComboBoxControlPanelApplicationFilter_SelectedIndexChanged(object sender, EventArgs e)
+		private void ComboBoxProcessApplicationFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (comboBoxControlPanelApplicationFilter.SelectedIndex == -1) return;
+			if (comboBoxProcessApplicationFilter.SelectedIndex == -1) return;
 
-			Settings.Client.CP_SelectedFilterApplication = ((ComboBoxItem) comboBoxControlPanelApplicationFilter.SelectedItem).Text;
+			Settings.Client.P_SelectedFilterApplication = ((ComboBoxItem) comboBoxProcessApplicationFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
 
-			LayoutControlPanelNodes();
+			LayoutProcessNodes();
 		}
 
-		private void LinkLabelControlPanelStartAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabelProcessStartAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_rootNodes.ForEach(node => node.TakeAction(ActionType.Start));
+			_processRootNodes.ForEach(node => node.TakeAction(ActionType.Start));
 		}
 
-		private void LinkLabelControlPanelStopAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabelProcessStopAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_rootNodes.ForEach(node => node.TakeAction(ActionType.Stop));
+			_processRootNodes.ForEach(node => node.TakeAction(ActionType.Stop));
 		}
 
-		private void LinkLabelControlPanelRestartAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabelProcessRestartAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_rootNodes.ForEach(node => node.TakeAction(ActionType.Restart));
+			_processRootNodes.ForEach(node => node.TakeAction(ActionType.Restart));
 		}
 
-		private void LinkLabelControlPanelExpandAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabelProcessExpandAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_rootNodes.ForEach(node => node.ExpandAll(true));
+			_processRootNodes.ForEach(node => node.ExpandAll(true));
 		}
 
-		private void LinkLabelControlPanelCollapseAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabelProcessCollapseAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_rootNodes.ForEach(node => node.ExpandAll(false));
+			_processRootNodes.ForEach(node => node.ExpandAll(false));
 		}
 
 		private void LinkLabelOpenConfiguration_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -240,7 +259,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			UpdateControlPanelFilterAndLayout();
+			UpdateProcessFilterAndLayout();
 		}
 
 		private void ServiceConnectionHandler_ServiceHandlerConnectionChanged(object sender, ServiceHandlerConnectionChangedEventArgs e)
@@ -251,31 +270,63 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			UpdateControlPanelFilterAndLayout();
+			UpdateProcessFilterAndLayout();
 		}
 
 		#endregion
 
-		#region Control panel node event handlers
+		#region Node event handlers
 
-		private void ControlPanelRootNode_SizeChanged(object sender, EventArgs e)
+		private void RootNode_SizeChanged(object sender, EventArgs e)
 		{
-			if (flowLayoutPanelControlPanelApplications.Controls.Count > 0)
-				UpdateSize(_rootNodes.Select(node => node.Size).ToList());
+			FlowLayoutPanel flowLayoutPanel;
+			List<IRootNode> rootNodes;
+			switch ((ControlPanelTab) tabControlSection.SelectedTab.Tag)
+			{
+				case ControlPanelTab.Process:
+					flowLayoutPanel = flowLayoutPanelProcessApplications;
+					rootNodes = _processRootNodes;
+					break;
+				case ControlPanelTab.Distribution:
+					flowLayoutPanel = flowLayoutPanelDistributionDestinations;
+					rootNodes = _distributionRootNodes;
+					break;
+				default:
+					return;
+			}
+
+			if (flowLayoutPanel.Controls.Count > 0)
+				UpdateSize(rootNodes.Select(node => node.Size).ToList(), flowLayoutPanel);
 		}
 
-		private void ControlPanelNode_CheckedChanged(object sender, EventArgs e)
+		private void Node_CheckedChanged(object sender, EventArgs e)
 		{
-			if (flowLayoutPanelControlPanelApplications.Controls.Count > 0)
+			FlowLayoutPanel flowLayoutPanel;
+			List<IRootNode> rootNodes;
+			switch ((ControlPanelTab) tabControlSection.SelectedTab.Tag)
 			{
-				int uncheckedCount = _rootNodes.Count(node => node.CheckState == CheckState.Unchecked);
-				EnableActionLinks(uncheckedCount != _rootNodes.Count);
+				case ControlPanelTab.Process:
+					flowLayoutPanel = flowLayoutPanelProcessApplications;
+					rootNodes = _processRootNodes;
+					break;
+				case ControlPanelTab.Distribution:
+					flowLayoutPanel = flowLayoutPanelDistributionDestinations;
+					rootNodes = _distributionRootNodes;
+					break;
+				default:
+					return;
+			}
+
+			if (flowLayoutPanel.Controls.Count > 0)
+			{
+				int uncheckedCount = rootNodes.Count(node => node.CheckState == CheckState.Unchecked);
+				EnableActionLinks((ControlPanelTab) tabControlSection.SelectedTab.Tag, uncheckedCount != rootNodes.Count);
 			}
 		}
 
-		private void ControlPanelNode_ActionTaken(object sender, ActionEventArgs e)
+		private void Node_ActionTaken(object sender, ActionEventArgs e)
 		{
-			TakeApplicationAction((ApplicationAction) e.Action);
+			TakeAction((ControlPanelTab) tabControlSection.SelectedTab.Tag, e.Action);
 		}
 
 		#endregion
@@ -284,17 +335,17 @@ namespace ProcessManagerUI.Forms
 
 		private void ConfigurationForm_ConfigurationChanged(object sender, MachinesEventArgs e)
 		{
-			new Thread(UpdateControlPanelFilterAndLayout).Start();
+			new Thread(UpdateProcessFilterAndLayout).Start();
 		}
 
 		#endregion
 
 		#region Implementation of IProcessManagerEventHandler
 
-		public void ProcessManagerServiceEventHandler_ApplicationStatusesChanged(object sender, ApplicationStatusesEventArgs e)
+		public void ProcessManagerServiceEventHandler_ProcessStatusesChanged(object sender, ProcessStatusesEventArgs e)
 		{
-			Logger.Add(LogType.Debug, "Received ApplicationStatusesChanged event: count = " + e.ApplicationStatuses.Count + e.ApplicationStatuses.Aggregate("", (x, y) => x + ", " + y.GroupID + " / " + y.ApplicationID));
-			HandleApplicationStatusesChanged(e.ApplicationStatuses);
+			Logger.Add(LogType.Debug, "Received ProcessStatusesChanged event: count = " + e.ProcessStatuses.Count + e.ProcessStatuses.Aggregate("", (x, y) => x + ", " + y.GroupID + " / " + y.ApplicationID));
+			HandleProcessStatusesChanged(e.ProcessStatuses);
 		}
 
 		public void ProcessManagerServiceEventHandler_ConfigurationChanged(object sender, MachineConfigurationHashEventArgs e)
@@ -308,14 +359,14 @@ namespace ProcessManagerUI.Forms
 
 		#region Handling Process Manager Service events
 
-		private void HandleApplicationStatusesChanged(IEnumerable<ApplicationStatus> applicationStatuses)
+		private void HandleProcessStatusesChanged(IEnumerable<ProcessStatus> processStatuses)
 		{
-			new Thread(() => HandleApplicationStatusesChangedThread(applicationStatuses)).Start();
+			new Thread(() => HandleProcessStatusesChangedThread(processStatuses)).Start();
 		}
 
-		private void HandleApplicationStatusesChangedThread(IEnumerable<ApplicationStatus> applicationStatuses)
+		private void HandleProcessStatusesChangedThread(IEnumerable<ProcessStatus> processStatuses)
 		{
-			ApplyApplicationStatuses(applicationStatuses);
+			ApplyProcessStatuses(processStatuses);
 		}
 
 		private void HandleConfigurationChanged(Machine machine, string configurationHash)
@@ -363,14 +414,14 @@ namespace ProcessManagerUI.Forms
 
 		private void DisplaySelectedTabPage()
 		{
-			if (tabControlSection.SelectedTab == tabPageControlPanel)
+			if (tabControlSection.SelectedTab == tabPageProcess)
 			{
-				tableLayoutPanelControlPanel.Visible = true;
+				tableLayoutPanelProcess.Visible = true;
 				tableLayoutPanelDistribution.Visible = false;
 			}
 			else if (tabControlSection.SelectedTab == tabPageDistribution)
 			{
-				tableLayoutPanelControlPanel.Visible = false;
+				tableLayoutPanelProcess.Visible = false;
 				tableLayoutPanelDistribution.Visible = true;
 			}
 		}
@@ -387,7 +438,7 @@ namespace ProcessManagerUI.Forms
 			try
 			{
 				ConnectionStore.Connections[machine].Configuration = ConnectionStore.Connections[machine].ServiceHandler.Service.GetConfiguration().FromDTO();
-				UpdateControlPanelFilterAndLayout();
+				UpdateProcessFilterAndLayout();
 			}
 			catch (Exception ex)
 			{
@@ -395,32 +446,16 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
-		private static void TakeApplicationAction(ApplicationAction action)
+		#region Process tab
+
+		private void RetrieveAllProcessStatuses()
 		{
-			try
-			{
-				if (action.Machine == null || action.Group == null || action.Application == null)
-					throw new Exception("Incomplete ApplicationAction object");
-
-				if (!ConnectionStore.ConnectionCreated(action.Machine))
-					throw new Exception("No connection to machine " + action.Machine);
-
-				ConnectionStore.Connections[action.Machine].ServiceHandler.Service.TakeApplicationAction(new DTOApplicationAction(action));
-			}
-			catch (Exception ex)
-			{
-				Logger.Add("Failed to take application action", ex);
-			}
+			new Thread(RetrieveAllProcessStatusesThread).Start();
 		}
 
-		private void RetrieveAllApplicationStatuses()
+		private void RetrieveAllProcessStatusesThread()
 		{
-			new Thread(RetrieveAllApplicationStatusesThread).Start();
-		}
-
-		private void RetrieveAllApplicationStatusesThread()
-		{
-			List<ApplicationStatus> applicationStatuses = new List<ApplicationStatus>();
+			List<ProcessStatus> processStatuses = new List<ProcessStatus>();
 			foreach (Machine machine in Settings.Client.Machines)
 			{
 				try
@@ -428,61 +463,61 @@ namespace ProcessManagerUI.Forms
 					if (!ConnectionStore.ConnectionCreated(machine))
 						throw new Exception("No connection to machine " + machine);
 
-					applicationStatuses.AddRange(ConnectionStore.Connections[machine].ServiceHandler.Service
-						.GetAllApplicationStatuses().Select(x => x.FromDTO(machine)));
+					processStatuses.AddRange(ConnectionStore.Connections[machine].ServiceHandler.Service
+						.GetAllProcessStatuses().Select(x => x.FromDTO(machine)));
 				}
 				catch (Exception ex)
 				{
-					Logger.Add("Failed to retrieve all application statuses from machine " + machine, ex);
+					Logger.Add("Failed to retrieve all process statuses from machine " + machine, ex);
 				}
 			}
-			ApplyApplicationStatuses(applicationStatuses);
+			ApplyProcessStatuses(processStatuses);
 		}
 
-		private delegate void ApplyApplicationStatusesDelegate(IEnumerable<ApplicationStatus> applicationStatuses);
+		private delegate void ApplyProcessStatusesDelegate(IEnumerable<ProcessStatus> processStatuses);
 
-		private void ApplyApplicationStatuses(IEnumerable<ApplicationStatus> applicationStatuses)
+		private void ApplyProcessStatuses(IEnumerable<ProcessStatus> processStatuses)
 		{
 			if (InvokeRequired)
 			{
-				Invoke(new ApplyApplicationStatusesDelegate(ApplyApplicationStatuses), applicationStatuses);
+				Invoke(new ApplyProcessStatusesDelegate(ApplyProcessStatuses), processStatuses);
 				return;
 			}
 
-			lock (_applicationNodes)
+			lock (_processApplicationNodes)
 			{
-				foreach (ApplicationStatus applicationStatus in applicationStatuses)
+				foreach (ProcessStatus processStatus in processStatuses)
 				{
-					ControlPanelApplicationNode applicationNode = _applicationNodes.FirstOrDefault(node =>
-						node.Matches(applicationStatus.Machine.ID, applicationStatus.GroupID, applicationStatus.ApplicationID));
+					ProcessApplicationNode applicationNode = _processApplicationNodes.FirstOrDefault(node =>
+						node.Matches(processStatus.Machine.ID, processStatus.GroupID, processStatus.ApplicationID));
 
 					if (applicationNode != null)
-						applicationNode.Status = applicationStatus.Status;
+						applicationNode.Status = processStatus.Value;
 				}
 			}
 		}
 
-		private void UpdateControlPanelFilterAndLayout()
+		private void UpdateProcessFilterAndLayout()
 		{
-			SuspendControlPanelNodeLayout();
-			UpdateControlPanelFilter();
-			ResumeControlPanelNodeLayout();
-			LayoutControlPanelNodes();
+			SuspendProcessNodeLayout();
+			UpdateProcessFilter();
+			ResumeProcessNodeLayout();
+			LayoutProcessNodes();
 		}
 
-		private delegate void UpdateControlPanelFilterDelegate();
+		private delegate void UpdateProcessFilterDelegate();
 
-		private void UpdateControlPanelFilter()
+		private void UpdateProcessFilter()
 		{
 			if (InvokeRequired)
 			{
-				Invoke(new UpdateControlPanelFilterDelegate(UpdateControlPanelFilter));
+				Invoke(new UpdateProcessFilterDelegate(UpdateProcessFilter));
 				return;
 			}
 
-			string selectedMachineName = Settings.Client.CP_SelectedFilterMachine;
-			comboBoxControlPanelMachineFilter.Items.Clear();
-			comboBoxControlPanelMachineFilter.Items.Add(new ComboBoxItem(string.Empty));
+			string selectedMachineName = Settings.Client.P_SelectedFilterMachine;
+			comboBoxProcessMachineFilter.Items.Clear();
+			comboBoxProcessMachineFilter.Items.Add(new ComboBoxItem(string.Empty));
 
 			foreach (Machine machine in ConnectionStore.Connections.Values
 				.Where(connection => connection.Configuration != null)
@@ -490,14 +525,14 @@ namespace ProcessManagerUI.Forms
 				.Distinct(new MachineEqualityComparer())
 				.OrderBy(machine => machine.HostName))
 			{
-				int index = comboBoxControlPanelMachineFilter.Items.Add(new ComboBoxItem(machine.HostName));
+				int index = comboBoxProcessMachineFilter.Items.Add(new ComboBoxItem(machine.HostName));
 				if (!string.IsNullOrEmpty(selectedMachineName) && machine.HostName.Equals(selectedMachineName, StringComparison.CurrentCultureIgnoreCase))
-					comboBoxControlPanelMachineFilter.SelectedIndex = index;
+					comboBoxProcessMachineFilter.SelectedIndex = index;
 			}
 
-			string selectedGroupName = Settings.Client.CP_SelectedFilterGroup;
-			comboBoxControlPanelGroupFilter.Items.Clear();
-			comboBoxControlPanelGroupFilter.Items.Add(new ComboBoxItem(string.Empty));
+			string selectedGroupName = Settings.Client.P_SelectedFilterGroup;
+			comboBoxProcessGroupFilter.Items.Clear();
+			comboBoxProcessGroupFilter.Items.Add(new ComboBoxItem(string.Empty));
 
 			foreach (Group group in ConnectionStore.Connections.Values
 				.Where(connection => connection.Configuration != null)
@@ -505,14 +540,14 @@ namespace ProcessManagerUI.Forms
 				.Distinct(new GroupEqualityComparer())
 				.OrderBy(group => group.Name))
 			{
-				int index = comboBoxControlPanelGroupFilter.Items.Add(new ComboBoxItem(group.Name));
+				int index = comboBoxProcessGroupFilter.Items.Add(new ComboBoxItem(group.Name));
 				if (!string.IsNullOrEmpty(selectedGroupName) && group.Name.Equals(selectedGroupName, StringComparison.CurrentCultureIgnoreCase))
-					comboBoxControlPanelGroupFilter.SelectedIndex = index;
+					comboBoxProcessGroupFilter.SelectedIndex = index;
 			}
 
-			string selectedApplicationName = Settings.Client.CP_SelectedFilterApplication;
-			comboBoxControlPanelApplicationFilter.Items.Clear();
-			comboBoxControlPanelApplicationFilter.Items.Add(new ComboBoxItem(string.Empty));
+			string selectedApplicationName = Settings.Client.P_SelectedFilterApplication;
+			comboBoxProcessApplicationFilter.Items.Clear();
+			comboBoxProcessApplicationFilter.Items.Add(new ComboBoxItem(string.Empty));
 
 			foreach (Application application in ConnectionStore.Connections.Values
 				.Where(connection => connection.Configuration != null)
@@ -520,63 +555,63 @@ namespace ProcessManagerUI.Forms
 				.Distinct(new ApplicationEqualityComparer())
 				.OrderBy(application => application.Name))
 			{
-				int index = comboBoxControlPanelApplicationFilter.Items.Add(new ComboBoxItem(application.Name));
+				int index = comboBoxProcessApplicationFilter.Items.Add(new ComboBoxItem(application.Name));
 				if (!string.IsNullOrEmpty(selectedApplicationName) && application.Name.Equals(selectedApplicationName, StringComparison.CurrentCultureIgnoreCase))
-					comboBoxControlPanelApplicationFilter.SelectedIndex = index;
+					comboBoxProcessApplicationFilter.SelectedIndex = index;
 			}
 		}
 
-		private void SuspendControlPanelNodeLayout()
+		private void SuspendProcessNodeLayout()
 		{
-			_controlPanelNodeLayoutSuspended = true;
+			_processNodeLayoutSuspended = true;
 		}
 
-		private void ResumeControlPanelNodeLayout()
+		private void ResumeProcessNodeLayout()
 		{
-			_controlPanelNodeLayoutSuspended = false;
+			_processNodeLayoutSuspended = false;
 		}
 
-		private delegate void LayoutControlPanelNodesDelegate();
+		private delegate void LayoutProcessNodesDelegate();
 
-		private void LayoutControlPanelNodes()
+		private void LayoutProcessNodes()
 		{
-			if (_controlPanelNodeLayoutSuspended)
+			if (_processNodeLayoutSuspended)
 				return;
 
 			if (InvokeRequired)
 			{
-				Invoke(new LayoutControlPanelNodesDelegate(LayoutControlPanelNodes));
+				Invoke(new LayoutProcessNodesDelegate(LayoutProcessNodes));
 				return;
 			}
 
 			//try{
 
 			Settings.Client.Save(ClientSettingsType.States);
-			ControlPanelGrouping grouping = ((ComboBoxItem<ControlPanelGrouping>) comboBoxControlPanelGroupBy.SelectedItem).Tag;
+			ProcessGrouping grouping = ((ComboBoxItem<ProcessGrouping>) comboBoxProcessGroupBy.SelectedItem).Tag;
 
-			lock (_applicationNodes)
+			lock (_processApplicationNodes)
 			{
-				flowLayoutPanelControlPanelApplications.Controls.Clear();
-				_rootNodes.ForEach(node =>
+				flowLayoutPanelProcessApplications.Controls.Clear();
+				_processRootNodes.ForEach(node =>
 					{
-						node.SizeChanged -= ControlPanelRootNode_SizeChanged;
-						node.CheckedChanged -= ControlPanelNode_CheckedChanged;
-						node.ActionTaken -= ControlPanelNode_ActionTaken;
+						node.SizeChanged -= RootNode_SizeChanged;
+						node.CheckedChanged -= Node_CheckedChanged;
+						node.ActionTaken -= Node_ActionTaken;
 					});
-				_allNodes.ForEach(node => node.Dispose());
-				_allNodes.Clear();
-				_rootNodes.Clear();
-				_applicationNodes.Clear();
+				_allProcessNodes.ForEach(node => node.Dispose());
+				_allProcessNodes.Clear();
+				_processRootNodes.Clear();
+				_processApplicationNodes.Clear();
 
 				var applications = ConnectionStore.Connections.Values
 					.Where(connection => connection.Configuration != null)
-					.Where(connection => string.IsNullOrEmpty(Settings.Client.CP_SelectedFilterMachine) || connection.Machine.Equals(Settings.Client.CP_SelectedFilterMachine))
+					.Where(connection => string.IsNullOrEmpty(Settings.Client.P_SelectedFilterMachine) || connection.Machine.Equals(Settings.Client.P_SelectedFilterMachine))
 					.SelectMany(connection =>
 						connection.Configuration.Groups
-							.Where(group => string.IsNullOrEmpty(Settings.Client.CP_SelectedFilterGroup) || group.Equals(Settings.Client.CP_SelectedFilterGroup))
+							.Where(group => string.IsNullOrEmpty(Settings.Client.P_SelectedFilterGroup) || group.Equals(Settings.Client.P_SelectedFilterGroup))
 							.SelectMany(group => connection.Configuration.Applications
 								.Where(application => group.Applications.Contains(application.ID))
-								.Where(application => string.IsNullOrEmpty(Settings.Client.CP_SelectedFilterApplication) || application.Equals(Settings.Client.CP_SelectedFilterApplication))
+								.Where(application => string.IsNullOrEmpty(Settings.Client.P_SelectedFilterApplication) || application.Equals(Settings.Client.P_SelectedFilterApplication))
 								.Select(application => new
 									{
 										connection.Machine,
@@ -587,7 +622,7 @@ namespace ProcessManagerUI.Forms
 
 				switch (grouping)
 				{
-					case ControlPanelGrouping.MachineGroupApplication:
+					case ProcessGrouping.MachineGroupApplication:
 						{
 							var machinesGroupsApplications = applications
 								.GroupBy(a => a.Machine, (a, b) => new
@@ -600,21 +635,21 @@ namespace ProcessManagerUI.Forms
 											})
 									}, new MachineEqualityComparer());
 
-							_rootNodes.AddRange(machinesGroupsApplications.Select(machineGroupsApplications =>
+							_processRootNodes.AddRange(machinesGroupsApplications.Select(machineGroupsApplications =>
 								{
-									IEnumerable<ControlPanelGroupNode> groupNodes = machineGroupsApplications.Groups.Select(groupApplications =>
+									IEnumerable<ProcessGroupNode> groupNodes = machineGroupsApplications.Groups.Select(groupApplications =>
 										{
-											IEnumerable<ControlPanelApplicationNode> applicationNodes = groupApplications.Applications.Select(application =>
-												new ControlPanelApplicationNode(application.Application, application.Group.ID, application.Machine.ID)).ToList();
-											_applicationNodes.AddRange(applicationNodes);
-											return new ControlPanelGroupNode(groupApplications.Group, groupApplications.Applications.First().Machine.ID, applicationNodes, grouping);
+											IEnumerable<ProcessApplicationNode> applicationNodes = groupApplications.Applications.Select(application =>
+												new ProcessApplicationNode(application.Application, application.Group.ID, application.Machine.ID)).ToList();
+											_processApplicationNodes.AddRange(applicationNodes);
+											return new ProcessGroupNode(groupApplications.Group, groupApplications.Applications.First().Machine.ID, applicationNodes, grouping);
 										}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
-									_allNodes.AddRange(groupNodes);
-									return new ControlPanelMachineNode(machineGroupsApplications.Machine, null, groupNodes, grouping);
+									_allProcessNodes.AddRange(groupNodes);
+									return new ProcessMachineNode(machineGroupsApplications.Machine, null, groupNodes, grouping);
 								}).ToList());
 						}
 						break;
-					case ControlPanelGrouping.GroupMachineApplication:
+					case ProcessGrouping.GroupMachineApplication:
 						{
 							var groupsMachinesApplications = applications
 								.GroupBy(a => a.Group, (a, b) => new
@@ -627,62 +662,64 @@ namespace ProcessManagerUI.Forms
 											})
 									}, new GroupEqualityComparer());
 
-							_rootNodes.AddRange(groupsMachinesApplications.Select(groupMachinesApplications =>
+							_processRootNodes.AddRange(groupsMachinesApplications.Select(groupMachinesApplications =>
 								{
-									IEnumerable<ControlPanelMachineNode> machineNodes = groupMachinesApplications.Machines.Select(machineApplications =>
+									IEnumerable<ProcessMachineNode> machineNodes = groupMachinesApplications.Machines.Select(machineApplications =>
 										{
-											IEnumerable<ControlPanelApplicationNode> applicationNodes = machineApplications.Applications.Select(application =>
-												new ControlPanelApplicationNode(application.Application, application.Group.ID, application.Machine.ID)).ToList();
-											_applicationNodes.AddRange(applicationNodes);
-											return new ControlPanelMachineNode(machineApplications.Machine, machineApplications.Applications.First().Group.ID, applicationNodes, grouping);
+											IEnumerable<ProcessApplicationNode> applicationNodes = machineApplications.Applications.Select(application =>
+												new ProcessApplicationNode(application.Application, application.Group.ID, application.Machine.ID)).ToList();
+											_processApplicationNodes.AddRange(applicationNodes);
+											return new ProcessMachineNode(machineApplications.Machine, machineApplications.Applications.First().Group.ID, applicationNodes, grouping);
 										}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
-									_allNodes.AddRange(machineNodes);
-									return new ControlPanelGroupNode(groupMachinesApplications.Group, null, machineNodes, grouping);
+									_allProcessNodes.AddRange(machineNodes);
+									return new ProcessGroupNode(groupMachinesApplications.Group, null, machineNodes, grouping);
 								}).ToList());
 						}
 						break;
 				}
 
-				_allNodes.AddRange(_rootNodes);
-				_allNodes.AddRange(_applicationNodes);
-				_rootNodes.ForEach(node =>
+				_allProcessNodes.AddRange(_processRootNodes);
+				_allProcessNodes.AddRange(_processApplicationNodes);
+				_processRootNodes.ForEach(node =>
 					{
-						node.SizeChanged += ControlPanelRootNode_SizeChanged;
-						node.CheckedChanged += ControlPanelNode_CheckedChanged;
-						node.ActionTaken += ControlPanelNode_ActionTaken;
+						node.SizeChanged += RootNode_SizeChanged;
+						node.CheckedChanged += Node_CheckedChanged;
+						node.ActionTaken += Node_ActionTaken;
 					});
 			}
 
-			if (_applicationNodes.Count > 0)
+			if (_processApplicationNodes.Count > 0)
 			{
-				UpdateSize(_rootNodes.Select(node => node.LayoutNode()).ToList());
+				UpdateSize(_processRootNodes.Select(node => node.LayoutNode()).ToList(), flowLayoutPanelProcessApplications);
 
-				_rootNodes.ForEach(node =>
+				_processRootNodes.ForEach(node =>
 					{
-						node.ForceWidth(flowLayoutPanelControlPanelApplications.Size.Width);
-						flowLayoutPanelControlPanelApplications.Controls.Add((UserControl) node);
+						node.ForceWidth(flowLayoutPanelProcessApplications.Size.Width);
+						flowLayoutPanelProcessApplications.Controls.Add((UserControl) node);
 					});
 
-				Settings.Client.CP_CheckedNodes.ToList()
-					.Select(id => _applicationNodes.FirstOrDefault(node => node.Matches(id)))
+				Settings.Client.P_CheckedNodes.ToList()
+					.Select(id => _processApplicationNodes.FirstOrDefault(node => node.Matches(id)))
 					.Where(node => node != null)
 					.ToList().ForEach(node => node.Check(true));
 
-				RetrieveAllApplicationStatuses();
+				RetrieveAllProcessStatuses();
 			}
 			else
 			{
-				UpdateSize(null);
+				UpdateSize(null, null);
 			}
 
-			labelControlPanelUnavailable.Visible = (_applicationNodes.Count == 0);
+			labelProcessUnavailable.Visible = (_processApplicationNodes.Count == 0);
 			//}
 			//catch (Exception ex)
 			//{
 			//}
 		}
 
-		private void UpdateSize(List<Size> rootNodeSizes)
+		#endregion
+
+		private void UpdateSize(List<Size> rootNodeSizes, FlowLayoutPanel flowLayoutPanel)
 		{
 			MinimumSize = MaximumSize = new Size(0, 0);
 
@@ -690,8 +727,8 @@ namespace ProcessManagerUI.Forms
 			{
 				int totalNodesHeight = rootNodeSizes.Sum(size => size.Height);
 				int maxNodeWidth = rootNodeSizes.Max(size => size.Width);
-				Size = new Size(Size.Width - flowLayoutPanelControlPanelApplications.Size.Width + maxNodeWidth,
-					Size.Height - flowLayoutPanelControlPanelApplications.Size.Height + totalNodesHeight);
+				Size = new Size(Size.Width - flowLayoutPanel.Size.Width + maxNodeWidth,
+					Size.Height - flowLayoutPanel.Size.Height + totalNodesHeight);
 			}
 			else
 			{
@@ -702,11 +739,58 @@ namespace ProcessManagerUI.Forms
 			Location = new Point(Location.X, Screen.PrimaryScreen.WorkingArea.Height - Size.Height - 8);
 		}
 
-		private void EnableActionLinks(bool enable)
+		private void EnableActionLinks(ControlPanelTab tab, bool enable)
 		{
-			linkLabelControlPanelStartAll.Enabled = enable;
-			linkLabelControlPanelStopAll.Enabled = enable;
-			linkLabelControlPanelRestartAll.Enabled = enable;
+			switch (tab)
+			{
+				case ControlPanelTab.Process:
+					linkLabelProcessStartAll.Enabled = enable;
+					linkLabelProcessStopAll.Enabled = enable;
+					linkLabelProcessRestartAll.Enabled = enable;
+					break;
+				case ControlPanelTab.Distribution:
+					linkLabelDistributionDistributeAll.Enabled = enable;
+					break;
+			}
+		}
+
+		private static void TakeAction(ControlPanelTab tab, IAction action)
+		{
+			try
+			{
+				switch (tab)
+				{
+					case ControlPanelTab.Process:
+						{
+							ProcessAction processAction = action as ProcessAction;
+
+							if (processAction == null)
+								return;
+
+							if (processAction.Machine == null || processAction.Group == null || processAction.Application == null)
+								throw new Exception("Incomplete ProcessAction object");
+
+							if (!ConnectionStore.ConnectionCreated(processAction.Machine))
+								throw new Exception("No connection to machine " + processAction.Machine);
+
+							ConnectionStore.Connections[processAction.Machine].ServiceHandler.Service.TakeProcessAction(new DTOProcessAction(processAction));
+						}
+						break;
+					case ControlPanelTab.Distribution:
+						{
+							DistributionAction distributionAction = action as DistributionAction;
+
+							if (distributionAction == null)
+								return;
+
+						}
+						break;
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.Add("Failed to take action", ex);
+			}
 		}
 
 		#endregion

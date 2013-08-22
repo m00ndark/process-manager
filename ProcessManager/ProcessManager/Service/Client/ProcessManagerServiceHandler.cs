@@ -38,7 +38,7 @@ namespace ProcessManager.Service.Client
 			SetupClient();
 			if (_isSubscribing)
 			{
-				_processManagerServiceEventHandler.ApplicationStatusesChanged += _processManagerEventHandler.ProcessManagerServiceEventHandler_ApplicationStatusesChanged;
+				_processManagerServiceEventHandler.ProcessStatusesChanged += _processManagerEventHandler.ProcessManagerServiceEventHandler_ProcessStatusesChanged;
 				_processManagerServiceEventHandler.ConfigurationChanged += _processManagerEventHandler.ProcessManagerServiceEventHandler_ConfigurationChanged;
 			}
 		}
@@ -62,7 +62,7 @@ namespace ProcessManager.Service.Client
 					_connectionWatcherThread.Abort();
 					_connectionWatcherThread = null;
 				}
-				_processManagerServiceEventHandler.ApplicationStatusesChanged -= _processManagerEventHandler.ProcessManagerServiceEventHandler_ApplicationStatusesChanged;
+				_processManagerServiceEventHandler.ProcessStatusesChanged -= _processManagerEventHandler.ProcessManagerServiceEventHandler_ProcessStatusesChanged;
 				_processManagerServiceEventHandler.ConfigurationChanged -= _processManagerEventHandler.ProcessManagerServiceEventHandler_ConfigurationChanged;
 			}
 			if (_processManagerServiceClient != null)

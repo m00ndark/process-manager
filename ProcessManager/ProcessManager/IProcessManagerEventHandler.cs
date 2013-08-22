@@ -7,7 +7,7 @@ namespace ProcessManager
 	{
 		event EventHandler<MachineConfigurationHashEventArgs> ConfigurationChanged;
 
-		void ProcessManagerServiceEventHandler_ApplicationStatusesChanged(object sender, ApplicationStatusesEventArgs e);
+		void ProcessManagerServiceEventHandler_ProcessStatusesChanged(object sender, ProcessStatusesEventArgs e);
 		void ProcessManagerServiceEventHandler_ConfigurationChanged(object sender, MachineConfigurationHashEventArgs e);
 	}
 }

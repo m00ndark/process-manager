@@ -6,7 +6,13 @@ using ProcessManager.DataObjects;
 
 namespace ProcessManager
 {
-	public enum ControlPanelGrouping
+	public enum ControlPanelTab
+	{
+		Process,
+		Distribution
+	}
+
+	public enum ProcessGrouping
 	{
 		MachineGroupApplication,
 		GroupMachineApplication
@@ -96,10 +102,15 @@ namespace ProcessManager
 				public const string START_WITH_WINDOWS = "False";
 				public const string SELECTED_HOST_NAME = Constants.LOCALHOST;
 				public const string SELECTED_CONFIGURATION_SECTION = "";
-				public const string SELECTED_GROUPING = "";
-				public const string SELECTED_FILTER_MACHINE = "";
-				public const string SELECTED_FILTER_GROUP = "";
-				public const string SELECTED_FILTER_APPLICATION = "";
+				public const string SELECTED_TAB = "";
+				public const string SELECTED_PROCESS_GROUPING = "";
+				public const string SELECTED_PROCESS_FILTER_MACHINE = "";
+				public const string SELECTED_PROCESS_FILTER_GROUP = "";
+				public const string SELECTED_PROCESS_FILTER_APPLICATION = "";
+				public const string SELECTED_DISTRIBUTION_GROUPING = "";
+				public const string SELECTED_DISTRIBUTION_FILTER_MACHINE = "";
+				public const string SELECTED_DISTRIBUTION_FILTER_GROUP = "";
+				public const string SELECTED_DISTRIBUTION_FILTER_APPLICATION = "";
 			}
 
 			#endregion
@@ -110,20 +121,21 @@ namespace ProcessManager
 				StartWithWindows = bool.Parse(Defaults.START_WITH_WINDOWS);
 				CFG_SelectedHostName = Defaults.SELECTED_HOST_NAME;
 				CFG_SelectedConfigurationSection = Defaults.SELECTED_CONFIGURATION_SECTION;
-				CP_SelectedGrouping = Defaults.SELECTED_GROUPING;
-				CP_SelectedFilterMachine = Defaults.SELECTED_FILTER_MACHINE;
-				CP_SelectedFilterGroup = Defaults.SELECTED_FILTER_GROUP;
-				CP_SelectedFilterApplication = Defaults.SELECTED_FILTER_APPLICATION;
-				CP_CheckedNodes = new List<Guid>();
-				CP_CollapsedNodes = new Dictionary<ControlPanelGrouping, List<Guid>>()
+				CP_SelectedTab = Defaults.SELECTED_TAB;
+				P_SelectedGrouping = Defaults.SELECTED_PROCESS_GROUPING;
+				P_SelectedFilterMachine = Defaults.SELECTED_PROCESS_FILTER_MACHINE;
+				P_SelectedFilterGroup = Defaults.SELECTED_PROCESS_FILTER_GROUP;
+				P_SelectedFilterApplication = Defaults.SELECTED_PROCESS_FILTER_APPLICATION;
+				P_CheckedNodes = new List<Guid>();
+				P_CollapsedNodes = new Dictionary<ProcessGrouping, List<Guid>>()
 					{
-						{ ControlPanelGrouping.MachineGroupApplication, new List<Guid>() },
-						{ ControlPanelGrouping.GroupMachineApplication, new List<Guid>() }
+						{ ProcessGrouping.MachineGroupApplication, new List<Guid>() },
+						{ ProcessGrouping.GroupMachineApplication, new List<Guid>() }
 					};
-				D_SelectedGrouping = Defaults.SELECTED_GROUPING;
-				D_SelectedFilterMachine = Defaults.SELECTED_FILTER_MACHINE;
-				D_SelectedFilterGroup = Defaults.SELECTED_FILTER_GROUP;
-				D_SelectedFilterApplication = Defaults.SELECTED_FILTER_APPLICATION;
+				D_SelectedGrouping = Defaults.SELECTED_DISTRIBUTION_GROUPING;
+				D_SelectedFilterMachine = Defaults.SELECTED_DISTRIBUTION_FILTER_MACHINE;
+				D_SelectedFilterGroup = Defaults.SELECTED_DISTRIBUTION_FILTER_GROUP;
+				D_SelectedFilterApplication = Defaults.SELECTED_DISTRIBUTION_FILTER_APPLICATION;
 				D_CheckedNodes = new List<Guid>();
 				D_CollapsedNodes = new Dictionary<DistributionGrouping, List<Guid>>()
 					{
@@ -138,12 +150,13 @@ namespace ProcessManager
 			public static bool StartWithWindows { get; set; }
 			public static string CFG_SelectedHostName { get; set; }
 			public static string CFG_SelectedConfigurationSection { get; set; }
-			public static string CP_SelectedGrouping { get; set; }
-			public static string CP_SelectedFilterMachine { get; set; }
-			public static string CP_SelectedFilterGroup { get; set; }
-			public static string CP_SelectedFilterApplication { get; set; }
-			public static List<Guid> CP_CheckedNodes { get; private set; }
-			public static IDictionary<ControlPanelGrouping, List<Guid>> CP_CollapsedNodes { get; private set; }
+			public static string CP_SelectedTab { get; set; }
+			public static string P_SelectedGrouping { get; set; }
+			public static string P_SelectedFilterMachine { get; set; }
+			public static string P_SelectedFilterGroup { get; set; }
+			public static string P_SelectedFilterApplication { get; set; }
+			public static List<Guid> P_CheckedNodes { get; private set; }
+			public static IDictionary<ProcessGrouping, List<Guid>> P_CollapsedNodes { get; private set; }
 			public static string D_SelectedGrouping { get; set; }
 			public static string D_SelectedFilterMachine { get; set; }
 			public static string D_SelectedFilterGroup { get; set; }

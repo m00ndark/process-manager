@@ -117,20 +117,20 @@
     <Compile Include="Controls\Nodes\DistributionSourceMachineNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Nodes\Support\BaseControlPanelRootNode.cs">
+    <Compile Include="Controls\Nodes\Support\BaseProcessRootNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Nodes\ControlPanelApplicationNode.cs">
+    <Compile Include="Controls\Nodes\ProcessApplicationNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Nodes\ControlPanelApplicationNode.Designer.cs">
-      <DependentUpon>ControlPanelApplicationNode.cs</DependentUpon>
+    <Compile Include="Controls\Nodes\ProcessApplicationNode.Designer.cs">
+      <DependentUpon>ProcessApplicationNode.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Nodes\ControlPanelGroupNode.cs">
+    <Compile Include="Controls\Nodes\ProcessGroupNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Nodes\Support\BaseControlPanelRootNode.Designer.cs">
-      <DependentUpon>BaseControlPanelRootNode.cs</DependentUpon>
+    <Compile Include="Controls\Nodes\Support\BaseProcessRootNode.Designer.cs">
+      <DependentUpon>BaseProcessRootNode.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Nodes\Support\BaseDistributionRootNode.cs">
       <SubType>UserControl</SubType>
@@ -139,7 +139,7 @@
       <DependentUpon>BaseDistributionRootNode.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Nodes\Support\INode.cs" />
-    <Compile Include="Controls\Nodes\ControlPanelMachineNode.cs">
+    <Compile Include="Controls\Nodes\ProcessMachineNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\Nodes\Support\IRootNode.cs" />
@@ -202,14 +202,14 @@
     <Compile Include="Utilities\Messenger.cs" />
     <Compile Include="Utilities\Picker.cs" />
     <Compile Include="Utilities\Worker.cs" />
-    <EmbeddedResource Include="Controls\Nodes\ControlPanelApplicationNode.resx">
-      <DependentUpon>ControlPanelApplicationNode.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\Nodes\ProcessApplicationNode.resx">
+      <DependentUpon>ProcessApplicationNode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Nodes\DistributionDestinationMachineNode.resx">
       <DependentUpon>DistributionDestinationMachineNode.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Nodes\Support\BaseControlPanelRootNode.resx">
-      <DependentUpon>BaseControlPanelRootNode.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\Nodes\Support\BaseProcessRootNode.resx">
+      <DependentUpon>BaseProcessRootNode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Nodes\Support\BaseDistributionRootNode.resx">
       <DependentUpon>BaseDistributionRootNode.cs</DependentUpon>

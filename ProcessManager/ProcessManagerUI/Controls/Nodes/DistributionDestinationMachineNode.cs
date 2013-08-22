@@ -53,7 +53,7 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		private void LinkLabelDistribute_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			RaiseActionTakenEvent(new DistributionAction(DestinationMachine));
+			RaiseActionTakenEvent(new DistributionAction(ActionType.Distribute, DestinationMachine));
 		}
 
 		#endregion
@@ -83,7 +83,7 @@ namespace ProcessManagerUI.Controls.Nodes
 				throw new ArgumentException("Invalid action type");
 
 			if (checkBoxSelected.Checked)
-				RaiseActionTakenEvent(new DistributionAction(DestinationMachine));
+				RaiseActionTakenEvent(new DistributionAction(ActionType.Distribute, DestinationMachine));
 		}
 
 		#endregion

@@ -1,6 +1,6 @@
 ﻿namespace ProcessManagerUI.Controls.Nodes.Support
 {
-	partial class BaseControlPanelRootNode
+	partial class BaseProcessRootNode
 	{
 		/// <summary> 
 		/// Required designer variable.

@@ -23,17 +23,17 @@ namespace ProcessManager.Service.Client
 
 		#region Events
 
-		public event EventHandler<ApplicationStatusesEventArgs> ApplicationStatusesChanged;
+		public event EventHandler<ProcessStatusesEventArgs> ProcessStatusesChanged;
 		public event EventHandler<MachineConfigurationHashEventArgs> ConfigurationChanged;
 
 		#endregion
 
 		#region Event raisers
 
-		private void RaiseApplicationStatusesChangedEvent(IEnumerable<DTOApplicationStatus> applicationStatuses)
+		private void RaiseProcessStatusesChangedEvent(IEnumerable<DTOProcessStatus> processStatuses)
 		{
-			if (ApplicationStatusesChanged != null)
-				ApplicationStatusesChanged(this, new ApplicationStatusesEventArgs(applicationStatuses.Select(x => x.FromDTO(Machine)).ToList()));
+			if (ProcessStatusesChanged != null)
+				ProcessStatusesChanged(this, new ProcessStatusesEventArgs(processStatuses.Select(x => x.FromDTO(Machine)).ToList()));
 		}
 
 		private void RaiseConfigurationChangedEvent(string configurationHash)
@@ -46,9 +46,9 @@ namespace ProcessManager.Service.Client
 
 		#region Implementation of IProcessManagerServiceEventHandler
 
-		public void ServiceEvent_ApplicationStatusesChanged(List<DTOApplicationStatus> applicationStatuses)
+		public void ServiceEvent_ProcessStatusesChanged(List<DTOProcessStatus> processStatuses)
 		{
-			RaiseApplicationStatusesChangedEvent(applicationStatuses);
+			RaiseProcessStatusesChangedEvent(processStatuses);
 		}
 
 		public void ServiceEvent_ConfigurationChanged(string configurationHash)

@@ -63,46 +63,47 @@ namespace ProcessManager.DataAccess
 					{
 						Settings.Client.CFG_SelectedHostName = (string) statesKey.GetValue("CFG Selected Host Name", Settings.Client.Defaults.SELECTED_HOST_NAME);
 						Settings.Client.CFG_SelectedConfigurationSection = (string) statesKey.GetValue("CFG Selected Configuration Section", Settings.Client.Defaults.SELECTED_CONFIGURATION_SECTION);
-						Settings.Client.CP_SelectedGrouping = (string) statesKey.GetValue("CP Selected Grouping", Settings.Client.Defaults.SELECTED_GROUPING);
-						Settings.Client.CP_SelectedFilterMachine = (string) statesKey.GetValue("CP Selected Filter Machine", Settings.Client.Defaults.SELECTED_FILTER_MACHINE);
-						Settings.Client.CP_SelectedFilterGroup = (string) statesKey.GetValue("CP Selected Filter Group", Settings.Client.Defaults.SELECTED_FILTER_GROUP);
-						Settings.Client.CP_SelectedFilterApplication = (string) statesKey.GetValue("CP Selected Filter Application", Settings.Client.Defaults.SELECTED_FILTER_APPLICATION);
-						Settings.Client.CP_CheckedNodes.Clear();
-						RegistryKey checkedNodesKey = statesKey.OpenSubKey("CP Checked Nodes", false);
+						Settings.Client.CP_SelectedTab = (string) statesKey.GetValue("CP Selected Tab", Settings.Client.Defaults.SELECTED_TAB);
+						Settings.Client.P_SelectedGrouping = (string) statesKey.GetValue("P Selected Grouping", Settings.Client.Defaults.SELECTED_PROCESS_GROUPING);
+						Settings.Client.P_SelectedFilterMachine = (string) statesKey.GetValue("P Selected Filter Machine", Settings.Client.Defaults.SELECTED_PROCESS_FILTER_MACHINE);
+						Settings.Client.P_SelectedFilterGroup = (string) statesKey.GetValue("P Selected Filter Group", Settings.Client.Defaults.SELECTED_PROCESS_FILTER_GROUP);
+						Settings.Client.P_SelectedFilterApplication = (string) statesKey.GetValue("P Selected Filter Application", Settings.Client.Defaults.SELECTED_PROCESS_FILTER_APPLICATION);
+						Settings.Client.P_CheckedNodes.Clear();
+						RegistryKey checkedNodesKey = statesKey.OpenSubKey("P Checked Nodes", false);
 						if (checkedNodesKey != null)
 						{
-							string nodeID = (string) checkedNodesKey.GetValue("Node " + Settings.Client.CP_CheckedNodes.Count.ToString("00"));
+							string nodeID = (string) checkedNodesKey.GetValue("Node " + Settings.Client.P_CheckedNodes.Count.ToString("00"));
 							while (nodeID != null)
 							{
-								Settings.Client.CP_CheckedNodes.Add(new Guid(nodeID));
-								nodeID = (string) checkedNodesKey.GetValue("Node " + Settings.Client.CP_CheckedNodes.Count.ToString("00"));
+								Settings.Client.P_CheckedNodes.Add(new Guid(nodeID));
+								nodeID = (string) checkedNodesKey.GetValue("Node " + Settings.Client.P_CheckedNodes.Count.ToString("00"));
 							}
 							checkedNodesKey.Close();
 						}
-						Enum.GetValues(typeof(ControlPanelGrouping)).Cast<ControlPanelGrouping>().ToList().ForEach(grouping => Settings.Client.CP_CollapsedNodes[grouping].Clear());
-						RegistryKey collapsedNodesKey = statesKey.OpenSubKey("CP Collapsed Nodes", false);
+						Enum.GetValues(typeof(ProcessGrouping)).Cast<ProcessGrouping>().ToList().ForEach(grouping => Settings.Client.P_CollapsedNodes[grouping].Clear());
+						RegistryKey collapsedNodesKey = statesKey.OpenSubKey("P Collapsed Nodes", false);
 						if (collapsedNodesKey != null)
 						{
-							foreach (ControlPanelGrouping grouping in Enum.GetValues(typeof(ControlPanelGrouping)))
+							foreach (ProcessGrouping grouping in Enum.GetValues(typeof(ProcessGrouping)))
 							{
 								RegistryKey groupingKey = collapsedNodesKey.OpenSubKey(grouping.ToString(), false);
 								if (groupingKey != null)
 								{
-									string nodeID = (string) groupingKey.GetValue("Node " + Settings.Client.CP_CollapsedNodes[grouping].Count.ToString("00"));
+									string nodeID = (string) groupingKey.GetValue("Node " + Settings.Client.P_CollapsedNodes[grouping].Count.ToString("00"));
 									while (nodeID != null)
 									{
-										Settings.Client.CP_CollapsedNodes[grouping].Add(new Guid(nodeID));
-										nodeID = (string) groupingKey.GetValue("Node " + Settings.Client.CP_CollapsedNodes[grouping].Count.ToString("00"));
+										Settings.Client.P_CollapsedNodes[grouping].Add(new Guid(nodeID));
+										nodeID = (string) groupingKey.GetValue("Node " + Settings.Client.P_CollapsedNodes[grouping].Count.ToString("00"));
 									}
 									groupingKey.Close();
 								}
 							}
 							collapsedNodesKey.Close();
 						}
-						Settings.Client.D_SelectedGrouping = (string) statesKey.GetValue("D Selected Grouping", Settings.Client.Defaults.SELECTED_GROUPING);
-						Settings.Client.D_SelectedFilterMachine = (string) statesKey.GetValue("D Selected Filter Machine", Settings.Client.Defaults.SELECTED_FILTER_MACHINE);
-						Settings.Client.D_SelectedFilterGroup = (string) statesKey.GetValue("D Selected Filter Group", Settings.Client.Defaults.SELECTED_FILTER_GROUP);
-						Settings.Client.D_SelectedFilterApplication = (string) statesKey.GetValue("D Selected Filter Application", Settings.Client.Defaults.SELECTED_FILTER_APPLICATION);
+						Settings.Client.D_SelectedGrouping = (string) statesKey.GetValue("D Selected Grouping", Settings.Client.Defaults.SELECTED_PROCESS_GROUPING);
+						Settings.Client.D_SelectedFilterMachine = (string) statesKey.GetValue("D Selected Filter Machine", Settings.Client.Defaults.SELECTED_PROCESS_FILTER_MACHINE);
+						Settings.Client.D_SelectedFilterGroup = (string) statesKey.GetValue("D Selected Filter Group", Settings.Client.Defaults.SELECTED_PROCESS_FILTER_GROUP);
+						Settings.Client.D_SelectedFilterApplication = (string) statesKey.GetValue("D Selected Filter Application", Settings.Client.Defaults.SELECTED_PROCESS_FILTER_APPLICATION);
 						Settings.Client.D_CheckedNodes.Clear();
 						checkedNodesKey = statesKey.OpenSubKey("D Checked Nodes", false);
 						if (checkedNodesKey != null)
@@ -190,27 +191,28 @@ namespace ProcessManager.DataAccess
 					{
 						statesKey.SetValue("CFG Selected Host Name", Settings.Client.CFG_SelectedHostName);
 						statesKey.SetValue("CFG Selected Configuration Section", Settings.Client.CFG_SelectedConfigurationSection);
-						statesKey.SetValue("CP Selected Grouping", Settings.Client.CP_SelectedGrouping);
-						statesKey.SetValue("CP Selected Filter Machine", Settings.Client.CP_SelectedFilterMachine);
-						statesKey.SetValue("CP Selected Filter Group", Settings.Client.CP_SelectedFilterGroup);
-						statesKey.SetValue("CP Selected Filter Application", Settings.Client.CP_SelectedFilterApplication);
-						RegistryKey checkedNodesKey = statesKey.CreateSubKey("CP Checked Nodes");
+						statesKey.SetValue("CP Selected Tab", Settings.Client.CP_SelectedTab);
+						statesKey.SetValue("P Selected Grouping", Settings.Client.P_SelectedGrouping);
+						statesKey.SetValue("P Selected Filter Machine", Settings.Client.P_SelectedFilterMachine);
+						statesKey.SetValue("P Selected Filter Group", Settings.Client.P_SelectedFilterGroup);
+						statesKey.SetValue("P Selected Filter Application", Settings.Client.P_SelectedFilterApplication);
+						RegistryKey checkedNodesKey = statesKey.CreateSubKey("P Checked Nodes");
 						if (checkedNodesKey != null)
 						{
 							foreach (string valueName in checkedNodesKey.GetValueNames().Where(valueName => valueName.StartsWith("Node ")))
 							{
 								checkedNodesKey.DeleteValue(valueName);
 							}
-							for (int i = 0; i < Settings.Client.CP_CheckedNodes.Count; i++)
+							for (int i = 0; i < Settings.Client.P_CheckedNodes.Count; i++)
 							{
-								checkedNodesKey.SetValue("Node " + i.ToString("00"), Settings.Client.CP_CheckedNodes[i].ToString());
+								checkedNodesKey.SetValue("Node " + i.ToString("00"), Settings.Client.P_CheckedNodes[i].ToString());
 							}
 							checkedNodesKey.Close();
 						}
-						RegistryKey collapsedNodesKey = statesKey.CreateSubKey("CP Collapsed Nodes");
+						RegistryKey collapsedNodesKey = statesKey.CreateSubKey("P Collapsed Nodes");
 						if (collapsedNodesKey != null)
 						{
-							foreach (ControlPanelGrouping grouping in Enum.GetValues(typeof(ControlPanelGrouping)))
+							foreach (ProcessGrouping grouping in Enum.GetValues(typeof(ProcessGrouping)))
 							{
 								RegistryKey groupingKey = collapsedNodesKey.CreateSubKey(grouping.ToString());
 								if (groupingKey != null)
@@ -219,9 +221,9 @@ namespace ProcessManager.DataAccess
 									{
 										groupingKey.DeleteValue(valueName);
 									}
-									for (int i = 0; i < Settings.Client.CP_CollapsedNodes[grouping].Count; i++)
+									for (int i = 0; i < Settings.Client.P_CollapsedNodes[grouping].Count; i++)
 									{
-										groupingKey.SetValue("Node " + i.ToString("00"), Settings.Client.CP_CollapsedNodes[grouping][i].ToString());
+										groupingKey.SetValue("Node " + i.ToString("00"), Settings.Client.P_CollapsedNodes[grouping][i].ToString());
 									}
 									groupingKey.Close();
 								}

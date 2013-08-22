@@ -5,13 +5,13 @@ using ProcessManager.DataObjects;
 namespace ProcessManager.Service.DataObjects
 {
 	[DataContract]
-	public class DTOApplicationAction
+	public class DTOProcessAction
 	{
-		public DTOApplicationAction(ApplicationAction action)
+		public DTOProcessAction(ProcessAction processAction)
 		{
-			GroupID = action.Group.ID;
-			ApplicationID = action.Application.ID;
-			Type = action.Type;
+			GroupID = processAction.Group.ID;
+			ApplicationID = processAction.Application.ID;
+			Type = processAction.Type;
 		}
 
 		#region Properties

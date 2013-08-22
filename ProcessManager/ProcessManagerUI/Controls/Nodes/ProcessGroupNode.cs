@@ -6,15 +6,15 @@ using ProcessManagerUI.Controls.Nodes.Support;
 
 namespace ProcessManagerUI.Controls.Nodes
 {
-	public class ControlPanelGroupNode : BaseControlPanelRootNode
+	public class ProcessGroupNode : BaseProcessRootNode
 	{
 		private readonly Guid _id;
 
-		public ControlPanelGroupNode(Group group, Guid? machineID, IEnumerable<INode> childNodes, ControlPanelGrouping grouping)
+		public ProcessGroupNode(Group group, Guid? machineID, IEnumerable<INode> childNodes, ProcessGrouping grouping)
 			: this((machineID.HasValue ? MakeID(group.ID, machineID.Value) : group.ID), group, childNodes, grouping) { }
 
-		private ControlPanelGroupNode(Guid id, Group group, IEnumerable<INode> childNodes, ControlPanelGrouping grouping)
-			: base(childNodes, grouping, !Settings.Client.CP_CollapsedNodes[grouping].Contains(id))
+		private ProcessGroupNode(Guid id, Group group, IEnumerable<INode> childNodes, ProcessGrouping grouping)
+			: base(childNodes, grouping, !Settings.Client.P_CollapsedNodes[grouping].Contains(id))
 		{
 			_id = id;
 			Group = group;
@@ -32,7 +32,7 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		#region Helpers
 
-		protected override void UpdateApplicationAction(ApplicationAction action)
+		protected override void UpdateProcessAction(ProcessAction action)
 		{
 			action.Group = Group;
 		}
