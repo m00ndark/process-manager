@@ -35,7 +35,8 @@ namespace ProcessManagerUI.Forms
 		private readonly List<INode> _allNodes;
 		private readonly List<IRootNode> _rootNodes;
 		private readonly List<ControlPanelApplicationNode> _applicationNodes;
-		private bool _nodeLayoutSuspended;
+		private bool _controlPanelNodeLayoutSuspended;
+		private bool _distributionNodeLayoutSuspended;
 
 		public event EventHandler<MachineConfigurationHashEventArgs> ConfigurationChanged;
 
@@ -46,7 +47,8 @@ namespace ProcessManagerUI.Forms
 			_allNodes = new List<INode>();
 			_rootNodes = new List<IRootNode>();
 			_applicationNodes = new List<ControlPanelApplicationNode>();
-			_nodeLayoutSuspended = false;
+			_controlPanelNodeLayoutSuspended = false;
+			_distributionNodeLayoutSuspended = false;
 			ServiceHelper.Initialize(this);
 		}
 
@@ -93,7 +95,7 @@ namespace ProcessManagerUI.Forms
 				comboBoxDistributionGroupBy.SelectedIndex = 0;
 
 			DisplaySelectedTabPage();
-			UpdateFilterAndLayout();
+			UpdateControlPanelFilterAndLayout();
 
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;
@@ -115,7 +117,7 @@ namespace ProcessManagerUI.Forms
 			DisplaySelectedTabPage();
 		}
 
-		private void ComboBoxGroupBy_SelectedIndexChanged(object sender, EventArgs e)
+		private void ComboBoxControlPanelGroupBy_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxControlPanelGroupBy.SelectedIndex == -1) return;
 
@@ -123,60 +125,60 @@ namespace ProcessManagerUI.Forms
 			Settings.Client.CP_SelectedGrouping = grouping.ToString();
 			Settings.Client.Save(ClientSettingsType.States);
 
-			LayoutNodes();
+			LayoutControlPanelNodes();
 		}
 
-		private void ComboBoxMachineFilter_SelectedIndexChanged(object sender, EventArgs e)
+		private void ComboBoxControlPanelMachineFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxControlPanelMachineFilter.SelectedIndex == -1) return;
 
 			Settings.Client.CP_SelectedFilterMachine = ((ComboBoxItem) comboBoxControlPanelMachineFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
 
-			LayoutNodes();
+			LayoutControlPanelNodes();
 		}
 
-		private void ComboBoxGroupFilter_SelectedIndexChanged(object sender, EventArgs e)
+		private void ComboBoxControlPanelGroupFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxControlPanelGroupFilter.SelectedIndex == -1) return;
 
 			Settings.Client.CP_SelectedFilterGroup = ((ComboBoxItem) comboBoxControlPanelGroupFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
 
-			LayoutNodes();
+			LayoutControlPanelNodes();
 		}
 
-		private void ComboBoxApplicationFilter_SelectedIndexChanged(object sender, EventArgs e)
+		private void ComboBoxControlPanelApplicationFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxControlPanelApplicationFilter.SelectedIndex == -1) return;
 
 			Settings.Client.CP_SelectedFilterApplication = ((ComboBoxItem) comboBoxControlPanelApplicationFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
 
-			LayoutNodes();
+			LayoutControlPanelNodes();
 		}
 
-		private void LinkLabelStartAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabelControlPanelStartAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			_rootNodes.ForEach(node => node.TakeAction(ActionType.Start));
 		}
 
-		private void LinkLabelStopAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabelControlPanelStopAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			_rootNodes.ForEach(node => node.TakeAction(ActionType.Stop));
 		}
 
-		private void LinkLabelRestartAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabelControlPanelRestartAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			_rootNodes.ForEach(node => node.TakeAction(ActionType.Restart));
 		}
 
-		private void LinkLabelExpandAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabelControlPanelExpandAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			_rootNodes.ForEach(node => node.ExpandAll(true));
 		}
 
-		private void LinkLabelCollapseAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabelControlPanelCollapseAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			_rootNodes.ForEach(node => node.ExpandAll(false));
 		}
@@ -238,7 +240,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			UpdateFilterAndLayout();
+			UpdateControlPanelFilterAndLayout();
 		}
 
 		private void ServiceConnectionHandler_ServiceHandlerConnectionChanged(object sender, ServiceHandlerConnectionChangedEventArgs e)
@@ -249,7 +251,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			UpdateFilterAndLayout();
+			UpdateControlPanelFilterAndLayout();
 		}
 
 		#endregion
@@ -282,7 +284,7 @@ namespace ProcessManagerUI.Forms
 
 		private void ConfigurationForm_ConfigurationChanged(object sender, MachinesEventArgs e)
 		{
-			new Thread(UpdateFilterAndLayout).Start();
+			new Thread(UpdateControlPanelFilterAndLayout).Start();
 		}
 
 		#endregion
@@ -385,7 +387,7 @@ namespace ProcessManagerUI.Forms
 			try
 			{
 				ConnectionStore.Connections[machine].Configuration = ConnectionStore.Connections[machine].ServiceHandler.Service.GetConfiguration().FromDTO();
-				UpdateFilterAndLayout();
+				UpdateControlPanelFilterAndLayout();
 			}
 			catch (Exception ex)
 			{
@@ -460,21 +462,21 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
-		private void UpdateFilterAndLayout()
+		private void UpdateControlPanelFilterAndLayout()
 		{
-			SuspendNodeLayout();
-			UpdateFilter();
-			ResumeNodeLayout();
-			LayoutNodes();
+			SuspendControlPanelNodeLayout();
+			UpdateControlPanelFilter();
+			ResumeControlPanelNodeLayout();
+			LayoutControlPanelNodes();
 		}
 
-		private delegate void UpdateFilterDelegate();
+		private delegate void UpdateControlPanelFilterDelegate();
 
-		private void UpdateFilter()
+		private void UpdateControlPanelFilter()
 		{
 			if (InvokeRequired)
 			{
-				Invoke(new UpdateFilterDelegate(UpdateFilter));
+				Invoke(new UpdateControlPanelFilterDelegate(UpdateControlPanelFilter));
 				return;
 			}
 
@@ -524,26 +526,26 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
-		private void SuspendNodeLayout()
+		private void SuspendControlPanelNodeLayout()
 		{
-			_nodeLayoutSuspended = true;
+			_controlPanelNodeLayoutSuspended = true;
 		}
 
-		private void ResumeNodeLayout()
+		private void ResumeControlPanelNodeLayout()
 		{
-			_nodeLayoutSuspended = false;
+			_controlPanelNodeLayoutSuspended = false;
 		}
 
-		private delegate void LayoutNodesDelegate();
+		private delegate void LayoutControlPanelNodesDelegate();
 
-		private void LayoutNodes()
+		private void LayoutControlPanelNodes()
 		{
-			if (_nodeLayoutSuspended)
+			if (_controlPanelNodeLayoutSuspended)
 				return;
 
 			if (InvokeRequired)
 			{
-				Invoke(new LayoutNodesDelegate(LayoutNodes));
+				Invoke(new LayoutControlPanelNodesDelegate(LayoutControlPanelNodes));
 				return;
 			}
 
