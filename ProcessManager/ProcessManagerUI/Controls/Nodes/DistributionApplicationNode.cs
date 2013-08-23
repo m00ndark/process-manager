@@ -8,7 +8,7 @@ namespace ProcessManagerUI.Controls.Nodes
 {
 	public class DistributionApplicationNode : BaseDistributionRootNode
 	{
-		private DistributionApplicationNode(Application application, IEnumerable<INode> childNodes, DistributionGrouping grouping)
+		public DistributionApplicationNode(Application application, IEnumerable<INode> childNodes, DistributionGrouping grouping)
 			: base(childNodes, grouping, !Settings.Client.D_CollapsedNodes[grouping].Contains(application.ID))
 		{
 			Application = application;

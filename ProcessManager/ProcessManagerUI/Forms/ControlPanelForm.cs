@@ -111,7 +111,7 @@ namespace ProcessManagerUI.Forms
 				comboBoxDistributionGroupBy.SelectedIndex = 0;
 
 			DisplaySelectedTabPage();
-			UpdateProcessFilterAndLayout();
+			UpdateAllFiltersAndLayout();
 
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;
@@ -259,7 +259,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			UpdateProcessFilterAndLayout();
+			UpdateAllFiltersAndLayout();
 		}
 
 		private void ServiceConnectionHandler_ServiceHandlerConnectionChanged(object sender, ServiceHandlerConnectionChangedEventArgs e)
@@ -270,7 +270,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			UpdateProcessFilterAndLayout();
+			UpdateAllFiltersAndLayout();
 		}
 
 		#endregion
@@ -335,7 +335,7 @@ namespace ProcessManagerUI.Forms
 
 		private void ConfigurationForm_ConfigurationChanged(object sender, MachinesEventArgs e)
 		{
-			new Thread(UpdateProcessFilterAndLayout).Start();
+			new Thread(UpdateAllFiltersAndLayout).Start();
 		}
 
 		#endregion
@@ -438,12 +438,18 @@ namespace ProcessManagerUI.Forms
 			try
 			{
 				ConnectionStore.Connections[machine].Configuration = ConnectionStore.Connections[machine].ServiceHandler.Service.GetConfiguration().FromDTO();
-				UpdateProcessFilterAndLayout();
+				UpdateAllFiltersAndLayout();
 			}
 			catch (Exception ex)
 			{
 				Logger.Add("Failed to retrieve new machine configuration", ex);
 			}
+		}
+
+		private void UpdateAllFiltersAndLayout()
+		{
+			UpdateProcessFilterAndLayout();
+			UpdateDistributionFilterAndLayout();
 		}
 
 		#region Process tab
@@ -711,6 +717,215 @@ namespace ProcessManagerUI.Forms
 			}
 
 			labelProcessUnavailable.Visible = (_processApplicationNodes.Count == 0);
+			//}
+			//catch (Exception ex)
+			//{
+			//}
+		}
+
+		#endregion
+
+		#region Distribution tab
+
+		private void UpdateDistributionFilterAndLayout()
+		{
+			SuspendDistributionNodeLayout();
+			UpdateDistributionFilter();
+			ResumeDistributionNodeLayout();
+			LayoutDistributionNodes();
+		}
+
+		private delegate void UpdateDistributionFilterDelegate();
+
+		private void UpdateDistributionFilter()
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new UpdateDistributionFilterDelegate(UpdateDistributionFilter));
+				return;
+			}
+
+			//string selectedMachineName = Settings.Client.P_SelectedFilterMachine;
+			//comboBoxProcessMachineFilter.Items.Clear();
+			//comboBoxProcessMachineFilter.Items.Add(new ComboBoxItem(string.Empty));
+
+			//foreach (Machine machine in ConnectionStore.Connections.Values
+			//	.Where(connection => connection.Configuration != null)
+			//	.Select(connection => connection.Machine)
+			//	.Distinct(new MachineEqualityComparer())
+			//	.OrderBy(machine => machine.HostName))
+			//{
+			//	int index = comboBoxProcessMachineFilter.Items.Add(new ComboBoxItem(machine.HostName));
+			//	if (!string.IsNullOrEmpty(selectedMachineName) && machine.HostName.Equals(selectedMachineName, StringComparison.CurrentCultureIgnoreCase))
+			//		comboBoxProcessMachineFilter.SelectedIndex = index;
+			//}
+
+			//string selectedGroupName = Settings.Client.P_SelectedFilterGroup;
+			//comboBoxProcessGroupFilter.Items.Clear();
+			//comboBoxProcessGroupFilter.Items.Add(new ComboBoxItem(string.Empty));
+
+			//foreach (Group group in ConnectionStore.Connections.Values
+			//	.Where(connection => connection.Configuration != null)
+			//	.SelectMany(connection => connection.Configuration.Groups)
+			//	.Distinct(new GroupEqualityComparer())
+			//	.OrderBy(group => group.Name))
+			//{
+			//	int index = comboBoxProcessGroupFilter.Items.Add(new ComboBoxItem(group.Name));
+			//	if (!string.IsNullOrEmpty(selectedGroupName) && group.Name.Equals(selectedGroupName, StringComparison.CurrentCultureIgnoreCase))
+			//		comboBoxProcessGroupFilter.SelectedIndex = index;
+			//}
+
+			//string selectedApplicationName = Settings.Client.P_SelectedFilterApplication;
+			//comboBoxProcessApplicationFilter.Items.Clear();
+			//comboBoxProcessApplicationFilter.Items.Add(new ComboBoxItem(string.Empty));
+
+			//foreach (Application application in ConnectionStore.Connections.Values
+			//	.Where(connection => connection.Configuration != null)
+			//	.SelectMany(connection => connection.Configuration.Applications)
+			//	.Distinct(new ApplicationEqualityComparer())
+			//	.OrderBy(application => application.Name))
+			//{
+			//	int index = comboBoxProcessApplicationFilter.Items.Add(new ComboBoxItem(application.Name));
+			//	if (!string.IsNullOrEmpty(selectedApplicationName) && application.Name.Equals(selectedApplicationName, StringComparison.CurrentCultureIgnoreCase))
+			//		comboBoxProcessApplicationFilter.SelectedIndex = index;
+			//}
+		}
+
+		private void SuspendDistributionNodeLayout()
+		{
+			_distributionNodeLayoutSuspended = true;
+		}
+
+		private void ResumeDistributionNodeLayout()
+		{
+			_distributionNodeLayoutSuspended = false;
+		}
+
+		private delegate void LayoutDistributionNodesDelegate();
+
+		private void LayoutDistributionNodes()
+		{
+			if (_distributionNodeLayoutSuspended)
+				return;
+
+			if (InvokeRequired)
+			{
+				Invoke(new LayoutDistributionNodesDelegate(LayoutDistributionNodes));
+				return;
+			}
+
+			//try{
+
+			Settings.Client.Save(ClientSettingsType.States);
+			DistributionGrouping grouping = DistributionGrouping.MachineGroupApplicationMachine;
+				//((ComboBoxItem<DistributionGrouping>) comboBoxDistributionGroupBy.SelectedItem).Tag;
+
+			lock (_distributionDestinationMachineNodes)
+			{
+				flowLayoutPanelDistributionDestinations.Controls.Clear();
+				_distributionRootNodes.ForEach(node =>
+					{
+						node.SizeChanged -= RootNode_SizeChanged;
+						node.CheckedChanged -= Node_CheckedChanged;
+						node.ActionTaken -= Node_ActionTaken;
+					});
+				_allDistributionNodes.ForEach(node => node.Dispose());
+				_allDistributionNodes.Clear();
+				_distributionRootNodes.Clear();
+				_distributionDestinationMachineNodes.Clear();
+
+				var destinationMachines = ConnectionStore.Connections.Values
+					.Where(connection => connection.Configuration != null)
+					.Where(connection => string.IsNullOrEmpty(Settings.Client.D_SelectedFilterMachine) || connection.Machine.Equals(Settings.Client.D_SelectedFilterMachine))
+					.SelectMany(connection =>
+						connection.Configuration.Groups
+							.Where(group => string.IsNullOrEmpty(Settings.Client.D_SelectedFilterGroup) || group.Equals(Settings.Client.D_SelectedFilterGroup))
+							.SelectMany(group => connection.Configuration.Applications
+								.Where(application => group.Applications.Contains(application.ID))
+								.Where(application => string.IsNullOrEmpty(Settings.Client.D_SelectedFilterApplication) || application.Equals(Settings.Client.D_SelectedFilterApplication))
+								.SelectMany(application => ConnectionStore.Connections.Values
+									.Select(destination => new
+										{
+											SourceMachine = connection.Machine,
+											Group = group,
+											Application = application,
+											DestinationMachine = destination.Machine
+										}))))
+					.ToList();
+
+				switch (grouping)
+				{
+					case DistributionGrouping.MachineGroupApplicationMachine:
+						{
+							var machinesGroupsApplicationsMachines = destinationMachines
+								.GroupBy(a => a.SourceMachine, (a, b) => new
+									{
+										SourceMachine = a,
+										Groups = b.GroupBy(c => c.Group, (c, d) => new
+											{
+												Group = c,
+												Applications = d.GroupBy(e => e.Application, (e, f) => new
+													{
+														Application = e,
+														DestinationMachines = f
+													})
+											})
+									}, new MachineEqualityComparer());
+
+							_distributionRootNodes.AddRange(machinesGroupsApplicationsMachines.Select(machineGroupsApplicationsMachines =>
+								{
+									IEnumerable<DistributionGroupNode> groupNodes = machineGroupsApplicationsMachines.Groups.Select(groupApplicationsMachines =>
+										{
+											IEnumerable<DistributionApplicationNode> applicationNodes = groupApplicationsMachines.Applications.Select(applicationMachines =>
+												{
+													IEnumerable<DistributionDestinationMachineNode> destinationMachineNodes = applicationMachines.DestinationMachines.Select(machine =>
+														new DistributionDestinationMachineNode(machine.DestinationMachine, machine.Application.ID, machine.Group.ID, machine.SourceMachine.ID)).ToList();
+													_distributionDestinationMachineNodes.AddRange(destinationMachineNodes);
+													return new DistributionApplicationNode(applicationMachines.Application, destinationMachineNodes, grouping);
+												}).ToList(); // must make ToList() to ensure DestinationMachineNodes only are created once
+											_allDistributionNodes.AddRange(applicationNodes);
+											return new DistributionGroupNode(groupApplicationsMachines.Group, null, applicationNodes, grouping);
+										}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
+									_allDistributionNodes.AddRange(groupNodes);
+									return new DistributionSourceMachineNode(machineGroupsApplicationsMachines.SourceMachine, null, groupNodes, grouping);
+								}).ToList());
+						}
+						break;
+				}
+
+				_allDistributionNodes.AddRange(_distributionRootNodes);
+				_allDistributionNodes.AddRange(_distributionDestinationMachineNodes);
+				_distributionRootNodes.ForEach(node =>
+					{
+						node.SizeChanged += RootNode_SizeChanged;
+						node.CheckedChanged += Node_CheckedChanged;
+						node.ActionTaken += Node_ActionTaken;
+					});
+			}
+
+			if (_distributionDestinationMachineNodes.Count > 0)
+			{
+				UpdateSize(_distributionRootNodes.Select(node => node.LayoutNode()).ToList(), flowLayoutPanelDistributionDestinations);
+
+				_distributionRootNodes.ForEach(node =>
+					{
+						node.ForceWidth(flowLayoutPanelDistributionDestinations.Size.Width);
+						flowLayoutPanelDistributionDestinations.Controls.Add((UserControl) node);
+					});
+
+				Settings.Client.D_CheckedNodes.ToList()
+					.Select(id => _distributionDestinationMachineNodes.FirstOrDefault(node => node.Matches(id)))
+					.Where(node => node != null)
+					.ToList().ForEach(node => node.Check(true));
+
+				//RetrieveAllProcessStatuses();
+			}
+			else
+			{
+				UpdateSize(null, null);
+			}
+
+			labelDistributionUnavailable.Visible = (_distributionDestinationMachineNodes.Count == 0);
 			//}
 			//catch (Exception ex)
 			//{
