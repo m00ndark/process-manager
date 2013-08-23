@@ -121,14 +121,41 @@ namespace ProcessManager
 			}
 		}
 
+		public void TakeDistributionAction(Guid groupID, Guid applicationID, string destinationMachineHostName, ActionType type)
+		{
+			Configuration configuration = Configuration.Read();
+			Group group = configuration.Groups.FirstOrDefault(x => x.ID == groupID);
+			Application application = configuration.Applications.FirstOrDefault(x => x.ID == applicationID);
+
+			if (group == null)
+			{
+				Logger.Add(LogType.Error, "Application " + type + ": Could not find group with ID " + groupID);
+				return;
+			}
+
+			if (application == null)
+			{
+				Logger.Add(LogType.Error, "Application " + type + ": Could not find application with ID " + applicationID);
+				return;
+			}
+
+			if (string.IsNullOrEmpty(destinationMachineHostName))
+			{
+				Logger.Add(LogType.Error, "Application " + type + ": Missing destination machine host name");
+				return;
+			}
+
+			DistributionWorker.Instance.AddWork(new DistributionWork(type, group, application, new Machine(destinationMachineHostName)));
+		}
+
 		public List<FileSystemDrive> GetFileSystemDrives()
 		{
-			return FileSystemHandler.GetDrives().ToList();
+			return FileSystemHandler.GetFileSystemDrives().ToList();
 		}
 
 		public List<FileSystemEntry> GetFileSystemEntries(string path, string filter)
 		{
-			return FileSystemHandler.GetFileSystemEntries(path, filter).ToList();
+			return FileSystemHandler.GetFileSystemEntries(path, filter, SearchOption.TopDirectoryOnly).ToList();
 		}
 
 		#endregion
@@ -156,6 +183,8 @@ namespace ProcessManager
 		{
 			try
 			{
+				DistributionWorker.Instance.Initialize();
+
 				ProcessManagerServiceHost.Open(this);
 
 				Thread.Sleep(2000);
@@ -163,6 +192,8 @@ namespace ProcessManager
 				EnterMainLoop();
 
 				ProcessManagerServiceHost.Close();
+
+				DistributionWorker.Instance.Dispose();
 
 				Logger.Add("ABORTING -- Shut down completed, signing off");
 			}

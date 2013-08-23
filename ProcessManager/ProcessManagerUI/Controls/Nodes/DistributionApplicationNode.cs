@@ -28,7 +28,7 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		protected override void UpdateDistributionAction(DistributionAction action)
 		{
-			action.SourceApplication = Application;
+			action.Application = Application;
 		}
 
 		#endregion

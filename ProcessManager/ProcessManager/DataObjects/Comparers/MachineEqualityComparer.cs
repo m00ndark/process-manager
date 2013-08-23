@@ -5,9 +5,14 @@ namespace ProcessManager.DataObjects.Comparers
 {
 	public class MachineEqualityComparer : IEqualityComparer<Machine>
 	{
+		public bool Equals(Machine machine, string hostName)
+		{
+			return (machine != null && machine.HostName.Equals(hostName, StringComparison.CurrentCultureIgnoreCase));
+		}
+
 		public bool Equals(Machine x, Machine y)
 		{
-			return (x != null && y != null && x.HostName.Equals(y.HostName, StringComparison.CurrentCultureIgnoreCase));
+			return (y != null && Equals(x, y.HostName));
 		}
 
 		public int GetHashCode(Machine obj)

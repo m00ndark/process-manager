@@ -34,7 +34,7 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		protected override void UpdateDistributionAction(DistributionAction action)
 		{
-			action.SourceGroup = Group;
+			action.Group = Group;
 		}
 
 		#endregion

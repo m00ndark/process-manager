@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
 
@@ -21,7 +22,7 @@ namespace ProcessManager
 	public enum DistributionGrouping
 	{
 		MachineGroupApplicationMachine,
-		//MachineGroupMachine
+		GroupMachineApplicationMachine
 	}
 
 	public static class Settings
@@ -50,6 +51,7 @@ namespace ProcessManager
 				public const string LOG_FOLDER_NAME = "Logs";
 				public const string LOG_FILE_NAME = "processmanager_%date%.log";
 				public const int STATUS_UPDATE_INTERVAL = 500;
+				public const int DISTRIBUTION_CONNECTION_CLEAN_INTERVAL = 1000;
 			}
 
 			#endregion
@@ -63,7 +65,8 @@ namespace ProcessManager
 						{ "ConfigurationFileName", Defaults.CONFIGURATION_FILE_NAME },
 						{ "LogFolderName", Defaults.LOG_FOLDER_NAME },
 						{ "LogFileName", Defaults.LOG_FILE_NAME },
-						{ "StatusUpdateInterval", Defaults.STATUS_UPDATE_INTERVAL.ToString() }
+						{ "StatusUpdateInterval", Defaults.STATUS_UPDATE_INTERVAL.ToString(CultureInfo.InvariantCulture) },
+						{ "DistributionConnectionCleanInterval", Defaults.DISTRIBUTION_CONNECTION_CLEAN_INTERVAL.ToString(CultureInfo.InvariantCulture) }
 					};
 			}
 
@@ -108,9 +111,10 @@ namespace ProcessManager
 				public const string SELECTED_PROCESS_FILTER_GROUP = "";
 				public const string SELECTED_PROCESS_FILTER_APPLICATION = "";
 				public const string SELECTED_DISTRIBUTION_GROUPING = "";
-				public const string SELECTED_DISTRIBUTION_FILTER_MACHINE = "";
+				public const string SELECTED_DISTRIBUTION_FILTER_SOURCE_MACHINE = "";
 				public const string SELECTED_DISTRIBUTION_FILTER_GROUP = "";
 				public const string SELECTED_DISTRIBUTION_FILTER_APPLICATION = "";
+				public const string SELECTED_DISTRIBUTION_FILTER_DESTINATION_MACHINE = "";
 			}
 
 			#endregion
@@ -133,14 +137,15 @@ namespace ProcessManager
 						{ ProcessGrouping.GroupMachineApplication, new List<Guid>() }
 					};
 				D_SelectedGrouping = Defaults.SELECTED_DISTRIBUTION_GROUPING;
-				D_SelectedFilterMachine = Defaults.SELECTED_DISTRIBUTION_FILTER_MACHINE;
+				D_SelectedFilterSourceMachine = Defaults.SELECTED_DISTRIBUTION_FILTER_SOURCE_MACHINE;
 				D_SelectedFilterGroup = Defaults.SELECTED_DISTRIBUTION_FILTER_GROUP;
 				D_SelectedFilterApplication = Defaults.SELECTED_DISTRIBUTION_FILTER_APPLICATION;
+				D_SelectedFilterDestinationMachine = Defaults.SELECTED_DISTRIBUTION_FILTER_DESTINATION_MACHINE;
 				D_CheckedNodes = new List<Guid>();
 				D_CollapsedNodes = new Dictionary<DistributionGrouping, List<Guid>>()
 					{
 						{ DistributionGrouping.MachineGroupApplicationMachine, new List<Guid>() },
-						//{ DistributionGrouping.MachineGroupMachine, new List<Guid>() }
+						{ DistributionGrouping.GroupMachineApplicationMachine, new List<Guid>() }
 					};
 			}
 
@@ -158,9 +163,10 @@ namespace ProcessManager
 			public static List<Guid> P_CheckedNodes { get; private set; }
 			public static IDictionary<ProcessGrouping, List<Guid>> P_CollapsedNodes { get; private set; }
 			public static string D_SelectedGrouping { get; set; }
-			public static string D_SelectedFilterMachine { get; set; }
+			public static string D_SelectedFilterSourceMachine { get; set; }
 			public static string D_SelectedFilterGroup { get; set; }
 			public static string D_SelectedFilterApplication { get; set; }
+			public static string D_SelectedFilterDestinationMachine { get; set; }
 			public static List<Guid> D_CheckedNodes { get; private set; }
 			public static IDictionary<DistributionGrouping, List<Guid>> D_CollapsedNodes { get; private set; }
 

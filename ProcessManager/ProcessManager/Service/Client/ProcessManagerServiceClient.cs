@@ -52,6 +52,11 @@ namespace ProcessManager.Service.Client
 			Channel.TakeProcessAction(processAction);
 		}
 
+		public void TakeDistributionAction(DTODistributionAction distributionAction)
+		{
+			Channel.TakeDistributionAction(distributionAction);
+		}
+
 		public List<DTOFileSystemDrive> GetFileSystemDrives()
 		{
 			return Channel.GetFileSystemDrives();

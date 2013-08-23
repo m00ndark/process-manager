@@ -17,8 +17,8 @@ namespace ProcessManager.DataObjects
 
 		public ActionType Type { get; private set; }
 		public Machine SourceMachine { get; set; }
-		public Group SourceGroup { get; set; }
-		public Application SourceApplication { get; set; }
+		public Group Group { get; set; }
+		public Application Application { get; set; }
 		public Machine DestinationMachine { get; set; }
 
 		#endregion

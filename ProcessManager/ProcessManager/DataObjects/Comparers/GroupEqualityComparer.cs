@@ -5,9 +5,14 @@ namespace ProcessManager.DataObjects.Comparers
 {
 	public class GroupEqualityComparer : IEqualityComparer<Group>
 	{
+		public bool Equals(Group group, string groupName)
+		{
+			return (group != null && group.Name.Equals(groupName, StringComparison.CurrentCultureIgnoreCase));
+		}
+
 		public bool Equals(Group x, Group y)
 		{
-			return (x != null && y != null && x.Name.Equals(y.Name, StringComparison.CurrentCultureIgnoreCase));
+			return (y != null && Equals(x, y.Name));
 		}
 
 		public int GetHashCode(Group obj)

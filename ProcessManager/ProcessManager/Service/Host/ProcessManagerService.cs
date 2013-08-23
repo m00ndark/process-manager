@@ -87,6 +87,12 @@ namespace ProcessManager.Service.Host
 			ProcessManager.Instance.TakeProcessAction(processAction.GroupID, processAction.ApplicationID, processAction.Type);
 		}
 
+		public void TakeDistributionAction(DTODistributionAction distributionAction)
+		{
+			Logger.Add(LogType.Debug, "TakeDistributionAction call received: action = " + distributionAction.Type + ", " + distributionAction.GroupID + " / " + distributionAction.ApplicationID + " / " + distributionAction.DestinationMachineHostName);
+			ProcessManager.Instance.TakeDistributionAction(distributionAction.GroupID, distributionAction.ApplicationID, distributionAction.DestinationMachineHostName, distributionAction.Type);
+		}
+
 		public List<DTOFileSystemDrive> GetFileSystemDrives()
 		{
 			Logger.Add(LogType.Debug, "GetFileSystemDrives call received");

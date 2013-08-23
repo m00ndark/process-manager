@@ -100,10 +100,11 @@ namespace ProcessManager.DataAccess
 							}
 							collapsedNodesKey.Close();
 						}
-						Settings.Client.D_SelectedGrouping = (string) statesKey.GetValue("D Selected Grouping", Settings.Client.Defaults.SELECTED_PROCESS_GROUPING);
-						Settings.Client.D_SelectedFilterMachine = (string) statesKey.GetValue("D Selected Filter Machine", Settings.Client.Defaults.SELECTED_PROCESS_FILTER_MACHINE);
-						Settings.Client.D_SelectedFilterGroup = (string) statesKey.GetValue("D Selected Filter Group", Settings.Client.Defaults.SELECTED_PROCESS_FILTER_GROUP);
-						Settings.Client.D_SelectedFilterApplication = (string) statesKey.GetValue("D Selected Filter Application", Settings.Client.Defaults.SELECTED_PROCESS_FILTER_APPLICATION);
+						Settings.Client.D_SelectedGrouping = (string) statesKey.GetValue("D Selected Grouping", Settings.Client.Defaults.SELECTED_DISTRIBUTION_GROUPING);
+						Settings.Client.D_SelectedFilterSourceMachine = (string) statesKey.GetValue("D Selected Filter Source Machine", Settings.Client.Defaults.SELECTED_DISTRIBUTION_FILTER_SOURCE_MACHINE);
+						Settings.Client.D_SelectedFilterGroup = (string) statesKey.GetValue("D Selected Filter Group", Settings.Client.Defaults.SELECTED_DISTRIBUTION_FILTER_GROUP);
+						Settings.Client.D_SelectedFilterApplication = (string) statesKey.GetValue("D Selected Filter Application", Settings.Client.Defaults.SELECTED_DISTRIBUTION_FILTER_APPLICATION);
+						Settings.Client.D_SelectedFilterDestinationMachine = (string) statesKey.GetValue("D Selected Filter Destination Machine", Settings.Client.Defaults.SELECTED_DISTRIBUTION_FILTER_DESTINATION_MACHINE);
 						Settings.Client.D_CheckedNodes.Clear();
 						checkedNodesKey = statesKey.OpenSubKey("D Checked Nodes", false);
 						if (checkedNodesKey != null)
@@ -231,9 +232,10 @@ namespace ProcessManager.DataAccess
 							collapsedNodesKey.Close();
 						}
 						statesKey.SetValue("D Selected Grouping", Settings.Client.D_SelectedGrouping);
-						statesKey.SetValue("D Selected Filter Machine", Settings.Client.D_SelectedFilterMachine);
+						statesKey.SetValue("D Selected Filter Source Machine", Settings.Client.D_SelectedFilterSourceMachine);
 						statesKey.SetValue("D Selected Filter Group", Settings.Client.D_SelectedFilterGroup);
 						statesKey.SetValue("D Selected Filter Application", Settings.Client.D_SelectedFilterApplication);
+						statesKey.SetValue("D Selected Filter Destination Machine", Settings.Client.D_SelectedFilterDestinationMachine);
 						checkedNodesKey = statesKey.CreateSubKey("D Checked Nodes");
 						if (checkedNodesKey != null)
 						{

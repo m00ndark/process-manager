@@ -23,6 +23,9 @@ namespace ProcessManager.Service.Common
 		void TakeProcessAction(DTOProcessAction processAction);
 
 		[OperationContract]
+		void TakeDistributionAction(DTODistributionAction distributionAction);
+
+		[OperationContract]
 		List<DTOFileSystemDrive> GetFileSystemDrives();
 
 		[OperationContract]

@@ -11,7 +11,7 @@ namespace ProcessManager.DataAccess
 	{
 		private const string FILE_BACKUP_EXTENSION = ".bak";
 
-		public static IEnumerable<FileSystemDrive> GetDrives()
+		public static IEnumerable<FileSystemDrive> GetFileSystemDrives()
 		{
 			DataTable drivesTable = WMIHandler.GetTable("Win32_LogicalDisk", new[] { "Name", "DriveType", "ProviderName", "VolumeName" });
 			foreach (DataRow row in drivesTable.Rows)
@@ -34,7 +34,7 @@ namespace ProcessManager.DataAccess
 			}
 		}
 
-		public static IEnumerable<FileSystemEntry> GetFileSystemEntries(string path, string filter)
+		public static IEnumerable<FileSystemEntry> GetFileSystemEntries(string path, string filter, SearchOption searchOption)
 		{
 			string[] directories = new string[0], files = new string[0];
 
@@ -53,7 +53,16 @@ namespace ProcessManager.DataAccess
 			foreach (string entry in directories)
 			{
 				DirectoryInfo info = new DirectoryInfo(entry);
-				yield return new FileSystemEntry(Path.GetFileName(entry), true, info.LastWriteTime);
+				yield return new FileSystemEntry(info.Name, true, info.LastWriteTime);
+
+				if (searchOption == SearchOption.AllDirectories)
+				{
+					foreach (FileSystemEntry fileSystemSubEntry in GetFileSystemEntries(entry, filter, searchOption))
+					{
+						fileSystemSubEntry.Name = Path.Combine(info.Name, fileSystemSubEntry.Name);
+						yield return fileSystemSubEntry;
+					}
+				}
 			}
 
 			foreach (string entry in files)
@@ -61,6 +70,16 @@ namespace ProcessManager.DataAccess
 				FileInfo info = new FileInfo(entry);
 				yield return new FileSystemEntry(Path.GetFileName(entry), false, info.LastWriteTime, info.Length);
 			}
+		}
+
+		public static bool IsFile(string path)
+		{
+			return File.Exists(path);
+		}
+
+		public static byte[] GetFileContent(string filePath)
+		{
+			return File.ReadAllBytes(filePath);
 		}
 
 		public static void CreateDirectory(string path)
