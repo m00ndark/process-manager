@@ -47,7 +47,7 @@ namespace ProcessManagerUI.Forms
 
 			#region Properties
 
-			public IFileSystemEntry Entry { get; set; }
+			public IFileSystemEntry Entry { get; private set; }
 			public int Priority { get; set; }
 
 			#endregion
@@ -369,6 +369,24 @@ namespace ProcessManagerUI.Forms
 				_pathExpansionWaitCursor = new WaitCursor(this, SetCursor);
 		}
 
+		private void AbortPathExpansion()
+		{
+			if (_pathExpansionQueue == null || _pathExpansionQueue.Count <= 0)
+				return;
+
+			lock (_lock)
+			{
+				_pathExpansionQueue = null;
+				if (_pathExpansionWaitCursor != null)
+				{
+					_pathExpansionWaitCursor.Dispose();
+					_pathExpansionWaitCursor = null;
+				}
+				Messenger.ShowError("Invalid path", "Could not expand the path \"" + SelectedPath + "\"");
+				EnableControls();
+			}
+		}
+
 		private bool PerformDependentWork(TreeNode node, Action work = null)
 		{
 			bool cancel = !NodeHasChildren(node);
@@ -671,6 +689,9 @@ namespace ProcessManagerUI.Forms
 
 			node.EnsureVisible();
 			node.Expand();
+
+			if (node.Nodes.Count == 0)
+				AbortPathExpansion();
 		}
 
 		private delegate void SelectTreeNodeDelegate(TreeNode node);

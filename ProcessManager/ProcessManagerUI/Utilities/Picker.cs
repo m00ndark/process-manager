@@ -15,7 +15,7 @@ namespace ProcessManagerUI.Utilities
 
 		public static void ShowMenu<T>(Point position, IEnumerable<T> items, Action<T> pickHandler)
 		{
-			if (items == null || items.Count() == 0) return;
+			if (items == null || !items.Any()) return;
 
 			ContextMenuStrip contextMenu = new ContextMenuStrip();
 			ToolStripDropDownClosedEventHandler contextMenuClosedEventHandler = null;
