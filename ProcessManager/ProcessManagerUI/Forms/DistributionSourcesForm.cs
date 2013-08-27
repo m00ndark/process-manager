@@ -96,6 +96,7 @@ namespace ProcessManagerUI.Forms
 		{
 			if (!_machineAvailable) return;
 
+			_disableStateChangedEvents = true;
 			_selectedSource = new DistributionSource();
 			DistributionSources.Add(_selectedSource);
 			DistributionSourcesChanged = true;
@@ -110,6 +111,7 @@ namespace ProcessManagerUI.Forms
 					_selectedSource.Recursive.ToString(CultureInfo.InvariantCulture),
 					_selectedSource.Inclusive.ToString(CultureInfo.InvariantCulture)
 				}) { Tag = _selectedSource });
+			_disableStateChangedEvents = false;
 			item.Selected = true;
 			panelSource.Visible = true;
 			EnableControls();

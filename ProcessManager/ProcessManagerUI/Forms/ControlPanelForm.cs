@@ -145,8 +145,13 @@ namespace ProcessManagerUI.Forms
 			// this will trigger DisplaySelectedTabPage()
 			foreach (TabPage tabPage in tabControlSection.TabPages)
 			{
-				if (tabPage.Tag.ToString() == Settings.Client.CP_SelectedTab)
+				if (tabPage.Tag.ToString() != Settings.Client.CP_SelectedTab)
+					continue;
+
+				if (tabControlSection.SelectedTab != tabPage)
 					tabControlSection.SelectedTab = tabPage;
+				else
+					DisplaySelectedTabPage();
 			}
 
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
@@ -427,6 +432,11 @@ namespace ProcessManagerUI.Forms
 			HandleConfigurationChanged(e.Machine, e.ConfigurationHash);
 		}
 
+		public void ProcessManagerServiceEventHandler_DistributionCompleted(object sender, DistributionResultEventArgs e)
+		{
+			HandleDistributionCompleted(e.DistributionResult);
+		}
+
 		#endregion
 
 		#region Helpers
@@ -454,12 +464,22 @@ namespace ProcessManagerUI.Forms
 				ReloadConfiguration(machine);
 		}
 
+		private void HandleDistributionCompleted(DistributionResult distributionResult)
+		{
+			new Thread(() => HandleDistributionCompletedThread(distributionResult)).Start();
+		}
+
+		private void HandleDistributionCompletedThread(DistributionResult distributionResult)
+		{
+			ApplyDistributionState(distributionResult);
+		}
+
 		#endregion
 
 		private void ShowForm()
 		{
 			Location = new Point(Math.Min(MousePosition.X - Size.Width / 2, Screen.PrimaryScreen.WorkingArea.Width - Size.Width - 8),
-				Screen.PrimaryScreen.WorkingArea.Height - Size.Height - 8 /* (isWindowsSeven ? 8 : 0) */);
+				Math.Max(Screen.PrimaryScreen.WorkingArea.Top, Screen.PrimaryScreen.WorkingArea.Height - Size.Height - 8) /* (isWindowsSeven ? 8 : 0) */);
 			Opacity = 1;
 			Show();
             try { Program.SetForegroundWindow(Handle); } catch { ; }
@@ -522,8 +542,16 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
+		private delegate void UpdateFiltersAndLayoutDelegate();
+
 		private void UpdateFiltersAndLayout()
 		{
+			if (InvokeRequired)
+			{
+				Invoke(new UpdateFiltersAndLayoutDelegate(UpdateFiltersAndLayout));
+				return;
+			}
+
 			UpdateProcessFilterAndLayout();
 			UpdateDistributionFilterAndLayout();
 		}
@@ -815,6 +843,27 @@ namespace ProcessManagerUI.Forms
 
 		#region Distribution tab
 
+		private delegate void ApplyDistributionStateDelegate(DistributionResult distributionResult);
+
+		private void ApplyDistributionState(DistributionResult distributionResult)
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new ApplyDistributionStateDelegate(ApplyDistributionState), distributionResult);
+				return;
+			}
+
+			lock (_distributionDestinationMachineNodes)
+			{
+				DistributionDestinationMachineNode destinationMachineNode = _distributionDestinationMachineNodes.FirstOrDefault(node =>
+					node.Matches(new Machine(distributionResult.SourceMachineHostName).ID, distributionResult.GroupID,
+						distributionResult.ApplicationID, new Machine(distributionResult.DestinationMachineHostName).ID));
+
+				if (destinationMachineNode != null)
+					destinationMachineNode.State = (distributionResult.Result == DistributionResultValue.Success ? DistributionState.Success : DistributionState.Failure);
+			}
+		}
+
 		private void UpdateDistributionFilterAndLayout()
 		{
 			if (SelectedTab != ControlPanelTab.Distribution)
@@ -887,7 +936,7 @@ namespace ProcessManagerUI.Forms
 					comboBoxDistributionApplicationFilter.SelectedIndex = index;
 			}
 
-			string selectedDestinationMachineName = Settings.Client.D_SelectedFilterSourceMachine;
+			string selectedDestinationMachineName = Settings.Client.D_SelectedFilterDestinationMachine;
 			comboBoxDistributionDestinationMachineFilter.Items.Clear();
 			comboBoxDistributionDestinationMachineFilter.Items.Add(new ComboBoxItem(string.Empty));
 
@@ -959,6 +1008,7 @@ namespace ProcessManagerUI.Forms
 								.Where(application => string.IsNullOrEmpty(Settings.Client.D_SelectedFilterApplication) || application.Equals(Settings.Client.D_SelectedFilterApplication))
 								.SelectMany(application => ConnectionStore.Connections.Values
 									.Where(destinationConnection => destinationConnection.Configuration != null)
+									.Where(destinationConnection => !Equals(destinationConnection.Machine, sourceConnection.Machine))
 									.Where(destinationConnection => string.IsNullOrEmpty(Settings.Client.D_SelectedFilterDestinationMachine) || destinationConnection.Machine.Equals(Settings.Client.D_SelectedFilterDestinationMachine))
 									.Select(destinationConnection => new
 										{
@@ -1104,9 +1154,7 @@ namespace ProcessManagerUI.Forms
 			}
 
 			MinimumSize = MaximumSize = Size;
-			Location = new Point(Location.X, Screen.PrimaryScreen.WorkingArea.Height - Size.Height - 8);
-
-			Console.WriteLine(Size.ToString());
+			Location = new Point(Location.X, Math.Max(Screen.PrimaryScreen.WorkingArea.Top, Screen.PrimaryScreen.WorkingArea.Height - Size.Height - 8));
 		}
 
 		private void EnableActionLinks(bool enable)

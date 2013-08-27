@@ -9,6 +9,8 @@ using ProcessManager.DataObjects;
 using ProcessManager.DataObjects.Comparers;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
+using ProcessManager.Service.Common;
+using ProcessManager.Service.DataObjects;
 using ProcessManager.Utilities;
 
 namespace ProcessManager
@@ -29,6 +31,8 @@ namespace ProcessManager
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;
 		}
 
+		public event EventHandler<DistributionResultEventArgs> DistributionCompleted;
+
 		#region Properties
 
 		public static DistributionWorker Instance
@@ -45,6 +49,16 @@ namespace ProcessManager
 				}
 				return _instance;
 			}
+		}
+
+		#endregion
+
+		#region Event raisers
+
+		private void RaiseDistributionCompletedEvent(DistributionResult distributionResult, IProcessManagerServiceEventHandler caller)
+		{
+			if (DistributionCompleted != null)
+				DistributionCompleted(this, new DistributionResultEventArgs(distributionResult, caller));
 		}
 
 		#endregion
@@ -72,6 +86,8 @@ namespace ProcessManager
 
 		public void ProcessManagerServiceEventHandler_ConfigurationChanged(object sender, MachineConfigurationHashEventArgs e) { }
 
+		public void ProcessManagerServiceEventHandler_DistributionCompleted(object sender, DistributionResultEventArgs e) { }
+
 		#endregion
 
 		#region Connection handler event handlers
@@ -80,14 +96,18 @@ namespace ProcessManager
 		{
 			if (e.Status == ProcessManagerServiceHandlerStatus.Connected)
 			{
-				foreach (DistributionWork work in _pendingDistributionWork.Where(work => work.DestinationMachine == e.ServiceHandler.Machine))
+				foreach (DistributionWork work in _pendingDistributionWork.Where(work => Equals(work.DestinationMachine, e.ServiceHandler.Machine)))
 					new Thread(() => DistributeSourceFiles(work)).Start();
+			}
+			else
+			{
+				ConnectionStore.RemoveConnection(e.ServiceHandler.Machine);
 			}
 		}
 
 		private void ServiceConnectionHandler_ServiceHandlerConnectionChanged(object sender, ServiceHandlerConnectionChangedEventArgs e)
 		{
-			
+			// do nothing?
 		}
 
 		#endregion
@@ -117,11 +137,10 @@ namespace ProcessManager
 				{
 					try
 					{
-						foreach (MachineConnection connection in ConnectionStore.Connections.Values)
-						{
-							if (!_pendingDistributionWork.Any(work => work.DestinationMachine == connection.Machine))
-								ConnectionStore.RemoveConnection(connection.Machine);
-						}
+						ConnectionStore.Connections.Keys
+							.Where(destinationMachine => !_pendingDistributionWork.Any(work => Equals(work.DestinationMachine, destinationMachine)))
+							.ToList()
+							.ForEach(RemoveConnection);
 
 						foreach (Machine destinationMachine in _pendingDistributionWork.Select(work => work.DestinationMachine).Distinct(new MachineEqualityComparer()))
 						{
@@ -149,6 +168,11 @@ namespace ProcessManager
 			{
 				Logger.Add("Fatal exception in distribution connection management thread, dying....", ex);
 			}
+		}
+
+		private static void RemoveConnection(Machine machine)
+		{
+			ConnectionStore.RemoveConnection(machine);
 		}
 
 		#endregion
@@ -200,31 +224,39 @@ namespace ProcessManager
 		{
 			try
 			{
-				ApplicationEqualityComparer applicationEqualityComparer = new ApplicationEqualityComparer();
-				Application destinationApplication = ConnectionStore.Connections[work.DestinationMachine].Configuration.Applications
-					.FirstOrDefault(application => applicationEqualityComparer.Equals(application, work.Application));
+				GroupEqualityComparer groupEqualityComparer = new GroupEqualityComparer();
+				Group destinationGroup = ConnectionStore.Connections[work.DestinationMachine].Configuration.Groups
+					.FirstOrDefault(group => groupEqualityComparer.Equals(group, work.Group));
 				
-				if (destinationApplication == null)
+				if (destinationGroup == null)
 				{
-					Logger.Add(LogType.Warning, "Could not distribute application " + work.Application.Name + " to destination machine "
-						+ work.DestinationMachine.HostName + ". Destination machine does not contain a matching application.");
+					Logger.Add(LogType.Warning, "Could not distribute application " + work.Application.Name + " in group " + work.Group.Name
+						+ " to destination machine " + work.DestinationMachine.HostName + ". Destination machine does not contain a matching group.");
+					RaiseDistributionCompletedEvent(new DistributionResult(work, DistributionResultValue.Failure), work.Caller);
 					return;
 				}
 
+				bool totalSuccess = true;
 				foreach (DistributionFile file in work.Files)
 				{
-					file.DestinationApplicationID = destinationApplication.ID;
+					file.DestinationGroupID = destinationGroup.ID;
 					file.Content = FileSystemHandler.GetFileContent(Path.Combine(work.Group.Path, file.RelativePath.Trim(Path.DirectorySeparatorChar)));
 
-					// todo: send file here
+					bool success = ConnectionStore.Connections[work.DestinationMachine].ServiceHandler.Service.DistributeFile(new DTODistributionFile(file));
+
+					Logger.Add(LogType.Debug, "Distribution of file to " + work.DestinationMachine.HostName + " " + (success ? "succeeded" : "failed") + ": " + file.RelativePath + ", " + file.Content.Length + " bytes");
 
 					file.IsDistributed = true;
+					totalSuccess &= success;
 				}
+
+				RaiseDistributionCompletedEvent(new DistributionResult(work, totalSuccess ? DistributionResultValue.Success : DistributionResultValue.Failure), work.Caller);
 			}
 			catch (ThreadAbortException) { }
 			catch (Exception ex)
 			{
 				Logger.Add("An unexpected error occurred while distributing source files, aborting..", ex);
+				RaiseDistributionCompletedEvent(new DistributionResult(work, DistributionResultValue.Failure), work.Caller);
 			}
 			finally
 			{

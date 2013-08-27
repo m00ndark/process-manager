@@ -67,6 +67,11 @@ namespace ProcessManager.Service.Client
 			return Channel.GetFileSystemEntries(path, filter);
 		}
 
+		public bool DistributeFile(DTODistributionFile distributionFile)
+		{
+			return Channel.DistributeFile(distributionFile);
+		}
+
 		#endregion
 	}
 }

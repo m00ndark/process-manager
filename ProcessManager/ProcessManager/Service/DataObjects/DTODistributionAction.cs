@@ -9,13 +9,20 @@ namespace ProcessManager.Service.DataObjects
 	{
 		public DTODistributionAction(DistributionAction distributionAction)
 		{
+			Type = distributionAction.Type;
+			SourceMachineHostName = distributionAction.SourceMachine.HostName;
 			GroupID = distributionAction.Group.ID;
 			ApplicationID = distributionAction.Application.ID;
 			DestinationMachineHostName = distributionAction.DestinationMachine.HostName;
-			Type = distributionAction.Type;
 		}
 
 		#region Properties
+
+		[DataMember]
+		public ActionType Type { get; private set; }
+
+		[DataMember]
+		public string SourceMachineHostName { get; private set; }
 
 		[DataMember]
 		public Guid GroupID { get; private set; }
@@ -25,9 +32,6 @@ namespace ProcessManager.Service.DataObjects
 
 		[DataMember]
 		public string DestinationMachineHostName { get; private set; }
-
-		[DataMember]
-		public ActionType Type { get; private set; }
 
 		#endregion
 	}

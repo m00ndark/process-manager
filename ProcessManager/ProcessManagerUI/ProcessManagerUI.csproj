@@ -291,6 +291,19 @@
   <ItemGroup>
     <None Include="Resources\machine-16.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\distribution-unknown-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\distribution-ongoing-16.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\distribution-success-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\distribution-failure-16.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -8,18 +8,20 @@ namespace ProcessManager.DataObjects
 	{
 		private bool _isDistributed;
 
-		public DistributionFile(string relativePath)
+		public DistributionFile(string relativePath, Guid destinationGroupID, byte[] content)
 		{
 			RelativePath = relativePath;
-			DestinationApplicationID = Guid.Empty;
-			Content = null;
+			DestinationGroupID = destinationGroupID;
+			Content = content;
 			IsDistributed = false;
 		}
+
+		public DistributionFile(string relativePath) : this(relativePath, Guid.Empty, null) {}
 
 		#region Properties
 
 		public string RelativePath { get; private set; }
-		public Guid DestinationApplicationID { get; set; }
+		public Guid DestinationGroupID { get; set; }
 		public byte[] Content { get; set; }
 		public bool IsDistributed
 		{
@@ -32,7 +34,5 @@ namespace ProcessManager.DataObjects
 		}
 
 		#endregion
-
-
 	}
 }

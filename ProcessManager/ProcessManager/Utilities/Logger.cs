@@ -94,9 +94,9 @@ namespace ProcessManager.Utilities
 			lock (_logQueue)
 			{
 				_logQueue.Enqueue(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
-					+ " > " + logType.ToString().PadRight(_logTypeIndentationDepth)
-					+ (LogSource != LogSource.Undefined ? LogSource.ToString().ToUpper() + " :" : string.Empty)
-					+ " " + logText);
+					+ " > " + logType.ToString().PadRight(_logTypeIndentationDepth) + " "
+					+ (LogSource != LogSource.Undefined ? LogSource.ToString().ToUpper() + "/" + Thread.CurrentThread.ManagedThreadId.ToString().PadRight(4) : string.Empty)
+					+ ": " + logText);
 			}
 			_logEntryAddedEvent.Set();
 		}

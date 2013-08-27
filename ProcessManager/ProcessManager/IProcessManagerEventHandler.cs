@@ -9,5 +9,6 @@ namespace ProcessManager
 
 		void ProcessManagerServiceEventHandler_ProcessStatusesChanged(object sender, ProcessStatusesEventArgs e);
 		void ProcessManagerServiceEventHandler_ConfigurationChanged(object sender, MachineConfigurationHashEventArgs e);
+		void ProcessManagerServiceEventHandler_DistributionCompleted(object sender, DistributionResultEventArgs e);
 	}
 }

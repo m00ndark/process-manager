@@ -30,5 +30,8 @@ namespace ProcessManager.Service.Common
 
 		[OperationContract]
 		List<DTOFileSystemEntry> GetFileSystemEntries(string path, string filter = null);
+
+		[OperationContract]
+		bool DistributeFile(DTODistributionFile distributionFile);
 	}
 }

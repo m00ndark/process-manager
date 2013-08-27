@@ -25,6 +25,7 @@ namespace ProcessManager.Service.Client
 
 		public event EventHandler<ProcessStatusesEventArgs> ProcessStatusesChanged;
 		public event EventHandler<MachineConfigurationHashEventArgs> ConfigurationChanged;
+		public event EventHandler<DistributionResultEventArgs> DistributionCompleted;
 
 		#endregion
 
@@ -42,6 +43,12 @@ namespace ProcessManager.Service.Client
 				ConfigurationChanged(this, new MachineConfigurationHashEventArgs(Machine, configurationHash));
 		}
 
+		private void RaiseDistributionCompletedEvent(DTODistributionResult distributionResult)
+		{
+			if (DistributionCompleted != null)
+				DistributionCompleted(this, new DistributionResultEventArgs(distributionResult.FromDTO()));
+		}
+
 		#endregion
 
 		#region Implementation of IProcessManagerServiceEventHandler
@@ -54,6 +61,11 @@ namespace ProcessManager.Service.Client
 		public void ServiceEvent_ConfigurationChanged(string configurationHash)
 		{
 			RaiseConfigurationChangedEvent(configurationHash);
+		}
+
+		public void ServiceEvent_DistributionCompleted(DTODistributionResult distributionResult)
+		{
+			RaiseDistributionCompletedEvent(distributionResult);
 		}
 
 		#endregion

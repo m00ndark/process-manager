@@ -13,6 +13,13 @@ namespace ProcessManager.DataObjects
 			DestinationMachine = destinationMachine;
 		}
 
+		public DistributionAction(ActionType type, Machine sourceMachine, Group group, Application application, Machine destinationMachine) : this(type, destinationMachine)
+		{
+			SourceMachine = sourceMachine;
+			Group = group;
+			Application = application;
+		}
+
 		#region Properties
 
 		public ActionType Type { get; private set; }

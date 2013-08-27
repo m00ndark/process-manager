@@ -82,6 +82,12 @@ namespace ProcessManager.DataAccess
 			return File.ReadAllBytes(filePath);
 		}
 
+		public static void PutFileContent(string filePath, byte[] content)
+		{
+			CreateDirectory(Path.GetDirectoryName(filePath));
+			File.WriteAllBytes(filePath, content);
+		}
+
 		public static void CreateDirectory(string path)
 		{
 			if (!Directory.Exists(path))

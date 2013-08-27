@@ -40,6 +40,7 @@ namespace ProcessManager.Service.Client
 			{
 				_processManagerServiceEventHandler.ProcessStatusesChanged += _processManagerEventHandler.ProcessManagerServiceEventHandler_ProcessStatusesChanged;
 				_processManagerServiceEventHandler.ConfigurationChanged += _processManagerEventHandler.ProcessManagerServiceEventHandler_ConfigurationChanged;
+				_processManagerServiceEventHandler.DistributionCompleted += _processManagerEventHandler.ProcessManagerServiceEventHandler_DistributionCompleted;
 			}
 		}
 
@@ -64,6 +65,7 @@ namespace ProcessManager.Service.Client
 				}
 				_processManagerServiceEventHandler.ProcessStatusesChanged -= _processManagerEventHandler.ProcessManagerServiceEventHandler_ProcessStatusesChanged;
 				_processManagerServiceEventHandler.ConfigurationChanged -= _processManagerEventHandler.ProcessManagerServiceEventHandler_ConfigurationChanged;
+				_processManagerServiceEventHandler.DistributionCompleted -= _processManagerEventHandler.ProcessManagerServiceEventHandler_DistributionCompleted;
 			}
 			if (_processManagerServiceClient != null)
 			{

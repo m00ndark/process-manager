@@ -11,5 +11,8 @@ namespace ProcessManager.Service.Common
 
 		[OperationContract(IsOneWay = true)]
 		void ServiceEvent_ConfigurationChanged(string configurationHash);
+
+		[OperationContract(IsOneWay = true)]
+		void ServiceEvent_DistributionCompleted(DTODistributionResult distributionResult);
 	}
 }

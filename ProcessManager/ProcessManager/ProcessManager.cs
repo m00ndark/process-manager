@@ -6,6 +6,7 @@ using System.Threading;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
+using ProcessManager.Service.Common;
 using ProcessManager.Service.Host;
 using ProcessManager.Utilities;
 
@@ -23,12 +24,14 @@ namespace ProcessManager
 		{
 			_mainThread = null;
 			_processStatuses = new Dictionary<Guid, Dictionary<Guid, ProcessStatus>>();
+			DistributionWorker.Instance.DistributionCompleted += DistributionWorker_DistributionCompleted;
 		}
 
 		#region Events
 
 		public event EventHandler<ProcessStatusesEventArgs> ProcessStatusesChanged;
 		public event EventHandler<MachineConfigurationHashEventArgs> ConfigurationChanged;
+		public event EventHandler<DistributionResultEventArgs> DistributionCompleted;
 
 		#endregion
 
@@ -66,6 +69,21 @@ namespace ProcessManager
 		{
 			if (ConfigurationChanged != null)
 				ConfigurationChanged(this, new MachineConfigurationHashEventArgs(configuration.Hash));
+		}
+
+		private void RaiseDistributionCompletedEvent(DistributionResult distributionResult, IProcessManagerServiceEventHandler caller)
+		{
+			if (DistributionCompleted != null)
+				DistributionCompleted(this, new DistributionResultEventArgs(distributionResult, caller));
+		}
+
+		#endregion
+
+		#region Distribution worker event handlers
+
+		private void DistributionWorker_DistributionCompleted(object sender, DistributionResultEventArgs e)
+		{
+			RaiseDistributionCompletedEvent(e.DistributionResult, e.Caller);
 		}
 
 		#endregion
@@ -121,11 +139,17 @@ namespace ProcessManager
 			}
 		}
 
-		public void TakeDistributionAction(Guid groupID, Guid applicationID, string destinationMachineHostName, ActionType type)
+		public void TakeDistributionAction(string sourceMachineHostName, Guid groupID, Guid applicationID, string destinationMachineHostName, ActionType type, IProcessManagerServiceEventHandler caller)
 		{
 			Configuration configuration = Configuration.Read();
 			Group group = configuration.Groups.FirstOrDefault(x => x.ID == groupID);
 			Application application = configuration.Applications.FirstOrDefault(x => x.ID == applicationID);
+
+			if (string.IsNullOrEmpty(sourceMachineHostName))
+			{
+				Logger.Add(LogType.Error, "Application " + type + ": Missing source machine host name");
+				return;
+			}
 
 			if (group == null)
 			{
@@ -145,7 +169,7 @@ namespace ProcessManager
 				return;
 			}
 
-			DistributionWorker.Instance.AddWork(new DistributionWork(type, group, application, new Machine(destinationMachineHostName)));
+			DistributionWorker.Instance.AddWork(new DistributionWork(type, new Machine(sourceMachineHostName), group, application, new Machine(destinationMachineHostName), caller));
 		}
 
 		public List<FileSystemDrive> GetFileSystemDrives()
@@ -156,6 +180,31 @@ namespace ProcessManager
 		public List<FileSystemEntry> GetFileSystemEntries(string path, string filter)
 		{
 			return FileSystemHandler.GetFileSystemEntries(path, filter, SearchOption.TopDirectoryOnly).ToList();
+		}
+
+		public bool DistributeFile(DistributionFile distributionFile)
+		{
+			Configuration configuration = Configuration.Read();
+			Group group = configuration.Groups.FirstOrDefault(x => x.ID == distributionFile.DestinationGroupID);
+
+			if (group == null)
+			{
+				Logger.Add(LogType.Error, "Distribute file: Could not find group with ID " + distributionFile.DestinationGroupID);
+				return false;
+			}
+
+			string filePath = Path.Combine(group.Path, distributionFile.RelativePath.Trim(Path.DirectorySeparatorChar));
+
+			try
+			{
+				FileSystemHandler.PutFileContent(filePath, distributionFile.Content);
+				return true;
+			}
+			catch (Exception ex)
+			{
+				Logger.Add("Distribute file: Failed to persist file content of " + filePath, ex);
+				return false;
+			}
 		}
 
 		#endregion

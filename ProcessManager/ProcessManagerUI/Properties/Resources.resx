@@ -130,6 +130,18 @@
   <data name="copy_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\copy-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="distribution_failure_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\distribution-failure-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="distribution_ongoing_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\distribution-ongoing-16.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="distribution_success_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\distribution-success-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="distribution_unknown_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\distribution-unknown-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="drive_compact_disc_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\drive-compact-disc-16.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

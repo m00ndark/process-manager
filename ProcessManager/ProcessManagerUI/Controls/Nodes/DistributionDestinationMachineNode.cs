@@ -9,9 +9,18 @@ using ProcessManagerUI.Controls.Nodes.Support;
 
 namespace ProcessManagerUI.Controls.Nodes
 {
+	public enum DistributionState
+	{
+		Unknown,
+		Ongoing,
+		Success,
+		Failure
+	}
+
 	public partial class DistributionDestinationMachineNode : UserControl, INode
 	{
 		private readonly Guid _id;
+		private DistributionState _state;
 
 		public event EventHandler CheckedChanged;
 		public event EventHandler<ActionEventArgs> ActionTaken;
@@ -24,6 +33,7 @@ namespace ProcessManagerUI.Controls.Nodes
 			SourceGroupID = sourceGroupID;
 			SourceMachineID = sourceMachineID;
 			_id = MakeID(SourceMachineID, SourceGroupID, SourceApplicationID, DestinationMachine.ID);
+			_state = DistributionState.Unknown;
 			//BackColor = Color.FromArgb(255, 192, 128);
 		}
 
@@ -33,6 +43,16 @@ namespace ProcessManagerUI.Controls.Nodes
 		public Guid SourceApplicationID { get; private set; }
 		public Guid SourceGroupID { get; private set; }
 		public Guid SourceMachineID { get; private set; }
+
+		public DistributionState State
+		{
+			get { return _state; }
+			set
+			{
+				_state = value;
+				ApplyState();
+			}
+		}
 
 		public Guid ID { get { return _id; } }
 		public CheckState CheckState { get { return checkBoxSelected.CheckState; } }
@@ -53,6 +73,8 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		private void LinkLabelDistribute_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
+			State = DistributionState.Ongoing;
+
 			RaiseActionTakenEvent(new DistributionAction(ActionType.Distribute, DestinationMachine));
 		}
 
@@ -64,6 +86,7 @@ namespace ProcessManagerUI.Controls.Nodes
 		{
 			labelMachineName.Text = DestinationMachine.HostName;
 			Size = new Size(labelMachineName.Location.X + labelMachineName.Size.Width, Size.Height);
+			ApplyState();
 			return Size;
 		}
 
@@ -83,7 +106,10 @@ namespace ProcessManagerUI.Controls.Nodes
 				throw new ArgumentException("Invalid action type");
 
 			if (checkBoxSelected.Checked)
+			{
+				State = DistributionState.Ongoing;
 				RaiseActionTakenEvent(new DistributionAction(ActionType.Distribute, DestinationMachine));
+			}
 		}
 
 		#endregion
@@ -110,6 +136,25 @@ namespace ProcessManagerUI.Controls.Nodes
 		{
 			return Cryptographer.CreateGUID(sourceMachineID.ToString() + sourceGroupID.ToString()
 				+ sourceApplicationID.ToString() + destinationMachineID.ToString());
+		}
+
+		private void ApplyState()
+		{
+			switch (State)
+			{
+				case DistributionState.Ongoing:
+					pictureBoxStatus.Image = Properties.Resources.distribution_ongoing_16;
+					break;
+				case DistributionState.Success:
+					pictureBoxStatus.Image = Properties.Resources.distribution_success_16;
+					break;
+				case DistributionState.Failure:
+					pictureBoxStatus.Image = Properties.Resources.distribution_failure_16;
+					break;
+				default:
+					pictureBoxStatus.Image = Properties.Resources.distribution_unknown_16;
+					break;
+			}
 		}
 
 		#endregion

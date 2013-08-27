@@ -31,6 +31,8 @@
 			this.linkLabelDistribute = new System.Windows.Forms.LinkLabel();
 			this.labelMachineName = new System.Windows.Forms.Label();
 			this.checkBoxSelected = new System.Windows.Forms.CheckBox();
+			this.pictureBoxStatus = new System.Windows.Forms.PictureBox();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxStatus)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// linkLabelDistribute
@@ -42,7 +44,7 @@
 			this.linkLabelDistribute.DisabledLinkColor = System.Drawing.Color.Gray;
 			this.linkLabelDistribute.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
 			this.linkLabelDistribute.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelDistribute.Location = new System.Drawing.Point(23, 4);
+			this.linkLabelDistribute.Location = new System.Drawing.Point(47, 4);
 			this.linkLabelDistribute.Name = "linkLabelDistribute";
 			this.linkLabelDistribute.Size = new System.Drawing.Size(58, 15);
 			this.linkLabelDistribute.TabIndex = 9;
@@ -57,7 +59,7 @@
 			this.labelMachineName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
 			this.labelMachineName.AutoSize = true;
-			this.labelMachineName.Location = new System.Drawing.Point(85, 4);
+			this.labelMachineName.Location = new System.Drawing.Point(109, 4);
 			this.labelMachineName.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
 			this.labelMachineName.Name = "labelMachineName";
 			this.labelMachineName.Size = new System.Drawing.Size(69, 15);
@@ -75,11 +77,20 @@
 			this.checkBoxSelected.UseVisualStyleBackColor = true;
 			this.checkBoxSelected.CheckedChanged += new System.EventHandler(this.CheckBoxSelected_CheckedChanged);
 			// 
+			// pictureBoxStatus
+			// 
+			this.pictureBoxStatus.Location = new System.Drawing.Point(25, 3);
+			this.pictureBoxStatus.Name = "pictureBoxStatus";
+			this.pictureBoxStatus.Size = new System.Drawing.Size(16, 16);
+			this.pictureBoxStatus.TabIndex = 10;
+			this.pictureBoxStatus.TabStop = false;
+			// 
 			// DistributionDestinationMachineNode
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.White;
+			this.Controls.Add(this.pictureBoxStatus);
 			this.Controls.Add(this.linkLabelDistribute);
 			this.Controls.Add(this.labelMachineName);
 			this.Controls.Add(this.checkBoxSelected);
@@ -87,6 +98,7 @@
 			this.Margin = new System.Windows.Forms.Padding(0);
 			this.Name = "DistributionDestinationMachineNode";
 			this.Size = new System.Drawing.Size(350, 22);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxStatus)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -97,5 +109,6 @@
 		private System.Windows.Forms.LinkLabel linkLabelDistribute;
 		private System.Windows.Forms.Label labelMachineName;
 		private System.Windows.Forms.CheckBox checkBoxSelected;
+		private System.Windows.Forms.PictureBox pictureBoxStatus;
 	}
 }
