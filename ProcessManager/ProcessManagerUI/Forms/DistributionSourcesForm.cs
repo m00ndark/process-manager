@@ -265,6 +265,7 @@ namespace ProcessManagerUI.Forms
 				}
 			}
 		}
+
 		#endregion
 
 		#region Service handler event handlers
