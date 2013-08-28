@@ -6,10 +6,20 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using ProcessManager.DataAccess;
+using ProcessManager.DataObjects.Comparers;
 using ProcessManager.Utilities;
 
 namespace ProcessManager.DataObjects
 {
+	[Flags]
+	public enum ConfigurationParts
+	{
+		None = 0,
+		All = 3,
+		Groups = 1,
+		Applications = 2
+	}
+
 	public class Configuration : IXmlSerializable
 	{
 		private static readonly object _serializationLock = new object();
@@ -49,27 +59,100 @@ namespace ProcessManager.DataObjects
 			Hash = Cryptographer.CreateSHA512Hash(Guid.NewGuid().ToString());
 		}
 
-		public Configuration Clone(bool generateNewIDs = false)
+		public Configuration Clone()
 		{
 			Configuration configuration = new Configuration();
 			configuration.Groups.AddRange(Groups.Select(group => group.Clone()));
 			configuration.Applications.AddRange(Applications.Select(application => application.Clone()));
-			if (generateNewIDs)
+			return configuration;
+		}
+
+		public Configuration CopyTo(Configuration configuration, ConfigurationParts configurationParts)
+		{
+			List<Application> oldApplications = configuration.Applications;
+
+			if ((configurationParts & ConfigurationParts.Groups) != 0)
+			{
+				configuration.Groups = new List<Group>();
+				configuration.Groups.AddRange(Groups.Select(group => group.Clone()));
+			}
+
+			if ((configurationParts & ConfigurationParts.Applications) != 0)
+			{
+				configuration.Applications = new List<Application>();
+				configuration.Applications.AddRange(Applications.Select(application => application.Clone()));
+			}
+
+			if (configurationParts == ConfigurationParts.All)
 			{
 				configuration.Groups.ForEach(group => group.ID = Guid.NewGuid());
 				configuration.Applications.ForEach(application =>
+				{
+					application.Sources.ForEach(source => source.ID = Guid.NewGuid());
+					Guid oldID = application.ID;
+					application.ID = Guid.NewGuid();
+					configuration.Groups.ForEach(group =>
 					{
-						Guid oldID = application.ID;
-						application.ID = Guid.NewGuid();
+						if (group.Applications.Contains(oldID))
+						{
+							group.Applications.Remove(oldID);
+							group.Applications.Add(application.ID);
+						}
+					});
+				});
+			}
+			else if ((configurationParts & ConfigurationParts.Groups) != 0)
+			{
+				configuration.Groups.ForEach(group => group.ID = Guid.NewGuid());
+				if ((configurationParts & ConfigurationParts.Applications) == 0)
+				{
+					foreach (Group group in configuration.Groups)
+					{
+						List<Guid> toRemove = new List<Guid>(), toAdd = new List<Guid>();
+						foreach (Application application in group.Applications.Select(applicationID => Applications.First(application => application.ID == applicationID)))
+						{
+							toRemove.Add(application.ID);
+							Application existingApplication = configuration.Applications.FirstOrDefault(x => Comparer.ApplicationsEqual(x, application));
+							if (existingApplication != null)
+								toAdd.Add(existingApplication.ID);
+						}
+						toRemove.ForEach(id => group.Applications.Remove(id));
+						toAdd.ForEach(id => group.Applications.Add(id));
+					}
+				}
+			}
+			else if ((configurationParts & ConfigurationParts.Applications) != 0)
+			{
+				configuration.Applications.ForEach(application =>
+					{
 						application.Sources.ForEach(source => source.ID = Guid.NewGuid());
-						configuration.Groups.ForEach(group =>
-							{
-								if (group.Applications.Contains(oldID))
+						if ((configurationParts & ConfigurationParts.Groups) != 0)
+						{
+							Guid oldID = application.ID;
+							application.ID = Guid.NewGuid();
+							configuration.Groups.ForEach(group =>
 								{
-									group.Applications.Remove(oldID);
-									group.Applications.Add(application.ID);
-								}
-							});
+									if (group.Applications.Contains(oldID))
+									{
+										group.Applications.Remove(oldID);
+										group.Applications.Add(application.ID);
+									}
+								});
+						}
+						else
+						{
+							Application oldApplication = oldApplications.FirstOrDefault(x => Comparer.ApplicationsEqual(x, application));
+							if (oldApplication != null)
+							{
+								application.ID = oldApplication.ID;
+							}
+							else
+							{
+								List<Group> referringGroups = Groups.Where(group => group.Applications.Any(applicationID => applicationID == application.ID)).ToList();
+								application.ID = Guid.NewGuid();
+								configuration.Groups.Where(group => referringGroups.Any(refGroup => Comparer.GroupsEqual(refGroup, group))).ToList().ForEach(group => group.Applications.Add(application.ID));
+							}
+						}
 					});
 			}
 			return configuration;

@@ -635,15 +635,14 @@ namespace ProcessManagerUI.Forms
 			comboBoxProcessMachineFilter.Items.Clear();
 			comboBoxProcessMachineFilter.Items.Add(new ComboBoxItem(string.Empty));
 
-			MachineEqualityComparer machineEqualityComparer = new MachineEqualityComparer();
 			foreach (Machine machine in ConnectionStore.Connections.Values
 				.Where(connection => connection.Configuration != null)
 				.Select(connection => connection.Machine)
-				.Distinct(machineEqualityComparer)
+				.Distinct(new MachineEqualityComparer())
 				.OrderBy(machine => machine.HostName))
 			{
 				int index = comboBoxProcessMachineFilter.Items.Add(new ComboBoxItem(machine.HostName));
-				if (machineEqualityComparer.Equals(machine, selectedMachineName))
+				if (Comparer.MachinesEqual(machine, selectedMachineName))
 					comboBoxProcessMachineFilter.SelectedIndex = index;
 			}
 
@@ -651,15 +650,14 @@ namespace ProcessManagerUI.Forms
 			comboBoxProcessGroupFilter.Items.Clear();
 			comboBoxProcessGroupFilter.Items.Add(new ComboBoxItem(string.Empty));
 
-			GroupEqualityComparer groupEqualityComparer = new GroupEqualityComparer();
 			foreach (Group group in ConnectionStore.Connections.Values
 				.Where(connection => connection.Configuration != null)
 				.SelectMany(connection => connection.Configuration.Groups)
-				.Distinct(groupEqualityComparer)
+				.Distinct(new GroupEqualityComparer())
 				.OrderBy(group => group.Name))
 			{
 				int index = comboBoxProcessGroupFilter.Items.Add(new ComboBoxItem(group.Name));
-				if (groupEqualityComparer.Equals(group, selectedGroupName))
+				if (Comparer.GroupsEqual(group, selectedGroupName))
 					comboBoxProcessGroupFilter.SelectedIndex = index;
 			}
 
@@ -667,15 +665,15 @@ namespace ProcessManagerUI.Forms
 			comboBoxProcessApplicationFilter.Items.Clear();
 			comboBoxProcessApplicationFilter.Items.Add(new ComboBoxItem(string.Empty));
 
-			ApplicationEqualityComparer applicationEqualityComparer = new ApplicationEqualityComparer();
 			foreach (Application application in ConnectionStore.Connections.Values
 				.Where(connection => connection.Configuration != null)
 				.SelectMany(connection => connection.Configuration.Applications)
-				.Distinct(applicationEqualityComparer)
+				.Where(application => !application.DistributionOnly)
+				.Distinct(new ApplicationEqualityComparer())
 				.OrderBy(application => application.Name))
 			{
 				int index = comboBoxProcessApplicationFilter.Items.Add(new ComboBoxItem(application.Name));
-				if (applicationEqualityComparer.Equals(application, selectedApplicationName))
+				if (Comparer.ApplicationsEqual(application, selectedApplicationName))
 					comboBoxProcessApplicationFilter.SelectedIndex = index;
 			}
 		}
@@ -733,6 +731,7 @@ namespace ProcessManagerUI.Forms
 							.Where(group => string.IsNullOrEmpty(Settings.Client.P_SelectedFilterGroup) || group.Equals(Settings.Client.P_SelectedFilterGroup))
 							.SelectMany(group => connection.Configuration.Applications
 								.Where(application => group.Applications.Contains(application.ID))
+								.Where(application => !application.DistributionOnly)
 								.Where(application => string.IsNullOrEmpty(Settings.Client.P_SelectedFilterApplication) || application.Equals(Settings.Client.P_SelectedFilterApplication))
 								.Select(application => new
 									{
@@ -892,15 +891,14 @@ namespace ProcessManagerUI.Forms
 			comboBoxDistributionSourceMachineFilter.Items.Clear();
 			comboBoxDistributionSourceMachineFilter.Items.Add(new ComboBoxItem(string.Empty));
 
-			MachineEqualityComparer machineEqualityComparer = new MachineEqualityComparer();
 			foreach (Machine machine in ConnectionStore.Connections.Values
 				.Where(connection => connection.Configuration != null)
 				.Select(connection => connection.Machine)
-				.Distinct(machineEqualityComparer)
+				.Distinct(new MachineEqualityComparer())
 				.OrderBy(machine => machine.HostName))
 			{
 				int index = comboBoxDistributionSourceMachineFilter.Items.Add(new ComboBoxItem(machine.HostName));
-				if (machineEqualityComparer.Equals(machine, selectedSourceMachineName))
+				if (Comparer.MachinesEqual(machine, selectedSourceMachineName))
 					comboBoxDistributionSourceMachineFilter.SelectedIndex = index;
 			}
 
@@ -908,15 +906,14 @@ namespace ProcessManagerUI.Forms
 			comboBoxDistributionGroupFilter.Items.Clear();
 			comboBoxDistributionGroupFilter.Items.Add(new ComboBoxItem(string.Empty));
 
-			GroupEqualityComparer groupEqualityComparer = new GroupEqualityComparer();
 			foreach (Group group in ConnectionStore.Connections.Values
 				.Where(connection => connection.Configuration != null)
 				.SelectMany(connection => connection.Configuration.Groups)
-				.Distinct(groupEqualityComparer)
+				.Distinct(new GroupEqualityComparer())
 				.OrderBy(group => group.Name))
 			{
 				int index = comboBoxDistributionGroupFilter.Items.Add(new ComboBoxItem(group.Name));
-				if (groupEqualityComparer.Equals(group, selectedGroupName))
+				if (Comparer.GroupsEqual(group, selectedGroupName))
 					comboBoxDistributionGroupFilter.SelectedIndex = index;
 			}
 
@@ -924,15 +921,15 @@ namespace ProcessManagerUI.Forms
 			comboBoxDistributionApplicationFilter.Items.Clear();
 			comboBoxDistributionApplicationFilter.Items.Add(new ComboBoxItem(string.Empty));
 
-			ApplicationEqualityComparer applicationEqualityComparer = new ApplicationEqualityComparer();
 			foreach (Application application in ConnectionStore.Connections.Values
 				.Where(connection => connection.Configuration != null)
 				.SelectMany(connection => connection.Configuration.Applications)
-				.Distinct(applicationEqualityComparer)
+				.Where(application => application.Sources.Count > 0)
+				.Distinct(new ApplicationEqualityComparer())
 				.OrderBy(application => application.Name))
 			{
 				int index = comboBoxDistributionApplicationFilter.Items.Add(new ComboBoxItem(application.Name));
-				if (applicationEqualityComparer.Equals(application, selectedApplicationName))
+				if (Comparer.ApplicationsEqual(application, selectedApplicationName))
 					comboBoxDistributionApplicationFilter.SelectedIndex = index;
 			}
 
@@ -943,11 +940,11 @@ namespace ProcessManagerUI.Forms
 			foreach (Machine machine in ConnectionStore.Connections.Values
 				.Where(connection => connection.Configuration != null)
 				.Select(connection => connection.Machine)
-				.Distinct(machineEqualityComparer)
+				.Distinct(new MachineEqualityComparer())
 				.OrderBy(machine => machine.HostName))
 			{
 				int index = comboBoxDistributionDestinationMachineFilter.Items.Add(new ComboBoxItem(machine.HostName));
-				if (machineEqualityComparer.Equals(machine, selectedDestinationMachineName))
+				if (Comparer.MachinesEqual(machine, selectedDestinationMachineName))
 					comboBoxDistributionDestinationMachineFilter.SelectedIndex = index;
 			}
 		}
@@ -1005,6 +1002,7 @@ namespace ProcessManagerUI.Forms
 							.Where(group => string.IsNullOrEmpty(Settings.Client.D_SelectedFilterGroup) || group.Equals(Settings.Client.D_SelectedFilterGroup))
 							.SelectMany(group => sourceConnection.Configuration.Applications
 								.Where(application => group.Applications.Contains(application.ID))
+								.Where(application => application.Sources.Count > 0)
 								.Where(application => string.IsNullOrEmpty(Settings.Client.D_SelectedFilterApplication) || application.Equals(Settings.Client.D_SelectedFilterApplication))
 								.SelectMany(application => ConnectionStore.Connections.Values
 									.Where(destinationConnection => destinationConnection.Configuration != null)
@@ -1119,8 +1117,6 @@ namespace ProcessManagerUI.Forms
 					.Select(id => _distributionDestinationMachineNodes.FirstOrDefault(node => node.Matches(id)))
 					.Where(node => node != null)
 					.ToList().ForEach(node => node.Check(true));
-
-				//RetrieveAllProcessStatuses();
 			}
 			else
 			{

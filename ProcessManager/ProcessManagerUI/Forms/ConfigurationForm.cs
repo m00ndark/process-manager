@@ -317,6 +317,7 @@ namespace ProcessManagerUI.Forms
 				textBoxApplicationName.Text = _selectedApplication.Name;
 				textBoxApplicationRelativePath.Text = _selectedApplication.RelativePath;
 				textBoxApplicationArguments.Text = _selectedApplication.Arguments;
+				checkBoxDistributionOnly.Checked = _selectedApplication.DistributionOnly;
 				DisplayDistributionSourceCount();
 				_disableTextChangedEvents = false;
 				EnableControls();
@@ -337,6 +338,7 @@ namespace ProcessManagerUI.Forms
 			textBoxApplicationName.Text = _selectedApplication.Name;
 			textBoxApplicationRelativePath.Text = _selectedApplication.RelativePath;
 			textBoxApplicationArguments.Text = _selectedApplication.Arguments;
+			checkBoxDistributionOnly.Checked = _selectedApplication.DistributionOnly;
 			DisplayDistributionSourceCount();
 			ListViewItem item = listViewApplications.Items.Add(new ListViewItem(_selectedApplication.Name) { Tag = _selectedApplication });
 			item.Selected = true;
@@ -447,6 +449,16 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
+		private void CheckBoxDistributionOnly_CheckedChanged(object sender, EventArgs e)
+		{
+			if (checkBoxDistributionOnly.Checked)
+			{
+				textBoxApplicationRelativePath.Text = string.Empty;
+				textBoxApplicationArguments.Text = string.Empty;
+			}
+			UpdateSelectedApplication();
+		}
+
 		#endregion
 
 		#endregion
@@ -513,6 +525,8 @@ namespace ProcessManagerUI.Forms
 					+ " Configuration will be reloaded to reflect those changes.");
 
 				ServiceHelper.ReloadConfiguration(e.Machine);
+				UpdateSelections();
+				PopulateAllControls();
 			}
 		}
 
@@ -572,6 +586,8 @@ namespace ProcessManagerUI.Forms
 
 		private void MachinesForm_MachinesChanged(object sender, EventArgs e)
 		{
+			UpdateSelections();
+			PopulateAllControls();
 			RaiseConfigurationChangedEvent(null);
 		}
 
@@ -715,12 +731,39 @@ namespace ProcessManagerUI.Forms
 
 		private static bool ValidateGroups()
 		{
+			IDictionary<Machine, Dictionary<Group, string>> nonUniqueGroups =
+				ConnectionStore.Connections.Values
+					.Where(connection => connection.ConfigurationModified)
+					.Select(connection => new
+						{
+							connection.Machine,
+							Groups = connection.Configuration.Groups
+								.GroupBy(group => group, new GroupEqualityComparer())
+								.Where(x => x.Count() > 1)
+								.Select(x => new
+									{
+										Group = x.Key,
+										Message = x.Count() + " groups"
+									})
+								.ToList()
+						})
+					.Where(x => x.Groups.Count > 0)
+					.ToDictionary(x => x.Machine, x => x.Groups.ToDictionary(y => y.Group, y => y.Message));
+			if (nonUniqueGroups.Count > 0)
+			{
+				Messenger.ShowError("Group names not unique",
+					"Two or more groups have the same name. See details for more information.",
+					nonUniqueGroups.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine
+						+ y.Value.Aggregate(string.Empty, (a, b) => a + Environment.NewLine + y.Key + " > " + b.Key + ": " + b.Value).Trim()).Trim());
+				return false;
+			}
+
 			IDictionary<Machine, Dictionary<Group, List<string>>> invalidGroups =
 				ConnectionStore.Connections.Values
 					.Where(connection => connection.ConfigurationModified)
 					.Select(connection => new
 						{
-							Machine = connection.Machine,
+							connection.Machine,
 							Groups = connection.Configuration.Groups
 								.Select(group => new
 									{
@@ -768,6 +811,7 @@ namespace ProcessManagerUI.Forms
 					_selectedApplication.Name = textBoxApplicationName.Text;
 					_selectedApplication.RelativePath = textBoxApplicationRelativePath.Text;
 					_selectedApplication.Arguments = textBoxApplicationArguments.Text;
+					_selectedApplication.DistributionOnly = checkBoxDistributionOnly.Checked;
 					ListViewItem item = listViewApplications.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedApplication);
 					item.Text = _selectedApplication.Name;
 					listViewApplications.Sort();
@@ -784,7 +828,8 @@ namespace ProcessManagerUI.Forms
 			{
 				applicationChanged = (_selectedApplication.Name != textBoxApplicationName.Text
 					|| _selectedApplication.RelativePath != textBoxApplicationRelativePath.Text
-					|| _selectedApplication.Arguments != textBoxApplicationArguments.Text);
+					|| _selectedApplication.Arguments != textBoxApplicationArguments.Text
+					|| _selectedApplication.DistributionOnly != checkBoxDistributionOnly.Checked);
 				ConnectionStore.Connections[_selectedMachine].ConfigurationModified |= applicationChanged;
 			}
 			return applicationChanged;
@@ -792,21 +837,48 @@ namespace ProcessManagerUI.Forms
 
 		private static bool ValidateApplications()
 		{
+			IDictionary<Machine, Dictionary<Application, string>> nonUniqueApplications =
+				ConnectionStore.Connections.Values
+					.Where(connection => connection.ConfigurationModified)
+					.Select(connection => new
+						{
+							connection.Machine,
+							Applications = connection.Configuration.Applications
+								.GroupBy(application => application, new ApplicationEqualityComparer())
+								.Where(x => x.Count() > 1)
+								.Select(x => new
+									{
+										Application = x.Key,
+										Message = x.Count() + " applications"
+									})
+								.ToList()
+						})
+					.Where(x => x.Applications.Count > 0)
+					.ToDictionary(x => x.Machine, x => x.Applications.ToDictionary(y => y.Application, y => y.Message));
+			if (nonUniqueApplications.Count > 0)
+			{
+				Messenger.ShowError("Application names not unique",
+					"Two or more applications have the same name. See details for more information.",
+					nonUniqueApplications.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine
+						+ y.Value.Aggregate(string.Empty, (a, b) => a + Environment.NewLine + y.Key + " > " + b.Key + ": " + b.Value).Trim()).Trim());
+				return false;
+			}
+
 			IDictionary<Machine, Dictionary<Application, List<string>>> invalidApplications =
 				ConnectionStore.Connections.Values
 					.Where(connection => connection.ConfigurationModified)
 					.Select(connection => new
-					{
-						Machine = connection.Machine,
-						Applications = connection.Configuration.Applications
-							.Select(application => new
-							{
-								Application = application,
-								Messages = ApplicationIsValid(application).ToList()
-							})
-							.Where(x => x.Messages.Count > 0)
-							.ToList()
-					})
+						{
+							connection.Machine,
+							Applications = connection.Configuration.Applications
+								.Select(application => new
+									{
+										Application = application,
+										Messages = ApplicationIsValid(application).ToList()
+									})
+								.Where(x => x.Messages.Count > 0)
+								.ToList()
+						})
 					.Where(x => x.Applications.Count > 0)
 					.ToDictionary(x => x.Machine, x => x.Applications.ToDictionary(y => y.Application, y => y.Messages));
 			if (invalidApplications.Count > 0)
@@ -826,10 +898,13 @@ namespace ProcessManagerUI.Forms
 		{
 			if (string.IsNullOrEmpty(application.Name))
 				yield return "Name missing";
-			if (string.IsNullOrEmpty(application.RelativePath))
-				yield return "Relative path missing";
-			else if (Path.IsPathRooted(application.RelativePath.TrimStart(Path.DirectorySeparatorChar)))
-				yield return "Relative path can not be rooted";
+			if (!application.DistributionOnly)
+			{
+				if (string.IsNullOrEmpty(application.RelativePath))
+					yield return "Relative path missing";
+				else if (Path.IsPathRooted(application.RelativePath.TrimStart(Path.DirectorySeparatorChar)))
+					yield return "Relative path can not be rooted";
+			}
 		}
 
 		private void DisplayDistributionSourceCount()
@@ -890,6 +965,8 @@ namespace ProcessManagerUI.Forms
 
 		private void PopulateAllControls()
 		{
+			Group previouslySeletedGroup = _selectedGroup;
+			Application previouslySeletedApplication = _selectedApplication;
 			ClearAllControls();
 			ServiceHelper.WaitForConfiguration(_selectedMachine);
 			listViewGroups.Items.Clear();
@@ -899,6 +976,18 @@ namespace ProcessManagerUI.Forms
 			{
 				ConnectionStore.Connections[_selectedMachine].Configuration.Groups.ForEach(group => listViewGroups.Items.Add(new ListViewItem(group.Name) { Tag = group }));
 				ConnectionStore.Connections[_selectedMachine].Configuration.Applications.ForEach(application => listViewApplications.Items.Add(new ListViewItem(application.Name) { Tag = application }));
+				if (previouslySeletedGroup != null)
+				{
+					ListViewItem groupItem = listViewGroups.Items.Cast<ListViewItem>().FirstOrDefault(item => previouslySeletedGroup.Equals(item.Tag));
+					if (groupItem != null)
+						groupItem.Selected = true;
+				}
+				if (previouslySeletedApplication != null)
+				{
+					ListViewItem applicationItem = listViewApplications.Items.Cast<ListViewItem>().FirstOrDefault(item => previouslySeletedApplication.Equals(item.Tag));
+					if (applicationItem != null)
+						applicationItem.Selected = true;
+				}
 			}
 			ShowAllControls(_selectedMachine != null && ConnectionStore.ConfigurationAvailable(_selectedMachine));
 		}
@@ -909,6 +998,12 @@ namespace ProcessManagerUI.Forms
 			buttonAddGroupApplication.Enabled = (enable && GetNonIncludedGroupApplications().Any());
 			buttonRemoveGroupApplication.Enabled = (enable && listViewGroupApplications.SelectedItems.Count > 0);
 			buttonCopyGroupApplications.Enabled = (enable && GetAllGroups(true).Any());
+
+			labelApplicationRelativePath.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
+			labelApplicationArguments.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
+			textBoxApplicationRelativePath.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
+			textBoxApplicationArguments.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
+			buttonBrowseApplicationRelativePath.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
 		}
 
 		#endregion

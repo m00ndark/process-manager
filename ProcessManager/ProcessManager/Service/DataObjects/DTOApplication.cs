@@ -15,6 +15,7 @@ namespace ProcessManager.Service.DataObjects
 			Name = application.Name;
 			RelativePath = application.RelativePath;
 			Arguments = application.Arguments;
+			DistributionOnly = application.DistributionOnly;
 			Sources = new List<DTODistributionSource>();
 			Sources.AddRange(application.Sources.Select(source => new DTODistributionSource(source)));
 		}
@@ -34,13 +35,16 @@ namespace ProcessManager.Service.DataObjects
 		public string Arguments { get; set; }
 
 		[DataMember]
+		public bool DistributionOnly { get; set; }
+
+		[DataMember]
 		public List<DTODistributionSource> Sources { get; private set; }
 
 		#endregion
 
 		public Application FromDTO()
 		{
-			Application application = new Application() { ID = ID, Name = Name, RelativePath = RelativePath, Arguments = Arguments };
+			Application application = new Application() { ID = ID, Name = Name, RelativePath = RelativePath, Arguments = Arguments, DistributionOnly = DistributionOnly };
 			application.Sources.AddRange(Sources.Select(source => source.FromDTO()));
 			return application;
 		}

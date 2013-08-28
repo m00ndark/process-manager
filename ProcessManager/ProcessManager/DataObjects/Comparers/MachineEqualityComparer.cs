@@ -7,7 +7,7 @@ namespace ProcessManager.DataObjects.Comparers
 	{
 		public bool Equals(Machine machine, string hostName)
 		{
-			return (machine != null && machine.HostName.Equals(hostName, StringComparison.CurrentCultureIgnoreCase));
+			return (machine != null && machine.HostName != null && hostName != null && machine.HostName.Equals(hostName, StringComparison.CurrentCultureIgnoreCase));
 		}
 
 		public bool Equals(Machine x, Machine y)

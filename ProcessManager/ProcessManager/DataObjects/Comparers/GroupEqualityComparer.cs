@@ -5,9 +5,9 @@ namespace ProcessManager.DataObjects.Comparers
 {
 	public class GroupEqualityComparer : IEqualityComparer<Group>
 	{
-		public bool Equals(Group group, string groupName)
+		public bool Equals(Group group, string name)
 		{
-			return (group != null && group.Name.Equals(groupName, StringComparison.CurrentCultureIgnoreCase));
+			return (group != null && group.Name != null && name != null && group.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
 		}
 
 		public bool Equals(Group x, Group y)

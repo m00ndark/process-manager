@@ -1,4 +1,5 @@
 ﻿using System;
+using ProcessManager.DataObjects.Comparers;
 using ProcessManager.Utilities;
 
 namespace ProcessManager.DataObjects
@@ -26,19 +27,18 @@ namespace ProcessManager.DataObjects
 
 		public bool Equals(string hostName)
 		{
-			return (HostName != null && hostName != null && hostName.Equals(HostName, StringComparison.CurrentCultureIgnoreCase));
+			return Comparer.MachinesEqual(this, hostName);
 		}
 
 		public override bool Equals(object obj)
 		{
 			Machine machine = obj as Machine;
-			return (machine != null && machine.HostName != null && HostName != null
-				&& machine.HostName.Equals(HostName, StringComparison.CurrentCultureIgnoreCase));
+			return (machine != null && Comparer.MachinesEqual(this, machine));
 		}
 
 		public override int GetHashCode()
 		{
-			return (HostName != null ? HostName.ToLower().GetHashCode() : 0);
+			return Comparer.GetHashCode(this);
 		}
 
 		#endregion

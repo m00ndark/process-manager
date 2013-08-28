@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using ProcessManager.DataObjects.Comparers;
 
 namespace ProcessManager.DataObjects
 {
@@ -31,6 +32,30 @@ namespace ProcessManager.DataObjects
 				_isDistributed = value;
 				if (_isDistributed) Content = null;
 			}
+		}
+
+		#endregion
+
+		#region Equality
+
+		public override bool Equals(object obj)
+		{
+			DistributionFile distributionFile = obj as DistributionFile;
+			return (distributionFile != null && Comparer.DistributionFilesEqual(this, distributionFile));
+		}
+
+		public override int GetHashCode()
+		{
+			return Comparer.GetHashCode(this);
+		}
+
+		#endregion
+
+		#region ToString
+
+		public override string ToString()
+		{
+			return RelativePath;
 		}
 
 		#endregion

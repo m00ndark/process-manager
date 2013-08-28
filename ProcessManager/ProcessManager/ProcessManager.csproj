@@ -83,6 +83,7 @@
     <Compile Include="ConnectionStore.cs" />
     <Compile Include="DataAccess\RegistryHandler.cs" />
     <Compile Include="DataAccess\WMIHandler.cs" />
+    <Compile Include="DataObjects\Comparers\Comparer.cs" />
     <Compile Include="DataObjects\Comparers\DistributionFileEqualityComparer.cs" />
     <Compile Include="DataObjects\DistributionResult.cs" />
     <Compile Include="DataObjects\DistributionFile.cs" />

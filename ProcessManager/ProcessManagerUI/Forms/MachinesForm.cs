@@ -13,6 +13,25 @@ namespace ProcessManagerUI.Forms
 {
 	public partial class MachinesForm : Form
 	{
+		#region MachineWrapper class
+
+		public class MachineWrapper
+		{
+			public MachineWrapper(Machine machine)
+			{
+				Machine = machine;
+			}
+
+			public Machine Machine { get; private set; }
+
+			public override string ToString()
+			{
+				return "From " + Machine;
+			}
+		}
+
+		#endregion
+
 		private readonly Machine _initiallySelectedMachine;
 		private Machine _selectedMachine;
 		private bool _hasUnsavedChanges;
@@ -119,7 +138,8 @@ namespace ProcessManagerUI.Forms
 		private void ButtonCopyMachineSetup_Click(object sender, EventArgs e)
 		{
 			if (_selectedMachine != null)
-				Picker.ShowMenu(buttonCopyMachineSetup, Settings.Client.Machines.Where(machine => !machine.Equals(_selectedMachine)), ContextMenu_CopyMachineSetup_MachineClicked);
+				Picker.ShowMenu(buttonCopyMachineSetup, new[] { ConfigurationParts.All, ConfigurationParts.Groups, ConfigurationParts.Applications },
+					Settings.Client.Machines.Where(machine => !machine.Equals(_selectedMachine)).Select(machine => new MachineWrapper(machine)), ContextMenu_CopyMachineSetup_MachineClicked);
 		}
 
 		private void ButtonOK_Click(object sender, EventArgs e)
@@ -151,10 +171,10 @@ namespace ProcessManagerUI.Forms
 
 		#region Picker event handlers
 
-		private void ContextMenu_CopyMachineSetup_MachineClicked(Machine machine)
+		private void ContextMenu_CopyMachineSetup_MachineClicked(ConfigurationParts configurationPart, MachineWrapper machineWrapper)
 		{
-			if (_selectedMachine != null && machine != null)
-				CopyConfiguration(machine, _selectedMachine);
+			if (_selectedMachine != null && machineWrapper != null)
+				CopyConfiguration(configurationPart, machineWrapper.Machine, _selectedMachine);
 		}
 
 		#endregion
@@ -252,7 +272,7 @@ namespace ProcessManagerUI.Forms
 			return ConnectionStore.MachineIsValid(machine);
 		}
 
-		private void CopyConfiguration(Machine sourceMachine, Machine destinationMachine)
+		private void CopyConfiguration(ConfigurationParts configurationPart, Machine sourceMachine, Machine destinationMachine)
 		{
 			ServiceHelper.ConnectMachines();
 			ServiceHelper.WaitForConfiguration(sourceMachine, destinationMachine);
@@ -269,15 +289,26 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			if (Messenger.ShowWarningQuestion("Confirm setup copy", "Are you sure you want to copy the setup from "
-				+ sourceMachine + " to " + destinationMachine + ", overwriting the existing setup?") == DialogResult.No)
+			if (configurationPart == ConfigurationParts.All)
 			{
-				return;
+				if (Messenger.ShowWarningQuestion("Confirm setup copy", "Are you sure you want to copy the setup from "
+					+ sourceMachine + " to " + destinationMachine + ", overwriting the existing setup?") == DialogResult.No)
+				{
+					return;
+				}
+			}
+			else
+			{
+				if (Messenger.ShowWarningQuestion("Confirm setup copy", "Are you sure you want to copy the " + configurationPart.ToString().ToLower() + " setup from "
+					+ sourceMachine + " to " + destinationMachine + ", overwriting the existing " + configurationPart.ToString().ToLower() + "?") == DialogResult.No)
+				{
+					return;
+				}
 			}
 
 			Configuration configurationBackup = ConnectionStore.Connections[destinationMachine].Configuration;
 
-			ConnectionStore.Connections[destinationMachine].Configuration = ConnectionStore.Connections[sourceMachine].Configuration.Clone(true);
+			ConnectionStore.Connections[destinationMachine].Configuration = ConnectionStore.Connections[sourceMachine].Configuration.CopyTo(configurationBackup.Clone(), configurationPart);
 			ConnectionStore.Connections[destinationMachine].ConfigurationModified = true;
 
 			if (!ServiceHelper.SaveConfiguration())

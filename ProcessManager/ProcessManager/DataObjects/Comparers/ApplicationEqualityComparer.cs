@@ -5,9 +5,9 @@ namespace ProcessManager.DataObjects.Comparers
 {
 	public class ApplicationEqualityComparer : IEqualityComparer<Application>
 	{
-		public bool Equals(Application application, string applicationName)
+		public bool Equals(Application application, string name)
 		{
-			return (application != null && application.Name.Equals(applicationName, StringComparison.CurrentCultureIgnoreCase));
+			return (application != null && application.Name != null && name != null && application.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
 		}
 
 		public bool Equals(Application x, Application y)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using ProcessManager.DataObjects.Comparers;
 
 namespace ProcessManager.DataObjects
 {
@@ -45,7 +46,18 @@ namespace ProcessManager.DataObjects
 
 		public bool Equals(string name)
 		{
-			return (Name != null && name != null && name.Equals(Name, StringComparison.CurrentCultureIgnoreCase));
+			return Comparer.GroupsEqual(this, name);
+		}
+
+		public override bool Equals(object obj)
+		{
+			Group group = obj as Group;
+			return (group != null && Comparer.GroupsEqual(this, group));
+		}
+
+		public override int GetHashCode()
+		{
+			return Comparer.GetHashCode(this);
 		}
 
 		#endregion

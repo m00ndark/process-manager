@@ -224,9 +224,8 @@ namespace ProcessManager
 		{
 			try
 			{
-				GroupEqualityComparer groupEqualityComparer = new GroupEqualityComparer();
 				Group destinationGroup = ConnectionStore.Connections[work.DestinationMachine].Configuration.Groups
-					.FirstOrDefault(group => groupEqualityComparer.Equals(group, work.Group));
+					.FirstOrDefault(group => Comparer.GroupsEqual(group, work.Group));
 				
 				if (destinationGroup == null)
 				{
