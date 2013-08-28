@@ -1006,7 +1006,7 @@ namespace ProcessManagerUI.Forms
 								.Where(application => string.IsNullOrEmpty(Settings.Client.D_SelectedFilterApplication) || application.Equals(Settings.Client.D_SelectedFilterApplication))
 								.SelectMany(application => ConnectionStore.Connections.Values
 									.Where(destinationConnection => destinationConnection.Configuration != null)
-									.Where(destinationConnection => !Equals(destinationConnection.Machine, sourceConnection.Machine))
+									.Where(destinationConnection => !Comparer.MachinesEqual(destinationConnection.Machine, sourceConnection.Machine))
 									.Where(destinationConnection => string.IsNullOrEmpty(Settings.Client.D_SelectedFilterDestinationMachine) || destinationConnection.Machine.Equals(Settings.Client.D_SelectedFilterDestinationMachine))
 									.Select(destinationConnection => new
 										{

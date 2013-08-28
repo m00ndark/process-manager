@@ -16,6 +16,42 @@ namespace ProcessManagerUI.Forms
 {
 	public partial class DistributionSourcesForm : Form
 	{
+		#region BrowseMode enum
+
+		private enum BrowseMode
+		{
+			BasedOnGroup,
+			BasedOnApplication
+		}
+
+		#endregion
+
+		#region BrowseModeWrapper class
+
+		private class BrowseModeWrapper
+		{
+			public BrowseModeWrapper(BrowseMode browseMode)
+			{
+				BrowseMode = browseMode;
+			}
+
+			public BrowseMode BrowseMode { get; private set; }
+
+			public override string ToString()
+			{
+				switch (BrowseMode)
+				{
+					case BrowseMode.BasedOnGroup:
+						return "Based On Group";
+					case BrowseMode.BasedOnApplication:
+						return "Based On Application";
+				}
+				throw new InvalidOperationException();
+			}
+		}
+
+		#endregion
+
 		private const string UNSPECIFIED_PATH = "<unspecified>";
 
 		private readonly Func<IEnumerable<Group>> _getAllGroups;
@@ -157,7 +193,11 @@ namespace ProcessManagerUI.Forms
 		{
 			if (!_machineAvailable) return;
 
-			Picker.ShowMenu(buttonBrowseSourcePath, _getAllGroups(), ContextMenu_BrowseSourcePath_GroupClicked);
+			if (textBoxPath.ForeColor == Color.Silver)
+				Picker.ShowMenu(buttonBrowseSourcePath, Enum.GetValues(typeof(BrowseMode)).Cast<BrowseMode>().Select(x => new BrowseModeWrapper(x)),
+					_getAllGroups(), ContextMenu_BrowseSourcePath_GroupClicked);
+			else
+				Picker.ShowMenu(buttonBrowseSourcePath, _getAllGroups(), group => ContextMenu_BrowseSourcePath_GroupClicked(null, group));
 		}
 
 		private void TextBoxFilter_TextChanged(object sender, EventArgs e)
@@ -201,12 +241,17 @@ namespace ProcessManagerUI.Forms
 
 		#region Picker event handlers
 
-		private void ContextMenu_BrowseSourcePath_GroupClicked(Group group)
+		private void ContextMenu_BrowseSourcePath_GroupClicked(BrowseModeWrapper browseModeWrapper, Group group)
 		{
+			string sourcePath = (textBoxPath.ForeColor == Color.Silver && browseModeWrapper != null
+				? (browseModeWrapper.BrowseMode == BrowseMode.BasedOnGroup
+					? group.Path
+					: Path.Combine(group.Path, Application.RelativePath.Trim(Path.DirectorySeparatorChar)))
+				: Path.Combine(group.Path, textBoxPath.Text.Trim(Path.DirectorySeparatorChar)));
 			FileSystemBrowserForm fileSystemBrowser = new FileSystemBrowserForm(Machine)
 				{
 					Description = "Select a source path for the distribution...",
-					SelectedPath = Path.Combine(group.Path, (textBoxPath.ForeColor == Color.Silver ? string.Empty : textBoxPath.Text.Trim(Path.DirectorySeparatorChar))),
+					SelectedPath = sourcePath,
 					BrowserMode = FileSystemBrowserForm.Mode.Folder | FileSystemBrowserForm.Mode.File
 				};
 			if (fileSystemBrowser.ShowDialog(this) == DialogResult.OK)
