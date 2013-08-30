@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataAccess;
@@ -10,7 +9,7 @@ using ProcessManager.DataObjects;
 using ProcessManager.DataObjects.Comparers;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
-using ProcessManager.Service.DataObjects;
+using ProcessManagerUI.Controls.MacroActionItems;
 using ProcessManagerUI.Utilities;
 using Application = ProcessManager.DataObjects.Application;
 using Timer = System.Windows.Forms.Timer;
@@ -24,6 +23,9 @@ namespace ProcessManagerUI.Forms
 		private Machine _selectedMachine;
 		private Group _selectedGroup;
 		private Application _selectedApplication;
+		private Macro _selectedMacro;
+		private readonly List<MacroActionItem> _macroActionItems;
+		private bool _macrosModified;
 		private bool _disableTextChangedEvents;
 
 		public event EventHandler<MachinesEventArgs> ConfigurationChanged;
@@ -36,6 +38,9 @@ namespace ProcessManagerUI.Forms
 			_selectedMachine = null;
 			_selectedGroup = null;
 			_selectedApplication = null;
+			_selectedMacro = null;
+			_macroActionItems = new List<MacroActionItem>();
+			_macrosModified = false;
 			_disableTextChangedEvents = false;
 			_initTimer = new Timer() { Enabled = false, Interval = 100 };
 			_initTimer.Tick += InitTimer_Tick;
@@ -43,10 +48,8 @@ namespace ProcessManagerUI.Forms
 
 		#region Properties
 
-		public bool HasUnsavedConfiguration
-		{
-			get { return ConnectionStore.Connections.Values.Any(connection => connection.ConfigurationModified); }
-		}
+		public bool HasUnsavedConfiguration { get { return ConnectionStore.Connections.Values.Any(connection => connection.ConfigurationModified); } }
+		public bool HasUnsavedSettings { get { return _macrosModified; } }
 
 		#endregion
 
@@ -75,8 +78,10 @@ namespace ProcessManagerUI.Forms
 			TreeNode setupNode = new TreeNode("Setup") { Name = "Setup" };
 			TreeNode groupsNode = new TreeNode("Groups") { Name = "Groups", Tag = panelGroups };
 			TreeNode applicationsNode = new TreeNode("Applications") { Name = "Applications", Tag = panelApplications };
+			TreeNode macrosNode = new TreeNode("Macros") { Name = "Macros", Tag = panelMacros };
 			TreeNode pluginsNode = new TreeNode("Plugins") { Name = "Plugins", Tag = panelPlugins };
 			treeViewConfiguration.Nodes.Add(setupNode);
+			treeViewConfiguration.Nodes.Add(macrosNode);
 			treeViewConfiguration.Nodes.Add(pluginsNode);
 			setupNode.Nodes.Add(groupsNode);
 			setupNode.Nodes.Add(applicationsNode);
@@ -138,7 +143,7 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonOK_Click(object sender, EventArgs e)
 		{
-			if (SaveConfiguration())
+			if (Save())
 				Close();
 		}
 
@@ -158,7 +163,7 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonApply_Click(object sender, EventArgs e)
 		{
-			SaveConfiguration();
+			Save();
 		}
 
 		#endregion
@@ -461,6 +466,90 @@ namespace ProcessManagerUI.Forms
 
 		#endregion
 
+		#region Macros
+
+		private void ListViewMacros_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (_selectedMachine == null) return;
+
+			if (listViewMacros.SelectedItems.Count == 0)
+			{
+				panelMacro.Visible = false;
+			}
+			else
+			{
+				_disableTextChangedEvents = true;
+				_selectedMacro = ((Macro) listViewMacros.SelectedItems[0].Tag);
+				textBoxMacroName.Text = _selectedMacro.Name;
+				LayoutMacroActionItems();
+				_disableTextChangedEvents = false;
+				EnableControls();
+				panelMacro.Visible = true;
+			}
+		}
+
+		private void ButtonAddMacro_Click(object sender, EventArgs e)
+		{
+			if (_selectedMachine == null) return;
+
+			UpdateSelectedMacro();
+			string macroName = GetFirstAvailableDefaultName(
+				Settings.Client.Macros.Select(macro => macro.Name).ToList(), "Macro");
+			_selectedMacro = new Macro(macroName);
+			Settings.Client.Macros.Add(_selectedMacro);
+			_macrosModified = true;
+			textBoxMacroName.Text = _selectedMacro.Name;
+			ClearMacroActionItems();
+			ListViewItem item = listViewMacros.Items.Add(new ListViewItem(_selectedMacro.Name) { Tag = _selectedMacro });
+			item.Selected = true;
+			panelMacro.Visible = true;
+			EnableControls();
+			textBoxMacroName.Focus();
+		}
+
+		private void ButtonRemoveMacro_Click(object sender, EventArgs e)
+		{
+			if (_selectedMachine == null) return;
+
+			if (listViewMacros.SelectedItems.Count > 0)
+			{
+				_selectedMacro = (Macro) listViewMacros.SelectedItems[0].Tag;
+				Settings.Client.Macros.Remove(_selectedMacro);
+				_macrosModified = true;
+				listViewMacros.Items.Remove(listViewMacros.SelectedItems[0]);
+				_selectedMacro = null;
+				EnableControls();
+			}
+		}
+
+		private void TextBoxMacroName_TextChanged(object sender, EventArgs e)
+		{
+			if (!_disableTextChangedEvents)
+			{
+				MacroChanged();
+				EnableControls();
+			}
+		}
+
+		private void TextBoxMacroName_Leave(object sender, EventArgs e)
+		{
+			UpdateSelectedMacro();
+		}
+
+		private void ButtonAddMacroAction_Click(object sender, EventArgs e)
+		{
+			AddMacroActionItem();
+			UpdateSelectedMacro();
+		}
+
+		private void FlowLayoutPanelMacroActions_Resize(object sender, EventArgs e)
+		{
+			foreach (MacroActionItem macroActionItem in _macroActionItems)
+				macroActionItem.SetWidth(flowLayoutPanelMacroActions.Width);
+		}
+
+		#endregion
+
 		#endregion
 
 		#region Picker event handlers
@@ -593,6 +682,15 @@ namespace ProcessManagerUI.Forms
 
 		#endregion
 
+		#region Macro item event handlers
+
+		private void MacroActionItem_MacroActionItemRemoved(object sender, EventArgs e)
+		{
+			RemoveMacroActionItem((MacroActionItem) sender);
+		}
+
+		#endregion
+
 		#region Event raisers
 
 		private void RaiseConfigurationChangedEvent(List<Machine> machines)
@@ -643,35 +741,6 @@ namespace ProcessManagerUI.Forms
 
 			int index = comboBoxMachines.Items.IndexOf(selectedMachine);
 			comboBoxMachines.SelectedIndex = (index == -1 ? 0 : index);
-		}
-
-		#endregion
-
-		#region Configuration
-
-		private bool SaveConfiguration()
-		{
-			UpdateSelections();
-			if (HasUnsavedConfiguration)
-			{
-				// validate
-				if (!ValidateGroups() || !ValidateApplications())
-					return false;
-
-				List<Machine> modifiedMachines = ConnectionStore.Connections.Values
-					.Where(connection => connection.ConfigurationModified)
-					.Select(connection => connection.Machine)
-					.ToList();
-
-				// save
-				if (!ServiceHelper.SaveConfiguration())
-					return false;
-
-				RaiseConfigurationChangedEvent(modifiedMachines);
-
-				EnableControls();
-			}
-			return true;
 		}
 
 		#endregion
@@ -915,6 +984,180 @@ namespace ProcessManagerUI.Forms
 
 		#endregion
 
+		#region Macros
+
+		private void UpdateSelectedMacro()
+		{
+			if (_selectedMacro != null)
+			{
+				if (MacroChanged())
+				{
+					_selectedMacro.Name = textBoxMacroName.Text;
+					_selectedMacro.Actions.Clear();
+					_macroActionItems.ForEach(macroActionItem => _selectedMacro.Actions.Add(macroActionItem.Action));
+					ListViewItem item = listViewMacros.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedMacro);
+					item.Text = _selectedMacro.Name;
+					listViewMacros.Sort();
+				}
+				textBoxMacroName.Text = _selectedMacro.Name;
+				EnableControls();
+			}
+		}
+
+		private void ClearMacroActionItems()
+		{
+			_macroActionItems.Clear();
+			flowLayoutPanelMacroActions.Controls.Clear();
+			_macroActionItems.ForEach(item =>
+				{
+					item.MacroActionItemRemoved -= MacroActionItem_MacroActionItemRemoved;
+					item.Dispose();
+				});
+		}
+
+		private MacroActionItem CreateMacroActionItem(IMacroAction action = null)
+		{
+			MacroActionItem macroActionItem = new MacroActionItem(action);
+			macroActionItem.MacroActionItemRemoved += MacroActionItem_MacroActionItemRemoved;
+			macroActionItem.SetWidth(flowLayoutPanelMacroActions.Width);
+			_macroActionItems.Add(macroActionItem);
+			return macroActionItem;
+		}
+
+		private void AddMacroActionItem(IMacroAction action = null)
+		{
+			flowLayoutPanelMacroActions.Controls.Add(CreateMacroActionItem(action));
+		}
+
+		private void RemoveMacroActionItem(MacroActionItem macroActionItem)
+		{
+			_macroActionItems.Remove(macroActionItem);
+			flowLayoutPanelMacroActions.Controls.Remove(macroActionItem);
+			macroActionItem.MacroActionItemRemoved -= MacroActionItem_MacroActionItemRemoved;
+			macroActionItem.Dispose();
+		}
+
+		private void LayoutMacroActionItems()
+		{
+			ClearMacroActionItems();
+			if (_selectedMacro == null) return;
+			_selectedMacro.Actions.ForEach(action => CreateMacroActionItem(action));
+			flowLayoutPanelMacroActions.Controls.AddRange(_macroActionItems.Cast<Control>().ToArray());
+		}
+
+		private bool MacroChanged()
+		{
+			bool macroChanged = false;
+			if (_selectedMachine != null && _selectedMacro != null && !string.IsNullOrEmpty(textBoxMacroName.Text))
+			{
+				int equalActionsCount = _selectedMacro.Actions.Intersect(_macroActionItems.Select(item => item.Action)).Count();
+				macroChanged = (_selectedMacro.Name != textBoxMacroName.Text
+					|| equalActionsCount != _selectedMacro.Actions.Count || equalActionsCount != _macroActionItems.Count);
+				_macrosModified |= macroChanged;
+			}
+			return macroChanged;
+		}
+
+		private static bool ValidateMacros()
+		{
+			IDictionary<Macro, string> nonUniqueMacros = Settings.Client.Macros
+				.GroupBy(macro => macro, new MacroEqualityComparer())
+				.Where(x => x.Count() > 1)
+				.Select(x => new
+					{
+						Macro = x.Key,
+						Message = x.Count() + " macros"
+					})
+				.ToDictionary(x => x.Macro, x => x.Message);
+			if (nonUniqueMacros.Count > 0)
+			{
+				Messenger.ShowError("Macro names not unique",
+					"Two or more macros have the same name. See details for more information.",
+					nonUniqueMacros.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + y.Key + ": " + y.Value).Trim());
+				return false;
+			}
+
+			IDictionary<Macro, List<string>> invalidMacros = Settings.Client.Macros
+				.Select(macro => new
+					{
+						Macro = macro,
+						Messages = MacroIsValid(macro).ToList()
+					})
+				.Where(x => x.Messages.Count > 0)
+				.ToDictionary(x => x.Macro, x => x.Messages);
+			if (invalidMacros.Count > 0)
+			{
+				int invalidMacroCount = invalidMacros.SelectMany(x => x.Value).Count();
+				Messenger.ShowError("Macro" + (invalidMacroCount == 1 ? string.Empty : "s") + " invalid",
+					"One or more macro property invalid. See details for more information.",
+					invalidMacros.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine + y.Value.Select(z => new { Macro = y.Key, Message = z })
+						.Aggregate(string.Empty, (a, b) => a + Environment.NewLine + b.Macro + ": " + b.Message).Trim()).Trim());
+				return false;
+			}
+			return true;
+		}
+
+		private static IEnumerable<string> MacroIsValid(Macro macro)
+		{
+			if (string.IsNullOrEmpty(macro.Name))
+				yield return "Name missing";
+		}
+
+		#endregion
+
+		private bool Save()
+		{
+			_macroActionItems
+				.Where(macroActionItem => macroActionItem.Action == null || !macroActionItem.Action.GotAnyID)
+				.ToList()
+				.ForEach(RemoveMacroActionItem);
+			UpdateSelections();
+			return SaveConfiguration() && SaveSettings();
+		}
+
+		private bool SaveConfiguration()
+		{
+			if (HasUnsavedConfiguration)
+			{
+				// validate
+				if (!ValidateGroups() || !ValidateApplications())
+					return false;
+
+				List<Machine> modifiedMachines = ConnectionStore.Connections.Values
+					.Where(connection => connection.ConfigurationModified)
+					.Select(connection => connection.Machine)
+					.ToList();
+
+				// save
+				if (!ServiceHelper.SaveConfiguration())
+					return false;
+
+				RaiseConfigurationChangedEvent(modifiedMachines);
+
+				EnableControls();
+			}
+			return true;
+		}
+
+		private bool SaveSettings()
+		{
+			if (HasUnsavedSettings)
+			{
+				// validate
+				if (!ValidateMacros())
+					return false;
+
+				// save
+				Settings.Client.Save();
+				_macrosModified = false;
+
+//				RaiseConfigurationChangedEvent(modifiedMachines);
+
+				EnableControls();
+			}
+			return true;
+		}
+
 		private static string GetFirstAvailableDefaultName(ICollection<string> existingNames, string nameTemplate)
 		{
 			nameTemplate = nameTemplate.Trim() + " ";
@@ -929,6 +1172,7 @@ namespace ProcessManagerUI.Forms
 		{
 			UpdateSelectedGroup();
 			UpdateSelectedApplication();
+			UpdateSelectedMacro();
 		}
 
 		private void ShowAllControls(bool show = true)
@@ -967,10 +1211,12 @@ namespace ProcessManagerUI.Forms
 		{
 			Group previouslySeletedGroup = _selectedGroup;
 			Application previouslySeletedApplication = _selectedApplication;
+			Macro previouslySeletedMacro = _selectedMacro;
 			ClearAllControls();
 			ServiceHelper.WaitForConfiguration(_selectedMachine);
 			listViewGroups.Items.Clear();
 			listViewApplications.Items.Clear();
+			listViewMacros.Items.Clear();
 			listViewPlugins.Items.Clear();
 			if (_selectedMachine != null && ConnectionStore.ConfigurationAvailable(_selectedMachine))
 			{
@@ -989,12 +1235,19 @@ namespace ProcessManagerUI.Forms
 						applicationItem.Selected = true;
 				}
 			}
+			Settings.Client.Macros.ForEach(macro => listViewMacros.Items.Add(new ListViewItem(macro.Name) { Tag = macro }));
+			if (previouslySeletedMacro != null)
+			{
+				ListViewItem macroItem = listViewMacros.Items.Cast<ListViewItem>().FirstOrDefault(item => previouslySeletedMacro.Equals(item.Tag));
+				if (macroItem != null)
+					macroItem.Selected = true;
+			}
 			ShowAllControls(_selectedMachine != null && ConnectionStore.ConfigurationAvailable(_selectedMachine));
 		}
 
 		private void EnableControls(bool enable = true)
 		{
-			buttonApply.Enabled = (enable && HasUnsavedConfiguration);
+			buttonApply.Enabled = (enable && (HasUnsavedConfiguration || HasUnsavedSettings));
 			buttonAddGroupApplication.Enabled = (enable && GetNonIncludedGroupApplications().Any());
 			buttonRemoveGroupApplication.Enabled = (enable && listViewGroupApplications.SelectedItems.Count > 0);
 			buttonCopyGroupApplications.Enabled = (enable && GetAllGroups(true).Any());

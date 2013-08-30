@@ -1,4 +1,6 @@
-﻿namespace ProcessManager.DataObjects.Comparers
+﻿using System;
+
+namespace ProcessManager.DataObjects.Comparers
 {
 	public static class Comparer
 	{
@@ -6,6 +8,7 @@
 		private static readonly GroupEqualityComparer _groupEqualityComparer = new GroupEqualityComparer();
 		private static readonly ApplicationEqualityComparer _applicationEqualityComparer = new ApplicationEqualityComparer();
 		private static readonly DistributionFileEqualityComparer _distributionFileEqualityComparer = new DistributionFileEqualityComparer();
+		private static readonly MacroEqualityComparer _macroEqualityComparer = new MacroEqualityComparer();
 
 		public static bool MachinesEqual(Machine x, Machine y)
 		{
@@ -60,6 +63,36 @@
 		public static int GetHashCode(DistributionFile x)
 		{
 			return _distributionFileEqualityComparer.GetHashCode(x);
+		}
+
+		public static bool MacrosEqual(Macro x, Macro y)
+		{
+			return _macroEqualityComparer.Equals(x, y);
+		}
+
+		public static bool MacrosEqual(Macro x, string name)
+		{
+			return _macroEqualityComparer.Equals(x, name);
+		}
+
+		public static int GetHashCode(Macro x)
+		{
+			return _macroEqualityComparer.GetHashCode(x);
+		}
+	}
+
+	public static class Comparer<T> where T : class, IIDObject
+	{
+		private static readonly IDObjectEqualityComparer<T> _idObjectEqualityComparer = new IDObjectEqualityComparer<T>();
+
+		public static bool IDObjectsEqual(T x, Guid id)
+		{
+			return _idObjectEqualityComparer.Equals(x, id);
+		}
+
+		public static bool IDObjectsEqual(T x, T y)
+		{
+			return _idObjectEqualityComparer.Equals(x, y);
 		}
 	}
 }

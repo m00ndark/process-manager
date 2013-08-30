@@ -122,6 +122,7 @@ namespace ProcessManager
 			static Client()
 			{
 				Machines = new List<Machine>();
+				Macros = new List<Macro>();
 				StartWithWindows = bool.Parse(Defaults.START_WITH_WINDOWS);
 				CFG_SelectedHostName = Defaults.SELECTED_HOST_NAME;
 				CFG_SelectedConfigurationSection = Defaults.SELECTED_CONFIGURATION_SECTION;
@@ -152,6 +153,7 @@ namespace ProcessManager
 			#region Properties
 
 			public static List<Machine> Machines { get; private set; }
+			public static List<Macro> Macros { get; private set; }
 			public static bool StartWithWindows { get; set; }
 			public static string CFG_SelectedHostName { get; set; }
 			public static string CFG_SelectedConfigurationSection { get; set; }

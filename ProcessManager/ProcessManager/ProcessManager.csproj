@@ -85,9 +85,13 @@
     <Compile Include="DataAccess\WMIHandler.cs" />
     <Compile Include="DataObjects\Comparers\Comparer.cs" />
     <Compile Include="DataObjects\Comparers\DistributionFileEqualityComparer.cs" />
+    <Compile Include="DataObjects\Comparers\MacroEqualityComparer.cs" />
     <Compile Include="DataObjects\DistributionResult.cs" />
     <Compile Include="DataObjects\DistributionFile.cs" />
     <Compile Include="DataObjects\DistributionWork.cs" />
+    <Compile Include="DataObjects\Macro.cs" />
+    <Compile Include="DataObjects\MacroDistributionAction.cs" />
+    <Compile Include="DataObjects\MacroProcessAction.cs" />
     <Compile Include="DataObjects\ProcessAction.cs" />
     <Compile Include="DataObjects\Comparers\ApplicationEqualityComparer.cs" />
     <Compile Include="DataObjects\Comparers\GroupEqualityComparer.cs" />

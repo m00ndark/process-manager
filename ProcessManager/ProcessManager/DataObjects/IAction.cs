@@ -8,5 +8,13 @@
 		Distribute
 	}
 
-	public interface IAction {}
+	public interface IAction
+	{
+		ActionType Type { get; }
+	}
+
+	public interface IMacroAction : IAction
+	{
+		bool GotAnyID { get; }
+	}
 }

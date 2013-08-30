@@ -816,8 +816,10 @@ namespace ProcessManagerUI.Forms
 				_processRootNodes.ForEach(node =>
 					{
 						node.ForceWidth(flowLayoutPanelProcessApplications.Size.Width);
-						flowLayoutPanelProcessApplications.Controls.Add((UserControl) node);
+						//flowLayoutPanelProcessApplications.Controls.Add((UserControl) node);
 					});
+
+				flowLayoutPanelProcessApplications.Controls.AddRange(_processRootNodes.Cast<Control>().ToArray());
 
 				Settings.Client.P_CheckedNodes.ToList()
 					.Select(id => _processApplicationNodes.FirstOrDefault(node => node.Matches(id)))
@@ -1008,6 +1010,7 @@ namespace ProcessManagerUI.Forms
 									.Where(destinationConnection => destinationConnection.Configuration != null)
 									.Where(destinationConnection => !Comparer.MachinesEqual(destinationConnection.Machine, sourceConnection.Machine))
 									.Where(destinationConnection => string.IsNullOrEmpty(Settings.Client.D_SelectedFilterDestinationMachine) || destinationConnection.Machine.Equals(Settings.Client.D_SelectedFilterDestinationMachine))
+									.Where(destinationConnection => destinationConnection.Configuration.Groups.Any(destinationGroup => Comparer.GroupsEqual(destinationGroup, group)))
 									.Select(destinationConnection => new
 										{
 											SourceMachine = sourceConnection.Machine,
@@ -1110,8 +1113,10 @@ namespace ProcessManagerUI.Forms
 				_distributionRootNodes.ForEach(node =>
 					{
 						node.ForceWidth(flowLayoutPanelDistributionDestinations.Size.Width);
-						flowLayoutPanelDistributionDestinations.Controls.Add((UserControl) node);
+						//flowLayoutPanelDistributionDestinations.Controls.Add((UserControl) node);
 					});
+
+				flowLayoutPanelDistributionDestinations.Controls.AddRange(_distributionRootNodes.Cast<Control>().ToArray());
 
 				Settings.Client.D_CheckedNodes.ToList()
 					.Select(id => _distributionDestinationMachineNodes.FirstOrDefault(node => node.Matches(id)))

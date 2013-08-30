@@ -10,8 +10,12 @@ namespace ProcessManager.DataObjects
 				throw new ArgumentException("Invalid process action type");
 
 			Type = type;
+			Machine = null;
+			Group = null;
 			Application = application;
 		}
+
+		public ProcessAction(ActionType type) : this(type, null) {}
 
 		#region Properties
 

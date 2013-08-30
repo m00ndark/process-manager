@@ -10,6 +10,9 @@ namespace ProcessManager.DataObjects
 				throw new ArgumentException("Invalid distribution action type");
 
 			Type = type;
+			SourceMachine = null;
+			Group = null;
+			Application = null;
 			DestinationMachine = destinationMachine;
 		}
 
@@ -19,6 +22,8 @@ namespace ProcessManager.DataObjects
 			Group = group;
 			Application = application;
 		}
+
+		public DistributionAction(ActionType type) : this(type, null) {}
 
 		#region Properties
 

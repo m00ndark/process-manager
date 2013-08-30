@@ -36,26 +36,19 @@
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.labelNothingToShow = new System.Windows.Forms.Label();
 			this.labelMachineNotAvailable = new System.Windows.Forms.Label();
-			this.panelApplications = new ProcessManagerUI.Controls.BackgroundPanel();
-			this.panelApplication = new System.Windows.Forms.Panel();
-			this.checkBoxDistributionOnly = new System.Windows.Forms.CheckBox();
-			this.labeledDividerDistribution = new ProcessManagerUI.Controls.LabeledDivider();
-			this.labelDistributionSourcesCount = new System.Windows.Forms.Label();
-			this.buttonEditDistributionSources = new System.Windows.Forms.Button();
-			this.labelDistributionSources = new System.Windows.Forms.Label();
-			this.labeledDividerApplication = new ProcessManagerUI.Controls.LabeledDivider();
-			this.textBoxApplicationArguments = new System.Windows.Forms.TextBox();
-			this.labelApplicationName = new System.Windows.Forms.Label();
-			this.labelApplicationArguments = new System.Windows.Forms.Label();
-			this.textBoxApplicationName = new System.Windows.Forms.TextBox();
-			this.buttonBrowseApplicationRelativePath = new System.Windows.Forms.Button();
-			this.labelApplicationRelativePath = new System.Windows.Forms.Label();
-			this.textBoxApplicationRelativePath = new System.Windows.Forms.TextBox();
-			this.labelNoApplicationSelected = new System.Windows.Forms.Label();
-			this.buttonRemoveApplication = new System.Windows.Forms.Button();
-			this.buttonAddApplication = new System.Windows.Forms.Button();
-			this.listViewApplications = new ProcessManagerUI.Controls.ListView();
-			this.columnHeaderApplications = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.panelMacros = new ProcessManagerUI.Controls.BackgroundPanel();
+			this.panelMacro = new System.Windows.Forms.Panel();
+			this.buttonAddMacroAction = new System.Windows.Forms.Button();
+			this.flowLayoutPanelMacroActions = new System.Windows.Forms.FlowLayoutPanel();
+			this.labeledDividerMacroActions = new ProcessManagerUI.Controls.LabeledDivider();
+			this.labelMacroName = new System.Windows.Forms.Label();
+			this.textBoxMacroName = new System.Windows.Forms.TextBox();
+			this.labeledDividerMacro = new ProcessManagerUI.Controls.LabeledDivider();
+			this.labelNoMacroSelected = new System.Windows.Forms.Label();
+			this.buttonRemoveMacro = new System.Windows.Forms.Button();
+			this.buttonAddMacro = new System.Windows.Forms.Button();
+			this.listViewMacros = new ProcessManagerUI.Controls.ListView();
+			this.columnHeaderMacros = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.panelGroups = new ProcessManagerUI.Controls.BackgroundPanel();
 			this.panelGroup = new System.Windows.Forms.Panel();
 			this.labeledDividerGroup = new ProcessManagerUI.Controls.LabeledDivider();
@@ -76,6 +69,26 @@
 			this.buttonAddGroup = new System.Windows.Forms.Button();
 			this.listViewGroups = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderGroups = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.panelApplications = new ProcessManagerUI.Controls.BackgroundPanel();
+			this.panelApplication = new System.Windows.Forms.Panel();
+			this.checkBoxDistributionOnly = new System.Windows.Forms.CheckBox();
+			this.labeledDividerDistribution = new ProcessManagerUI.Controls.LabeledDivider();
+			this.labelDistributionSourcesCount = new System.Windows.Forms.Label();
+			this.buttonEditDistributionSources = new System.Windows.Forms.Button();
+			this.labelDistributionSources = new System.Windows.Forms.Label();
+			this.labeledDividerApplication = new ProcessManagerUI.Controls.LabeledDivider();
+			this.textBoxApplicationArguments = new System.Windows.Forms.TextBox();
+			this.labelApplicationName = new System.Windows.Forms.Label();
+			this.labelApplicationArguments = new System.Windows.Forms.Label();
+			this.textBoxApplicationName = new System.Windows.Forms.TextBox();
+			this.buttonBrowseApplicationRelativePath = new System.Windows.Forms.Button();
+			this.labelApplicationRelativePath = new System.Windows.Forms.Label();
+			this.textBoxApplicationRelativePath = new System.Windows.Forms.TextBox();
+			this.labelNoApplicationSelected = new System.Windows.Forms.Label();
+			this.buttonRemoveApplication = new System.Windows.Forms.Button();
+			this.buttonAddApplication = new System.Windows.Forms.Button();
+			this.listViewApplications = new ProcessManagerUI.Controls.ListView();
+			this.columnHeaderApplications = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.panelPlugins = new ProcessManagerUI.Controls.BackgroundPanel();
 			this.panelPlugin = new System.Windows.Forms.Panel();
 			this.checkBoxPluginEnabled = new System.Windows.Forms.CheckBox();
@@ -89,10 +102,12 @@
 			this.listViewPlugins = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderPlugins = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.treeViewConfiguration = new ProcessManagerUI.Controls.TreeView();
-			this.panelApplications.SuspendLayout();
-			this.panelApplication.SuspendLayout();
+			this.panelMacros.SuspendLayout();
+			this.panelMacro.SuspendLayout();
 			this.panelGroups.SuspendLayout();
 			this.panelGroup.SuspendLayout();
+			this.panelApplications.SuspendLayout();
+			this.panelApplication.SuspendLayout();
 			this.panelPlugins.SuspendLayout();
 			this.panelPlugin.SuspendLayout();
 			this.SuspendLayout();
@@ -180,246 +195,167 @@
 			this.labelMachineNotAvailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.labelMachineNotAvailable.Visible = false;
 			// 
-			// panelApplications
+			// panelMacros
 			// 
-			this.panelApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.panelMacros.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelApplications.BackColor = System.Drawing.SystemColors.Window;
-			this.panelApplications.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
-			this.panelApplications.Controls.Add(this.panelApplication);
-			this.panelApplications.Controls.Add(this.labelNoApplicationSelected);
-			this.panelApplications.Controls.Add(this.buttonRemoveApplication);
-			this.panelApplications.Controls.Add(this.buttonAddApplication);
-			this.panelApplications.Controls.Add(this.listViewApplications);
-			this.panelApplications.Location = new System.Drawing.Point(174, 39);
-			this.panelApplications.Name = "panelApplications";
-			this.panelApplications.Padding = new System.Windows.Forms.Padding(5);
-			this.panelApplications.Size = new System.Drawing.Size(588, 362);
-			this.panelApplications.TabIndex = 17;
-			this.panelApplications.Visible = false;
+			this.panelMacros.BackColor = System.Drawing.SystemColors.Window;
+			this.panelMacros.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
+			this.panelMacros.Controls.Add(this.panelMacro);
+			this.panelMacros.Controls.Add(this.labelNoMacroSelected);
+			this.panelMacros.Controls.Add(this.buttonRemoveMacro);
+			this.panelMacros.Controls.Add(this.buttonAddMacro);
+			this.panelMacros.Controls.Add(this.listViewMacros);
+			this.panelMacros.Location = new System.Drawing.Point(144, 39);
+			this.panelMacros.Name = "panelMacros";
+			this.panelMacros.Padding = new System.Windows.Forms.Padding(5);
+			this.panelMacros.Size = new System.Drawing.Size(618, 362);
+			this.panelMacros.TabIndex = 24;
+			this.panelMacros.Visible = false;
 			// 
-			// panelApplication
+			// panelMacro
 			// 
-			this.panelApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.panelMacro.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelApplication.Controls.Add(this.checkBoxDistributionOnly);
-			this.panelApplication.Controls.Add(this.labeledDividerDistribution);
-			this.panelApplication.Controls.Add(this.labelDistributionSourcesCount);
-			this.panelApplication.Controls.Add(this.buttonEditDistributionSources);
-			this.panelApplication.Controls.Add(this.labelDistributionSources);
-			this.panelApplication.Controls.Add(this.labeledDividerApplication);
-			this.panelApplication.Controls.Add(this.textBoxApplicationArguments);
-			this.panelApplication.Controls.Add(this.labelApplicationName);
-			this.panelApplication.Controls.Add(this.labelApplicationArguments);
-			this.panelApplication.Controls.Add(this.textBoxApplicationName);
-			this.panelApplication.Controls.Add(this.buttonBrowseApplicationRelativePath);
-			this.panelApplication.Controls.Add(this.labelApplicationRelativePath);
-			this.panelApplication.Controls.Add(this.textBoxApplicationRelativePath);
-			this.panelApplication.Location = new System.Drawing.Point(144, 8);
-			this.panelApplication.Margin = new System.Windows.Forms.Padding(0);
-			this.panelApplication.Name = "panelApplication";
-			this.panelApplication.Size = new System.Drawing.Size(436, 345);
-			this.panelApplication.TabIndex = 14;
-			this.panelApplication.Visible = false;
+			this.panelMacro.Controls.Add(this.buttonAddMacroAction);
+			this.panelMacro.Controls.Add(this.flowLayoutPanelMacroActions);
+			this.panelMacro.Controls.Add(this.labeledDividerMacroActions);
+			this.panelMacro.Controls.Add(this.labelMacroName);
+			this.panelMacro.Controls.Add(this.textBoxMacroName);
+			this.panelMacro.Controls.Add(this.labeledDividerMacro);
+			this.panelMacro.Location = new System.Drawing.Point(144, 8);
+			this.panelMacro.Margin = new System.Windows.Forms.Padding(0);
+			this.panelMacro.Name = "panelMacro";
+			this.panelMacro.Size = new System.Drawing.Size(466, 345);
+			this.panelMacro.TabIndex = 14;
+			this.panelMacro.Visible = false;
 			// 
-			// checkBoxDistributionOnly
+			// buttonAddMacroAction
 			// 
-			this.checkBoxDistributionOnly.AutoSize = true;
-			this.checkBoxDistributionOnly.Location = new System.Drawing.Point(323, 325);
-			this.checkBoxDistributionOnly.Name = "checkBoxDistributionOnly";
-			this.checkBoxDistributionOnly.Size = new System.Drawing.Size(113, 17);
-			this.checkBoxDistributionOnly.TabIndex = 24;
-			this.checkBoxDistributionOnly.Text = "Distribution only";
-			this.checkBoxDistributionOnly.UseVisualStyleBackColor = true;
-			this.checkBoxDistributionOnly.CheckedChanged += new System.EventHandler(this.CheckBoxDistributionOnly_CheckedChanged);
+			this.buttonAddMacroAction.Image = global::ProcessManagerUI.Properties.Resources.add_16;
+			this.buttonAddMacroAction.Location = new System.Drawing.Point(23, 89);
+			this.buttonAddMacroAction.Name = "buttonAddMacroAction";
+			this.buttonAddMacroAction.Size = new System.Drawing.Size(28, 24);
+			this.buttonAddMacroAction.TabIndex = 26;
+			this.buttonAddMacroAction.UseVisualStyleBackColor = true;
+			this.buttonAddMacroAction.Click += new System.EventHandler(this.ButtonAddMacroAction_Click);
 			// 
-			// labeledDividerDistribution
+			// flowLayoutPanelMacroActions
 			// 
-			this.labeledDividerDistribution.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDividerDistribution.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDividerDistribution.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.labeledDividerDistribution.Location = new System.Drawing.Point(0, 124);
-			this.labeledDividerDistribution.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
-			this.labeledDividerDistribution.Name = "labeledDividerDistribution";
-			this.labeledDividerDistribution.Size = new System.Drawing.Size(436, 15);
-			this.labeledDividerDistribution.TabIndex = 23;
-			this.labeledDividerDistribution.Text = "Distribution";
-			// 
-			// labelDistributionSourcesCount
-			// 
-			this.labelDistributionSourcesCount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labelDistributionSourcesCount.ForeColor = System.Drawing.Color.Gray;
-			this.labelDistributionSourcesCount.Location = new System.Drawing.Point(161, 151);
-			this.labelDistributionSourcesCount.Name = "labelDistributionSourcesCount";
-			this.labelDistributionSourcesCount.Size = new System.Drawing.Size(223, 13);
-			this.labelDistributionSourcesCount.TabIndex = 22;
-			this.labelDistributionSourcesCount.Text = "[source count]";
-			this.labelDistributionSourcesCount.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// buttonEditDistributionSources
-			// 
-			this.buttonEditDistributionSources.Location = new System.Drawing.Point(103, 146);
-			this.buttonEditDistributionSources.Name = "buttonEditDistributionSources";
-			this.buttonEditDistributionSources.Size = new System.Drawing.Size(58, 23);
-			this.buttonEditDistributionSources.TabIndex = 21;
-			this.buttonEditDistributionSources.Text = "Edit...";
-			this.buttonEditDistributionSources.UseVisualStyleBackColor = true;
-			this.buttonEditDistributionSources.Click += new System.EventHandler(this.ButtonEditDistributionSources_Click);
-			// 
-			// labelDistributionSources
-			// 
-			this.labelDistributionSources.AutoSize = true;
-			this.labelDistributionSources.Location = new System.Drawing.Point(20, 151);
-			this.labelDistributionSources.Name = "labelDistributionSources";
-			this.labelDistributionSources.Size = new System.Drawing.Size(50, 13);
-			this.labelDistributionSources.TabIndex = 20;
-			this.labelDistributionSources.Text = "Sources:";
-			// 
-			// labeledDividerApplication
-			// 
-			this.labeledDividerApplication.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDividerApplication.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDividerApplication.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.labeledDividerApplication.Location = new System.Drawing.Point(0, 0);
-			this.labeledDividerApplication.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
-			this.labeledDividerApplication.Name = "labeledDividerApplication";
-			this.labeledDividerApplication.Size = new System.Drawing.Size(436, 15);
-			this.labeledDividerApplication.TabIndex = 10;
-			this.labeledDividerApplication.Text = "Application";
-			// 
-			// textBoxApplicationArguments
-			// 
-			this.textBoxApplicationArguments.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxApplicationArguments.Location = new System.Drawing.Point(103, 79);
-			this.textBoxApplicationArguments.Name = "textBoxApplicationArguments";
-			this.textBoxApplicationArguments.Size = new System.Drawing.Size(283, 22);
-			this.textBoxApplicationArguments.TabIndex = 13;
-			this.textBoxApplicationArguments.TextChanged += new System.EventHandler(this.TextBoxApplicationArguments_TextChanged);
-			this.textBoxApplicationArguments.Leave += new System.EventHandler(this.TextBoxApplicationArguments_Leave);
-			// 
-			// labelApplicationName
-			// 
-			this.labelApplicationName.AutoSize = true;
-			this.labelApplicationName.Location = new System.Drawing.Point(20, 26);
-			this.labelApplicationName.Name = "labelApplicationName";
-			this.labelApplicationName.Size = new System.Drawing.Size(39, 13);
-			this.labelApplicationName.TabIndex = 5;
-			this.labelApplicationName.Text = "Name:";
-			// 
-			// labelApplicationArguments
-			// 
-			this.labelApplicationArguments.AutoSize = true;
-			this.labelApplicationArguments.Location = new System.Drawing.Point(20, 82);
-			this.labelApplicationArguments.Name = "labelApplicationArguments";
-			this.labelApplicationArguments.Size = new System.Drawing.Size(66, 13);
-			this.labelApplicationArguments.TabIndex = 12;
-			this.labelApplicationArguments.Text = "Arguments:";
-			// 
-			// textBoxApplicationName
-			// 
-			this.textBoxApplicationName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxApplicationName.Location = new System.Drawing.Point(103, 23);
-			this.textBoxApplicationName.Name = "textBoxApplicationName";
-			this.textBoxApplicationName.Size = new System.Drawing.Size(283, 22);
-			this.textBoxApplicationName.TabIndex = 6;
-			this.textBoxApplicationName.TextChanged += new System.EventHandler(this.TextBoxApplicationName_TextChanged);
-			this.textBoxApplicationName.Leave += new System.EventHandler(this.TextBoxApplicationName_Leave);
-			// 
-			// buttonBrowseApplicationRelativePath
-			// 
-			this.buttonBrowseApplicationRelativePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonBrowseApplicationRelativePath.Location = new System.Drawing.Point(392, 50);
-			this.buttonBrowseApplicationRelativePath.Name = "buttonBrowseApplicationRelativePath";
-			this.buttonBrowseApplicationRelativePath.Size = new System.Drawing.Size(38, 23);
-			this.buttonBrowseApplicationRelativePath.TabIndex = 11;
-			this.buttonBrowseApplicationRelativePath.Text = "...";
-			this.buttonBrowseApplicationRelativePath.UseVisualStyleBackColor = true;
-			this.buttonBrowseApplicationRelativePath.Click += new System.EventHandler(this.ButtonBrowseApplicationRelativePath_Click);
-			// 
-			// labelApplicationRelativePath
-			// 
-			this.labelApplicationRelativePath.AutoSize = true;
-			this.labelApplicationRelativePath.Location = new System.Drawing.Point(20, 54);
-			this.labelApplicationRelativePath.Name = "labelApplicationRelativePath";
-			this.labelApplicationRelativePath.Size = new System.Drawing.Size(77, 13);
-			this.labelApplicationRelativePath.TabIndex = 7;
-			this.labelApplicationRelativePath.Text = "Relative path:";
-			// 
-			// textBoxApplicationRelativePath
-			// 
-			this.textBoxApplicationRelativePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxApplicationRelativePath.Location = new System.Drawing.Point(103, 51);
-			this.textBoxApplicationRelativePath.Name = "textBoxApplicationRelativePath";
-			this.textBoxApplicationRelativePath.Size = new System.Drawing.Size(283, 22);
-			this.textBoxApplicationRelativePath.TabIndex = 8;
-			this.textBoxApplicationRelativePath.TextChanged += new System.EventHandler(this.TextBoxApplicationRelativePath_TextChanged);
-			this.textBoxApplicationRelativePath.Leave += new System.EventHandler(this.TextBoxApplicationRelativePath_Leave);
-			// 
-			// labelNoApplicationSelected
-			// 
-			this.labelNoApplicationSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.flowLayoutPanelMacroActions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.labelNoApplicationSelected.Location = new System.Drawing.Point(144, 8);
-			this.labelNoApplicationSelected.Name = "labelNoApplicationSelected";
-			this.labelNoApplicationSelected.Size = new System.Drawing.Size(436, 345);
-			this.labelNoApplicationSelected.TabIndex = 23;
-			this.labelNoApplicationSelected.Text = "No application selected";
-			this.labelNoApplicationSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.flowLayoutPanelMacroActions.Location = new System.Drawing.Point(57, 90);
+			this.flowLayoutPanelMacroActions.Name = "flowLayoutPanelMacroActions";
+			this.flowLayoutPanelMacroActions.Size = new System.Drawing.Size(409, 255);
+			this.flowLayoutPanelMacroActions.TabIndex = 25;
+			this.flowLayoutPanelMacroActions.Resize += new System.EventHandler(this.FlowLayoutPanelMacroActions_Resize);
 			// 
-			// buttonRemoveApplication
+			// labeledDividerMacroActions
 			// 
-			this.buttonRemoveApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonRemoveApplication.Location = new System.Drawing.Point(71, 331);
-			this.buttonRemoveApplication.Name = "buttonRemoveApplication";
-			this.buttonRemoveApplication.Size = new System.Drawing.Size(58, 23);
-			this.buttonRemoveApplication.TabIndex = 2;
-			this.buttonRemoveApplication.Text = "Remove";
-			this.buttonRemoveApplication.UseVisualStyleBackColor = true;
-			this.buttonRemoveApplication.Click += new System.EventHandler(this.ButtonRemoveApplication_Click);
+			this.labeledDividerMacroActions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labeledDividerMacroActions.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDividerMacroActions.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.labeledDividerMacroActions.Location = new System.Drawing.Point(0, 67);
+			this.labeledDividerMacroActions.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
+			this.labeledDividerMacroActions.Name = "labeledDividerMacroActions";
+			this.labeledDividerMacroActions.Size = new System.Drawing.Size(466, 15);
+			this.labeledDividerMacroActions.TabIndex = 24;
+			this.labeledDividerMacroActions.Text = "Actions";
 			// 
-			// buttonAddApplication
+			// labelMacroName
 			// 
-			this.buttonAddApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonAddApplication.Location = new System.Drawing.Point(7, 331);
-			this.buttonAddApplication.Name = "buttonAddApplication";
-			this.buttonAddApplication.Size = new System.Drawing.Size(58, 23);
-			this.buttonAddApplication.TabIndex = 1;
-			this.buttonAddApplication.Text = "Add";
-			this.buttonAddApplication.UseVisualStyleBackColor = true;
-			this.buttonAddApplication.Click += new System.EventHandler(this.ButtonAddApplication_Click);
+			this.labelMacroName.AutoSize = true;
+			this.labelMacroName.Location = new System.Drawing.Point(20, 26);
+			this.labelMacroName.Name = "labelMacroName";
+			this.labelMacroName.Size = new System.Drawing.Size(39, 13);
+			this.labelMacroName.TabIndex = 11;
+			this.labelMacroName.Text = "Name:";
 			// 
-			// listViewApplications
+			// textBoxMacroName
 			// 
-			this.listViewApplications.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.textBoxMacroName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxMacroName.Location = new System.Drawing.Point(103, 23);
+			this.textBoxMacroName.Name = "textBoxMacroName";
+			this.textBoxMacroName.Size = new System.Drawing.Size(313, 22);
+			this.textBoxMacroName.TabIndex = 12;
+			this.textBoxMacroName.TextChanged += new System.EventHandler(this.TextBoxMacroName_TextChanged);
+			this.textBoxMacroName.Leave += new System.EventHandler(this.TextBoxMacroName_Leave);
+			// 
+			// labeledDividerMacro
+			// 
+			this.labeledDividerMacro.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labeledDividerMacro.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDividerMacro.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.labeledDividerMacro.Location = new System.Drawing.Point(0, 0);
+			this.labeledDividerMacro.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
+			this.labeledDividerMacro.Name = "labeledDividerMacro";
+			this.labeledDividerMacro.Size = new System.Drawing.Size(466, 15);
+			this.labeledDividerMacro.TabIndex = 10;
+			this.labeledDividerMacro.Text = "Macro";
+			// 
+			// labelNoMacroSelected
+			// 
+			this.labelNoMacroSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelNoMacroSelected.Location = new System.Drawing.Point(144, 8);
+			this.labelNoMacroSelected.Name = "labelNoMacroSelected";
+			this.labelNoMacroSelected.Size = new System.Drawing.Size(466, 345);
+			this.labelNoMacroSelected.TabIndex = 23;
+			this.labelNoMacroSelected.Text = "No macro selected";
+			this.labelNoMacroSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// buttonRemoveMacro
+			// 
+			this.buttonRemoveMacro.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonRemoveMacro.Location = new System.Drawing.Point(71, 331);
+			this.buttonRemoveMacro.Name = "buttonRemoveMacro";
+			this.buttonRemoveMacro.Size = new System.Drawing.Size(58, 23);
+			this.buttonRemoveMacro.TabIndex = 2;
+			this.buttonRemoveMacro.Text = "Remove";
+			this.buttonRemoveMacro.UseVisualStyleBackColor = true;
+			this.buttonRemoveMacro.Click += new System.EventHandler(this.ButtonRemoveMacro_Click);
+			// 
+			// buttonAddMacro
+			// 
+			this.buttonAddMacro.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonAddMacro.Location = new System.Drawing.Point(7, 331);
+			this.buttonAddMacro.Name = "buttonAddMacro";
+			this.buttonAddMacro.Size = new System.Drawing.Size(58, 23);
+			this.buttonAddMacro.TabIndex = 1;
+			this.buttonAddMacro.Text = "Add";
+			this.buttonAddMacro.UseVisualStyleBackColor = true;
+			this.buttonAddMacro.Click += new System.EventHandler(this.ButtonAddMacro_Click);
+			// 
+			// listViewMacros
+			// 
+			this.listViewMacros.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-			this.listViewApplications.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeaderApplications});
-			this.listViewApplications.FullRowSelect = true;
-			this.listViewApplications.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.listViewApplications.HideSelection = false;
-			this.listViewApplications.Location = new System.Drawing.Point(8, 8);
-			this.listViewApplications.MultiSelect = false;
-			this.listViewApplications.Name = "listViewApplications";
-			this.listViewApplications.Size = new System.Drawing.Size(120, 317);
-			this.listViewApplications.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.listViewApplications.TabIndex = 0;
-			this.listViewApplications.UseCompatibleStateImageBehavior = false;
-			this.listViewApplications.View = System.Windows.Forms.View.Details;
-			this.listViewApplications.SelectedIndexChanged += new System.EventHandler(this.ListViewApplications_SelectedIndexChanged);
+			this.listViewMacros.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderMacros});
+			this.listViewMacros.FullRowSelect = true;
+			this.listViewMacros.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewMacros.HideSelection = false;
+			this.listViewMacros.Location = new System.Drawing.Point(8, 8);
+			this.listViewMacros.MultiSelect = false;
+			this.listViewMacros.Name = "listViewMacros";
+			this.listViewMacros.Size = new System.Drawing.Size(120, 317);
+			this.listViewMacros.Sorting = System.Windows.Forms.SortOrder.Ascending;
+			this.listViewMacros.TabIndex = 0;
+			this.listViewMacros.UseCompatibleStateImageBehavior = false;
+			this.listViewMacros.View = System.Windows.Forms.View.Details;
+			this.listViewMacros.SelectedIndexChanged += new System.EventHandler(this.ListViewMacros_SelectedIndexChanged);
 			// 
-			// columnHeaderApplications
+			// columnHeaderMacros
 			// 
-			this.columnHeaderApplications.Text = "Applications";
-			this.columnHeaderApplications.Width = 99;
+			this.columnHeaderMacros.Text = "Applications";
+			this.columnHeaderMacros.Width = 99;
 			// 
 			// panelGroups
 			// 
@@ -433,10 +369,10 @@
 			this.panelGroups.Controls.Add(this.buttonRemoveGroup);
 			this.panelGroups.Controls.Add(this.buttonAddGroup);
 			this.panelGroups.Controls.Add(this.listViewGroups);
-			this.panelGroups.Location = new System.Drawing.Point(174, 39);
+			this.panelGroups.Location = new System.Drawing.Point(144, 39);
 			this.panelGroups.Name = "panelGroups";
 			this.panelGroups.Padding = new System.Windows.Forms.Padding(5);
-			this.panelGroups.Size = new System.Drawing.Size(588, 362);
+			this.panelGroups.Size = new System.Drawing.Size(618, 362);
 			this.panelGroups.TabIndex = 3;
 			this.panelGroups.Visible = false;
 			// 
@@ -460,7 +396,7 @@
 			this.panelGroup.Location = new System.Drawing.Point(144, 8);
 			this.panelGroup.Margin = new System.Windows.Forms.Padding(0);
 			this.panelGroup.Name = "panelGroup";
-			this.panelGroup.Size = new System.Drawing.Size(436, 345);
+			this.panelGroup.Size = new System.Drawing.Size(466, 345);
 			this.panelGroup.TabIndex = 17;
 			this.panelGroup.Visible = false;
 			// 
@@ -473,7 +409,7 @@
 			this.labeledDividerGroup.Location = new System.Drawing.Point(0, 0);
 			this.labeledDividerGroup.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
 			this.labeledDividerGroup.Name = "labeledDividerGroup";
-			this.labeledDividerGroup.Size = new System.Drawing.Size(436, 15);
+			this.labeledDividerGroup.Size = new System.Drawing.Size(466, 15);
 			this.labeledDividerGroup.TabIndex = 10;
 			this.labeledDividerGroup.Text = "Group";
 			// 
@@ -481,7 +417,7 @@
 			// 
 			this.buttonCopyGroupApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCopyGroupApplications.Image = global::ProcessManagerUI.Properties.Resources.copy_16;
-			this.buttonCopyGroupApplications.Location = new System.Drawing.Point(392, 178);
+			this.buttonCopyGroupApplications.Location = new System.Drawing.Point(422, 178);
 			this.buttonCopyGroupApplications.Name = "buttonCopyGroupApplications";
 			this.buttonCopyGroupApplications.Size = new System.Drawing.Size(38, 24);
 			this.buttonCopyGroupApplications.TabIndex = 16;
@@ -501,7 +437,7 @@
 			// 
 			this.buttonRemoveGroupApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonRemoveGroupApplication.Image = global::ProcessManagerUI.Properties.Resources.remove_16;
-			this.buttonRemoveGroupApplication.Location = new System.Drawing.Point(392, 148);
+			this.buttonRemoveGroupApplication.Location = new System.Drawing.Point(422, 148);
 			this.buttonRemoveGroupApplication.Name = "buttonRemoveGroupApplication";
 			this.buttonRemoveGroupApplication.Size = new System.Drawing.Size(38, 24);
 			this.buttonRemoveGroupApplication.TabIndex = 15;
@@ -514,7 +450,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxGroupName.Location = new System.Drawing.Point(100, 23);
 			this.textBoxGroupName.Name = "textBoxGroupName";
-			this.textBoxGroupName.Size = new System.Drawing.Size(286, 22);
+			this.textBoxGroupName.Size = new System.Drawing.Size(316, 22);
 			this.textBoxGroupName.TabIndex = 6;
 			this.textBoxGroupName.TextChanged += new System.EventHandler(this.TextBoxGroupName_TextChanged);
 			this.textBoxGroupName.Leave += new System.EventHandler(this.TextBoxGroupName_Leave);
@@ -523,7 +459,7 @@
 			// 
 			this.buttonAddGroupApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonAddGroupApplication.Image = global::ProcessManagerUI.Properties.Resources.add_16;
-			this.buttonAddGroupApplication.Location = new System.Drawing.Point(392, 118);
+			this.buttonAddGroupApplication.Location = new System.Drawing.Point(422, 118);
 			this.buttonAddGroupApplication.Name = "buttonAddGroupApplication";
 			this.buttonAddGroupApplication.Size = new System.Drawing.Size(38, 24);
 			this.buttonAddGroupApplication.TabIndex = 14;
@@ -552,7 +488,7 @@
 			this.listViewGroupApplications.Location = new System.Drawing.Point(100, 119);
 			this.listViewGroupApplications.MultiSelect = false;
 			this.listViewGroupApplications.Name = "listViewGroupApplications";
-			this.listViewGroupApplications.Size = new System.Drawing.Size(286, 226);
+			this.listViewGroupApplications.Size = new System.Drawing.Size(316, 226);
 			this.listViewGroupApplications.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listViewGroupApplications.TabIndex = 13;
 			this.listViewGroupApplications.UseCompatibleStateImageBehavior = false;
@@ -570,7 +506,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxGroupPath.Location = new System.Drawing.Point(100, 51);
 			this.textBoxGroupPath.Name = "textBoxGroupPath";
-			this.textBoxGroupPath.Size = new System.Drawing.Size(286, 22);
+			this.textBoxGroupPath.Size = new System.Drawing.Size(316, 22);
 			this.textBoxGroupPath.TabIndex = 8;
 			this.textBoxGroupPath.TextChanged += new System.EventHandler(this.TextBoxGroupPath_TextChanged);
 			this.textBoxGroupPath.MouseLeave += new System.EventHandler(this.TextBoxGroupPath_MouseLeave);
@@ -593,14 +529,14 @@
 			this.labeledDividerGroupApplicationMappings.Location = new System.Drawing.Point(0, 95);
 			this.labeledDividerGroupApplicationMappings.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
 			this.labeledDividerGroupApplicationMappings.Name = "labeledDividerGroupApplicationMappings";
-			this.labeledDividerGroupApplicationMappings.Size = new System.Drawing.Size(436, 15);
+			this.labeledDividerGroupApplicationMappings.Size = new System.Drawing.Size(466, 15);
 			this.labeledDividerGroupApplicationMappings.TabIndex = 9;
 			this.labeledDividerGroupApplicationMappings.Text = "Mappings";
 			// 
 			// buttonBrowseGroupPath
 			// 
 			this.buttonBrowseGroupPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonBrowseGroupPath.Location = new System.Drawing.Point(392, 50);
+			this.buttonBrowseGroupPath.Location = new System.Drawing.Point(422, 50);
 			this.buttonBrowseGroupPath.Name = "buttonBrowseGroupPath";
 			this.buttonBrowseGroupPath.Size = new System.Drawing.Size(38, 23);
 			this.buttonBrowseGroupPath.TabIndex = 11;
@@ -615,7 +551,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelNoGroupSelected.Location = new System.Drawing.Point(144, 8);
 			this.labelNoGroupSelected.Name = "labelNoGroupSelected";
-			this.labelNoGroupSelected.Size = new System.Drawing.Size(436, 345);
+			this.labelNoGroupSelected.Size = new System.Drawing.Size(466, 345);
 			this.labelNoGroupSelected.TabIndex = 22;
 			this.labelNoGroupSelected.Text = "No group selected";
 			this.labelNoGroupSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -666,6 +602,248 @@
 			this.columnHeaderGroups.Text = "Groups";
 			this.columnHeaderGroups.Width = 99;
 			// 
+			// panelApplications
+			// 
+			this.panelApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelApplications.BackColor = System.Drawing.SystemColors.Window;
+			this.panelApplications.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
+			this.panelApplications.Controls.Add(this.panelApplication);
+			this.panelApplications.Controls.Add(this.labelNoApplicationSelected);
+			this.panelApplications.Controls.Add(this.buttonRemoveApplication);
+			this.panelApplications.Controls.Add(this.buttonAddApplication);
+			this.panelApplications.Controls.Add(this.listViewApplications);
+			this.panelApplications.Location = new System.Drawing.Point(144, 39);
+			this.panelApplications.Name = "panelApplications";
+			this.panelApplications.Padding = new System.Windows.Forms.Padding(5);
+			this.panelApplications.Size = new System.Drawing.Size(618, 362);
+			this.panelApplications.TabIndex = 17;
+			this.panelApplications.Visible = false;
+			// 
+			// panelApplication
+			// 
+			this.panelApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelApplication.Controls.Add(this.checkBoxDistributionOnly);
+			this.panelApplication.Controls.Add(this.labeledDividerDistribution);
+			this.panelApplication.Controls.Add(this.labelDistributionSourcesCount);
+			this.panelApplication.Controls.Add(this.buttonEditDistributionSources);
+			this.panelApplication.Controls.Add(this.labelDistributionSources);
+			this.panelApplication.Controls.Add(this.labeledDividerApplication);
+			this.panelApplication.Controls.Add(this.textBoxApplicationArguments);
+			this.panelApplication.Controls.Add(this.labelApplicationName);
+			this.panelApplication.Controls.Add(this.labelApplicationArguments);
+			this.panelApplication.Controls.Add(this.textBoxApplicationName);
+			this.panelApplication.Controls.Add(this.buttonBrowseApplicationRelativePath);
+			this.panelApplication.Controls.Add(this.labelApplicationRelativePath);
+			this.panelApplication.Controls.Add(this.textBoxApplicationRelativePath);
+			this.panelApplication.Location = new System.Drawing.Point(144, 8);
+			this.panelApplication.Margin = new System.Windows.Forms.Padding(0);
+			this.panelApplication.Name = "panelApplication";
+			this.panelApplication.Size = new System.Drawing.Size(466, 345);
+			this.panelApplication.TabIndex = 14;
+			this.panelApplication.Visible = false;
+			// 
+			// checkBoxDistributionOnly
+			// 
+			this.checkBoxDistributionOnly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.checkBoxDistributionOnly.AutoSize = true;
+			this.checkBoxDistributionOnly.Location = new System.Drawing.Point(353, 325);
+			this.checkBoxDistributionOnly.Name = "checkBoxDistributionOnly";
+			this.checkBoxDistributionOnly.Size = new System.Drawing.Size(113, 17);
+			this.checkBoxDistributionOnly.TabIndex = 24;
+			this.checkBoxDistributionOnly.Text = "Distribution only";
+			this.checkBoxDistributionOnly.UseVisualStyleBackColor = true;
+			this.checkBoxDistributionOnly.CheckedChanged += new System.EventHandler(this.CheckBoxDistributionOnly_CheckedChanged);
+			// 
+			// labeledDividerDistribution
+			// 
+			this.labeledDividerDistribution.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labeledDividerDistribution.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDividerDistribution.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.labeledDividerDistribution.Location = new System.Drawing.Point(0, 124);
+			this.labeledDividerDistribution.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
+			this.labeledDividerDistribution.Name = "labeledDividerDistribution";
+			this.labeledDividerDistribution.Size = new System.Drawing.Size(466, 15);
+			this.labeledDividerDistribution.TabIndex = 23;
+			this.labeledDividerDistribution.Text = "Distribution";
+			// 
+			// labelDistributionSourcesCount
+			// 
+			this.labelDistributionSourcesCount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelDistributionSourcesCount.ForeColor = System.Drawing.Color.Gray;
+			this.labelDistributionSourcesCount.Location = new System.Drawing.Point(161, 151);
+			this.labelDistributionSourcesCount.Name = "labelDistributionSourcesCount";
+			this.labelDistributionSourcesCount.Size = new System.Drawing.Size(253, 13);
+			this.labelDistributionSourcesCount.TabIndex = 22;
+			this.labelDistributionSourcesCount.Text = "[source count]";
+			this.labelDistributionSourcesCount.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// buttonEditDistributionSources
+			// 
+			this.buttonEditDistributionSources.Location = new System.Drawing.Point(103, 146);
+			this.buttonEditDistributionSources.Name = "buttonEditDistributionSources";
+			this.buttonEditDistributionSources.Size = new System.Drawing.Size(58, 23);
+			this.buttonEditDistributionSources.TabIndex = 21;
+			this.buttonEditDistributionSources.Text = "Edit...";
+			this.buttonEditDistributionSources.UseVisualStyleBackColor = true;
+			this.buttonEditDistributionSources.Click += new System.EventHandler(this.ButtonEditDistributionSources_Click);
+			// 
+			// labelDistributionSources
+			// 
+			this.labelDistributionSources.AutoSize = true;
+			this.labelDistributionSources.Location = new System.Drawing.Point(20, 151);
+			this.labelDistributionSources.Name = "labelDistributionSources";
+			this.labelDistributionSources.Size = new System.Drawing.Size(50, 13);
+			this.labelDistributionSources.TabIndex = 20;
+			this.labelDistributionSources.Text = "Sources:";
+			// 
+			// labeledDividerApplication
+			// 
+			this.labeledDividerApplication.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labeledDividerApplication.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDividerApplication.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.labeledDividerApplication.Location = new System.Drawing.Point(0, 0);
+			this.labeledDividerApplication.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
+			this.labeledDividerApplication.Name = "labeledDividerApplication";
+			this.labeledDividerApplication.Size = new System.Drawing.Size(466, 15);
+			this.labeledDividerApplication.TabIndex = 10;
+			this.labeledDividerApplication.Text = "Application";
+			// 
+			// textBoxApplicationArguments
+			// 
+			this.textBoxApplicationArguments.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxApplicationArguments.Location = new System.Drawing.Point(103, 79);
+			this.textBoxApplicationArguments.Name = "textBoxApplicationArguments";
+			this.textBoxApplicationArguments.Size = new System.Drawing.Size(313, 22);
+			this.textBoxApplicationArguments.TabIndex = 13;
+			this.textBoxApplicationArguments.TextChanged += new System.EventHandler(this.TextBoxApplicationArguments_TextChanged);
+			this.textBoxApplicationArguments.Leave += new System.EventHandler(this.TextBoxApplicationArguments_Leave);
+			// 
+			// labelApplicationName
+			// 
+			this.labelApplicationName.AutoSize = true;
+			this.labelApplicationName.Location = new System.Drawing.Point(20, 26);
+			this.labelApplicationName.Name = "labelApplicationName";
+			this.labelApplicationName.Size = new System.Drawing.Size(39, 13);
+			this.labelApplicationName.TabIndex = 5;
+			this.labelApplicationName.Text = "Name:";
+			// 
+			// labelApplicationArguments
+			// 
+			this.labelApplicationArguments.AutoSize = true;
+			this.labelApplicationArguments.Location = new System.Drawing.Point(20, 82);
+			this.labelApplicationArguments.Name = "labelApplicationArguments";
+			this.labelApplicationArguments.Size = new System.Drawing.Size(66, 13);
+			this.labelApplicationArguments.TabIndex = 12;
+			this.labelApplicationArguments.Text = "Arguments:";
+			// 
+			// textBoxApplicationName
+			// 
+			this.textBoxApplicationName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxApplicationName.Location = new System.Drawing.Point(103, 23);
+			this.textBoxApplicationName.Name = "textBoxApplicationName";
+			this.textBoxApplicationName.Size = new System.Drawing.Size(313, 22);
+			this.textBoxApplicationName.TabIndex = 6;
+			this.textBoxApplicationName.TextChanged += new System.EventHandler(this.TextBoxApplicationName_TextChanged);
+			this.textBoxApplicationName.Leave += new System.EventHandler(this.TextBoxApplicationName_Leave);
+			// 
+			// buttonBrowseApplicationRelativePath
+			// 
+			this.buttonBrowseApplicationRelativePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonBrowseApplicationRelativePath.Location = new System.Drawing.Point(422, 50);
+			this.buttonBrowseApplicationRelativePath.Name = "buttonBrowseApplicationRelativePath";
+			this.buttonBrowseApplicationRelativePath.Size = new System.Drawing.Size(38, 23);
+			this.buttonBrowseApplicationRelativePath.TabIndex = 11;
+			this.buttonBrowseApplicationRelativePath.Text = "...";
+			this.buttonBrowseApplicationRelativePath.UseVisualStyleBackColor = true;
+			this.buttonBrowseApplicationRelativePath.Click += new System.EventHandler(this.ButtonBrowseApplicationRelativePath_Click);
+			// 
+			// labelApplicationRelativePath
+			// 
+			this.labelApplicationRelativePath.AutoSize = true;
+			this.labelApplicationRelativePath.Location = new System.Drawing.Point(20, 54);
+			this.labelApplicationRelativePath.Name = "labelApplicationRelativePath";
+			this.labelApplicationRelativePath.Size = new System.Drawing.Size(77, 13);
+			this.labelApplicationRelativePath.TabIndex = 7;
+			this.labelApplicationRelativePath.Text = "Relative path:";
+			// 
+			// textBoxApplicationRelativePath
+			// 
+			this.textBoxApplicationRelativePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxApplicationRelativePath.Location = new System.Drawing.Point(103, 51);
+			this.textBoxApplicationRelativePath.Name = "textBoxApplicationRelativePath";
+			this.textBoxApplicationRelativePath.Size = new System.Drawing.Size(313, 22);
+			this.textBoxApplicationRelativePath.TabIndex = 8;
+			this.textBoxApplicationRelativePath.TextChanged += new System.EventHandler(this.TextBoxApplicationRelativePath_TextChanged);
+			this.textBoxApplicationRelativePath.Leave += new System.EventHandler(this.TextBoxApplicationRelativePath_Leave);
+			// 
+			// labelNoApplicationSelected
+			// 
+			this.labelNoApplicationSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelNoApplicationSelected.Location = new System.Drawing.Point(144, 8);
+			this.labelNoApplicationSelected.Name = "labelNoApplicationSelected";
+			this.labelNoApplicationSelected.Size = new System.Drawing.Size(466, 345);
+			this.labelNoApplicationSelected.TabIndex = 23;
+			this.labelNoApplicationSelected.Text = "No application selected";
+			this.labelNoApplicationSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// buttonRemoveApplication
+			// 
+			this.buttonRemoveApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonRemoveApplication.Location = new System.Drawing.Point(71, 331);
+			this.buttonRemoveApplication.Name = "buttonRemoveApplication";
+			this.buttonRemoveApplication.Size = new System.Drawing.Size(58, 23);
+			this.buttonRemoveApplication.TabIndex = 2;
+			this.buttonRemoveApplication.Text = "Remove";
+			this.buttonRemoveApplication.UseVisualStyleBackColor = true;
+			this.buttonRemoveApplication.Click += new System.EventHandler(this.ButtonRemoveApplication_Click);
+			// 
+			// buttonAddApplication
+			// 
+			this.buttonAddApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonAddApplication.Location = new System.Drawing.Point(7, 331);
+			this.buttonAddApplication.Name = "buttonAddApplication";
+			this.buttonAddApplication.Size = new System.Drawing.Size(58, 23);
+			this.buttonAddApplication.TabIndex = 1;
+			this.buttonAddApplication.Text = "Add";
+			this.buttonAddApplication.UseVisualStyleBackColor = true;
+			this.buttonAddApplication.Click += new System.EventHandler(this.ButtonAddApplication_Click);
+			// 
+			// listViewApplications
+			// 
+			this.listViewApplications.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.listViewApplications.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderApplications});
+			this.listViewApplications.FullRowSelect = true;
+			this.listViewApplications.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewApplications.HideSelection = false;
+			this.listViewApplications.Location = new System.Drawing.Point(8, 8);
+			this.listViewApplications.MultiSelect = false;
+			this.listViewApplications.Name = "listViewApplications";
+			this.listViewApplications.Size = new System.Drawing.Size(120, 317);
+			this.listViewApplications.Sorting = System.Windows.Forms.SortOrder.Ascending;
+			this.listViewApplications.TabIndex = 0;
+			this.listViewApplications.UseCompatibleStateImageBehavior = false;
+			this.listViewApplications.View = System.Windows.Forms.View.Details;
+			this.listViewApplications.SelectedIndexChanged += new System.EventHandler(this.ListViewApplications_SelectedIndexChanged);
+			// 
+			// columnHeaderApplications
+			// 
+			this.columnHeaderApplications.Text = "Applications";
+			this.columnHeaderApplications.Width = 99;
+			// 
 			// panelPlugins
 			// 
 			this.panelPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -676,10 +854,10 @@
 			this.panelPlugins.Controls.Add(this.panelPlugin);
 			this.panelPlugins.Controls.Add(this.labelNoPluginSelected);
 			this.panelPlugins.Controls.Add(this.listViewPlugins);
-			this.panelPlugins.Location = new System.Drawing.Point(174, 39);
+			this.panelPlugins.Location = new System.Drawing.Point(144, 39);
 			this.panelPlugins.Name = "panelPlugins";
 			this.panelPlugins.Padding = new System.Windows.Forms.Padding(5);
-			this.panelPlugins.Size = new System.Drawing.Size(588, 362);
+			this.panelPlugins.Size = new System.Drawing.Size(618, 362);
 			this.panelPlugins.TabIndex = 18;
 			this.panelPlugins.Visible = false;
 			// 
@@ -698,7 +876,7 @@
 			this.panelPlugin.Location = new System.Drawing.Point(144, 8);
 			this.panelPlugin.Margin = new System.Windows.Forms.Padding(0);
 			this.panelPlugin.Name = "panelPlugin";
-			this.panelPlugin.Size = new System.Drawing.Size(436, 345);
+			this.panelPlugin.Size = new System.Drawing.Size(466, 345);
 			this.panelPlugin.TabIndex = 15;
 			this.panelPlugin.Visible = false;
 			// 
@@ -721,7 +899,7 @@
 			this.labeledDividerPlugin.Location = new System.Drawing.Point(0, 0);
 			this.labeledDividerPlugin.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
 			this.labeledDividerPlugin.Name = "labeledDividerPlugin";
-			this.labeledDividerPlugin.Size = new System.Drawing.Size(436, 15);
+			this.labeledDividerPlugin.Size = new System.Drawing.Size(466, 15);
 			this.labeledDividerPlugin.TabIndex = 10;
 			this.labeledDividerPlugin.Text = "Plugin";
 			// 
@@ -763,7 +941,7 @@
 			// buttonConfigurePlugin
 			// 
 			this.buttonConfigurePlugin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonConfigurePlugin.Location = new System.Drawing.Point(345, 323);
+			this.buttonConfigurePlugin.Location = new System.Drawing.Point(375, 323);
 			this.buttonConfigurePlugin.Name = "buttonConfigurePlugin";
 			this.buttonConfigurePlugin.Size = new System.Drawing.Size(92, 23);
 			this.buttonConfigurePlugin.TabIndex = 11;
@@ -777,7 +955,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelNoPluginSelected.Location = new System.Drawing.Point(144, 8);
 			this.labelNoPluginSelected.Name = "labelNoPluginSelected";
-			this.labelNoPluginSelected.Size = new System.Drawing.Size(436, 345);
+			this.labelNoPluginSelected.Size = new System.Drawing.Size(466, 345);
 			this.labelNoPluginSelected.TabIndex = 24;
 			this.labelNoPluginSelected.Text = "No plugin selected";
 			this.labelNoPluginSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -815,7 +993,7 @@
 			this.treeViewConfiguration.Location = new System.Drawing.Point(12, 39);
 			this.treeViewConfiguration.Name = "treeViewConfiguration";
 			this.treeViewConfiguration.ShowLines = false;
-			this.treeViewConfiguration.Size = new System.Drawing.Size(156, 362);
+			this.treeViewConfiguration.Size = new System.Drawing.Size(126, 362);
 			this.treeViewConfiguration.TabIndex = 2;
 			this.treeViewConfiguration.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewConfiguration_AfterSelect);
 			// 
@@ -825,6 +1003,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(774, 442);
+			this.Controls.Add(this.panelMacros);
 			this.Controls.Add(this.panelApplications);
 			this.Controls.Add(this.panelGroups);
 			this.Controls.Add(this.panelPlugins);
@@ -847,12 +1026,15 @@
 			this.Text = "Process Manager Configuration";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigurationForm_FormClosing);
 			this.Load += new System.EventHandler(this.ConfigurationForm_Load);
-			this.panelApplications.ResumeLayout(false);
-			this.panelApplication.ResumeLayout(false);
-			this.panelApplication.PerformLayout();
+			this.panelMacros.ResumeLayout(false);
+			this.panelMacro.ResumeLayout(false);
+			this.panelMacro.PerformLayout();
 			this.panelGroups.ResumeLayout(false);
 			this.panelGroup.ResumeLayout(false);
 			this.panelGroup.PerformLayout();
+			this.panelApplications.ResumeLayout(false);
+			this.panelApplication.ResumeLayout(false);
+			this.panelApplication.PerformLayout();
 			this.panelPlugins.ResumeLayout(false);
 			this.panelPlugin.ResumeLayout(false);
 			this.panelPlugin.PerformLayout();
@@ -922,6 +1104,19 @@
 		private System.Windows.Forms.Button buttonEditDistributionSources;
 		private System.Windows.Forms.Label labelDistributionSources;
 		private System.Windows.Forms.CheckBox checkBoxDistributionOnly;
+		private Controls.BackgroundPanel panelMacros;
+		private System.Windows.Forms.Panel panelMacro;
+		private Controls.LabeledDivider labeledDividerMacro;
+		private System.Windows.Forms.Label labelNoMacroSelected;
+		private System.Windows.Forms.Button buttonRemoveMacro;
+		private System.Windows.Forms.Button buttonAddMacro;
+		private Controls.ListView listViewMacros;
+		private System.Windows.Forms.ColumnHeader columnHeaderMacros;
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelMacroActions;
+		private Controls.LabeledDivider labeledDividerMacroActions;
+		private System.Windows.Forms.Label labelMacroName;
+		private System.Windows.Forms.TextBox textBoxMacroName;
+		private System.Windows.Forms.Button buttonAddMacroAction;
 
 	}
 }

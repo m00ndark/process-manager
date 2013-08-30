@@ -8,6 +8,7 @@ namespace ProcessManager.DataAccess
 	public enum	ClientSettingsType
 	{
 		Machines,
+		Macros,
 		Options,
 		States
 	}
@@ -45,6 +46,72 @@ namespace ProcessManager.DataAccess
 							machineKey = machinesKey.OpenSubKey("Machine " + Settings.Client.Machines.Count.ToString("00"), false);
 						}
 						machinesKey.Close();
+					}
+					break;
+
+				case ClientSettingsType.Macros:
+					Settings.Client.Macros.Clear();
+					RegistryKey macrosKey = key.OpenSubKey("Macros", false);
+					if (macrosKey != null)
+					{
+						foreach (string macroID in macrosKey.GetSubKeyNames())
+						{
+							RegistryKey macroKey = macrosKey.OpenSubKey(macroID, false);
+							if (macroKey == null) continue;
+							string name = (string) macroKey.GetValue("Name", "<unknown>");
+							Macro macro = new Macro(Guid.Parse(macroID), name);
+							try
+							{
+								RegistryKey actionKey = macroKey.OpenSubKey("Action " + macro.Actions.Count.ToString("00"), false);
+								while (actionKey != null)
+								{
+									IMacroAction action = null;
+									string actionTypeStr = (string) actionKey.GetValue("Action Type");
+									if (actionTypeStr == null) break;
+									ActionType actionType = (ActionType) Enum.Parse(typeof(ActionType), actionTypeStr);
+									switch (actionType)
+									{
+										case ActionType.Start:
+										case ActionType.Stop:
+										case ActionType.Restart:
+											string processMachineID = (string) actionKey.GetValue("Machine ID");
+											string processGroupID = (string) actionKey.GetValue("Group ID");
+											string processApplicationID = (string) actionKey.GetValue("Application ID");
+											action = new MacroProcessAction(actionType)
+												{
+													MachineID = Guid.Parse(processMachineID),
+													GroupID = Guid.Parse(processGroupID),
+													ApplicationID = Guid.Parse(processApplicationID)
+												};
+											break;
+										case ActionType.Distribute:
+											string distributionSourceMachineID = (string) actionKey.GetValue("Source Machine ID");
+											string distributionGroupID = (string) actionKey.GetValue("Group ID");
+											string distributionApplicationID = (string) actionKey.GetValue("Application ID");
+											string distributionDestinationMachineID = (string) actionKey.GetValue("Destination Machine ID");
+											action = new MacroDistributionAction(actionType)
+												{
+													SourceMachineID = Guid.Parse(distributionSourceMachineID),
+													GroupID = Guid.Parse(distributionGroupID),
+													ApplicationID = Guid.Parse(distributionApplicationID),
+													DestinationMachineID = Guid.Parse(distributionDestinationMachineID)
+												};
+											break;
+									}
+									if (action == null) break;
+									macro.Actions.Add(action);
+									actionKey.Close();
+									actionKey = macroKey.OpenSubKey("Action " + macro.Actions.Count.ToString("00"), false);
+								}
+							}
+							catch
+							{
+								continue;
+							}
+							Settings.Client.Macros.Add(macro);
+							macroKey.Close();
+						}
+						macrosKey.Close();
 					}
 					break;
 
@@ -174,6 +241,46 @@ namespace ProcessManager.DataAccess
 							machineKey.Close();
 						}
 						machinesKey.Close();
+					}
+					break;
+
+				case ClientSettingsType.Macros:
+					RegistryKey macrosKey = key.CreateSubKey("Macros");
+					if (macrosKey != null)
+					{
+						foreach (string subKeyName in macrosKey.GetSubKeyNames())
+						{
+							macrosKey.DeleteSubKeyTree(subKeyName);
+						}
+						foreach (Macro macro in Settings.Client.Macros)
+						{
+							RegistryKey macroKey = macrosKey.CreateSubKey(macro.ID.ToString());
+							if (macroKey == null) continue;
+							macroKey.SetValue("Name", macro.Name);
+							for (int i = 0; i < macro.Actions.Count; i++)
+							{
+								RegistryKey actionKey = macroKey.CreateSubKey("Action " + i.ToString("00"));
+								actionKey.SetValue("Action Type", macro.Actions[i].Type.ToString());
+								if (macro.Actions[i] is MacroProcessAction)
+								{
+									MacroProcessAction macroProcessAction = (MacroProcessAction) macro.Actions[i];
+									actionKey.SetValue("Machine ID", macroProcessAction.MachineID);
+									actionKey.SetValue("Group ID", macroProcessAction.GroupID);
+									actionKey.SetValue("Application ID", macroProcessAction.ApplicationID);
+								}
+								else if (macro.Actions[i] is MacroDistributionAction)
+								{
+									MacroDistributionAction macroDistributionAction = (MacroDistributionAction) macro.Actions[i];
+									actionKey.SetValue("Source Machine ID", macroDistributionAction.SourceMachineID);
+									actionKey.SetValue("Group ID", macroDistributionAction.GroupID);
+									actionKey.SetValue("Application ID", macroDistributionAction.ApplicationID);
+									actionKey.SetValue("Destination Machine ID", macroDistributionAction.DestinationMachineID);
+								}
+								actionKey.Close();
+							}
+							macroKey.Close();
+						}
+						macrosKey.Close();
 					}
 					break;
 

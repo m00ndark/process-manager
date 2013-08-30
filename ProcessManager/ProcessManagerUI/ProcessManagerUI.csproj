@@ -102,6 +102,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\MacroActionItems\MacroActionItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MacroActionItems\MacroActionItem.Designer.cs">
+      <DependentUpon>MacroActionItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MacroActionItems\MacroDistributionActionItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MacroActionItems\MacroDistributionActionItem.Designer.cs">
+      <DependentUpon>MacroDistributionActionItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MacroActionItems\Support\IMacroActionItem.cs" />
     <Compile Include="Controls\Nodes\DistributionApplicationNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -202,6 +215,12 @@
     <Compile Include="Utilities\Messenger.cs" />
     <Compile Include="Utilities\Picker.cs" />
     <Compile Include="Utilities\Worker.cs" />
+    <EmbeddedResource Include="Controls\MacroActionItems\MacroActionItem.resx">
+      <DependentUpon>MacroActionItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MacroActionItems\MacroDistributionActionItem.resx">
+      <DependentUpon>MacroDistributionActionItem.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\Nodes\ProcessApplicationNode.resx">
       <DependentUpon>ProcessApplicationNode.cs</DependentUpon>
     </EmbeddedResource>
