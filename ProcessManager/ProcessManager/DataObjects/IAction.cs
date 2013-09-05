@@ -12,9 +12,4 @@
 	{
 		ActionType Type { get; }
 	}
-
-	public interface IMacroAction : IAction
-	{
-		bool GotAnyID { get; }
-	}
 }

@@ -114,6 +114,18 @@
     <Compile Include="Controls\MacroActionItems\MacroDistributionActionItem.Designer.cs">
       <DependentUpon>MacroDistributionActionItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MacroActionItems\MacroProcessActionItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MacroActionItems\MacroProcessActionItem.Designer.cs">
+      <DependentUpon>MacroProcessActionItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MacroActionItems\MacroWaitActionItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MacroActionItems\MacroWaitActionItem.Designer.cs">
+      <DependentUpon>MacroWaitActionItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MacroActionItems\Support\IMacroActionItem.cs" />
     <Compile Include="Controls\Nodes\DistributionApplicationNode.cs">
       <SubType>UserControl</SubType>
@@ -220,6 +232,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\MacroActionItems\MacroDistributionActionItem.resx">
       <DependentUpon>MacroDistributionActionItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MacroActionItems\MacroProcessActionItem.resx">
+      <DependentUpon>MacroProcessActionItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MacroActionItems\MacroWaitActionItem.resx">
+      <DependentUpon>MacroWaitActionItem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Nodes\ProcessApplicationNode.resx">
       <DependentUpon>ProcessApplicationNode.cs</DependentUpon>

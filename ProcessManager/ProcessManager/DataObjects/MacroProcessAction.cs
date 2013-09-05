@@ -4,9 +4,12 @@ namespace ProcessManager.DataObjects
 {
 	public class MacroProcessAction : IMacroAction
 	{
-		public MacroProcessAction(ActionType type)
+        public MacroProcessAction(MacroActionType type)
 		{
-			Type = type;
+            if (type != MacroActionType.Start && type != MacroActionType.Stop && type != MacroActionType.Restart)
+                throw new ArgumentException("Invalid process action type");
+
+            Type = type;
 			MachineID = Guid.Empty;
 			GroupID = Guid.Empty;
 			ApplicationID = Guid.Empty;
@@ -14,12 +17,12 @@ namespace ProcessManager.DataObjects
 
 		#region Properties
 
-		public ActionType Type { get; private set; }
+		public MacroActionType Type { get; private set; }
 		public Guid MachineID { get; set; }
 		public Guid GroupID { get; set; }
 		public Guid ApplicationID { get; set; }
 
-		public bool GotAnyID { get { return MachineID != Guid.Empty; } }
+		public bool IsValid { get { return MachineID != Guid.Empty; } }
 
 		#endregion
 

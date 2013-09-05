@@ -1108,7 +1108,7 @@ namespace ProcessManagerUI.Forms
 		private bool Save()
 		{
 			_macroActionItems
-				.Where(macroActionItem => macroActionItem.Action == null || !macroActionItem.Action.GotAnyID)
+				.Where(macroActionItem => macroActionItem.Action == null || !macroActionItem.Action.IsValid)
 				.ToList()
 				.ForEach(RemoveMacroActionItem);
 			UpdateSelections();
