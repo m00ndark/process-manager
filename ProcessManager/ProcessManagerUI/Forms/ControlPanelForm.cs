@@ -38,6 +38,9 @@ namespace ProcessManagerUI.Forms
 		private readonly List<INode> _allDistributionNodes;
 		private readonly List<IRootNode> _distributionRootNodes;
 		private readonly List<DistributionDestinationMachineNode> _distributionDestinationMachineNodes;
+		private readonly List<INode> _allMacroNodes;
+		private readonly List<IRootNode> _macroRootNodes;
+		private readonly List<MacroActionNode> _macroActionNodes;
 		private bool _processNodeLayoutSuspended;
 		private bool _distributionNodeLayoutSuspended;
 
@@ -50,6 +53,8 @@ namespace ProcessManagerUI.Forms
 			tabPageProcess.Text = tabPageProcess.Tag.ToString();
 			tabPageDistribution.Tag = ControlPanelTab.Distribution;
 			tabPageDistribution.Text = tabPageDistribution.Tag.ToString();
+			tabPageMacro.Tag = ControlPanelTab.Macro;
+			tabPageMacro.Text = tabPageMacro.Tag.ToString();
 			_formClosedAt = DateTime.MinValue;
 			_allProcessNodes = new List<INode>();
 			_processRootNodes = new List<IRootNode>();
@@ -57,6 +62,9 @@ namespace ProcessManagerUI.Forms
 			_allDistributionNodes = new List<INode>();
 			_distributionRootNodes = new List<IRootNode>();
 			_distributionDestinationMachineNodes = new List<DistributionDestinationMachineNode>();
+			_allMacroNodes = new List<INode>();
+			_macroRootNodes = new List<IRootNode>();
+			_macroActionNodes = new List<MacroActionNode>();
 			_processNodeLayoutSuspended = false;
 			_distributionNodeLayoutSuspended = false;
 			ServiceHelper.Initialize(this);
@@ -76,6 +84,8 @@ namespace ProcessManagerUI.Forms
 						return flowLayoutPanelProcessApplications;
 					case ControlPanelTab.Distribution:
 						return flowLayoutPanelDistributionDestinations;
+					case ControlPanelTab.Macro:
+						return flowLayoutPanelMacros;
 					default:
 						return null;
 				}
@@ -92,6 +102,8 @@ namespace ProcessManagerUI.Forms
 						return _processRootNodes;
 					case ControlPanelTab.Distribution:
 						return _distributionRootNodes;
+					case ControlPanelTab.Macro:
+						return _macroRootNodes;
 					default:
 						return null;
 				}
@@ -511,12 +523,20 @@ namespace ProcessManagerUI.Forms
 			if (tabControlSection.SelectedTab == tabPageProcess)
 			{
 				tableLayoutPanelDistribution.Visible = false;
+				tableLayoutPanelMacro.Visible = false;
 				tableLayoutPanelProcess.Visible = true;
 			}
 			else if (tabControlSection.SelectedTab == tabPageDistribution)
 			{
 				tableLayoutPanelProcess.Visible = false;
+				tableLayoutPanelMacro.Visible = false;
 				tableLayoutPanelDistribution.Visible = true;
+			}
+			else if (tabControlSection.SelectedTab == tabPageMacro)
+			{
+				tableLayoutPanelProcess.Visible = false;
+				tableLayoutPanelDistribution.Visible = false;
+				tableLayoutPanelMacro.Visible = true;
 			}
 
 			UpdateFiltersAndLayout();
@@ -554,6 +574,7 @@ namespace ProcessManagerUI.Forms
 
 			UpdateProcessFilterAndLayout();
 			UpdateDistributionFilterAndLayout();
+			LayoutMacroNodes();
 		}
 
 		#region Process tab
@@ -1129,6 +1150,165 @@ namespace ProcessManagerUI.Forms
 			}
 
 			labelDistributionUnavailable.Visible = (_distributionDestinationMachineNodes.Count == 0);
+			//}
+			//catch (Exception ex)
+			//{
+			//}
+		}
+
+		#endregion
+
+		#region Macro tab
+
+		//private delegate void ApplyDistributionStateDelegate(DistributionResult distributionResult);
+
+		//private void ApplyDistributionState(DistributionResult distributionResult)
+		//{
+		//	if (InvokeRequired)
+		//	{
+		//		Invoke(new ApplyDistributionStateDelegate(ApplyDistributionState), distributionResult);
+		//		return;
+		//	}
+
+		//	lock (_distributionDestinationMachineNodes)
+		//	{
+		//		DistributionDestinationMachineNode destinationMachineNode = _distributionDestinationMachineNodes.FirstOrDefault(node =>
+		//			node.Matches(new Machine(distributionResult.SourceMachineHostName).ID, distributionResult.GroupID,
+		//				distributionResult.ApplicationID, new Machine(distributionResult.DestinationMachineHostName).ID));
+
+		//		if (destinationMachineNode != null)
+		//			destinationMachineNode.State = (distributionResult.Result == DistributionResultValue.Success ? DistributionState.Success : DistributionState.Failure);
+		//	}
+		//}
+
+		private delegate void LayoutMacroNodesDelegate();
+
+		private void LayoutMacroNodes()
+		{
+			if (InvokeRequired)
+			{
+				Invoke(new LayoutMacroNodesDelegate(LayoutMacroNodes));
+				return;
+			}
+
+			if (SelectedTab != ControlPanelTab.Macro)
+				return;
+
+			//try{
+
+			Settings.Client.Save(ClientSettingsType.States);
+
+			lock (_macroActionNodes)
+			{
+				flowLayoutPanelMacros.Controls.Clear();
+				_macroRootNodes.ForEach(node =>
+					{
+						node.SizeChanged -= RootNode_SizeChanged;
+						node.CheckedChanged -= Node_CheckedChanged;
+						node.ActionTaken -= Node_ActionTaken;
+					});
+				_allMacroNodes.ForEach(node => node.Dispose());
+				_allMacroNodes.Clear();
+				_macroRootNodes.Clear();
+				_macroActionNodes.Clear();
+
+				//var destinationMachines = ConnectionStore.Connections.Values
+				//	.Where(sourceConnection => sourceConnection.Configuration != null)
+				//	.Where(sourceConnection => string.IsNullOrEmpty(Settings.Client.D_SelectedFilterSourceMachine) || sourceConnection.Machine.Equals(Settings.Client.D_SelectedFilterSourceMachine))
+				//	.SelectMany(sourceConnection =>
+				//		sourceConnection.Configuration.Groups
+				//			.Where(group => string.IsNullOrEmpty(Settings.Client.D_SelectedFilterGroup) || group.Equals(Settings.Client.D_SelectedFilterGroup))
+				//			.SelectMany(group => sourceConnection.Configuration.Applications
+				//				.Where(application => group.Applications.Contains(application.ID))
+				//				.Where(application => application.Sources.Count > 0)
+				//				.Where(application => string.IsNullOrEmpty(Settings.Client.D_SelectedFilterApplication) || application.Equals(Settings.Client.D_SelectedFilterApplication))
+				//				.SelectMany(application => ConnectionStore.Connections.Values
+				//					.Where(destinationConnection => destinationConnection.Configuration != null)
+				//					.Where(destinationConnection => !Comparer.MachinesEqual(destinationConnection.Machine, sourceConnection.Machine))
+				//					.Where(destinationConnection => string.IsNullOrEmpty(Settings.Client.D_SelectedFilterDestinationMachine) || destinationConnection.Machine.Equals(Settings.Client.D_SelectedFilterDestinationMachine))
+				//					.Where(destinationConnection => destinationConnection.Configuration.Groups.Any(destinationGroup => Comparer.GroupsEqual(destinationGroup, group)))
+				//					.Select(destinationConnection => new
+				//						{
+				//							SourceMachine = sourceConnection.Machine,
+				//							Group = group,
+				//							Application = application,
+				//							DestinationMachine = destinationConnection.Machine
+				//						}))))
+				//	.ToList();
+
+				//var machinesGroupsApplicationsMachines = destinationMachines
+				//	.GroupBy(a => a.SourceMachine, (a, b) => new
+				//		{
+				//			SourceMachine = a,
+				//			Groups = b.GroupBy(c => c.Group, (c, d) => new
+				//				{
+				//					Group = c,
+				//					Applications = d.GroupBy(e => e.Application, (e, f) => new
+				//						{
+				//							Application = e,
+				//							DestinationMachines = f
+				//						})
+				//				})
+				//		}, new MachineEqualityComparer());
+
+				_macroRootNodes.AddRange(Settings.Client.Macros.Select(macro =>
+					{
+						IEnumerable<MacroActionNode> actionNodes = macro.Actions.Select(macroAction => new MacroActionNode(macroAction, macro.ID)).ToList();
+						_macroActionNodes.AddRange(actionNodes);
+						return new MacroNode(macro, actionNodes);
+					}).ToList());
+
+				//_macroRootNodes.AddRange(machinesGroupsApplicationsMachines.Select(machineGroupsApplicationsMachines =>
+				//	{
+				//		IEnumerable<DistributionGroupNode> groupNodes = machineGroupsApplicationsMachines.Groups.Select(groupApplicationsMachines =>
+				//			{
+				//				IEnumerable<DistributionApplicationNode> applicationNodes = groupApplicationsMachines.Applications.Select(applicationMachines =>
+				//					{
+				//						IEnumerable<DistributionDestinationMachineNode> destinationMachineNodes = applicationMachines.DestinationMachines.Select(machine =>
+				//							new DistributionDestinationMachineNode(machine.DestinationMachine, machine.Application.ID, machine.Group.ID, machine.SourceMachine.ID)).ToList();
+				//						_distributionDestinationMachineNodes.AddRange(destinationMachineNodes);
+				//						return new DistributionApplicationNode(applicationMachines.Application, destinationMachineNodes, grouping);
+				//					}).ToList(); // must make ToList() to ensure DestinationMachineNodes only are created once
+				//				_allDistributionNodes.AddRange(applicationNodes);
+				//				return new DistributionGroupNode(groupApplicationsMachines.Group, machineGroupsApplicationsMachines.SourceMachine.ID, applicationNodes, grouping);
+				//			}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
+				//		_allDistributionNodes.AddRange(groupNodes);
+				//		return new DistributionSourceMachineNode(machineGroupsApplicationsMachines.SourceMachine, null, groupNodes, grouping);
+				//	}).ToList());
+
+				_allMacroNodes.AddRange(_macroRootNodes);
+				_allMacroNodes.AddRange(_macroActionNodes);
+				_macroRootNodes.ForEach(node =>
+					{
+						node.SizeChanged += RootNode_SizeChanged;
+						node.CheckedChanged += Node_CheckedChanged;
+						node.ActionTaken += Node_ActionTaken;
+					});
+			}
+
+			if (_macroActionNodes.Count > 0)
+			{
+				UpdateSize(_macroRootNodes.Select(node => node.LayoutNode()).ToList());
+
+				_macroRootNodes.ForEach(node =>
+					{
+						node.ForceWidth(flowLayoutPanelMacros.Size.Width);
+						//flowLayoutPanelMacros.Controls.Add((UserControl) node);
+					});
+
+				flowLayoutPanelMacros.Controls.AddRange(_macroRootNodes.Cast<Control>().ToArray());
+
+				Settings.Client.D_CheckedNodes.ToList()
+					.Select(id => _macroActionNodes.FirstOrDefault(node => node.Matches(id)))
+					.Where(node => node != null)
+					.ToList().ForEach(node => node.Check(true));
+			}
+			else
+			{
+				UpdateSize(null);
+			}
+
+			labelMacroUnavailable.Visible = (_macroActionNodes.Count == 0);
 			//}
 			//catch (Exception ex)
 			//{

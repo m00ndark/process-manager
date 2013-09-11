@@ -91,6 +91,7 @@
     <Compile Include="DataObjects\DistributionWork.cs" />
     <Compile Include="DataObjects\IMacroAction.cs" />
     <Compile Include="DataObjects\Macro.cs" />
+    <Compile Include="DataObjects\MacroAction.cs" />
     <Compile Include="DataObjects\MacroDistributionAction.cs" />
     <Compile Include="DataObjects\MacroProcessAction.cs" />
     <Compile Include="DataObjects\MacroWaitAction.cs" />

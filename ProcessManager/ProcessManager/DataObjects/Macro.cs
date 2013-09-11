@@ -6,16 +6,7 @@ namespace ProcessManager.DataObjects
 {
 	public class Macro
 	{
-		public Macro()
-		{
-			Actions = new List<IMacroAction>();
-		}
-
-		public Macro(string name) : this()
-		{
-			ID = Guid.NewGuid();
-			Name = name;
-		}
+		public Macro(string name) : this(Guid.NewGuid(), name) {}
 
 		public Macro(Guid id, string name) : this()
 		{
@@ -23,11 +14,16 @@ namespace ProcessManager.DataObjects
 			Name = name;
 		}
 
+		private Macro()
+		{
+			Actions = new List<IMacroAction>();
+		}
+
 		#region Properties
 
-		public Guid ID { get; set; }
+		public Guid ID { get; private set; }
 		public string Name { get; set; }
-		public List<IMacroAction> Actions { get; set; }
+		public List<IMacroAction> Actions { get; private set; }
 
 		#endregion
 

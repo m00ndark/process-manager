@@ -1,4 +1,6 @@
-﻿namespace ProcessManager.DataObjects
+﻿using System;
+
+namespace ProcessManager.DataObjects
 {
     public enum MacroActionType
     {
@@ -17,6 +19,7 @@
 
     public interface IMacroAction
     {
+		Guid ID { get; }
         MacroActionType Type { get; }
         bool IsValid { get; }
     }

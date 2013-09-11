@@ -5,7 +5,8 @@
 		Start,
 		Stop,
 		Restart,
-		Distribute
+		Distribute,
+		Play
 	}
 
 	public interface IAction

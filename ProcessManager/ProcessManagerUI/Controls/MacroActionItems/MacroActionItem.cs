@@ -83,7 +83,7 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 					_macroActionItem = null;
 				}
 
-                ComboBoxItem<MacroActionType> comboBoxItem = (ComboBoxItem<MacroActionType>)comboBoxActionTypes.Items[comboBoxActionTypes.SelectedIndex];
+				ComboBoxItem<MacroActionType> comboBoxItem = (ComboBoxItem<MacroActionType>) comboBoxActionTypes.Items[comboBoxActionTypes.SelectedIndex];
 
 				if (comboBoxItem.Text == string.Empty)
 				{

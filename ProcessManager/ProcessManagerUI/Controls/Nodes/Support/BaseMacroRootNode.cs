@@ -6,26 +6,23 @@ using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
-using ProcessManager.Utilities;
 
 namespace ProcessManagerUI.Controls.Nodes.Support
 {
-	public partial class BaseProcessRootNode : UserControl, IRootNode
+	public partial class BaseMacroRootNode : UserControl, IRootNode
 	{
 		private bool _ignoreCheckedChangedEvents;
 		private Size _childrenSize;
-		private readonly ProcessGrouping _grouping;
 		private bool _expanded;
 
 		public event EventHandler CheckedChanged;
 		public event EventHandler<ActionEventArgs> ActionTaken;
 
-		protected BaseProcessRootNode(IEnumerable<INode> childNodes, ProcessGrouping grouping, bool expanded)
+        protected BaseMacroRootNode(IEnumerable<INode> childNodes, bool expanded)
 		{
 			InitializeComponent();
 			_ignoreCheckedChangedEvents = false;
 			_childrenSize = new Size(0, 0);
-			_grouping = grouping;
 			_expanded = expanded;
 			ChildNodes = new List<INode>(childNodes);
 			ChildNodes.Select(node => node as IRootNode).Where(node => node != null).ToList()
@@ -65,9 +62,9 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			Expanded = !Expanded;
 
 			if (Expanded)
-				Settings.Client.P_CollapsedNodes[_grouping].Remove(ID);
-			else if (!Settings.Client.P_CollapsedNodes[_grouping].Contains(ID))
-				Settings.Client.P_CollapsedNodes[_grouping].Add(ID);
+				Settings.Client.M_CollapsedNodes.Remove(ID);
+			else if (!Settings.Client.M_CollapsedNodes.Contains(ID))
+				Settings.Client.M_CollapsedNodes.Add(ID);
 		}
 
 		private void CheckBoxSelected_CheckStateChanged(object sender, EventArgs e)
@@ -84,19 +81,9 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			}
 		}
 
-		private void LinkLabelStart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabelPlay_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			TakeAction(ActionType.Start);
-		}
-
-		private void LinkLabelStop_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			TakeAction(ActionType.Stop);
-		}
-
-		private void LinkLabelRestart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			TakeAction(ActionType.Restart);
+			TakeAction(ActionType.Play);
 		}
 
 		#endregion
@@ -123,8 +110,8 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		private void Node_ActionTaken(object sender, ActionEventArgs e)
 		{
-			ProcessAction action = (ProcessAction) e.Action;
-			UpdateProcessAction(action);
+			MacroAction action = (MacroAction) e.Action;
+			UpdateMacroAction(action);
 			RaiseActionTakenEvent(action);
 		}
 
@@ -164,9 +151,10 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			checkBoxSelected.Checked = @checked;
 		}
 
-		public void TakeAction(ActionType type)
+		public virtual void TakeAction(ActionType type)
 		{
-			ChildNodes.ForEach(node => node.TakeAction(type));
+			//ChildNodes.ForEach(node => node.TakeAction(type));
+			throw new InvalidOperationException("Class must be inherited!");
 		}
 
 		#endregion
@@ -179,7 +167,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 				CheckedChanged(this, new EventArgs());
 		}
 
-		private void RaiseActionTakenEvent(ProcessAction action)
+		protected void RaiseActionTakenEvent(IAction action)
 		{
 			if (ActionTaken != null)
 				ActionTaken(this, new ActionEventArgs(action));
@@ -188,11 +176,6 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 		#endregion
 
 		#region Helpers
-
-		protected static Guid MakeID(Guid machineID, Guid groupID)
-		{
-			return Cryptographer.CreateGUID(machineID.ToString() + groupID.ToString());
-		}
 
 		private void ApplyExpandedCollapsed()
 		{
@@ -205,12 +188,10 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		private void EnableActionLinks(bool enable)
 		{
-			linkLabelStart.Enabled = enable;
-			linkLabelStop.Enabled = enable;
-			linkLabelRestart.Enabled = enable;
+			linkLabelPlay.Enabled = enable;
 		}
 
-		protected virtual void UpdateProcessAction(ProcessAction action)
+		protected virtual void UpdateMacroAction(MacroAction action)
 		{
 			throw new InvalidOperationException("Class must be inherited!");
 		}

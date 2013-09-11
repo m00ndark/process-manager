@@ -10,7 +10,8 @@ namespace ProcessManager
 	public enum ControlPanelTab
 	{
 		Process,
-		Distribution
+		Distribution,
+		Macro
 	}
 
 	public enum ProcessGrouping
@@ -148,6 +149,8 @@ namespace ProcessManager
 						{ DistributionGrouping.MachineGroupApplicationMachine, new List<Guid>() },
 						{ DistributionGrouping.GroupMachineApplicationMachine, new List<Guid>() }
 					};
+				M_CheckedNodes = new List<Guid>();
+                M_CollapsedNodes = new List<Guid>();
 			}
 
 			#region Properties
@@ -171,6 +174,8 @@ namespace ProcessManager
 			public static string D_SelectedFilterDestinationMachine { get; set; }
 			public static List<Guid> D_CheckedNodes { get; private set; }
 			public static IDictionary<DistributionGrouping, List<Guid>> D_CollapsedNodes { get; private set; }
+			public static List<Guid> M_CheckedNodes { get; private set; }
+			public static List<Guid> M_CollapsedNodes { get; private set; }
 
 			#endregion
 

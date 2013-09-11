@@ -142,6 +142,21 @@
     <Compile Include="Controls\Nodes\DistributionSourceMachineNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\Nodes\MacroActionNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\MacroActionNode.Designer.cs">
+      <DependentUpon>MacroActionNode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Nodes\MacroNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\Support\BaseMacroRootNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\Support\BaseMacroRootNode.Designer.cs">
+      <DependentUpon>BaseMacroRootNode.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Nodes\Support\BaseProcessRootNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -239,11 +254,17 @@
     <EmbeddedResource Include="Controls\MacroActionItems\MacroWaitActionItem.resx">
       <DependentUpon>MacroWaitActionItem.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Nodes\MacroActionNode.resx">
+      <DependentUpon>MacroActionNode.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\Nodes\ProcessApplicationNode.resx">
       <DependentUpon>ProcessApplicationNode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Nodes\DistributionDestinationMachineNode.resx">
       <DependentUpon>DistributionDestinationMachineNode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Nodes\Support\BaseMacroRootNode.resx">
+      <DependentUpon>BaseMacroRootNode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Nodes\Support\BaseProcessRootNode.resx">
       <DependentUpon>BaseProcessRootNode.cs</DependentUpon>
@@ -340,7 +361,18 @@
   <ItemGroup>
     <None Include="Resources\distribution-failure-16.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\macro-unknown-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\macro-ongoing-16.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\macro-success-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\macro-failure-16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

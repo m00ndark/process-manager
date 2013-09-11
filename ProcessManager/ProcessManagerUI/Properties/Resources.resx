@@ -163,6 +163,18 @@
   <data name="machine_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\machine-16.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="macro_failure_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\macro-failure-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="macro_ongoing_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\macro-ongoing-16.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="macro_success_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\macro-success-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="macro_unknown_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\macro-unknown-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="remove_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\remove-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

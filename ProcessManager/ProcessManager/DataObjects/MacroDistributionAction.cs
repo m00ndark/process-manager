@@ -4,11 +4,14 @@ namespace ProcessManager.DataObjects
 {
 	public class MacroDistributionAction : IMacroAction
 	{
-        public MacroDistributionAction(MacroActionType type)
+		public MacroDistributionAction(MacroActionType type) : this(Guid.NewGuid(), type) {}
+
+        public MacroDistributionAction(Guid id, MacroActionType type)
 		{
             if (type != MacroActionType.Distribute)
                 throw new ArgumentException("Invalid distribution action type");
 
+	        ID = id;
             Type = type;
 			SourceMachineID = Guid.Empty;
 			GroupID = Guid.Empty;
@@ -18,6 +21,7 @@ namespace ProcessManager.DataObjects
 
 		#region Properties
 
+		public Guid ID { get; private set; }
         public MacroActionType Type { get; private set; }
 		public Guid SourceMachineID { get; set; }
 		public Guid GroupID { get; set; }

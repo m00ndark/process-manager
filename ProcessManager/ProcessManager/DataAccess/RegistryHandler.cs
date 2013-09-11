@@ -66,6 +66,8 @@ namespace ProcessManager.DataAccess
 								while (actionKey != null)
 								{
 									IMacroAction action = null;
+									string id = (string) actionKey.GetValue("ID");
+									if (id == null) break;
 									string actionTypeStr = (string) actionKey.GetValue("Action Type");
 									if (actionTypeStr == null) break;
 								    MacroActionType actionType = (MacroActionType) Enum.Parse(typeof(MacroActionType), actionTypeStr);
@@ -77,7 +79,7 @@ namespace ProcessManager.DataAccess
                                             string processMachineID = (string) actionKey.GetValue("Machine ID", Guid.Empty.ToString());
                                             string processGroupID = (string) actionKey.GetValue("Group ID", Guid.Empty.ToString());
                                             string processApplicationID = (string) actionKey.GetValue("Application ID", Guid.Empty.ToString());
-											action = new MacroProcessAction(actionType)
+											action = new MacroProcessAction(Guid.Parse(id), actionType)
 												{
                                                     MachineID = Guid.Parse(processMachineID),
 													GroupID = Guid.Parse(processGroupID),
@@ -89,7 +91,7 @@ namespace ProcessManager.DataAccess
                                             string distributionGroupID = (string) actionKey.GetValue("Group ID", Guid.Empty.ToString());
                                             string distributionApplicationID = (string) actionKey.GetValue("Application ID", Guid.Empty.ToString());
                                             string distributionDestinationMachineID = (string) actionKey.GetValue("Destination Machine ID", Guid.Empty.ToString());
-											action = new MacroDistributionAction(actionType)
+											action = new MacroDistributionAction(Guid.Parse(id), actionType)
 												{
                                                     SourceMachineID = Guid.Parse(distributionSourceMachineID),
 													GroupID = Guid.Parse(distributionGroupID),
@@ -100,7 +102,7 @@ namespace ProcessManager.DataAccess
                                         case MacroActionType.Wait:
 											string waitForEvent = (string) actionKey.GetValue("Wait For Event");
 											string timeoutMilliseconds = (string) actionKey.GetValue("Timeout Milliseconds", "0");
-											action = new MacroWaitAction(actionType)
+											action = new MacroWaitAction(Guid.Parse(id), actionType)
 												{
 													WaitForEvent = waitForEvent != null ? (MacroActionWaitForEvent?) Enum.Parse(typeof(MacroActionWaitForEvent), waitForEvent) : null,
                                                     TimeoutMilliseconds = int.Parse(timeoutMilliseconds)
@@ -213,6 +215,30 @@ namespace ProcessManager.DataAccess
 							}
 							collapsedNodesKey.Close();
 						}
+						Settings.Client.M_CheckedNodes.Clear();
+						checkedNodesKey = statesKey.OpenSubKey("M Checked Nodes", false);
+						if (checkedNodesKey != null)
+						{
+							string nodeID = (string) checkedNodesKey.GetValue("Node " + Settings.Client.M_CheckedNodes.Count.ToString("00"));
+							while (nodeID != null)
+							{
+								Settings.Client.M_CheckedNodes.Add(new Guid(nodeID));
+								nodeID = (string) checkedNodesKey.GetValue("Node " + Settings.Client.M_CheckedNodes.Count.ToString("00"));
+							}
+							checkedNodesKey.Close();
+						}
+						Settings.Client.M_CollapsedNodes.Clear();
+						collapsedNodesKey = statesKey.OpenSubKey("M Collapsed Nodes", false);
+						if (collapsedNodesKey != null)
+						{
+                            string nodeID = (string) collapsedNodesKey.GetValue("Node " + Settings.Client.M_CollapsedNodes.Count.ToString("00"));
+						    while (nodeID != null)
+						    {
+                                Settings.Client.M_CollapsedNodes.Add(new Guid(nodeID));
+                                nodeID = (string) collapsedNodesKey.GetValue("Node " + Settings.Client.M_CollapsedNodes.Count.ToString("00"));
+						    }
+							collapsedNodesKey.Close();
+						}
 						statesKey.Close();
 					}
 					break;
@@ -270,6 +296,7 @@ namespace ProcessManager.DataAccess
 							{
 								RegistryKey actionKey = macroKey.CreateSubKey("Action " + i.ToString("00"));
 							    if (actionKey == null) continue;
+								actionKey.SetValue("ID", macro.Actions[i].ID.ToString());
 								actionKey.SetValue("Action Type", macro.Actions[i].Type.ToString());
 								if (macro.Actions[i] is MacroProcessAction)
 								{
@@ -394,6 +421,32 @@ namespace ProcessManager.DataAccess
 									}
 									groupingKey.Close();
 								}
+							}
+							collapsedNodesKey.Close();
+						}
+						checkedNodesKey = statesKey.CreateSubKey("M Checked Nodes");
+						if (checkedNodesKey != null)
+						{
+							foreach (string valueName in checkedNodesKey.GetValueNames().Where(valueName => valueName.StartsWith("Node ")))
+							{
+								checkedNodesKey.DeleteValue(valueName);
+							}
+							for (int i = 0; i < Settings.Client.M_CheckedNodes.Count; i++)
+							{
+								checkedNodesKey.SetValue("Node " + i.ToString("00"), Settings.Client.M_CheckedNodes[i].ToString());
+							}
+							checkedNodesKey.Close();
+						}
+						collapsedNodesKey = statesKey.CreateSubKey("M Collapsed Nodes");
+						if (collapsedNodesKey != null)
+						{
+                            foreach (string valueName in collapsedNodesKey.GetValueNames().Where(valueName => valueName.StartsWith("Node ")))
+							{
+                                collapsedNodesKey.DeleteValue(valueName);
+							}
+							for (int i = 0; i < Settings.Client.M_CollapsedNodes.Count; i++)
+							{
+                                collapsedNodesKey.SetValue("Node " + i.ToString("00"), Settings.Client.M_CollapsedNodes[i].ToString());
 							}
 							collapsedNodesKey.Close();
 						}

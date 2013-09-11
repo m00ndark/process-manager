@@ -6,7 +6,7 @@ namespace ProcessManager.DataObjects
 	{
 		public ProcessAction(ActionType type, Application application)
 		{
-			if (type == ActionType.Distribute)
+			if (type != ActionType.Start && type != ActionType.Stop && type != ActionType.Restart)
 				throw new ArgumentException("Invalid process action type");
 
 			Type = type;
