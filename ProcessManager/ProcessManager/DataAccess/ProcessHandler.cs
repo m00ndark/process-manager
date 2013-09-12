@@ -16,28 +16,30 @@ namespace ProcessManager.DataAccess
 			return applications.SelectMany(application => GetProcesses(application).Select(process => process.GetPathName())).ToList();
 		}
 
-		public static void Start(Group group, Application application)
+		public static bool Start(Group group, Application application)
 		{
-			Start(group, application, false);
+			return Start(group, application, false);
 		}
 
-		private static void Start(Group group, Application application, bool waitUntilStopped)
+		private static bool Start(Group group, Application application, bool waitUntilStopped)
 		{
 			if (waitUntilStopped)
 				WaitForProcessToTerminate(group, application);
 
 			if (ProcessExists(group, application))
-				return;
+				return false;
 
 			string fullPath = Path.Combine(group.Path, application.RelativePath.TrimStart('\\'));
 			Process process = new Process() { StartInfo = { FileName = fullPath, Arguments = application.Arguments } };
 			try
 			{
 				process.Start();
+				return true;
 			}
 			catch (Exception ex)
 			{
 				Logger.Add("Failed to start process with path " + fullPath, ex);
+				return false;
 			}
 		}
 
@@ -59,10 +61,9 @@ namespace ProcessManager.DataAccess
 			return success;
 		}
 
-		public static void Restart(Group group, Application application)
+		public static bool Restart(Group group, Application application)
 		{
-			if (Stop(group, application))
-				Start(group, application, true);
+			return Stop(group, application) && Start(group, application, true);
 		}
 
 		private static void WaitForProcessToTerminate(Group group, Application application)

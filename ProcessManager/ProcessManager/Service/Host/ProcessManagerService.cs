@@ -81,17 +81,17 @@ namespace ProcessManager.Service.Host
 			return ProcessManager.Instance.GetAllProcessStatuses().Select(x => new DTOProcessStatus(x)).ToList();
 		}
 
-		public void TakeProcessAction(DTOProcessAction processAction)
+		public bool TakeProcessAction(DTOProcessAction processAction)
 		{
 			Logger.Add(LogType.Debug, "TakeProcessAction call received: action = " + processAction.Type + ", " + processAction.GroupID + " / " + processAction.ApplicationID);
-			ProcessManager.Instance.TakeProcessAction(processAction.GroupID, processAction.ApplicationID, processAction.Type);
+			return ProcessManager.Instance.TakeProcessAction(processAction.GroupID, processAction.ApplicationID, processAction.Type);
 		}
 
-		public void TakeDistributionAction(DTODistributionAction distributionAction)
+		public bool TakeDistributionAction(DTODistributionAction distributionAction)
 		{
 			Logger.Add(LogType.Debug, "TakeDistributionAction call received: action = " + distributionAction.Type + ", " + distributionAction.SourceMachineHostName + " / " + distributionAction.GroupID + " / " + distributionAction.ApplicationID + " / " + distributionAction.DestinationMachineHostName);
 			IProcessManagerServiceEventHandler caller = OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>();
-			ProcessManager.Instance.TakeDistributionAction(distributionAction.SourceMachineHostName, distributionAction.GroupID, distributionAction.ApplicationID, distributionAction.DestinationMachineHostName, distributionAction.Type, caller);
+			return ProcessManager.Instance.TakeDistributionAction(distributionAction.SourceMachineHostName, distributionAction.GroupID, distributionAction.ApplicationID, distributionAction.DestinationMachineHostName, distributionAction.Type, caller);
 		}
 
 		public List<DTOFileSystemDrive> GetFileSystemDrives()
@@ -125,12 +125,12 @@ namespace ProcessManager.Service.Host
 				try
 				{
 					//Logger.Add(LogType.Debug, "InstanceContext.State = " + _clientsInstances[client].State);
-					Logger.Add(LogType.Debug, "Sending ProcessStatusesChanged event: thread id = " + System.Threading.Thread.CurrentThread.ManagedThreadId + ", count = " + e.ProcessStatuses.Count + e.ProcessStatuses.Aggregate("", (x, y) => x + ", " + y.GroupID + " / " + y.ApplicationID));
+					Logger.Add(LogType.Debug, "Sending ProcessStatusesChanged event: count = " + e.ProcessStatuses.Count + e.ProcessStatuses.Aggregate("", (x, y) => x + ", " + y.GroupID + " / " + y.ApplicationID));
 					client.ServiceEvent_ProcessStatusesChanged(e.ProcessStatuses.Select(x => new DTOProcessStatus(x)).ToList());
 				}
 				catch (Exception ex)
 				{
-					Logger.Add("Failed to send ProcessStatusesChanged event: thread id = " + System.Threading.Thread.CurrentThread.ManagedThreadId + ", count = " + e.ProcessStatuses.Count + e.ProcessStatuses.Aggregate("", (x, y) => x + ", " + y.GroupID + " / " + y.ApplicationID), ex);
+					Logger.Add("Failed to send ProcessStatusesChanged event: count = " + e.ProcessStatuses.Count + e.ProcessStatuses.Aggregate("", (x, y) => x + ", " + y.GroupID + " / " + y.ApplicationID), ex);
 					faultedClients.Add(client);
 				}
 			}

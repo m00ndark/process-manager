@@ -143,7 +143,7 @@ namespace ProcessManagerUI.Controls.Nodes
 				case MacroActionType.Restart:
 					MacroProcessAction macroProcessAction = (MacroProcessAction) macroAction;
 					Machine machine = Settings.Client.Machines.FirstOrDefault(x => x.ID == macroProcessAction.MachineID);
-					if (ConnectionStore.ConnectionCreated(machine))
+					if (machine != null && ConnectionStore.ConnectionCreated(machine))
 					{
 						group = ConnectionStore.Connections[machine].Configuration.Groups.FirstOrDefault(x => x.ID == macroProcessAction.GroupID);
 						application = ConnectionStore.Connections[machine].Configuration.Applications.FirstOrDefault(x => x.ID == macroProcessAction.ApplicationID);
@@ -156,7 +156,7 @@ namespace ProcessManagerUI.Controls.Nodes
 					MacroDistributionAction macroDistributionAction = (MacroDistributionAction) macroAction;
 					Machine sourceMachine = Settings.Client.Machines.FirstOrDefault(x => x.ID == macroDistributionAction.SourceMachineID);
 					Machine destinationMachine = Settings.Client.Machines.FirstOrDefault(x => x.ID == macroDistributionAction.DestinationMachineID);
-					if (ConnectionStore.ConnectionCreated(sourceMachine))
+					if (sourceMachine != null && ConnectionStore.ConnectionCreated(sourceMachine))
 					{
 						group = ConnectionStore.Connections[sourceMachine].Configuration.Groups.FirstOrDefault(x => x.ID == macroDistributionAction.GroupID);
 						application = ConnectionStore.Connections[sourceMachine].Configuration.Applications.FirstOrDefault(x => x.ID == macroDistributionAction.ApplicationID);

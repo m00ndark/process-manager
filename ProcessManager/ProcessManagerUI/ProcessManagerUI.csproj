@@ -195,6 +195,8 @@
     <Compile Include="Forms\FileSystemBrowserForm.Designer.cs">
       <DependentUpon>FileSystemBrowserForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="IControlPanel.cs" />
+    <Compile Include="MacroPlayer.cs" />
     <Compile Include="ServiceHelper.cs" />
     <Compile Include="Support\ComboBoxItem.cs" />
     <Compile Include="Controls\BackgroundPanel.cs">

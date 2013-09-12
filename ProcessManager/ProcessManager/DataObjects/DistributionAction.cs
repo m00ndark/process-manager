@@ -4,26 +4,21 @@ namespace ProcessManager.DataObjects
 {
 	public class DistributionAction : IAction
 	{
-		public DistributionAction(ActionType type, Machine destinationMachine)
+		public DistributionAction(ActionType type) : this(type, null) { }
+
+		public DistributionAction(ActionType type, Machine destinationMachine) : this(type, null, null, null, destinationMachine) { }
+
+		public DistributionAction(ActionType type, Machine sourceMachine, Group group, Application application, Machine destinationMachine)
 		{
 			if (type != ActionType.Distribute)
 				throw new ArgumentException("Invalid distribution action type");
 
 			Type = type;
-			SourceMachine = null;
-			Group = null;
-			Application = null;
-			DestinationMachine = destinationMachine;
-		}
-
-		public DistributionAction(ActionType type, Machine sourceMachine, Group group, Application application, Machine destinationMachine) : this(type, destinationMachine)
-		{
 			SourceMachine = sourceMachine;
 			Group = group;
 			Application = application;
+			DestinationMachine = destinationMachine;
 		}
-
-		public DistributionAction(ActionType type) : this(type, null) {}
 
 		#region Properties
 

@@ -47,14 +47,14 @@ namespace ProcessManager.Service.Client
 			return Channel.GetAllProcessStatuses();
 		}
 
-		public void TakeProcessAction(DTOProcessAction processAction)
+		public bool TakeProcessAction(DTOProcessAction processAction)
 		{
-			Channel.TakeProcessAction(processAction);
+			return Channel.TakeProcessAction(processAction);
 		}
 
-		public void TakeDistributionAction(DTODistributionAction distributionAction)
+		public bool TakeDistributionAction(DTODistributionAction distributionAction)
 		{
-			Channel.TakeDistributionAction(distributionAction);
+			return Channel.TakeDistributionAction(distributionAction);
 		}
 
 		public List<DTOFileSystemDrive> GetFileSystemDrives()

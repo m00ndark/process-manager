@@ -107,7 +107,7 @@ namespace ProcessManager
 				return _processStatuses.Values.SelectMany(x => x.Values).ToList();
 		}
 
-		public void TakeProcessAction(Guid groupID, Guid applicationID, ActionType type)
+		public bool TakeProcessAction(Guid groupID, Guid applicationID, ActionType type)
 		{
 			Configuration configuration = Configuration.Read();
 			Group group = configuration.Groups.FirstOrDefault(x => x.ID == groupID);
@@ -116,30 +116,29 @@ namespace ProcessManager
 			if (group == null)
 			{
 				Logger.Add(LogType.Error, "Application " + type + ": Could not find group with ID " + groupID);
-				return;
+				return false;
 			}
 
 			if (application == null)
 			{
 				Logger.Add(LogType.Error, "Application " + type + ": Could not find application with ID " + applicationID);
-				return;
+				return false;
 			}
 
 			switch (type)
 			{
 				case ActionType.Start:
-					ProcessHandler.Start(group, application);
-					break;
+					return ProcessHandler.Start(group, application);
 				case ActionType.Stop:
-					ProcessHandler.Stop(group, application);
-					break;
+					return ProcessHandler.Stop(group, application);
 				case ActionType.Restart:
-					ProcessHandler.Restart(group, application);
-					break;
+					return ProcessHandler.Restart(group, application);
+				default:
+					return false;
 			}
 		}
 
-		public void TakeDistributionAction(string sourceMachineHostName, Guid groupID, Guid applicationID, string destinationMachineHostName, ActionType type, IProcessManagerServiceEventHandler caller)
+		public bool TakeDistributionAction(string sourceMachineHostName, Guid groupID, Guid applicationID, string destinationMachineHostName, ActionType type, IProcessManagerServiceEventHandler caller)
 		{
 			Configuration configuration = Configuration.Read();
 			Group group = configuration.Groups.FirstOrDefault(x => x.ID == groupID);
@@ -148,28 +147,29 @@ namespace ProcessManager
 			if (string.IsNullOrEmpty(sourceMachineHostName))
 			{
 				Logger.Add(LogType.Error, "Application " + type + ": Missing source machine host name");
-				return;
+				return false;
 			}
 
 			if (group == null)
 			{
 				Logger.Add(LogType.Error, "Application " + type + ": Could not find group with ID " + groupID);
-				return;
+				return false;
 			}
 
 			if (application == null)
 			{
 				Logger.Add(LogType.Error, "Application " + type + ": Could not find application with ID " + applicationID);
-				return;
+				return false;
 			}
 
 			if (string.IsNullOrEmpty(destinationMachineHostName))
 			{
 				Logger.Add(LogType.Error, "Application " + type + ": Missing destination machine host name");
-				return;
+				return false;
 			}
 
 			DistributionWorker.Instance.AddWork(new DistributionWork(type, new Machine(sourceMachineHostName), group, application, new Machine(destinationMachineHostName), caller));
+			return true;
 		}
 
 		public List<FileSystemDrive> GetFileSystemDrives()

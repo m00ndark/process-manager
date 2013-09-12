@@ -20,10 +20,10 @@ namespace ProcessManager.Service.Common
 		List<DTOProcessStatus> GetAllProcessStatuses();
 
 		[OperationContract]
-		void TakeProcessAction(DTOProcessAction processAction);
+		bool TakeProcessAction(DTOProcessAction processAction);
 
 		[OperationContract]
-		void TakeDistributionAction(DTODistributionAction distributionAction);
+		bool TakeDistributionAction(DTODistributionAction distributionAction);
 
 		[OperationContract]
 		List<DTOFileSystemDrive> GetFileSystemDrives();

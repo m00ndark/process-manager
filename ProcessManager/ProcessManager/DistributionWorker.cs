@@ -97,7 +97,7 @@ namespace ProcessManager
 			if (e.Status == ProcessManagerServiceHandlerStatus.Connected)
 			{
 				foreach (DistributionWork work in _pendingDistributionWork.Where(work => Equals(work.DestinationMachine, e.ServiceHandler.Machine)))
-					new Thread(() => DistributeSourceFiles(work)).Start();
+					new Thread(() => DistributeSourceFilesThread(work)).Start();
 			}
 			else
 			{
@@ -220,7 +220,7 @@ namespace ProcessManager
 			}
 		}
 
-		private void DistributeSourceFiles(DistributionWork work)
+		private void DistributeSourceFilesThread(DistributionWork work)
 		{
 			try
 			{
