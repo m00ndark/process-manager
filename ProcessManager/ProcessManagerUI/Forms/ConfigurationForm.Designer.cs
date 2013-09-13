@@ -36,19 +36,6 @@
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.labelNothingToShow = new System.Windows.Forms.Label();
 			this.labelMachineNotAvailable = new System.Windows.Forms.Label();
-			this.panelMacros = new ProcessManagerUI.Controls.BackgroundPanel();
-			this.panelMacro = new System.Windows.Forms.Panel();
-			this.buttonAddMacroAction = new System.Windows.Forms.Button();
-			this.flowLayoutPanelMacroActions = new System.Windows.Forms.FlowLayoutPanel();
-			this.labeledDividerMacroActions = new ProcessManagerUI.Controls.LabeledDivider();
-			this.labelMacroName = new System.Windows.Forms.Label();
-			this.textBoxMacroName = new System.Windows.Forms.TextBox();
-			this.labeledDividerMacro = new ProcessManagerUI.Controls.LabeledDivider();
-			this.labelNoMacroSelected = new System.Windows.Forms.Label();
-			this.buttonRemoveMacro = new System.Windows.Forms.Button();
-			this.buttonAddMacro = new System.Windows.Forms.Button();
-			this.listViewMacros = new ProcessManagerUI.Controls.ListView();
-			this.columnHeaderMacros = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.panelGroups = new ProcessManagerUI.Controls.BackgroundPanel();
 			this.panelGroup = new System.Windows.Forms.Panel();
 			this.labeledDividerGroup = new ProcessManagerUI.Controls.LabeledDivider();
@@ -102,8 +89,7 @@
 			this.listViewPlugins = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderPlugins = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.treeViewConfiguration = new ProcessManagerUI.Controls.TreeView();
-			this.panelMacros.SuspendLayout();
-			this.panelMacro.SuspendLayout();
+			this.buttonMacros = new System.Windows.Forms.Button();
 			this.panelGroups.SuspendLayout();
 			this.panelGroup.SuspendLayout();
 			this.panelApplications.SuspendLayout();
@@ -120,14 +106,14 @@
 			this.comboBoxMachines.FormattingEnabled = true;
 			this.comboBoxMachines.Location = new System.Drawing.Point(12, 12);
 			this.comboBoxMachines.Name = "comboBoxMachines";
-			this.comboBoxMachines.Size = new System.Drawing.Size(653, 21);
+			this.comboBoxMachines.Size = new System.Drawing.Size(572, 21);
 			this.comboBoxMachines.TabIndex = 0;
 			this.comboBoxMachines.SelectedIndexChanged += new System.EventHandler(this.ComboBoxMachines_SelectedIndexChanged);
 			// 
 			// buttonMachines
 			// 
 			this.buttonMachines.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonMachines.Location = new System.Drawing.Point(671, 11);
+			this.buttonMachines.Location = new System.Drawing.Point(590, 11);
 			this.buttonMachines.Name = "buttonMachines";
 			this.buttonMachines.Size = new System.Drawing.Size(92, 23);
 			this.buttonMachines.TabIndex = 1;
@@ -194,168 +180,6 @@
 			this.labelMachineNotAvailable.Text = "The selected machine is not available";
 			this.labelMachineNotAvailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.labelMachineNotAvailable.Visible = false;
-			// 
-			// panelMacros
-			// 
-			this.panelMacros.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelMacros.BackColor = System.Drawing.SystemColors.Window;
-			this.panelMacros.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
-			this.panelMacros.Controls.Add(this.panelMacro);
-			this.panelMacros.Controls.Add(this.labelNoMacroSelected);
-			this.panelMacros.Controls.Add(this.buttonRemoveMacro);
-			this.panelMacros.Controls.Add(this.buttonAddMacro);
-			this.panelMacros.Controls.Add(this.listViewMacros);
-			this.panelMacros.Location = new System.Drawing.Point(144, 39);
-			this.panelMacros.Name = "panelMacros";
-			this.panelMacros.Padding = new System.Windows.Forms.Padding(5);
-			this.panelMacros.Size = new System.Drawing.Size(618, 362);
-			this.panelMacros.TabIndex = 24;
-			this.panelMacros.Visible = false;
-			// 
-			// panelMacro
-			// 
-			this.panelMacro.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelMacro.Controls.Add(this.buttonAddMacroAction);
-			this.panelMacro.Controls.Add(this.flowLayoutPanelMacroActions);
-			this.panelMacro.Controls.Add(this.labeledDividerMacroActions);
-			this.panelMacro.Controls.Add(this.labelMacroName);
-			this.panelMacro.Controls.Add(this.textBoxMacroName);
-			this.panelMacro.Controls.Add(this.labeledDividerMacro);
-			this.panelMacro.Location = new System.Drawing.Point(144, 8);
-			this.panelMacro.Margin = new System.Windows.Forms.Padding(0);
-			this.panelMacro.Name = "panelMacro";
-			this.panelMacro.Size = new System.Drawing.Size(466, 345);
-			this.panelMacro.TabIndex = 14;
-			this.panelMacro.Visible = false;
-			// 
-			// buttonAddMacroAction
-			// 
-			this.buttonAddMacroAction.Image = global::ProcessManagerUI.Properties.Resources.add_16;
-			this.buttonAddMacroAction.Location = new System.Drawing.Point(23, 89);
-			this.buttonAddMacroAction.Name = "buttonAddMacroAction";
-			this.buttonAddMacroAction.Size = new System.Drawing.Size(28, 24);
-			this.buttonAddMacroAction.TabIndex = 26;
-			this.buttonAddMacroAction.UseVisualStyleBackColor = true;
-			this.buttonAddMacroAction.Click += new System.EventHandler(this.ButtonAddMacroAction_Click);
-			// 
-			// flowLayoutPanelMacroActions
-			// 
-			this.flowLayoutPanelMacroActions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.flowLayoutPanelMacroActions.Location = new System.Drawing.Point(57, 90);
-			this.flowLayoutPanelMacroActions.Name = "flowLayoutPanelMacroActions";
-			this.flowLayoutPanelMacroActions.Size = new System.Drawing.Size(409, 255);
-			this.flowLayoutPanelMacroActions.TabIndex = 25;
-			this.flowLayoutPanelMacroActions.Resize += new System.EventHandler(this.FlowLayoutPanelMacroActions_Resize);
-			// 
-			// labeledDividerMacroActions
-			// 
-			this.labeledDividerMacroActions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDividerMacroActions.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDividerMacroActions.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.labeledDividerMacroActions.Location = new System.Drawing.Point(0, 67);
-			this.labeledDividerMacroActions.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
-			this.labeledDividerMacroActions.Name = "labeledDividerMacroActions";
-			this.labeledDividerMacroActions.Size = new System.Drawing.Size(466, 15);
-			this.labeledDividerMacroActions.TabIndex = 24;
-			this.labeledDividerMacroActions.Text = "Actions";
-			// 
-			// labelMacroName
-			// 
-			this.labelMacroName.AutoSize = true;
-			this.labelMacroName.Location = new System.Drawing.Point(20, 26);
-			this.labelMacroName.Name = "labelMacroName";
-			this.labelMacroName.Size = new System.Drawing.Size(39, 13);
-			this.labelMacroName.TabIndex = 11;
-			this.labelMacroName.Text = "Name:";
-			// 
-			// textBoxMacroName
-			// 
-			this.textBoxMacroName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxMacroName.Location = new System.Drawing.Point(103, 23);
-			this.textBoxMacroName.Name = "textBoxMacroName";
-			this.textBoxMacroName.Size = new System.Drawing.Size(313, 22);
-			this.textBoxMacroName.TabIndex = 12;
-			this.textBoxMacroName.TextChanged += new System.EventHandler(this.TextBoxMacroName_TextChanged);
-			this.textBoxMacroName.Leave += new System.EventHandler(this.TextBoxMacroName_Leave);
-			// 
-			// labeledDividerMacro
-			// 
-			this.labeledDividerMacro.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDividerMacro.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDividerMacro.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.labeledDividerMacro.Location = new System.Drawing.Point(0, 0);
-			this.labeledDividerMacro.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
-			this.labeledDividerMacro.Name = "labeledDividerMacro";
-			this.labeledDividerMacro.Size = new System.Drawing.Size(466, 15);
-			this.labeledDividerMacro.TabIndex = 10;
-			this.labeledDividerMacro.Text = "Macro";
-			// 
-			// labelNoMacroSelected
-			// 
-			this.labelNoMacroSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labelNoMacroSelected.Location = new System.Drawing.Point(144, 8);
-			this.labelNoMacroSelected.Name = "labelNoMacroSelected";
-			this.labelNoMacroSelected.Size = new System.Drawing.Size(466, 345);
-			this.labelNoMacroSelected.TabIndex = 23;
-			this.labelNoMacroSelected.Text = "No macro selected";
-			this.labelNoMacroSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// buttonRemoveMacro
-			// 
-			this.buttonRemoveMacro.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonRemoveMacro.Location = new System.Drawing.Point(71, 331);
-			this.buttonRemoveMacro.Name = "buttonRemoveMacro";
-			this.buttonRemoveMacro.Size = new System.Drawing.Size(58, 23);
-			this.buttonRemoveMacro.TabIndex = 2;
-			this.buttonRemoveMacro.Text = "Remove";
-			this.buttonRemoveMacro.UseVisualStyleBackColor = true;
-			this.buttonRemoveMacro.Click += new System.EventHandler(this.ButtonRemoveMacro_Click);
-			// 
-			// buttonAddMacro
-			// 
-			this.buttonAddMacro.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonAddMacro.Location = new System.Drawing.Point(7, 331);
-			this.buttonAddMacro.Name = "buttonAddMacro";
-			this.buttonAddMacro.Size = new System.Drawing.Size(58, 23);
-			this.buttonAddMacro.TabIndex = 1;
-			this.buttonAddMacro.Text = "Add";
-			this.buttonAddMacro.UseVisualStyleBackColor = true;
-			this.buttonAddMacro.Click += new System.EventHandler(this.ButtonAddMacro_Click);
-			// 
-			// listViewMacros
-			// 
-			this.listViewMacros.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.listViewMacros.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeaderMacros});
-			this.listViewMacros.FullRowSelect = true;
-			this.listViewMacros.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.listViewMacros.HideSelection = false;
-			this.listViewMacros.Location = new System.Drawing.Point(8, 8);
-			this.listViewMacros.MultiSelect = false;
-			this.listViewMacros.Name = "listViewMacros";
-			this.listViewMacros.Size = new System.Drawing.Size(120, 317);
-			this.listViewMacros.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.listViewMacros.TabIndex = 0;
-			this.listViewMacros.UseCompatibleStateImageBehavior = false;
-			this.listViewMacros.View = System.Windows.Forms.View.Details;
-			this.listViewMacros.SelectedIndexChanged += new System.EventHandler(this.ListViewMacros_SelectedIndexChanged);
-			// 
-			// columnHeaderMacros
-			// 
-			this.columnHeaderMacros.Text = "Applications";
-			this.columnHeaderMacros.Width = 99;
 			// 
 			// panelGroups
 			// 
@@ -997,13 +821,23 @@
 			this.treeViewConfiguration.TabIndex = 2;
 			this.treeViewConfiguration.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewConfiguration_AfterSelect);
 			// 
+			// buttonMacros
+			// 
+			this.buttonMacros.Location = new System.Drawing.Point(688, 11);
+			this.buttonMacros.Name = "buttonMacros";
+			this.buttonMacros.Size = new System.Drawing.Size(75, 23);
+			this.buttonMacros.TabIndex = 25;
+			this.buttonMacros.Text = "Macros...";
+			this.buttonMacros.UseVisualStyleBackColor = true;
+			this.buttonMacros.Click += new System.EventHandler(this.ButtonMacros_Click);
+			// 
 			// ConfigurationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(774, 442);
-			this.Controls.Add(this.panelMacros);
+			this.Controls.Add(this.buttonMacros);
 			this.Controls.Add(this.panelApplications);
 			this.Controls.Add(this.panelGroups);
 			this.Controls.Add(this.panelPlugins);
@@ -1026,9 +860,6 @@
 			this.Text = "Process Manager Configuration";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigurationForm_FormClosing);
 			this.Load += new System.EventHandler(this.ConfigurationForm_Load);
-			this.panelMacros.ResumeLayout(false);
-			this.panelMacro.ResumeLayout(false);
-			this.panelMacro.PerformLayout();
 			this.panelGroups.ResumeLayout(false);
 			this.panelGroup.ResumeLayout(false);
 			this.panelGroup.PerformLayout();
@@ -1104,19 +935,7 @@
 		private System.Windows.Forms.Button buttonEditDistributionSources;
 		private System.Windows.Forms.Label labelDistributionSources;
 		private System.Windows.Forms.CheckBox checkBoxDistributionOnly;
-		private Controls.BackgroundPanel panelMacros;
-		private System.Windows.Forms.Panel panelMacro;
-		private Controls.LabeledDivider labeledDividerMacro;
-		private System.Windows.Forms.Label labelNoMacroSelected;
-		private System.Windows.Forms.Button buttonRemoveMacro;
-		private System.Windows.Forms.Button buttonAddMacro;
-		private Controls.ListView listViewMacros;
-		private System.Windows.Forms.ColumnHeader columnHeaderMacros;
-		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelMacroActions;
-		private Controls.LabeledDivider labeledDividerMacroActions;
-		private System.Windows.Forms.Label labelMacroName;
-		private System.Windows.Forms.TextBox textBoxMacroName;
-		private System.Windows.Forms.Button buttonAddMacroAction;
+		private System.Windows.Forms.Button buttonMacros;
 
 	}
 }

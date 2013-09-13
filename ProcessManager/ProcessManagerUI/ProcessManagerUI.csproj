@@ -195,6 +195,12 @@
     <Compile Include="Forms\FileSystemBrowserForm.Designer.cs">
       <DependentUpon>FileSystemBrowserForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\MacrosForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MacrosForm.Designer.cs">
+      <DependentUpon>MacrosForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="IControlPanel.cs" />
     <Compile Include="MacroPlayer.cs" />
     <Compile Include="ServiceHelper.cs" />
@@ -288,6 +294,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MachinesForm.resx">
       <DependentUpon>MachinesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MacrosForm.resx">
+      <DependentUpon>MacrosForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

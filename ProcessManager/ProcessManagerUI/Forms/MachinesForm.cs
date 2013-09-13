@@ -152,7 +152,7 @@ namespace ProcessManagerUI.Forms
 		{
 			if (_hasUnsavedChanges)
 			{
-				if (Messenger.ShowWarningQuestion("Machines has been changed", "Would you like to discard any changes?") == DialogResult.No)
+				if (Messenger.ShowWarningQuestion("Machines have been changed", "Would you like to discard any changes?") == DialogResult.No)
 				{
 					DialogResult = DialogResult.None;
 					return;

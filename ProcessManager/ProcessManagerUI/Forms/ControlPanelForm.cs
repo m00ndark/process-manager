@@ -453,9 +453,21 @@ namespace ProcessManagerUI.Forms
 
 		#region Configuration form event handlers
 
+		private void ConfigurationForm_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			((ConfigurationForm) sender).FormClosed -= ConfigurationForm_FormClosed;
+			((ConfigurationForm) sender).ConfigurationChanged -= ConfigurationForm_ConfigurationChanged;
+			((ConfigurationForm) sender).MacrosChanged -= ConfigurationForm_MacrosChanged;
+		}
+
 		private void ConfigurationForm_ConfigurationChanged(object sender, MachinesEventArgs e)
 		{
-			new Thread(UpdateFiltersAndLayout).Start();
+			UpdateFiltersAndLayoutAsync();
+		}
+
+		private void ConfigurationForm_MacrosChanged(object sender, EventArgs e)
+		{
+			UpdateFiltersAndLayoutAsync();
 		}
 
 		#endregion
@@ -575,7 +587,9 @@ namespace ProcessManagerUI.Forms
 		private void OpenConfigurationForm()
 		{
 			ConfigurationForm configurationForm = new ConfigurationForm();
+			configurationForm.FormClosed += ConfigurationForm_FormClosed;
 			configurationForm.ConfigurationChanged += ConfigurationForm_ConfigurationChanged;
+			configurationForm.MacrosChanged += ConfigurationForm_MacrosChanged;
 			configurationForm.Show();
 		}
 
@@ -590,6 +604,11 @@ namespace ProcessManagerUI.Forms
 			{
 				Logger.Add("Failed to retrieve new machine configuration", ex);
 			}
+		}
+
+		private void UpdateFiltersAndLayoutAsync()
+		{
+			new Thread(UpdateFiltersAndLayout).Start();
 		}
 
 		private delegate void UpdateFiltersAndLayoutDelegate();
