@@ -47,12 +47,8 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 			set
 			{
 				_selectedMachines = value != null && value.Count > 0 ? value : null;
-				linkLabelMachines.Text = _selectedMachines != null
-					? string.Join(", ", _selectedMachines.Select(machine => machine.HostName))
-					: DEFAULT_MACHINE;
-				//linkLabelMachines.LinkColor = _selectedMachines != null ? SystemColors.HotTrack : SystemColors.ControlDarkDark;
-				linkLabelGroup.Enabled = _selectedMachines != null;
-				SelectedGroup = null;
+				UpdateLinkLabelMachines();
+				UpdateSelectedGroup();
 			}
 		}
 
@@ -62,10 +58,8 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 			set
 			{
 				_selectedGroup = value;
-				linkLabelGroup.Text = _selectedGroup != null ? _selectedGroup.Name : DEFAULT_GROUP;
-				//linkLabelGroup.LinkColor = _selectedGroup != null ? SystemColors.HotTrack : SystemColors.ControlDarkDark;
-				linkLabelApplications.Enabled = _selectedGroup != null;
-				SelectedApplications = null;
+				UpdateLinkLabelGroup();
+				UpdateSelectedApplications();
 			}
 		}
 
@@ -75,10 +69,7 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 			set
 			{
 				_selectedApplications = value != null && value.Count > 0 ? value : null;
-				linkLabelApplications.Text = _selectedApplications != null
-					? string.Join(", ", _selectedApplications.Select(application => application.Name))
-					: DEFAULT_APPLICATION;
-				//linkLabelApplications.LinkColor = _selectedApplications != null ? SystemColors.HotTrack : SystemColors.ControlDarkDark;
+				UpdateLinkLabelApplications();
 			}
 		}
 
@@ -96,18 +87,43 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 			if (ActionBundle == null)
 				throw new InvalidOperationException();
 
-			SelectedMachines = ActionBundle.Actions
+			_selectedMachines = ActionBundle.Actions
 				.Select(macroAction => ((MacroProcessAction) macroAction).MachineID)
 				.Select(machineID => ConnectionStore.Connections.Values
 					.Where(connection => connection.Configuration != null)
 					.Select(connection => connection.Machine)
 					.FirstOrDefault(machine => ProcessManager.DataObjects.Comparers.Comparer<Machine>.IDObjectsEqual(machine, machineID)))
 				.Where(machine => machine != null)
+				.Distinct(new MachineEqualityComparer())
 				.OrderBy(machine => machine.HostName)
 				.ToList();
+
+			_selectedGroup = ActionBundle.Actions
+				.Select(macroAction => ((MacroProcessAction) macroAction).GroupID)
+				.Select(groupID => SelectedMachines
+					.SelectMany(machine => ConnectionStore.Connections.Values
+						.First(connection => ProcessManager.DataObjects.Comparers.Comparer<Machine>.IDObjectsEqual(connection.Machine, machine))
+						.Configuration
+						.Groups)
+					.FirstOrDefault(group => ProcessManager.DataObjects.Comparers.Comparer<Group>.IDObjectsEqual(group, groupID)))
+				.FirstOrDefault(group => group != null);
+
+			_selectedApplications = ActionBundle.Actions
+				.Select(macroAction => ((MacroProcessAction) macroAction).ApplicationID)
+				.Select(applicationID => SelectedMachines
+					.SelectMany(machine => ConnectionStore.Connections.Values
+						.First(connection => ProcessManager.DataObjects.Comparers.Comparer<Machine>.IDObjectsEqual(connection.Machine, machine))
+						.Configuration
+						.Applications)
+					.FirstOrDefault(application => ProcessManager.DataObjects.Comparers.Comparer<Application>.IDObjectsEqual(application, applicationID)))
+				.Where(application => application != null)
+				.Distinct(new ApplicationEqualityComparer())
+				.ToList();
+
+			UpdateControls();
 		}
 
-		private void LinkLabelMachine_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabelMachines_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			IEnumerable<Tuple<Machine, bool>> machines = ConnectionStore.Connections.Values
 				.Where(connection => connection.Configuration != null)
@@ -131,7 +147,7 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 			Picker.ShowMenu(linkLabelGroup, groups, ContextMenu_SelectGroup_GroupClicked);
 		}
 
-		private void LinkLabelApplication_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabelApplications_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			IEnumerable<Tuple<Application, bool>> applications = SelectedMachines
 				.Select(machine => ConnectionStore.Connections.Values
@@ -224,6 +240,84 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 		}
 
 		#region Helpers
+
+		private void UpdateSelectedMachines()
+		{
+			SelectedMachines = ActionBundle.Actions
+				.Select(macroAction => ((MacroProcessAction) macroAction).MachineID)
+				.Select(machineID => ConnectionStore.Connections.Values
+					.Where(connection => connection.Configuration != null)
+					.Select(connection => connection.Machine)
+					.FirstOrDefault(machine => ProcessManager.DataObjects.Comparers.Comparer<Machine>.IDObjectsEqual(machine, machineID)))
+				.Where(machine => machine != null)
+				.Distinct(new MachineEqualityComparer())
+				.OrderBy(machine => machine.HostName)
+				.ToList();
+		}
+
+		private void UpdateSelectedGroup()
+		{
+			if (SelectedGroup == null)
+				return;
+
+			SelectedGroup = SelectedMachines == null ? null : SelectedMachines
+				.SelectMany(machine => ConnectionStore.Connections.Values
+					.First(connection => ProcessManager.DataObjects.Comparers.Comparer<Machine>.IDObjectsEqual(connection.Machine, machine))
+					.Configuration
+					.Groups)
+				.FirstOrDefault(group => Comparer.GroupsEqual(group, SelectedGroup));
+		}
+
+		private void UpdateSelectedApplications()
+		{
+			if (SelectedApplications == null)
+				return;
+
+			SelectedApplications = SelectedMachines == null ? null : SelectedApplications
+				.Select(selectedApplication => SelectedMachines
+					.Select(machine => ConnectionStore.Connections.Values
+						.First(connection => ProcessManager.DataObjects.Comparers.Comparer<Machine>.IDObjectsEqual(connection.Machine, machine))
+						.Configuration)
+					.SelectMany(configuration => configuration
+						.Applications
+						.Where(application => configuration
+							.Groups
+							.Where(group => Comparer.GroupsEqual(group, SelectedGroup))
+							.SelectMany(group => group.Applications)
+							.Any(appID => ProcessManager.DataObjects.Comparers.Comparer<Application>.IDObjectsEqual(application, appID))))
+					.FirstOrDefault(application => Comparer.ApplicationsEqual(application, selectedApplication)))
+				.Where(application => application != null)
+				.Distinct(new ApplicationEqualityComparer())
+				.ToList();
+		}
+
+		private void UpdateControls()
+		{
+			UpdateLinkLabelMachines();
+			UpdateLinkLabelGroup();
+			UpdateLinkLabelApplications();
+		}
+
+		private void UpdateLinkLabelMachines()
+		{
+			linkLabelMachines.Text = _selectedMachines != null
+				? string.Join(", ", _selectedMachines.Select(machine => machine.HostName))
+				: DEFAULT_MACHINE;
+			linkLabelGroup.Enabled = _selectedMachines != null;
+		}
+
+		private void UpdateLinkLabelGroup()
+		{
+			linkLabelGroup.Text = _selectedGroup != null ? _selectedGroup.Name : DEFAULT_GROUP;
+			linkLabelApplications.Enabled = _selectedGroup != null;
+		}
+
+		private void UpdateLinkLabelApplications()
+		{
+			linkLabelApplications.Text = _selectedApplications != null
+				? string.Join(", ", _selectedApplications.Select(application => application.Name))
+				: DEFAULT_APPLICATION;
+		}
 
 		private void UpdateMacroActionBundle()
 		{

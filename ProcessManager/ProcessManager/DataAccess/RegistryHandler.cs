@@ -70,7 +70,7 @@ namespace ProcessManager.DataAccess
 									if (actionTypeStr == null) break;
 									MacroActionType actionType = (MacroActionType) Enum.Parse(typeof(MacroActionType), actionTypeStr);
 									MacroActionBundle actionBundle = new MacroActionBundle(actionType);
-									RegistryKey actionKey = bundleKey.OpenSubKey("Action " + macro.ActionBundles.Count.ToString("00"), false);
+									RegistryKey actionKey = bundleKey.OpenSubKey("Action " + actionBundle.Actions.Count.ToString("00"), false);
 									while (actionKey != null)
 									{
 										IMacroAction action = null;
@@ -108,7 +108,7 @@ namespace ProcessManager.DataAccess
 										if (action == null) break;
 										actionBundle.Actions.Add(action);
 										actionKey.Close();
-										actionKey = macroKey.OpenSubKey("Action " + macro.ActionBundles.Count.ToString("00"), false);
+										actionKey = bundleKey.OpenSubKey("Action " + actionBundle.Actions.Count.ToString("00"), false);
 									}
 									macro.ActionBundles.Add(actionBundle);
 									bundleKey.Close();

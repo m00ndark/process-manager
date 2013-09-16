@@ -87,6 +87,7 @@ namespace ProcessManagerUI.Utilities
 			if (items == null || !items.Any())
 				return;
 
+			bool anyItemClicked = false;
 			ContextMenuStrip contextMenu = new ContextMenuStrip();
 			ToolStripDropDownClosedEventHandler contextMenuClosedEventHandler = null;
 			ToolStripDropDownClosingEventHandler contextMenuClosingEventHandler = null;
@@ -104,7 +105,7 @@ namespace ProcessManagerUI.Utilities
 						e.Cancel = true;
 						((ToolStripDropDownMenu) sender).Invalidate();
 					}
-					else
+					else if (anyItemClicked)
 					{
 						List<T> selectedItems = ((ToolStripDropDownMenu) sender).Items.Cast<ToolStripMenuItem>().Where(x => x.Checked).Select(x => (T) x.Tag).ToList();
 						pickHandler(selectedItems);
@@ -114,6 +115,7 @@ namespace ProcessManagerUI.Utilities
 				{
 					ToolStripMenuItem clickedItem = (ToolStripMenuItem) e.ClickedItem;
 					clickedItem.Checked = !clickedItem.Checked;
+					anyItemClicked = true;
 				};
 			contextMenu.Closed += contextMenuClosedEventHandler;
 			contextMenu.Closing += contextMenuClosingEventHandler;
