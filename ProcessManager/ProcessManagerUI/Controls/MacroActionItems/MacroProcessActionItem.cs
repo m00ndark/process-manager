@@ -13,9 +13,9 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 {
 	public partial class MacroProcessActionItem : UserControl, IMacroActionItem
 	{
-		private const string DEFAULT_MACHINE = "Machine...";
+		private const string DEFAULT_MACHINE = "Machines...";
 		private const string DEFAULT_GROUP = "Group...";
-		private const string DEFAULT_APPLICATION = "Application...";
+		private const string DEFAULT_APPLICATION = "Applications...";
 
 		private List<Machine> _selectedMachines;
 		private Group _selectedGroup;

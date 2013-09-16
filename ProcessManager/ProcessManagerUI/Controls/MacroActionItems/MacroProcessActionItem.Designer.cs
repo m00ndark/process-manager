@@ -117,12 +117,12 @@
 			// linkLabelGroup
 			// 
 			this.linkLabelGroup.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabelGroup.AutoEllipsis = true;
 			this.linkLabelGroup.DisabledLinkColor = System.Drawing.Color.Gray;
 			this.linkLabelGroup.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
 			this.linkLabelGroup.LinkColor = System.Drawing.SystemColors.HotTrack;
 			this.linkLabelGroup.Location = new System.Drawing.Point(3, 3);
+			this.linkLabelGroup.Margin = new System.Windows.Forms.Padding(3);
 			this.linkLabelGroup.Name = "linkLabelGroup";
 			this.linkLabelGroup.Size = new System.Drawing.Size(84, 15);
 			this.linkLabelGroup.TabIndex = 31;
@@ -135,12 +135,12 @@
 			// linkLabelApplications
 			// 
 			this.linkLabelApplications.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabelApplications.AutoEllipsis = true;
 			this.linkLabelApplications.DisabledLinkColor = System.Drawing.Color.Gray;
 			this.linkLabelApplications.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
 			this.linkLabelApplications.LinkColor = System.Drawing.SystemColors.HotTrack;
 			this.linkLabelApplications.Location = new System.Drawing.Point(3, 3);
+			this.linkLabelApplications.Margin = new System.Windows.Forms.Padding(3);
 			this.linkLabelApplications.Name = "linkLabelApplications";
 			this.linkLabelApplications.Size = new System.Drawing.Size(175, 15);
 			this.linkLabelApplications.TabIndex = 32;
@@ -163,12 +163,12 @@
 			// linkLabelMachines
 			// 
 			this.linkLabelMachines.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelMachines.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabelMachines.AutoEllipsis = true;
 			this.linkLabelMachines.DisabledLinkColor = System.Drawing.Color.Gray;
 			this.linkLabelMachines.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
 			this.linkLabelMachines.LinkColor = System.Drawing.SystemColors.HotTrack;
 			this.linkLabelMachines.Location = new System.Drawing.Point(3, 3);
+			this.linkLabelMachines.Margin = new System.Windows.Forms.Padding(3);
 			this.linkLabelMachines.Name = "linkLabelMachines";
 			this.linkLabelMachines.Size = new System.Drawing.Size(174, 15);
 			this.linkLabelMachines.TabIndex = 31;

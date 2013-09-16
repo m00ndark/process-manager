@@ -24,10 +24,10 @@ namespace ProcessManager.DataObjects
 
 		public Guid ID { get; private set; }
         public MacroActionType Type { get; private set; }
-		public Guid SourceMachineID { get; set; }
-		public Guid GroupID { get; set; }
-		public Guid ApplicationID { get; set; }
-		public Guid DestinationMachineID { get; set; }
+		public Guid SourceMachineID { get; private set; }
+		public Guid GroupID { get; private set; }
+		public Guid ApplicationID { get; private set; }
+		public Guid DestinationMachineID { get; private set; }
 
 		public bool IsValid { get { return SourceMachineID != Guid.Empty && GroupID != Guid.Empty && ApplicationID != Guid.Empty && DestinationMachineID != Guid.Empty; } }
 

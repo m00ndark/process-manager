@@ -133,10 +133,10 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 					ActionBundle = ProcessActionBundle ?? new MacroActionBundle(actionType);
 					_macroActionItem = new MacroProcessActionItem(ProcessActionBundle);
 					break;
-				//case MacroActionType.Distribute:
-				//	ActionBundle = DistributionActionBundle ?? new MacroActionBundle(actionType);
-				//	_macroActionItem = new MacroDistributionActionItem(DistributionActionBundle);
-				//	break;
+				case MacroActionType.Distribute:
+					ActionBundle = DistributionActionBundle ?? new MacroActionBundle(actionType);
+					_macroActionItem = new MacroDistributionActionItem(DistributionActionBundle);
+					break;
 				//case MacroActionType.Wait:
 				//	ActionBundle = WaitActionBundle ?? new MacroActionBundle(actionType);
 				//	_macroActionItem = new MacroWaitActionItem(WaitActionBundle);
