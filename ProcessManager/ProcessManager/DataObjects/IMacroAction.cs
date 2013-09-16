@@ -22,5 +22,8 @@ namespace ProcessManager.DataObjects
 		Guid ID { get; }
         MacroActionType Type { get; }
         bool IsValid { get; }
+
+	    bool Equals(object obj);
+	    int GetHashCode();
     }
 }

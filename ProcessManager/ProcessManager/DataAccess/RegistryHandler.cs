@@ -98,11 +98,9 @@ namespace ProcessManager.DataAccess
 											case MacroActionType.Wait:
 												string waitForEvent = (string) actionKey.GetValue("Wait For Event");
 												string timeoutMilliseconds = (string) actionKey.GetValue("Timeout Milliseconds", "0");
-												action = new MacroWaitAction(Guid.Parse(id), actionType)
-													{
-														WaitForEvent = waitForEvent != null ? (MacroActionWaitForEvent?) Enum.Parse(typeof(MacroActionWaitForEvent), waitForEvent) : null,
-														TimeoutMilliseconds = int.Parse(timeoutMilliseconds)
-													};
+												action = new MacroWaitAction(Guid.Parse(id), actionType,
+													(MacroActionWaitForEvent) Enum.Parse(typeof(MacroActionWaitForEvent), waitForEvent),
+													int.Parse(timeoutMilliseconds));
 												break;
 										}
 										if (action == null) break;
@@ -324,7 +322,7 @@ namespace ProcessManager.DataAccess
 										if (macroWaitAction.IsValid)
 										{
 											actionKey.SetValue("Wait For Event", macroWaitAction.WaitForEvent.ToString());
-											if (macroWaitAction.WaitForEvent.HasValue && macroWaitAction.WaitForEvent.Value == MacroActionWaitForEvent.Timeout)
+											if (macroWaitAction.WaitForEvent == MacroActionWaitForEvent.Timeout)
 												actionKey.SetValue("Timeout Milliseconds", macroWaitAction.TimeoutMilliseconds.ToString(CultureInfo.InvariantCulture));
 										}
 									}

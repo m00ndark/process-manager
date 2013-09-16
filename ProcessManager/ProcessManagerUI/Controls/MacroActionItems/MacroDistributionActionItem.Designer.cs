@@ -93,6 +93,7 @@
 			// linkLabelGroup
 			// 
 			this.linkLabelGroup.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabelGroup.AutoEllipsis = true;
 			this.linkLabelGroup.DisabledLinkColor = System.Drawing.Color.Gray;
 			this.linkLabelGroup.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
@@ -143,6 +144,7 @@
 			// linkLabelSourceMachine
 			// 
 			this.linkLabelSourceMachine.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelSourceMachine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabelSourceMachine.AutoEllipsis = true;
 			this.linkLabelSourceMachine.DisabledLinkColor = System.Drawing.Color.Gray;
 			this.linkLabelSourceMachine.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
@@ -193,6 +195,7 @@
 			// linkLabelApplications
 			// 
 			this.linkLabelApplications.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabelApplications.AutoEllipsis = true;
 			this.linkLabelApplications.DisabledLinkColor = System.Drawing.Color.Gray;
 			this.linkLabelApplications.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
@@ -243,6 +246,7 @@
 			// linkLabelDestinationMachines
 			// 
 			this.linkLabelDestinationMachines.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelDestinationMachines.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabelDestinationMachines.AutoEllipsis = true;
 			this.linkLabelDestinationMachines.DisabledLinkColor = System.Drawing.Color.Gray;
 			this.linkLabelDestinationMachines.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;

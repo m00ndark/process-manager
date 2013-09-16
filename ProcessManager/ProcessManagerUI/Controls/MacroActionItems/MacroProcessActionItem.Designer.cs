@@ -117,6 +117,7 @@
 			// linkLabelGroup
 			// 
 			this.linkLabelGroup.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabelGroup.AutoEllipsis = true;
 			this.linkLabelGroup.DisabledLinkColor = System.Drawing.Color.Gray;
 			this.linkLabelGroup.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
@@ -135,6 +136,7 @@
 			// linkLabelApplications
 			// 
 			this.linkLabelApplications.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabelApplications.AutoEllipsis = true;
 			this.linkLabelApplications.DisabledLinkColor = System.Drawing.Color.Gray;
 			this.linkLabelApplications.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
@@ -163,6 +165,7 @@
 			// linkLabelMachines
 			// 
 			this.linkLabelMachines.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelMachines.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabelMachines.AutoEllipsis = true;
 			this.linkLabelMachines.DisabledLinkColor = System.Drawing.Color.Gray;
 			this.linkLabelMachines.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;

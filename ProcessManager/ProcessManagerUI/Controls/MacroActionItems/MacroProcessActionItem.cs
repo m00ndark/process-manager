@@ -35,6 +35,8 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 			ActionBundle = actionBundle;
 		}
 
+		public event EventHandler MacroActionItemChanged;
+
 		#region Properties
 
 		public MacroActionBundle ActionBundle { get; private set; }
@@ -184,6 +186,16 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 
 		#endregion
 
+		#region Event raisers
+
+		private void RaiseMacroActionItemChangedEvent()
+		{
+			if (MacroActionItemChanged != null)
+				MacroActionItemChanged(this, EventArgs.Empty);
+		}
+
+		#endregion
+
 		public void SetWidth(int width)
 		{
 			Width = width;
@@ -280,6 +292,8 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 				ActionBundle.Actions.AddRange(SelectedMachines.SelectMany(machine =>
 					SelectedApplications.Select(application =>
 						new MacroProcessAction(ActionBundle.Type, machine.ID, SelectedGroup.ID, application.ID))));
+
+			RaiseMacroActionItemChangedEvent();
 		}
 
 		#endregion

@@ -1,54 +1,86 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using ProcessManager.DataObjects;
 using ProcessManagerUI.Controls.MacroActionItems.Support;
-using ProcessManagerUI.Support;
+using ProcessManagerUI.Utilities;
 
 namespace ProcessManagerUI.Controls.MacroActionItems
 {
 	public partial class MacroWaitActionItem : UserControl, IMacroActionItem
     {
-        #region MacroActionWaitForEventWrapper class
+		#region MacroActionWaitForEventWrapper class
 
-        private class MacroActionWaitForEventWrapper
-        {
-            public MacroActionWaitForEventWrapper(MacroActionWaitForEvent waitForEvent)
-            {
-                WaitForEvent = waitForEvent;
-            }
+		private class MacroActionWaitForEventWrapper
+		{
+			public MacroActionWaitForEventWrapper(MacroActionWaitForEvent waitForEvent, bool capitalized = true)
+			{
+				WaitForEvent = waitForEvent;
+				Capitalized = capitalized;
+			}
 
-            public MacroActionWaitForEvent WaitForEvent { get; private set; }
+			public MacroActionWaitForEvent WaitForEvent { get; private set; }
+			private bool Capitalized { get; set; }
 
-            public override string ToString()
-            {
-                switch (WaitForEvent)
-                {
-                    case MacroActionWaitForEvent.Timeout:
-                        return "For Timeout";
-                    case MacroActionWaitForEvent.PreviousActionsCompleted:
-                        return "For Previous Actions Completed";
-                    default:
-                        throw new InvalidOperationException();
-                }
-            }
-        }
+			public override string ToString()
+			{
+				switch (WaitForEvent)
+				{
+					case MacroActionWaitForEvent.Timeout:
+						return Capitalized ? "For Timeout" : "For timeout";
+					case MacroActionWaitForEvent.PreviousActionsCompleted:
+						return Capitalized ? "For Previous Actions Completed" : "For previous actions completed";
+					default:
+						throw new InvalidOperationException();
+				}
+			}
+		}
 
-        #endregion
+		#endregion
 
-        public MacroWaitActionItem()
+		private const string DEFAULT_WAIT_FOR_EVENT = "For event...";
+
+		private MacroActionWaitForEvent? _selectedWaitForEvent;
+		private bool discardNumericUpDownValueChangedEvents;
+
+		public MacroWaitActionItem()
 		{
 			InitializeComponent();
-			MacroWaitAction = null;
+			discardNumericUpDownValueChangedEvents = false;
+			ActionBundle = null;
 		}
 
-		public MacroWaitActionItem(MacroWaitAction macroWaitAction) : this()
+		public MacroWaitActionItem(MacroActionBundle actionBundle) : this()
 		{
-			MacroWaitAction = macroWaitAction;
+			if (actionBundle.Type != MacroActionType.Wait)
+				throw new ArgumentException("Invalid wait action type");
+
+			ActionBundle = actionBundle;
 		}
+
+		public event EventHandler MacroActionItemChanged;
 
 		#region Properties
 
-        public MacroWaitAction MacroWaitAction { get; private set; }
+		public MacroActionBundle ActionBundle { get; private set; }
+
+		private MacroActionWaitForEvent? SelectedWaitForEvent
+		{
+			get { return _selectedWaitForEvent; }
+			set
+			{
+				_selectedWaitForEvent = value;
+				UpdateLinkLabelWaitForEvent();
+			}
+		}
+
+		private int TimeoutMilliseconds { get; set; }
+
+		private bool HasValidSelections
+		{
+			get { return SelectedWaitForEvent != null; }
+		}
 
 		#endregion
 
@@ -56,29 +88,63 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 
 		private void MacroDistributionActionItem_Load(object sender, EventArgs e)
 		{
-			if (MacroWaitAction == null)
+			if (ActionBundle == null)
 				throw new InvalidOperationException();
 
-            FillWaitForEventComboBox();
-		}
-
-		private void ComboBoxWaitForEvent_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (comboBoxWaitForEvent.SelectedIndex > -1)
+			if (ActionBundle.Actions.Any())
 			{
-                MacroActionWaitForEventWrapper waitForEventWrapper = ((ComboBoxItem<MacroActionWaitForEventWrapper>) comboBoxWaitForEvent.Items[comboBoxWaitForEvent.SelectedIndex]).Tag;
-				MacroWaitAction.WaitForEvent = (waitForEventWrapper != null ? (MacroActionWaitForEvent?) waitForEventWrapper.WaitForEvent : null);
+				MacroWaitAction macroAction = (MacroWaitAction) ActionBundle.Actions[0];
+				_selectedWaitForEvent = macroAction.WaitForEvent;
+				TimeoutMilliseconds = macroAction.TimeoutMilliseconds;
 			}
 			else
-				MacroWaitAction.WaitForEvent = null;
+			{
+				SelectedWaitForEvent = null;
+				TimeoutMilliseconds = 0;
+			}
 
-            ShowWaitForTimeoutPanel(MacroWaitAction.WaitForEvent.HasValue && MacroWaitAction.WaitForEvent.Value == MacroActionWaitForEvent.Timeout);
+			discardNumericUpDownValueChangedEvents = true;
+			UpdateLinkLabelWaitForEvent();
+			discardNumericUpDownValueChangedEvents = false;
+		}
+
+		private void LinkLabelWaitForEvent_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			IEnumerable<MacroActionWaitForEventWrapper> waitForEvents = Enum.GetValues(typeof(MacroActionWaitForEvent))
+				.Cast<MacroActionWaitForEvent>()
+				.Select(waitForEvent => new MacroActionWaitForEventWrapper(waitForEvent));
+
+			Picker.ShowMenu(linkLabelWaitForEvent, waitForEvents, ContextMenu_SelectWaitForEvent_WaitForEventClicked);
 		}
 
         private void NumericUpDownTimeoutMilliseconds_ValueChanged(object sender, EventArgs e)
         {
-            MacroWaitAction.TimeoutMilliseconds = (int) numericUpDownTimeoutMilliseconds.Value;
+	        if (discardNumericUpDownValueChangedEvents)
+		        return;
+
+			TimeoutMilliseconds = (int) numericUpDownTimeoutMilliseconds.Value;
+			UpdateMacroActionBundle();
         }
+
+		#endregion
+
+		#region Picker event handlers
+
+		private void ContextMenu_SelectWaitForEvent_WaitForEventClicked(MacroActionWaitForEventWrapper waitForEventWrapper)
+		{
+			SelectedWaitForEvent = waitForEventWrapper.WaitForEvent;
+			UpdateMacroActionBundle();
+		}
+
+		#endregion
+
+		#region Event raisers
+
+		private void RaiseMacroActionItemChangedEvent()
+		{
+			if (MacroActionItemChanged != null)
+				MacroActionItemChanged(this, EventArgs.Empty);
+		}
 
 		#endregion
 
@@ -89,28 +155,28 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 
 		#region Helpers
 
-        private void ClearWaitForEventComboBox()
+		private void UpdateLinkLabelWaitForEvent()
 		{
-			comboBoxWaitForEvent.Items.Clear();
+			linkLabelWaitForEvent.Text = _selectedWaitForEvent != null
+				? new MacroActionWaitForEventWrapper(_selectedWaitForEvent.Value, false).ToString()
+				: DEFAULT_WAIT_FOR_EVENT;
+			ShowWaitForTimeoutPanel(_selectedWaitForEvent != null && _selectedWaitForEvent.Value == MacroActionWaitForEvent.Timeout);
 		}
 
-        private void FillWaitForEventComboBox()
+		private void UpdateMacroActionBundle()
 		{
-            ClearWaitForEventComboBox();
-            comboBoxWaitForEvent.Items.Add(new ComboBoxItem<MacroActionWaitForEventWrapper>(string.Empty));
-            foreach (MacroActionWaitForEvent waitForEvent in Enum.GetValues(typeof(MacroActionWaitForEvent)))
-            {
-                int index = comboBoxWaitForEvent.Items.Add(new ComboBoxItem<MacroActionWaitForEventWrapper>(new MacroActionWaitForEventWrapper(waitForEvent)));
-                if (waitForEvent == MacroWaitAction.WaitForEvent)
-                    comboBoxWaitForEvent.SelectedIndex = index;
-            }
+			ActionBundle.Actions.Clear();
+			if (HasValidSelections)
+				ActionBundle.Actions.Add(new MacroWaitAction(ActionBundle.Type, SelectedWaitForEvent.Value, TimeoutMilliseconds));
+
+			RaiseMacroActionItemChangedEvent();
 		}
 
         private void ShowWaitForTimeoutPanel(bool show)
         {
             panelTimeout.Visible = show;
             if (show)
-                numericUpDownTimeoutMilliseconds.Value = MacroWaitAction.TimeoutMilliseconds;
+                numericUpDownTimeoutMilliseconds.Value = TimeoutMilliseconds;
 		}
 
 		#endregion

@@ -24,7 +24,10 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 			ActionBundle = actionBundle;
 		}
 
+		public event EventHandler MacroActionItemChanged;
 		public event EventHandler MacroActionItemRemoved;
+		public event EventHandler MacroActionItemMovedUp;
+		public event EventHandler MacroActionItemMovedDown;
 
 		#region Properties
 
@@ -79,9 +82,28 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 			RaiseMacroActionItemRemovedEvent();
 		}
 
+		private void ButtonMoveUp_Click(object sender, EventArgs e)
+		{
+			RaiseMacroActionItemMovedUpEvent();
+		}
+
+		private void ButtonMoveDown_Click(object sender, EventArgs e)
+		{
+			RaiseMacroActionItemMovedDownEvent();
+		}
+
 		private void LinkLabelActionType_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			Picker.ShowMenu(linkLabelActionType, Enum.GetValues(typeof(MacroActionType)).Cast<MacroActionType>(), ContextMenu_SelectActionType_ActionTypeClicked);
+		}
+
+		#endregion
+
+		#region Macro action item event handlers
+
+		private void MacroActionItem_MacroActionItemChanged(object sender, EventArgs e)
+		{
+			RaiseMacroActionItemChangedEvent();
 		}
 
 		#endregion
@@ -91,16 +113,35 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 		private void ContextMenu_SelectActionType_ActionTypeClicked(MacroActionType actionType)
 		{
 			SelectActionType(actionType);
+			RaiseMacroActionItemChangedEvent();
 		}
 
 		#endregion
 
 		#region Event raisers
 
+		private void RaiseMacroActionItemChangedEvent()
+		{
+			if (MacroActionItemChanged != null)
+				MacroActionItemChanged(this, EventArgs.Empty);
+		}
+
 		private void RaiseMacroActionItemRemovedEvent()
 		{
 			if (MacroActionItemRemoved != null)
 				MacroActionItemRemoved(this, EventArgs.Empty);
+		}
+
+		private void RaiseMacroActionItemMovedUpEvent()
+		{
+			if (MacroActionItemMovedUp != null)
+				MacroActionItemMovedUp(this, EventArgs.Empty);
+		}
+
+		private void RaiseMacroActionItemMovedDownEvent()
+		{
+			if (MacroActionItemMovedDown != null)
+				MacroActionItemMovedDown(this, EventArgs.Empty);
 		}
 
 		#endregion
@@ -118,6 +159,7 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 		{
 			if (_macroActionItem != null)
 			{
+				_macroActionItem.MacroActionItemChanged -= MacroActionItem_MacroActionItemChanged;
 				_macroActionItem.Dispose();
 				panelAction.Controls.Remove((Control) _macroActionItem);
 				_macroActionItem = null;
@@ -137,15 +179,16 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 					ActionBundle = DistributionActionBundle ?? new MacroActionBundle(actionType);
 					_macroActionItem = new MacroDistributionActionItem(DistributionActionBundle);
 					break;
-				//case MacroActionType.Wait:
-				//	ActionBundle = WaitActionBundle ?? new MacroActionBundle(actionType);
-				//	_macroActionItem = new MacroWaitActionItem(WaitActionBundle);
-				//	break;
+				case MacroActionType.Wait:
+					ActionBundle = WaitActionBundle ?? new MacroActionBundle(actionType);
+					_macroActionItem = new MacroWaitActionItem(WaitActionBundle);
+					break;
 			}
 
 			if (_macroActionItem != null)
 			{
 				labelSeparator.Visible = true;
+				_macroActionItem.MacroActionItemChanged += MacroActionItem_MacroActionItemChanged;
 				_macroActionItem.SetWidth(panelAction.Width);
 				panelAction.Controls.Add((Control) _macroActionItem);
 			}

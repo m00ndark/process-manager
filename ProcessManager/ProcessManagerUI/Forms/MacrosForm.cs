@@ -158,9 +158,26 @@ namespace ProcessManagerUI.Forms
 
 		#region Macro item event handlers
 
+		private void MacroActionItem_MacroActionItemChanged(object sender, EventArgs e)
+		{
+			UpdateSelectedMacro();
+		}
+
 		private void MacroActionItem_MacroActionItemRemoved(object sender, EventArgs e)
 		{
 			RemoveMacroActionItem((MacroActionItem) sender);
+			UpdateSelectedMacro();
+		}
+
+		private void MacroActionItem_MacroActionItemMovedUp(object sender, EventArgs e)
+		{
+			MoveMacroActionItem((MacroActionItem) sender, true);
+			UpdateSelectedMacro();
+		}
+
+		private void MacroActionItem_MacroActionItemMovedDown(object sender, EventArgs e)
+		{
+			MoveMacroActionItem((MacroActionItem) sender, false);
 			UpdateSelectedMacro();
 		}
 
@@ -202,7 +219,10 @@ namespace ProcessManagerUI.Forms
 			flowLayoutPanelMacroActions.Controls.Clear();
 			_macroActionItems.ForEach(item =>
 				{
+					item.MacroActionItemChanged -= MacroActionItem_MacroActionItemChanged;
 					item.MacroActionItemRemoved -= MacroActionItem_MacroActionItemRemoved;
+					item.MacroActionItemMovedUp -= MacroActionItem_MacroActionItemMovedUp;
+					item.MacroActionItemMovedDown -= MacroActionItem_MacroActionItemMovedDown;
 					item.Dispose();
 				});
 		}
@@ -210,7 +230,10 @@ namespace ProcessManagerUI.Forms
 		private MacroActionItem CreateMacroActionItem(MacroActionBundle actionBundle = null)
 		{
 			MacroActionItem macroActionItem = new MacroActionItem(actionBundle);
+			macroActionItem.MacroActionItemChanged += MacroActionItem_MacroActionItemChanged;
 			macroActionItem.MacroActionItemRemoved += MacroActionItem_MacroActionItemRemoved;
+			macroActionItem.MacroActionItemMovedUp += MacroActionItem_MacroActionItemMovedUp;
+			macroActionItem.MacroActionItemMovedDown += MacroActionItem_MacroActionItemMovedDown;
 			macroActionItem.SetWidth(flowLayoutPanelMacroActions.Width - SCROLLBAR_WIDTH);
 			_macroActionItems.Add(macroActionItem);
 			return macroActionItem;
@@ -225,8 +248,32 @@ namespace ProcessManagerUI.Forms
 		{
 			_macroActionItems.Remove(macroActionItem);
 			flowLayoutPanelMacroActions.Controls.Remove(macroActionItem);
+			macroActionItem.MacroActionItemChanged -= MacroActionItem_MacroActionItemChanged;
 			macroActionItem.MacroActionItemRemoved -= MacroActionItem_MacroActionItemRemoved;
+			macroActionItem.MacroActionItemMovedUp -= MacroActionItem_MacroActionItemMovedUp;
+			macroActionItem.MacroActionItemMovedDown -= MacroActionItem_MacroActionItemMovedDown;
 			macroActionItem.Dispose();
+		}
+
+		private void MoveMacroActionItem(MacroActionItem macroActionItem, bool up)
+		{
+			int index = flowLayoutPanelMacroActions.Controls.IndexOf(macroActionItem);
+			if (up && index > 0)
+				flowLayoutPanelMacroActions.Controls.SetChildIndex(macroActionItem, index - 1);
+			else if (!up && index < flowLayoutPanelMacroActions.Controls.Count - 1)
+				flowLayoutPanelMacroActions.Controls.SetChildIndex(macroActionItem, index + 1);
+
+			index = _macroActionItems.IndexOf(macroActionItem);
+			if (up && index > 0)
+			{
+				_macroActionItems.RemoveAt(index);
+				_macroActionItems.Insert(index - 1, macroActionItem);
+			}
+			else if (!up && index < _macroActionItems.Count - 1)
+			{
+				_macroActionItems.RemoveAt(index);
+				_macroActionItems.Insert(index + 1, macroActionItem);
+			}
 		}
 
 		private void LayoutMacroActionItems()
@@ -242,9 +289,8 @@ namespace ProcessManagerUI.Forms
 			bool macroChanged = false;
 			if (_selectedMacro != null && !string.IsNullOrEmpty(textBoxMacroName.Text))
 			{
-				int equalActionsCount = _selectedMacro.ActionBundles.Intersect(_macroActionItems.Select(item => item.ActionBundle)).Count();
 				macroChanged = (_selectedMacro.Name != textBoxMacroName.Text
-					|| equalActionsCount != _selectedMacro.ActionBundles.Count || equalActionsCount != _macroActionItems.Count);
+					|| !_selectedMacro.ActionBundles.SequenceEqual(_macroActionItems.Select(item => item.ActionBundle)));
 				_hasUnsavedChanges |= macroChanged;
 				AnyMachinesChanged |= macroChanged;
 			}

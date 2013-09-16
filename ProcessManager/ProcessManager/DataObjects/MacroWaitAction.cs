@@ -4,27 +4,28 @@ namespace ProcessManager.DataObjects
 {
     public class MacroWaitAction : IMacroAction
     {
-		public MacroWaitAction(MacroActionType type) : this(Guid.NewGuid(), type) {}
+		public MacroWaitAction(MacroActionType type, MacroActionWaitForEvent waitForEvent, int timeoutMilliseconds = 0)
+			: this(Guid.NewGuid(), type, waitForEvent, timeoutMilliseconds) {}
 
-        public MacroWaitAction(Guid id, MacroActionType type)
+		public MacroWaitAction(Guid id, MacroActionType type, MacroActionWaitForEvent waitForEvent, int timeoutMilliseconds = 0)
         {
             if (type != MacroActionType.Wait)
                 throw new ArgumentException("Invalid wait action type");
 
 			ID = id;
 			Type = type;
-            WaitForEvent = null;
-            TimeoutMilliseconds = 0;
+            WaitForEvent = waitForEvent;
+            TimeoutMilliseconds = timeoutMilliseconds;
         }
 
         #region Properties
 
 	    public Guid ID { get; private set; }
         public MacroActionType Type { get; private set; }
-        public MacroActionWaitForEvent? WaitForEvent { get; set; }
-        public int TimeoutMilliseconds { get; set; }
+        public MacroActionWaitForEvent WaitForEvent { get; private set; }
+        public int TimeoutMilliseconds { get; private set; }
 
-        public bool IsValid { get { return WaitForEvent.HasValue; } }
+        public bool IsValid { get { return true; } }
 
         #endregion
 
