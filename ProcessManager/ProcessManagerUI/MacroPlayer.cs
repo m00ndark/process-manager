@@ -143,7 +143,7 @@ namespace ProcessManagerUI
 							Thread.Sleep(macroWaitAction.TimeoutMilliseconds);
 						}
 						break;
-					case MacroActionWaitForEvent.PreviousActionCompleted:
+					case MacroActionWaitForEvent.PreviousActionsCompleted:
 						{
 							List<PlayableMacroAction> previousPlayableMacroActions = new List<PlayableMacroAction>();
 							MacroPlaybackContainer container = _macroPlaybackContainers[playableMacroAction.Macro.ID];

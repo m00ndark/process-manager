@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using Microsoft.Win32;
 using ProcessManager.DataObjects;
@@ -62,57 +63,56 @@ namespace ProcessManager.DataAccess
 							Macro macro = new Macro(Guid.Parse(macroID), name);
 							try
 							{
-								RegistryKey actionKey = macroKey.OpenSubKey("Action " + macro.Actions.Count.ToString("00"), false);
-								while (actionKey != null)
+								RegistryKey bundleKey = macroKey.OpenSubKey("Action Bundle " + macro.ActionBundles.Count.ToString("00"), false);
+								while (bundleKey != null)
 								{
-									IMacroAction action = null;
-									string id = (string) actionKey.GetValue("ID");
-									if (id == null) break;
-									string actionTypeStr = (string) actionKey.GetValue("Action Type");
+									string actionTypeStr = (string) bundleKey.GetValue("Action Type");
 									if (actionTypeStr == null) break;
-								    MacroActionType actionType = (MacroActionType) Enum.Parse(typeof(MacroActionType), actionTypeStr);
-									switch (actionType)
+									MacroActionType actionType = (MacroActionType) Enum.Parse(typeof(MacroActionType), actionTypeStr);
+									MacroActionBundle actionBundle = new MacroActionBundle(actionType);
+									RegistryKey actionKey = bundleKey.OpenSubKey("Action " + macro.ActionBundles.Count.ToString("00"), false);
+									while (actionKey != null)
 									{
-                                        case MacroActionType.Start:
-                                        case MacroActionType.Stop:
-                                        case MacroActionType.Restart:
-                                            string processMachineID = (string) actionKey.GetValue("Machine ID", Guid.Empty.ToString());
-                                            string processGroupID = (string) actionKey.GetValue("Group ID", Guid.Empty.ToString());
-                                            string processApplicationID = (string) actionKey.GetValue("Application ID", Guid.Empty.ToString());
-											action = new MacroProcessAction(Guid.Parse(id), actionType)
-												{
-                                                    MachineID = Guid.Parse(processMachineID),
-													GroupID = Guid.Parse(processGroupID),
-                                                    ApplicationID = Guid.Parse(processApplicationID)
-												};
-											break;
-                                        case MacroActionType.Distribute:
-											string distributionSourceMachineID = (string) actionKey.GetValue("Source Machine ID", Guid.Empty.ToString());
-                                            string distributionGroupID = (string) actionKey.GetValue("Group ID", Guid.Empty.ToString());
-                                            string distributionApplicationID = (string) actionKey.GetValue("Application ID", Guid.Empty.ToString());
-                                            string distributionDestinationMachineID = (string) actionKey.GetValue("Destination Machine ID", Guid.Empty.ToString());
-											action = new MacroDistributionAction(Guid.Parse(id), actionType)
-												{
-                                                    SourceMachineID = Guid.Parse(distributionSourceMachineID),
-													GroupID = Guid.Parse(distributionGroupID),
-													ApplicationID = Guid.Parse(distributionApplicationID),
-													DestinationMachineID = Guid.Parse(distributionDestinationMachineID)
-												};
-											break;
-                                        case MacroActionType.Wait:
-											string waitForEvent = (string) actionKey.GetValue("Wait For Event");
-											string timeoutMilliseconds = (string) actionKey.GetValue("Timeout Milliseconds", "0");
-											action = new MacroWaitAction(Guid.Parse(id), actionType)
-												{
-													WaitForEvent = waitForEvent != null ? (MacroActionWaitForEvent?) Enum.Parse(typeof(MacroActionWaitForEvent), waitForEvent) : null,
-                                                    TimeoutMilliseconds = int.Parse(timeoutMilliseconds)
-												};
-											break;
+										IMacroAction action = null;
+										string id = (string) actionKey.GetValue("ID");
+										if (id == null) break;
+										switch (actionType)
+										{
+											case MacroActionType.Start:
+											case MacroActionType.Stop:
+											case MacroActionType.Restart:
+												string processMachineID = (string) actionKey.GetValue("Machine ID", Guid.Empty.ToString());
+												string processGroupID = (string) actionKey.GetValue("Group ID", Guid.Empty.ToString());
+												string processApplicationID = (string) actionKey.GetValue("Application ID", Guid.Empty.ToString());
+												action = new MacroProcessAction(Guid.Parse(id), actionType, Guid.Parse(processMachineID),
+													Guid.Parse(processGroupID), Guid.Parse(processApplicationID));
+												break;
+											case MacroActionType.Distribute:
+												string distributionSourceMachineID = (string) actionKey.GetValue("Source Machine ID", Guid.Empty.ToString());
+												string distributionGroupID = (string) actionKey.GetValue("Group ID", Guid.Empty.ToString());
+												string distributionApplicationID = (string) actionKey.GetValue("Application ID", Guid.Empty.ToString());
+												string distributionDestinationMachineID = (string) actionKey.GetValue("Destination Machine ID", Guid.Empty.ToString());
+												action = new MacroDistributionAction(Guid.Parse(id), actionType, Guid.Parse(distributionSourceMachineID),
+														Guid.Parse(distributionGroupID), Guid.Parse(distributionApplicationID), Guid.Parse(distributionDestinationMachineID));
+												break;
+											case MacroActionType.Wait:
+												string waitForEvent = (string) actionKey.GetValue("Wait For Event");
+												string timeoutMilliseconds = (string) actionKey.GetValue("Timeout Milliseconds", "0");
+												action = new MacroWaitAction(Guid.Parse(id), actionType)
+													{
+														WaitForEvent = waitForEvent != null ? (MacroActionWaitForEvent?) Enum.Parse(typeof(MacroActionWaitForEvent), waitForEvent) : null,
+														TimeoutMilliseconds = int.Parse(timeoutMilliseconds)
+													};
+												break;
+										}
+										if (action == null) break;
+										actionBundle.Actions.Add(action);
+										actionKey.Close();
+										actionKey = macroKey.OpenSubKey("Action " + macro.ActionBundles.Count.ToString("00"), false);
 									}
-									if (action == null) break;
-									macro.Actions.Add(action);
-									actionKey.Close();
-									actionKey = macroKey.OpenSubKey("Action " + macro.Actions.Count.ToString("00"), false);
+									macro.ActionBundles.Add(actionBundle);
+									bundleKey.Close();
+									bundleKey = macroKey.OpenSubKey("Action Bundle " + macro.ActionBundles.Count.ToString("00"), false);
 								}
 							}
 							catch
@@ -292,38 +292,45 @@ namespace ProcessManager.DataAccess
 							RegistryKey macroKey = macrosKey.CreateSubKey(macro.ID.ToString());
 							if (macroKey == null) continue;
 							macroKey.SetValue("Name", macro.Name);
-							for (int i = 0; i < macro.Actions.Count; i++)
+							for (int i = 0; i < macro.ActionBundles.Count; i++)
 							{
-								RegistryKey actionKey = macroKey.CreateSubKey("Action " + i.ToString("00"));
-							    if (actionKey == null) continue;
-								actionKey.SetValue("ID", macro.Actions[i].ID.ToString());
-								actionKey.SetValue("Action Type", macro.Actions[i].Type.ToString());
-								if (macro.Actions[i] is MacroProcessAction)
+								MacroActionBundle actionBundle = macro.ActionBundles[i];
+								RegistryKey bundleKey = macroKey.CreateSubKey("Action Bundle " + i.ToString("00"));
+								if (bundleKey == null) continue;
+								bundleKey.SetValue("Action Type", actionBundle.Type.ToString());
+								for (int j = 0; j < actionBundle.Actions.Count; j++)
 								{
-									MacroProcessAction macroProcessAction = (MacroProcessAction) macro.Actions[i];
-									actionKey.SetValue("Machine ID", macroProcessAction.MachineID);
-									actionKey.SetValue("Group ID", macroProcessAction.GroupID);
-									actionKey.SetValue("Application ID", macroProcessAction.ApplicationID);
+									RegistryKey actionKey = bundleKey.CreateSubKey("Action " + j.ToString("00"));
+									if (actionKey == null) continue;
+									actionKey.SetValue("ID", actionBundle.Actions[j].ID.ToString());
+									if (actionBundle.Actions[j] is MacroProcessAction)
+									{
+										MacroProcessAction macroProcessAction = (MacroProcessAction) actionBundle.Actions[j];
+										actionKey.SetValue("Machine ID", macroProcessAction.MachineID);
+										actionKey.SetValue("Group ID", macroProcessAction.GroupID);
+										actionKey.SetValue("Application ID", macroProcessAction.ApplicationID);
+									}
+									else if (actionBundle.Actions[j] is MacroDistributionAction)
+									{
+										MacroDistributionAction macroDistributionAction = (MacroDistributionAction) actionBundle.Actions[j];
+										actionKey.SetValue("Source Machine ID", macroDistributionAction.SourceMachineID);
+										actionKey.SetValue("Group ID", macroDistributionAction.GroupID);
+										actionKey.SetValue("Application ID", macroDistributionAction.ApplicationID);
+										actionKey.SetValue("Destination Machine ID", macroDistributionAction.DestinationMachineID);
+									}
+									else if (actionBundle.Actions[j] is MacroWaitAction)
+									{
+										MacroWaitAction macroWaitAction = (MacroWaitAction) actionBundle.Actions[j];
+										if (macroWaitAction.IsValid)
+										{
+											actionKey.SetValue("Wait For Event", macroWaitAction.WaitForEvent.ToString());
+											if (macroWaitAction.WaitForEvent.HasValue && macroWaitAction.WaitForEvent.Value == MacroActionWaitForEvent.Timeout)
+												actionKey.SetValue("Timeout Milliseconds", macroWaitAction.TimeoutMilliseconds.ToString(CultureInfo.InvariantCulture));
+										}
+									}
+									actionKey.Close();
 								}
-								else if (macro.Actions[i] is MacroDistributionAction)
-								{
-									MacroDistributionAction macroDistributionAction = (MacroDistributionAction) macro.Actions[i];
-									actionKey.SetValue("Source Machine ID", macroDistributionAction.SourceMachineID);
-									actionKey.SetValue("Group ID", macroDistributionAction.GroupID);
-									actionKey.SetValue("Application ID", macroDistributionAction.ApplicationID);
-									actionKey.SetValue("Destination Machine ID", macroDistributionAction.DestinationMachineID);
-								}
-								else if (macro.Actions[i] is MacroWaitAction)
-								{
-								    MacroWaitAction macroWaitAction = (MacroWaitAction) macro.Actions[i];
-								    if (macroWaitAction.IsValid)
-								    {
-								        actionKey.SetValue("Wait For Event", macroWaitAction.WaitForEvent.ToString());
-								        if (macroWaitAction.WaitForEvent.HasValue && macroWaitAction.WaitForEvent.Value == MacroActionWaitForEvent.Timeout)
-                                            actionKey.SetValue("Timeout Milliseconds", macroWaitAction.TimeoutMilliseconds.ToString());
-								    }
-								}
-								actionKey.Close();
+								bundleKey.Close();
 							}
 							macroKey.Close();
 						}

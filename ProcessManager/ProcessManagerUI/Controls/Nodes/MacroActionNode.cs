@@ -173,8 +173,8 @@ namespace ProcessManagerUI.Controls.Nodes
 					{
 						case MacroActionWaitForEvent.Timeout:
 							return string.Format("{0} for timeout, {1} ms", macroWaitAction.Type, macroWaitAction.TimeoutMilliseconds);
-						case MacroActionWaitForEvent.PreviousActionCompleted:
-							return string.Format("{0} for previous action completed", macroWaitAction.Type);
+						case MacroActionWaitForEvent.PreviousActionsCompleted:
+							return string.Format("{0} for previous actions completed", macroWaitAction.Type);
 						default:
 							throw new InvalidOperationException();
 					}

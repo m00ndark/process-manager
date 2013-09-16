@@ -1,56 +1,68 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using ProcessManager.DataObjects;
 using ProcessManagerUI.Controls.MacroActionItems.Support;
-using ProcessManagerUI.Support;
+using ProcessManagerUI.Utilities;
 
 namespace ProcessManagerUI.Controls.MacroActionItems
 {
 	public partial class MacroActionItem : UserControl
     {
         private IMacroActionItem _macroActionItem;
-		private IMacroAction _action;
+		private MacroActionBundle _actionBundle;
 
 		public MacroActionItem()
 		{
 			InitializeComponent();
 			_macroActionItem = null;
-			Action = null;
+			ActionBundle = null;
 		}
 
-		public MacroActionItem(IMacroAction action) : this()
+		public MacroActionItem(MacroActionBundle actionBundle) : this()
 		{
-			Action = action;
+			ActionBundle = actionBundle;
 		}
 
 		public event EventHandler MacroActionItemRemoved;
 
 		#region Properties
 
-		public IMacroAction Action
+		public MacroActionBundle ActionBundle
 		{
-			get { return _action; }
+			get { return _actionBundle; }
 			private set
 			{
-				_action = value;
-			    if (_action == null)
+				_actionBundle = value;
+			    if (_actionBundle == null)
 			    {
-			        MacroProcessAction = null;
-			        MacroDistributionAction = null;
-                    MacroWaitAction = null;
+			        ProcessActionBundle = null;
+			        DistributionActionBundle = null;
+                    WaitActionBundle = null;
 			    }
-			    else if (_action is MacroProcessAction)
-			        MacroProcessAction = (MacroProcessAction) _action;
-			    else if (_action is MacroDistributionAction)
-			        MacroDistributionAction = (MacroDistributionAction) _action;
-			    else if (_action is MacroWaitAction)
-			        MacroWaitAction = (MacroWaitAction) _action;
+			    else
+			    {
+				    switch (_actionBundle.Type)
+				    {
+						case MacroActionType.Start:
+						case MacroActionType.Stop:
+						case MacroActionType.Restart:
+						    ProcessActionBundle = _actionBundle;
+						    break;
+						case MacroActionType.Distribute:
+						    DistributionActionBundle = _actionBundle;
+						    break;
+						case MacroActionType.Wait:
+						    WaitActionBundle = _actionBundle;
+						    break;
+				    }
+			    }
 			}
 		}
 
-		private MacroProcessAction MacroProcessAction { get; set; }
-		private MacroDistributionAction MacroDistributionAction { get; set; }
-		private MacroWaitAction MacroWaitAction { get; set; }
+		private MacroActionBundle ProcessActionBundle { get; set; }
+		private MacroActionBundle DistributionActionBundle { get; set; }
+		private MacroActionBundle WaitActionBundle { get; set; }
 
 		#endregion
 
@@ -58,68 +70,27 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 
 		private void MacroActionItem_Load(object sender, EventArgs e)
 		{
-			comboBoxActionTypes.Items.Add(new ComboBoxItem<ActionType>(string.Empty));
-            foreach (MacroActionType actionType in Enum.GetValues(typeof(MacroActionType)))
-			{
-                int index = comboBoxActionTypes.Items.Add(new ComboBoxItem<MacroActionType>(actionType));
-				if (Action != null && Action.Type == actionType)
-					comboBoxActionTypes.SelectedIndex = index;
-			}
+			if (ActionBundle != null)
+				SelectActionType(ActionBundle.Type);
 		}
 
-		private void buttonRemove_Click(object sender, EventArgs e)
+		private void ButtonRemove_Click(object sender, EventArgs e)
 		{
 			RaiseMacroActionItemRemovedEvent();
 		}
 
-		private void ComboBoxActionTypes_SelectedIndexChanged(object sender, EventArgs e)
+		private void LinkLabelActionType_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			if (comboBoxActionTypes.SelectedIndex > -1)
-			{
-				if (_macroActionItem != null)
-				{
-					_macroActionItem.Dispose();
-					panelAction.Controls.Remove((Control) _macroActionItem);
-					_macroActionItem = null;
-				}
+			Picker.ShowMenu(linkLabelActionType, Enum.GetValues(typeof(MacroActionType)).Cast<MacroActionType>(), ContextMenu_SelectActionType_ActionTypeClicked);
+		}
 
-				ComboBoxItem<MacroActionType> comboBoxItem = (ComboBoxItem<MacroActionType>) comboBoxActionTypes.Items[comboBoxActionTypes.SelectedIndex];
+		#endregion
 
-				if (comboBoxItem.Text == string.Empty)
-				{
-					Action = null;
-					panelAction.Controls.Clear();
-					labelDivider.Visible = false;
-					return;
-				}
+		#region Picker event handlers
 
-                MacroActionType actionType = comboBoxItem.Tag;
-
-				switch (actionType)
-				{
-                    case MacroActionType.Start:
-                    case MacroActionType.Stop:
-                    case MacroActionType.Restart:
-						Action = MacroProcessAction ?? new MacroProcessAction(actionType);
-                        _macroActionItem = new MacroProcessActionItem(MacroProcessAction);
-						break;
-                    case MacroActionType.Distribute:
-						Action = MacroDistributionAction ?? new MacroDistributionAction(actionType);
-						_macroActionItem = new MacroDistributionActionItem(MacroDistributionAction);
-						break;
-                    case MacroActionType.Wait:
-                        Action = MacroWaitAction ?? new MacroWaitAction(actionType);
-                        _macroActionItem = new MacroWaitActionItem(MacroWaitAction);
-                        break;
-                }
-
-				if (_macroActionItem != null)
-				{
-					labelDivider.Visible = true;
-					_macroActionItem.SetWidth(panelAction.Width);
-					panelAction.Controls.Add((Control) _macroActionItem);
-				}
-			}
+		private void ContextMenu_SelectActionType_ActionTypeClicked(MacroActionType actionType)
+		{
+			SelectActionType(actionType);
 		}
 
 		#endregion
@@ -140,5 +111,46 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 			if (_macroActionItem != null)
 				_macroActionItem.SetWidth(panelAction.Width);
 		}
+
+		#region Helpers
+
+		private void SelectActionType(MacroActionType actionType)
+		{
+			if (_macroActionItem != null)
+			{
+				_macroActionItem.Dispose();
+				panelAction.Controls.Remove((Control) _macroActionItem);
+				_macroActionItem = null;
+			}
+
+			linkLabelActionType.Text = actionType.ToString();
+
+			switch (actionType)
+			{
+				case MacroActionType.Start:
+				case MacroActionType.Stop:
+				case MacroActionType.Restart:
+					ActionBundle = ProcessActionBundle ?? new MacroActionBundle(actionType);
+					_macroActionItem = new MacroProcessActionItem(ProcessActionBundle);
+					break;
+				//case MacroActionType.Distribute:
+				//	ActionBundle = DistributionActionBundle ?? new MacroActionBundle(actionType);
+				//	_macroActionItem = new MacroDistributionActionItem(DistributionActionBundle);
+				//	break;
+				//case MacroActionType.Wait:
+				//	ActionBundle = WaitActionBundle ?? new MacroActionBundle(actionType);
+				//	_macroActionItem = new MacroWaitActionItem(WaitActionBundle);
+				//	break;
+			}
+
+			if (_macroActionItem != null)
+			{
+				labelSeparator.Visible = true;
+				_macroActionItem.SetWidth(panelAction.Width);
+				panelAction.Controls.Add((Control) _macroActionItem);
+			}
+		}
+
+		#endregion
 	}
 }

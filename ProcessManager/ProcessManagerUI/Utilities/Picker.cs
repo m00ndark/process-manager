@@ -76,5 +76,55 @@ namespace ProcessManagerUI.Utilities
 			contextMenu.Items.Cast<ToolStripMenuItem>().ToList().ForEach(x => x.DropDownItemClicked += menuItemClickedEventHandler);
 			contextMenu.Show(position);
 		}
+
+		public static void ShowMultiSelectMenu<T>(Control control, IEnumerable<Tuple<T, bool>> items, Action<List<T>> pickHandler)
+		{
+			ShowMultiSelectMenu(control.Parent.PointToScreen(new Point(control.Location.X, control.Location.Y + control.Size.Height)), items, pickHandler);
+		}
+
+		public static void ShowMultiSelectMenu<T>(Point position, IEnumerable<Tuple<T, bool>> items, Action<List<T>> pickHandler)
+		{
+			if (items == null || !items.Any())
+				return;
+
+			ContextMenuStrip contextMenu = new ContextMenuStrip();
+			ToolStripDropDownClosedEventHandler contextMenuClosedEventHandler = null;
+			ToolStripDropDownClosingEventHandler contextMenuClosingEventHandler = null;
+			ToolStripItemClickedEventHandler menuItemClickedEventHandler = null;
+			contextMenuClosedEventHandler = (sender, e) =>
+				{
+					contextMenu.Closed -= contextMenuClosedEventHandler;
+					contextMenu.Closing -= contextMenuClosingEventHandler;
+					contextMenu.ItemClicked -= menuItemClickedEventHandler;
+				};
+			contextMenuClosingEventHandler = (sender, e) =>
+				{
+					if (e.CloseReason == ToolStripDropDownCloseReason.ItemClicked)
+					{
+						e.Cancel = true;
+						((ToolStripDropDownMenu) sender).Invalidate();
+					}
+					else
+					{
+						List<T> selectedItems = ((ToolStripDropDownMenu) sender).Items.Cast<ToolStripMenuItem>().Where(x => x.Checked).Select(x => (T) x.Tag).ToList();
+						pickHandler(selectedItems);
+					}
+				};
+			menuItemClickedEventHandler = (sender, e) =>
+				{
+					ToolStripMenuItem clickedItem = (ToolStripMenuItem) e.ClickedItem;
+					clickedItem.Checked = !clickedItem.Checked;
+				};
+			contextMenu.Closed += contextMenuClosedEventHandler;
+			contextMenu.Closing += contextMenuClosingEventHandler;
+			contextMenu.ItemClicked += menuItemClickedEventHandler;
+			items.OrderBy(item => item.Item1.ToString()).ToList().ForEach(item =>
+				contextMenu.Items.Add(new ToolStripMenuItem(item.Item1.ToString())
+					{
+						Tag = item.Item1,
+						Checked = item.Item2
+					}));
+			contextMenu.Show(position);
+		}
 	}
 }

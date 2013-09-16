@@ -57,7 +57,9 @@ namespace ProcessManagerUI.Forms
 				textBoxMacroName.Text = _selectedMacro.Name;
 				LayoutMacroActionItems();
 				_disableTextChangedEvents = false;
+				SuspendLayout();
 				panelMacro.Visible = true;
+				ResumeLayout(true);
 				EnableControls();
 			}
 		}
@@ -183,8 +185,8 @@ namespace ProcessManagerUI.Forms
 				if (MacroChanged())
 				{
 					_selectedMacro.Name = textBoxMacroName.Text;
-					_selectedMacro.Actions.Clear();
-					_macroActionItems.ForEach(macroActionItem => _selectedMacro.Actions.Add(macroActionItem.Action));
+					_selectedMacro.ActionBundles.Clear();
+					_macroActionItems.ForEach(macroActionItem => _selectedMacro.ActionBundles.Add(macroActionItem.ActionBundle));
 					ListViewItem item = listViewMacros.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedMacro);
 					item.Text = _selectedMacro.Name;
 					listViewMacros.Sort();
@@ -205,18 +207,18 @@ namespace ProcessManagerUI.Forms
 				});
 		}
 
-		private MacroActionItem CreateMacroActionItem(IMacroAction action = null)
+		private MacroActionItem CreateMacroActionItem(MacroActionBundle actionBundle = null)
 		{
-			MacroActionItem macroActionItem = new MacroActionItem(action);
+			MacroActionItem macroActionItem = new MacroActionItem(actionBundle);
 			macroActionItem.MacroActionItemRemoved += MacroActionItem_MacroActionItemRemoved;
 			macroActionItem.SetWidth(flowLayoutPanelMacroActions.Width - SCROLLBAR_WIDTH);
 			_macroActionItems.Add(macroActionItem);
 			return macroActionItem;
 		}
 
-		private void AddMacroActionItem(IMacroAction action = null)
+		private void AddMacroActionItem(MacroActionBundle actionBundle = null)
 		{
-			flowLayoutPanelMacroActions.Controls.Add(CreateMacroActionItem(action));
+			flowLayoutPanelMacroActions.Controls.Add(CreateMacroActionItem(actionBundle));
 		}
 
 		private void RemoveMacroActionItem(MacroActionItem macroActionItem)
@@ -231,7 +233,7 @@ namespace ProcessManagerUI.Forms
 		{
 			ClearMacroActionItems();
 			if (_selectedMacro == null) return;
-			_selectedMacro.Actions.ForEach(action => CreateMacroActionItem(action));
+			_selectedMacro.ActionBundles.ForEach(actionBundle => CreateMacroActionItem(actionBundle));
 			flowLayoutPanelMacroActions.Controls.AddRange(_macroActionItems.Cast<Control>().ToArray());
 		}
 
@@ -240,9 +242,9 @@ namespace ProcessManagerUI.Forms
 			bool macroChanged = false;
 			if (_selectedMacro != null && !string.IsNullOrEmpty(textBoxMacroName.Text))
 			{
-				int equalActionsCount = _selectedMacro.Actions.Intersect(_macroActionItems.Select(item => item.Action)).Count();
+				int equalActionsCount = _selectedMacro.ActionBundles.Intersect(_macroActionItems.Select(item => item.ActionBundle)).Count();
 				macroChanged = (_selectedMacro.Name != textBoxMacroName.Text
-					|| equalActionsCount != _selectedMacro.Actions.Count || equalActionsCount != _macroActionItems.Count);
+					|| equalActionsCount != _selectedMacro.ActionBundles.Count || equalActionsCount != _macroActionItems.Count);
 				_hasUnsavedChanges |= macroChanged;
 				AnyMachinesChanged |= macroChanged;
 			}
@@ -297,7 +299,7 @@ namespace ProcessManagerUI.Forms
 		private bool SaveMacros()
 		{
 			_macroActionItems
-				.Where(macroActionItem => macroActionItem.Action == null || !macroActionItem.Action.IsValid)
+				.Where(macroActionItem => macroActionItem.ActionBundle == null || !macroActionItem.ActionBundle.IsValid)
 				.ToList()
 				.ForEach(RemoveMacroActionItem);
 

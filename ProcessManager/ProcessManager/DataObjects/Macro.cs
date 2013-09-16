@@ -16,14 +16,14 @@ namespace ProcessManager.DataObjects
 
 		private Macro()
 		{
-			Actions = new List<IMacroAction>();
+			ActionBundles = new List<MacroActionBundle>();
 		}
 
 		#region Properties
 
 		public Guid ID { get; private set; }
 		public string Name { get; set; }
-		public List<IMacroAction> Actions { get; private set; }
+		public List<MacroActionBundle> ActionBundles { get; private set; }
 
 		#endregion
 

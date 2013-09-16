@@ -41,11 +41,11 @@
 			this.tableLayoutPanel.BackColor = System.Drawing.Color.Transparent;
 			this.tableLayoutPanel.ColumnCount = 7;
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 6F));
+			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 7F));
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 6F));
+			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 7F));
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 6F));
+			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 7F));
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
 			this.tableLayoutPanel.Controls.Add(this.comboBoxSourceMachine, 0, 0);
 			this.tableLayoutPanel.Controls.Add(this.comboBoxGroup, 2, 0);
@@ -57,7 +57,7 @@
 			this.tableLayoutPanel.Name = "tableLayoutPanel";
 			this.tableLayoutPanel.RowCount = 1;
 			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
 			this.tableLayoutPanel.Size = new System.Drawing.Size(301, 21);
 			this.tableLayoutPanel.TabIndex = 2;
 			// 
@@ -69,7 +69,7 @@
 			this.comboBoxSourceMachine.Location = new System.Drawing.Point(0, 0);
 			this.comboBoxSourceMachine.Margin = new System.Windows.Forms.Padding(0);
 			this.comboBoxSourceMachine.Name = "comboBoxSourceMachine";
-			this.comboBoxSourceMachine.Size = new System.Drawing.Size(70, 21);
+			this.comboBoxSourceMachine.Size = new System.Drawing.Size(70, 23);
 			this.comboBoxSourceMachine.TabIndex = 0;
 			this.comboBoxSourceMachine.SelectedIndexChanged += new System.EventHandler(this.ComboBoxSourceMachine_SelectedIndexChanged);
 			// 
@@ -78,10 +78,10 @@
 			this.comboBoxGroup.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.comboBoxGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxGroup.FormattingEnabled = true;
-			this.comboBoxGroup.Location = new System.Drawing.Point(76, 0);
+			this.comboBoxGroup.Location = new System.Drawing.Point(77, 0);
 			this.comboBoxGroup.Margin = new System.Windows.Forms.Padding(0);
 			this.comboBoxGroup.Name = "comboBoxGroup";
-			this.comboBoxGroup.Size = new System.Drawing.Size(70, 21);
+			this.comboBoxGroup.Size = new System.Drawing.Size(70, 23);
 			this.comboBoxGroup.TabIndex = 1;
 			this.comboBoxGroup.SelectedIndexChanged += new System.EventHandler(this.ComboBoxGroup_SelectedIndexChanged);
 			// 
@@ -90,10 +90,10 @@
 			this.comboBoxApplication.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.comboBoxApplication.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxApplication.FormattingEnabled = true;
-			this.comboBoxApplication.Location = new System.Drawing.Point(152, 0);
+			this.comboBoxApplication.Location = new System.Drawing.Point(154, 0);
 			this.comboBoxApplication.Margin = new System.Windows.Forms.Padding(0);
 			this.comboBoxApplication.Name = "comboBoxApplication";
-			this.comboBoxApplication.Size = new System.Drawing.Size(70, 21);
+			this.comboBoxApplication.Size = new System.Drawing.Size(70, 23);
 			this.comboBoxApplication.TabIndex = 2;
 			this.comboBoxApplication.SelectedIndexChanged += new System.EventHandler(this.ComboBoxApplication_SelectedIndexChanged);
 			// 
@@ -102,19 +102,20 @@
 			this.comboBoxDestinationMachine.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.comboBoxDestinationMachine.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxDestinationMachine.FormattingEnabled = true;
-			this.comboBoxDestinationMachine.Location = new System.Drawing.Point(228, 0);
+			this.comboBoxDestinationMachine.Location = new System.Drawing.Point(231, 0);
 			this.comboBoxDestinationMachine.Margin = new System.Windows.Forms.Padding(0);
 			this.comboBoxDestinationMachine.Name = "comboBoxDestinationMachine";
-			this.comboBoxDestinationMachine.Size = new System.Drawing.Size(73, 21);
+			this.comboBoxDestinationMachine.Size = new System.Drawing.Size(70, 23);
 			this.comboBoxDestinationMachine.TabIndex = 3;
 			this.comboBoxDestinationMachine.SelectedIndexChanged += new System.EventHandler(this.ComboBoxDestinationMachine_SelectedIndexChanged);
 			// 
 			// MacroDistributionActionItem
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.White;
 			this.Controls.Add(this.tableLayoutPanel);
+			this.Font = new System.Drawing.Font("Segoe UI", 9F);
 			this.Margin = new System.Windows.Forms.Padding(0);
 			this.Name = "MacroDistributionActionItem";
 			this.Size = new System.Drawing.Size(301, 21);

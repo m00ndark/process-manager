@@ -25,8 +25,8 @@ namespace ProcessManagerUI.Controls.MacroActionItems
                 {
                     case MacroActionWaitForEvent.Timeout:
                         return "For Timeout";
-                    case MacroActionWaitForEvent.PreviousActionCompleted:
-                        return "For Previous Action Completed";
+                    case MacroActionWaitForEvent.PreviousActionsCompleted:
+                        return "For Previous Actions Completed";
                     default:
                         throw new InvalidOperationException();
                 }

@@ -4,19 +4,20 @@ namespace ProcessManager.DataObjects
 {
 	public class MacroDistributionAction : IMacroAction
 	{
-		public MacroDistributionAction(MacroActionType type) : this(Guid.NewGuid(), type) {}
+		public MacroDistributionAction(MacroActionType type, Guid sourceMachineID, Guid groupID, Guid applicationID, Guid destinationMachineID)
+			: this(Guid.NewGuid(), type, sourceMachineID, groupID, applicationID, destinationMachineID) {}
 
-        public MacroDistributionAction(Guid id, MacroActionType type)
+		public MacroDistributionAction(Guid id, MacroActionType type, Guid sourceMachineID, Guid groupID, Guid applicationID, Guid destinationMachineID)
 		{
             if (type != MacroActionType.Distribute)
                 throw new ArgumentException("Invalid distribution action type");
 
 	        ID = id;
             Type = type;
-			SourceMachineID = Guid.Empty;
-			GroupID = Guid.Empty;
-			ApplicationID = Guid.Empty;
-			DestinationMachineID = Guid.Empty;
+			SourceMachineID = sourceMachineID;
+			GroupID = groupID;
+			ApplicationID = applicationID;
+			DestinationMachineID = destinationMachineID;
 		}
 
 		#region Properties
@@ -28,7 +29,7 @@ namespace ProcessManager.DataObjects
 		public Guid ApplicationID { get; set; }
 		public Guid DestinationMachineID { get; set; }
 
-		public bool IsValid { get { return SourceMachineID != Guid.Empty; } }
+		public bool IsValid { get { return SourceMachineID != Guid.Empty && GroupID != Guid.Empty && ApplicationID != Guid.Empty && DestinationMachineID != Guid.Empty; } }
 
 		#endregion
 

@@ -14,7 +14,7 @@ namespace ProcessManager.DataObjects
     public enum MacroActionWaitForEvent
     {
         Timeout,
-        PreviousActionCompleted
+        PreviousActionsCompleted
     }
 
     public interface IMacroAction

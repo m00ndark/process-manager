@@ -1259,12 +1259,12 @@ namespace ProcessManagerUI.Forms
 				_macroRootNodes.Clear();
 				_macroActionNodes.Clear();
 
-				_macroRootNodes.AddRange(Settings.Client.Macros.Select(macro =>
-					{
-						IEnumerable<MacroActionNode> actionNodes = macro.Actions.Select(macroAction => new MacroActionNode(macroAction, macro.ID)).ToList();
-						_macroActionNodes.AddRange(actionNodes);
-						return new MacroNode(macro, actionNodes);
-					}).ToList());
+				//_macroRootNodes.AddRange(Settings.Client.Macros.Select(macro =>
+				//	{
+				//		IEnumerable<MacroActionNode> actionNodes = macro.ActionBundles.Select(macroAction => new MacroActionNode(macroAction, macro.ID)).ToList();
+				//		_macroActionNodes.AddRange(actionNodes);
+				//		return new MacroNode(macro, actionNodes);
+				//	}).ToList());
 
 				_allMacroNodes.AddRange(_macroRootNodes);
 				_allMacroNodes.AddRange(_macroActionNodes);
