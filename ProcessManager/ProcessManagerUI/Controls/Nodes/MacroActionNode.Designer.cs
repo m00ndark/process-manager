@@ -44,7 +44,7 @@
 			this.linkLabelPlay.DisabledLinkColor = System.Drawing.Color.Gray;
 			this.linkLabelPlay.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
 			this.linkLabelPlay.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelPlay.Location = new System.Drawing.Point(47, 4);
+			this.linkLabelPlay.Location = new System.Drawing.Point(68, 4);
 			this.linkLabelPlay.Name = "linkLabelPlay";
 			this.linkLabelPlay.Size = new System.Drawing.Size(29, 15);
 			this.linkLabelPlay.TabIndex = 9;
@@ -59,7 +59,7 @@
 			this.labelActionName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
 			this.labelActionName.AutoSize = true;
-			this.labelActionName.Location = new System.Drawing.Point(80, 4);
+			this.labelActionName.Location = new System.Drawing.Point(101, 4);
 			this.labelActionName.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
 			this.labelActionName.Name = "labelActionName";
 			this.labelActionName.Size = new System.Drawing.Size(56, 15);
@@ -69,7 +69,7 @@
 			// 
 			// pictureBoxStatus
 			// 
-			this.pictureBoxStatus.Location = new System.Drawing.Point(25, 3);
+			this.pictureBoxStatus.Location = new System.Drawing.Point(46, 3);
 			this.pictureBoxStatus.Name = "pictureBoxStatus";
 			this.pictureBoxStatus.Size = new System.Drawing.Size(16, 16);
 			this.pictureBoxStatus.TabIndex = 12;
@@ -78,7 +78,7 @@
 			// checkBoxSelected
 			// 
 			this.checkBoxSelected.AutoSize = true;
-			this.checkBoxSelected.Location = new System.Drawing.Point(4, 5);
+			this.checkBoxSelected.Location = new System.Drawing.Point(25, 5);
 			this.checkBoxSelected.Name = "checkBoxSelected";
 			this.checkBoxSelected.Size = new System.Drawing.Size(15, 14);
 			this.checkBoxSelected.TabIndex = 11;

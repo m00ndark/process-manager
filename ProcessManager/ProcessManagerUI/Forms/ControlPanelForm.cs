@@ -1259,12 +1259,55 @@ namespace ProcessManagerUI.Forms
 				_macroRootNodes.Clear();
 				_macroActionNodes.Clear();
 
-				//_macroRootNodes.AddRange(Settings.Client.Macros.Select(macro =>
-				//	{
-				//		IEnumerable<MacroActionNode> actionNodes = macro.ActionBundles.Select(macroAction => new MacroActionNode(macroAction, macro.ID)).ToList();
-				//		_macroActionNodes.AddRange(actionNodes);
-				//		return new MacroNode(macro, actionNodes);
-				//	}).ToList());
+				var macroBundles = Settings.Client.Macros.Select(macro => new
+					{
+						Macro = macro,
+						GroupedActionBundles = macro.ActionBundles.SelectMany(actionBundle => actionBundle.Actions
+							.Select(action => new
+								{
+									Action = action,
+									MachineID = action.Type == MacroActionType.Wait
+										? Guid.Empty
+										: action.Type == MacroActionType.Distribute
+											? ((MacroDistributionAction) action).DestinationMachineID
+											: ((MacroProcessAction) action).MachineID
+								})
+							.GroupBy(a => a.MachineID, (a, b) => new
+								{
+									MachineID = a,
+									actionBundle.Type,
+									GroupedActions = b
+								}))
+					});
+
+				_macroRootNodes.AddRange(macroBundles.Select(macroBundle =>
+					{
+						IEnumerable<INode> levelTwoNodes = macroBundle.GroupedActionBundles.Select(groupedActionBundle =>
+							{
+								IEnumerable<MacroActionNode> levelThreeNodes;
+								switch (groupedActionBundle.Type)
+								{
+									case MacroActionType.Start:
+									case MacroActionType.Stop:
+									case MacroActionType.Restart:
+										levelThreeNodes = groupedActionBundle.GroupedActions.Select(groupedAction => new MacroActionNode(groupedAction.Action, macroBundle.Macro.ID)).ToList();
+										_macroActionNodes.AddRange(levelThreeNodes);
+										return (INode) new MacroMachineNode(groupedActionBundle.MachineID, macroBundle.Macro, levelThreeNodes);
+									case MacroActionType.Distribute:
+										levelThreeNodes = groupedActionBundle.GroupedActions.Select(groupedAction => new MacroActionNode(groupedAction.Action, macroBundle.Macro.ID)).ToList();
+										_macroActionNodes.AddRange(levelThreeNodes);
+										return (INode) new MacroMachineNode(groupedActionBundle.MachineID, macroBundle.Macro, levelThreeNodes);
+									case MacroActionType.Wait:
+										MacroActionNode macroActionNode = new MacroActionNode(groupedActionBundle.GroupedActions.First().Action, macroBundle.Macro.ID);
+										_macroActionNodes.Add(macroActionNode);
+										return (INode) macroActionNode;
+									default:
+										throw new InvalidOperationException();
+								}
+							}).ToList();
+						_allMacroNodes.AddRange(levelTwoNodes.Where(node => node is MacroMachineNode));
+						return new MacroNode(macroBundle.Macro, levelTwoNodes);
+					}).ToList());
 
 				_allMacroNodes.AddRange(_macroRootNodes);
 				_allMacroNodes.AddRange(_macroActionNodes);

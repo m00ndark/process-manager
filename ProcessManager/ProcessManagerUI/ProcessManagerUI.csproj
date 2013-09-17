@@ -148,6 +148,9 @@
     <Compile Include="Controls\Nodes\MacroActionNode.Designer.cs">
       <DependentUpon>MacroActionNode.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Nodes\MacroMachineNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\Nodes\MacroNode.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -178,6 +181,7 @@
     <Compile Include="Controls\Nodes\Support\BaseDistributionRootNode.Designer.cs">
       <DependentUpon>BaseDistributionRootNode.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Nodes\Support\IMacroRootNode.cs" />
     <Compile Include="Controls\Nodes\Support\INode.cs" />
     <Compile Include="Controls\Nodes\ProcessMachineNode.cs">
       <SubType>UserControl</SubType>

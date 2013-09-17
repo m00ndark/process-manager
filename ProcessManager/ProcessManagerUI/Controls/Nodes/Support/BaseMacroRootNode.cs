@@ -9,7 +9,7 @@ using ProcessManager.EventArguments;
 
 namespace ProcessManagerUI.Controls.Nodes.Support
 {
-	public partial class BaseMacroRootNode : UserControl, IRootNode
+	public partial class BaseMacroRootNode : UserControl, IMacroRootNode
 	{
 		private bool _ignoreCheckedChangedEvents;
 		private Size _childrenSize;
@@ -25,7 +25,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			_childrenSize = new Size(0, 0);
 			_expanded = expanded;
 			ChildNodes = new List<INode>(childNodes);
-			ChildNodes.Select(node => node as IRootNode).Where(node => node != null).ToList()
+			ChildNodes.Where(node => node is IRootNode).Cast<IRootNode>().ToList()
 				.ForEach(node => node.SizeChanged += RootNode_SizeChanged);
 			ChildNodes.ForEach(node =>
 				{
@@ -123,6 +123,21 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 		{
 			ChildNodes.Select(node => node as IRootNode).Where(node => node != null).ToList().ForEach(node => node.ExpandAll(expanded));
 			Expanded = expanded;
+		}
+
+		public IEnumerable<INode> GetCheckedLeafNodes()
+		{
+			foreach (INode childNode in ChildNodes)
+			{
+				IMacroRootNode rootNode = childNode as IMacroRootNode;
+				if (rootNode != null)
+				{
+					foreach (INode node in rootNode.GetCheckedLeafNodes())
+						yield return node;
+				}
+				else if (childNode.CheckState == CheckState.Checked)
+					yield return childNode;
+			}
 		}
 
 		#endregion

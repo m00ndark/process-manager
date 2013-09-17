@@ -31,6 +31,14 @@ namespace ProcessManager.DataObjects
 
 		#endregion
 
+		public void ChangeActionType(MacroActionType actionType)
+		{
+			if (actionType == MacroActionType.Distribute || actionType == MacroActionType.Wait)
+				throw new ArgumentException("Cannot change action type of macro process action to distribute and wait");
+
+			Type = actionType;
+		}
+
 		#region Equality
 
 		public override bool Equals(object obj)

@@ -100,11 +100,13 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		public void TakeAction(ActionType type)
 		{
-			if (type != ActionType.Play)
-				throw new ArgumentException("Invalid action type");
+			throw new InvalidOperationException("Not used by macro nodes");
 
-			if (checkBoxSelected.Checked)
-				RaiseActionTakenEvent(new MacroAction(ActionType.Play, MacroAction));
+			//if (type != ActionType.Play)
+			//	throw new ArgumentException("Invalid action type");
+
+			//if (checkBoxSelected.Checked)
+			//	RaiseActionTakenEvent(new MacroAction(ActionType.Play, MacroAction));
 		}
 
 		#endregion

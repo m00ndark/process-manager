@@ -203,7 +203,8 @@ namespace ProcessManagerUI.Forms
 				{
 					_selectedMacro.Name = textBoxMacroName.Text;
 					_selectedMacro.ActionBundles.Clear();
-					_macroActionItems.ForEach(macroActionItem => _selectedMacro.ActionBundles.Add(macroActionItem.ActionBundle));
+					_macroActionItems.ForEach(macroActionItem => _selectedMacro.ActionBundles.Add(
+						macroActionItem.ActionBundle != null ? macroActionItem.ActionBundle.Copy() : null));
 					ListViewItem item = listViewMacros.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedMacro);
 					item.Text = _selectedMacro.Name;
 					listViewMacros.Sort();
@@ -229,7 +230,7 @@ namespace ProcessManagerUI.Forms
 
 		private MacroActionItem CreateMacroActionItem(MacroActionBundle actionBundle = null)
 		{
-			MacroActionItem macroActionItem = new MacroActionItem(actionBundle);
+			MacroActionItem macroActionItem = new MacroActionItem(actionBundle != null ? actionBundle.Copy() : null);
 			macroActionItem.MacroActionItemChanged += MacroActionItem_MacroActionItemChanged;
 			macroActionItem.MacroActionItemRemoved += MacroActionItem_MacroActionItemRemoved;
 			macroActionItem.MacroActionItemMovedUp += MacroActionItem_MacroActionItemMovedUp;

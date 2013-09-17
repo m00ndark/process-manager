@@ -32,13 +32,13 @@
 			this.linkLabelPlay = new System.Windows.Forms.LinkLabel();
 			this.labelNodeName = new System.Windows.Forms.Label();
 			this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-			this.panelMachineName = new System.Windows.Forms.Panel();
+			this.panelNodeName = new System.Windows.Forms.Panel();
 			this.panelControl = new System.Windows.Forms.Panel();
-			this.labeledDivider = new ProcessManagerUI.Controls.LabeledDivider();
 			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.pictureBoxExpandCollapse = new System.Windows.Forms.PictureBox();
+			this.labeledDivider = new ProcessManagerUI.Controls.LabeledDivider();
 			this.tableLayoutPanel.SuspendLayout();
-			this.panelMachineName.SuspendLayout();
+			this.panelNodeName.SuspendLayout();
 			this.panelControl.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxExpandCollapse)).BeginInit();
 			this.SuspendLayout();
@@ -93,7 +93,7 @@
 			this.tableLayoutPanel.ColumnCount = 2;
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 93F));
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel.Controls.Add(this.panelMachineName, 0, 0);
+			this.tableLayoutPanel.Controls.Add(this.panelNodeName, 0, 0);
 			this.tableLayoutPanel.Controls.Add(this.panelControl, 1, 0);
 			this.tableLayoutPanel.Location = new System.Drawing.Point(44, 0);
 			this.tableLayoutPanel.Name = "tableLayoutPanel";
@@ -103,15 +103,15 @@
 			this.tableLayoutPanel.Size = new System.Drawing.Size(306, 22);
 			this.tableLayoutPanel.TabIndex = 3;
 			// 
-			// panelMachineName
+			// panelNodeName
 			// 
-			this.panelMachineName.Controls.Add(this.labelNodeName);
-			this.panelMachineName.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelMachineName.Location = new System.Drawing.Point(0, 0);
-			this.panelMachineName.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-			this.panelMachineName.Name = "panelMachineName";
-			this.panelMachineName.Size = new System.Drawing.Size(90, 22);
-			this.panelMachineName.TabIndex = 5;
+			this.panelNodeName.Controls.Add(this.labelNodeName);
+			this.panelNodeName.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelNodeName.Location = new System.Drawing.Point(0, 0);
+			this.panelNodeName.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+			this.panelNodeName.Name = "panelNodeName";
+			this.panelNodeName.Size = new System.Drawing.Size(90, 22);
+			this.panelNodeName.TabIndex = 5;
 			// 
 			// panelControl
 			// 
@@ -123,19 +123,6 @@
 			this.panelControl.Name = "panelControl";
 			this.panelControl.Size = new System.Drawing.Size(213, 22);
 			this.panelControl.TabIndex = 3;
-			// 
-			// labeledDivider
-			// 
-			this.labeledDivider.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDivider.BackColor = System.Drawing.Color.Transparent;
-			this.labeledDivider.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDivider.Location = new System.Drawing.Point(34, 4);
-			this.labeledDivider.Name = "labeledDivider";
-			this.labeledDivider.Size = new System.Drawing.Size(179, 15);
-			this.labeledDivider.TabIndex = 6;
-			this.labeledDivider.Text = "";
 			// 
 			// flowLayoutPanel
 			// 
@@ -157,6 +144,19 @@
 			this.pictureBoxExpandCollapse.TabStop = false;
 			this.pictureBoxExpandCollapse.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PictureBoxExpandCollapse_MouseDown);
 			// 
+			// labeledDivider
+			// 
+			this.labeledDivider.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labeledDivider.BackColor = System.Drawing.Color.Transparent;
+			this.labeledDivider.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDivider.Location = new System.Drawing.Point(34, 4);
+			this.labeledDivider.Name = "labeledDivider";
+			this.labeledDivider.Size = new System.Drawing.Size(179, 15);
+			this.labeledDivider.TabIndex = 6;
+			this.labeledDivider.Text = "";
+			// 
 			// BaseMacroRootNode
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -171,8 +171,8 @@
 			this.Name = "BaseMacroRootNode";
 			this.Size = new System.Drawing.Size(350, 100);
 			this.tableLayoutPanel.ResumeLayout(false);
-			this.panelMachineName.ResumeLayout(false);
-			this.panelMachineName.PerformLayout();
+			this.panelNodeName.ResumeLayout(false);
+			this.panelNodeName.PerformLayout();
 			this.panelControl.ResumeLayout(false);
 			this.panelControl.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxExpandCollapse)).EndInit();
@@ -191,6 +191,6 @@
 		private System.Windows.Forms.Panel panelControl;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
 		private LabeledDivider labeledDivider;
-		private System.Windows.Forms.Panel panelMachineName;
+		private System.Windows.Forms.Panel panelNodeName;
 	}
 }

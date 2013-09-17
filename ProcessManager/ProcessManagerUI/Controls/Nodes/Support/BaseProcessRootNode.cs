@@ -28,7 +28,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			_grouping = grouping;
 			_expanded = expanded;
 			ChildNodes = new List<INode>(childNodes);
-			ChildNodes.Select(node => node as IRootNode).Where(node => node != null).ToList()
+			ChildNodes.Where(node => node is IRootNode).Cast<IRootNode>().ToList()
 				.ForEach(node => node.SizeChanged += RootNode_SizeChanged);
 			ChildNodes.ForEach(node =>
 				{

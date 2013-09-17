@@ -172,6 +172,7 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 				case MacroActionType.Start:
 				case MacroActionType.Stop:
 				case MacroActionType.Restart:
+					if (ProcessActionBundle != null) ProcessActionBundle.ChangeActionType(actionType);
 					ActionBundle = ProcessActionBundle ?? new MacroActionBundle(actionType);
 					_macroActionItem = new MacroProcessActionItem(ProcessActionBundle);
 					break;

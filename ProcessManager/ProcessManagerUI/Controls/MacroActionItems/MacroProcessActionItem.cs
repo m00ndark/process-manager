@@ -289,9 +289,15 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 		{
 			ActionBundle.Actions.Clear();
 			if (HasValidSelections)
-				ActionBundle.Actions.AddRange(SelectedMachines.SelectMany(machine =>
-					SelectedApplications.Select(application =>
-						new MacroProcessAction(ActionBundle.Type, machine.ID, SelectedGroup.ID, application.ID))));
+				ActionBundle.Actions.AddRange(SelectedMachines.SelectMany(machine => SelectedApplications
+					.Select(application =>
+						{
+							Configuration configuration = ConnectionStore.Connections[machine].Configuration;
+							Group actualGroup = configuration.Groups.FirstOrDefault(x => Comparer.GroupsEqual(x, SelectedGroup));
+							Application actualApplication = configuration.Applications.FirstOrDefault(x => Comparer.ApplicationsEqual(x, application));
+							return actualGroup != null && actualApplication != null ? new MacroProcessAction(ActionBundle.Type, machine.ID, actualGroup.ID, actualApplication.ID) : null;
+						})
+					.Where(action => action != null)));
 
 			RaiseMacroActionItemChangedEvent();
 		}
