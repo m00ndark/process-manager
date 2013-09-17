@@ -168,7 +168,6 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		public virtual void TakeAction(ActionType type)
 		{
-			//ChildNodes.ForEach(node => node.TakeAction(type));
 			throw new InvalidOperationException("Class must be inherited!");
 		}
 

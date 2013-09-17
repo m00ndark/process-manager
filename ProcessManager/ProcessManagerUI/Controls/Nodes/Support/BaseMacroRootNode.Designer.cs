@@ -34,13 +34,15 @@
 			this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
 			this.panelNodeName = new System.Windows.Forms.Panel();
 			this.panelControl = new System.Windows.Forms.Panel();
+			this.labeledDivider = new ProcessManagerUI.Controls.LabeledDivider();
 			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.pictureBoxExpandCollapse = new System.Windows.Forms.PictureBox();
-			this.labeledDivider = new ProcessManagerUI.Controls.LabeledDivider();
+			this.pictureBoxStatus = new System.Windows.Forms.PictureBox();
 			this.tableLayoutPanel.SuspendLayout();
 			this.panelNodeName.SuspendLayout();
 			this.panelControl.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxExpandCollapse)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxStatus)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// checkBoxSelected
@@ -63,7 +65,7 @@
 			this.linkLabelPlay.Enabled = false;
 			this.linkLabelPlay.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
 			this.linkLabelPlay.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelPlay.Location = new System.Drawing.Point(3, 4);
+			this.linkLabelPlay.Location = new System.Drawing.Point(68, 4);
 			this.linkLabelPlay.Name = "linkLabelPlay";
 			this.linkLabelPlay.Size = new System.Drawing.Size(29, 15);
 			this.linkLabelPlay.TabIndex = 3;
@@ -95,12 +97,12 @@
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel.Controls.Add(this.panelNodeName, 0, 0);
 			this.tableLayoutPanel.Controls.Add(this.panelControl, 1, 0);
-			this.tableLayoutPanel.Location = new System.Drawing.Point(44, 0);
+			this.tableLayoutPanel.Location = new System.Drawing.Point(101, 0);
 			this.tableLayoutPanel.Name = "tableLayoutPanel";
 			this.tableLayoutPanel.RowCount = 1;
 			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-			this.tableLayoutPanel.Size = new System.Drawing.Size(306, 22);
+			this.tableLayoutPanel.Size = new System.Drawing.Size(249, 22);
 			this.tableLayoutPanel.TabIndex = 3;
 			// 
 			// panelNodeName
@@ -116,13 +118,25 @@
 			// panelControl
 			// 
 			this.panelControl.Controls.Add(this.labeledDivider);
-			this.panelControl.Controls.Add(this.linkLabelPlay);
 			this.panelControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panelControl.Location = new System.Drawing.Point(93, 0);
 			this.panelControl.Margin = new System.Windows.Forms.Padding(0);
 			this.panelControl.Name = "panelControl";
-			this.panelControl.Size = new System.Drawing.Size(213, 22);
+			this.panelControl.Size = new System.Drawing.Size(156, 22);
 			this.panelControl.TabIndex = 3;
+			// 
+			// labeledDivider
+			// 
+			this.labeledDivider.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labeledDivider.BackColor = System.Drawing.Color.Transparent;
+			this.labeledDivider.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDivider.Location = new System.Drawing.Point(0, 4);
+			this.labeledDivider.Name = "labeledDivider";
+			this.labeledDivider.Size = new System.Drawing.Size(156, 15);
+			this.labeledDivider.TabIndex = 6;
+			this.labeledDivider.Text = "";
 			// 
 			// flowLayoutPanel
 			// 
@@ -144,24 +158,21 @@
 			this.pictureBoxExpandCollapse.TabStop = false;
 			this.pictureBoxExpandCollapse.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PictureBoxExpandCollapse_MouseDown);
 			// 
-			// labeledDivider
+			// pictureBoxStatus
 			// 
-			this.labeledDivider.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDivider.BackColor = System.Drawing.Color.Transparent;
-			this.labeledDivider.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDivider.Location = new System.Drawing.Point(34, 4);
-			this.labeledDivider.Name = "labeledDivider";
-			this.labeledDivider.Size = new System.Drawing.Size(179, 15);
-			this.labeledDivider.TabIndex = 6;
-			this.labeledDivider.Text = "";
+			this.pictureBoxStatus.Location = new System.Drawing.Point(46, 3);
+			this.pictureBoxStatus.Name = "pictureBoxStatus";
+			this.pictureBoxStatus.Size = new System.Drawing.Size(16, 16);
+			this.pictureBoxStatus.TabIndex = 13;
+			this.pictureBoxStatus.TabStop = false;
 			// 
 			// BaseMacroRootNode
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.White;
+			this.Controls.Add(this.pictureBoxStatus);
+			this.Controls.Add(this.linkLabelPlay);
 			this.Controls.Add(this.flowLayoutPanel);
 			this.Controls.Add(this.tableLayoutPanel);
 			this.Controls.Add(this.checkBoxSelected);
@@ -174,8 +185,8 @@
 			this.panelNodeName.ResumeLayout(false);
 			this.panelNodeName.PerformLayout();
 			this.panelControl.ResumeLayout(false);
-			this.panelControl.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxExpandCollapse)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxStatus)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -192,5 +203,6 @@
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
 		private LabeledDivider labeledDivider;
 		private System.Windows.Forms.Panel panelNodeName;
+		private System.Windows.Forms.PictureBox pictureBoxStatus;
 	}
 }
