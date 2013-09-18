@@ -1905,6 +1905,7 @@
 	<table name="ISAssistantTag">
 		<col key="yes" def="s72">Tag</col>
 		<col def="S255">Data</col>
+		<row><td>NewShortcut1</td><td/></row>
 		<row><td>PROJECT_ASSISTANT_DEFAULT_FEATURE</td><td>AlwaysInstall</td></row>
 		<row><td>PROJECT_ASSISTANT_FEATURES</td><td>NonSelectable</td></row>
 	</table>
@@ -3990,7 +3991,7 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I2">ISIconIndex</col>
 		<row><td>ARPPRODUCTICON.exe</td><td/><td>&lt;ISProductFolder&gt;\redist\Language Independent\OS Independent\setupicon.ico</td><td>0</td></row>
-		<row><td>NewShortcut1_D90243CEB113409AA54F40ED189F55D7.exe</td><td/><td>D:\tfs\Internal\mja\ProcessManager\ProcessManagerUI\Resources\app.ico</td><td>0</td></row>
+		<row><td>NewShortcut1_7EEDDECCF17D4C709E2186A6B13A22E5.exe</td><td/><td>D:\tfs\main\Internal\mja\ProcessManager\ProcessManagerUI\Resources\app.ico</td><td>0</td></row>
 	</table>
 
 	<table name="IniFile">
@@ -4673,7 +4674,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<col def="S255">ISComments</col>
 		<col def="S255">ISShortcutName</col>
 		<col def="I4">ISAttributes</col>
-		<row><td>NewShortcut1</td><td>ProgramMenuFolder</td><td>##ID_STRING3##</td><td>ProcessManagerUI.Primary_output</td><td>AlwaysInstall</td><td/><td/><td/><td>NewShortcut1_D90243CEB113409AA54F40ED189F55D7.exe</td><td>0</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
+		<row><td>NewShortcut1</td><td>ProgramMenuFolder</td><td>##ID_STRING3##</td><td>ProcessManagerUI.Primary_output</td><td>AlwaysInstall</td><td/><td/><td/><td>NewShortcut1_7EEDDECCF17D4C709E2186A6B13A22E5.exe</td><td>0</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="Signature">
