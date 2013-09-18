@@ -13,10 +13,10 @@ namespace ProcessManagerUI.Controls.Nodes
 		private readonly Guid _id;
 		private readonly string _nodeName;
 
-		public MacroMachineNode(Guid machineID, MacroActionType type, Macro macro, IEnumerable<INode> childNodes)
+		public MacroMachineNode(Guid machineID, MacroActionType type, Macro macro, IEnumerable<IMacroNode> childNodes)
 			: this(MakeID(macro.ID, machineID), machineID, type, macro, childNodes) { }
 
-		private MacroMachineNode(Guid id, Guid machineID, MacroActionType type, Macro macro, IEnumerable<INode> childNodes)
+		private MacroMachineNode(Guid id, Guid machineID, MacroActionType type, Macro macro, IEnumerable<IMacroNode> childNodes)
 			: base(childNodes, !Settings.Client.M_CollapsedNodes.Contains(id))
 		{
 			if (type == MacroActionType.Wait)

@@ -2,8 +2,8 @@
 
 namespace ProcessManagerUI.Controls.Nodes.Support
 {
-	public interface IMacroRootNode : IRootNode
+	public interface IMacroRootNode : IRootNode, IMacroNode
 	{
-		IEnumerable<INode> GetCheckedLeafNodes();
+		IEnumerable<IMacroNode> GetCheckedLeafNodes();
 	}
 }

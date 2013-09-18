@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataObjects;
 using ProcessManagerUI.Controls.Nodes.Support;
@@ -10,7 +9,7 @@ namespace ProcessManagerUI.Controls.Nodes
 {
 	public class MacroNode : BaseMacroRootNode
 	{
-        public MacroNode(Macro macro, IEnumerable<INode> childNodes)
+        public MacroNode(Macro macro, IEnumerable<IMacroNode> childNodes)
 			: base(childNodes, !Settings.Client.M_CollapsedNodes.Contains(macro.ID))
 		{
 			Macro = macro;
@@ -29,8 +28,7 @@ namespace ProcessManagerUI.Controls.Nodes
 		public override void TakeAction(ActionType type)
 		{
 			MacroAction macroAction = new MacroAction(type, Macro);
-			macroAction.Actions.AddRange(ChildNodes
-				.Where(node => node.CheckState == CheckState.Checked)
+			macroAction.Actions.AddRange(GetCheckedLeafNodes()
 				.Where(node => node is MacroActionNode)
 				.Cast<MacroActionNode>()
 				.Select(node => node.MacroAction));

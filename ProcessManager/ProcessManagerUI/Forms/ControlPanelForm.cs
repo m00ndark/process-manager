@@ -1282,7 +1282,7 @@ namespace ProcessManagerUI.Forms
 
 				_macroRootNodes.AddRange(macroBundles.Select(macroBundle =>
 					{
-						IEnumerable<INode> levelTwoNodes = macroBundle.GroupedActionBundles.Select(groupedActionBundle =>
+						IEnumerable<IMacroNode> levelTwoNodes = macroBundle.GroupedActionBundles.Select(groupedActionBundle =>
 							{
 								IEnumerable<MacroActionNode> levelThreeNodes;
 								switch (groupedActionBundle.Type)
@@ -1292,15 +1292,15 @@ namespace ProcessManagerUI.Forms
 									case MacroActionType.Restart:
 										levelThreeNodes = groupedActionBundle.GroupedActions.Select(groupedAction => new MacroActionNode(groupedAction.Action, macroBundle.Macro.ID)).ToList();
 										_macroActionNodes.AddRange(levelThreeNodes);
-										return (INode) new MacroMachineNode(groupedActionBundle.MachineID, groupedActionBundle.Type, macroBundle.Macro, levelThreeNodes);
+										return (IMacroNode) new MacroMachineNode(groupedActionBundle.MachineID, groupedActionBundle.Type, macroBundle.Macro, levelThreeNodes);
 									case MacroActionType.Distribute:
 										levelThreeNodes = groupedActionBundle.GroupedActions.Select(groupedAction => new MacroActionNode(groupedAction.Action, macroBundle.Macro.ID)).ToList();
 										_macroActionNodes.AddRange(levelThreeNodes);
-										return (INode) new MacroMachineNode(groupedActionBundle.MachineID, groupedActionBundle.Type, macroBundle.Macro, levelThreeNodes);
+										return (IMacroNode) new MacroMachineNode(groupedActionBundle.MachineID, groupedActionBundle.Type, macroBundle.Macro, levelThreeNodes);
 									case MacroActionType.Wait:
 										MacroActionNode macroActionNode = new MacroActionNode(groupedActionBundle.GroupedActions.First().Action, macroBundle.Macro.ID);
 										_macroActionNodes.Add(macroActionNode);
-										return (INode) macroActionNode;
+										return (IMacroNode) macroActionNode;
 									default:
 										throw new InvalidOperationException();
 								}

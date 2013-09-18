@@ -17,7 +17,7 @@ namespace ProcessManager.DataObjects
         PreviousActionsCompleted
     }
 
-    public interface IMacroAction
+	public interface IMacroAction
     {
 		Guid ID { get; }
         MacroActionType Type { get; }

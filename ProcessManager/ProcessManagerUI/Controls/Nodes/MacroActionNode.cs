@@ -14,12 +14,12 @@ namespace ProcessManagerUI.Controls.Nodes
 	public enum MacroActionState
 	{
 		Unknown,
-		Ongoing,
 		Success,
+		Ongoing,
 		Failure
 	}
 
-	public partial class MacroActionNode : UserControl, INode
+	public partial class MacroActionNode : UserControl, IMacroNode
 	{
 		private readonly Guid _id;
 		private MacroActionState _state;
@@ -27,6 +27,7 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		public event EventHandler CheckedChanged;
 		public event EventHandler<ActionEventArgs> ActionTaken;
+		public event EventHandler StateChanged;
 
         public MacroActionNode(IMacroAction macroAction, Guid macroID)
 		{
@@ -49,6 +50,7 @@ namespace ProcessManagerUI.Controls.Nodes
 			{
 				_state = value;
 				ApplyState();
+				RaiseStateChangedEvent();
 			}
 		}
 
@@ -116,13 +118,19 @@ namespace ProcessManagerUI.Controls.Nodes
 		private void RaiseCheckedChangedEvent()
 		{
 			if (CheckedChanged != null)
-				CheckedChanged(this, new EventArgs());
+				CheckedChanged(this, EventArgs.Empty);
 		}
 
 		private void RaiseActionTakenEvent(IAction action)
 		{
 			if (ActionTaken != null)
 				ActionTaken(this, new ActionEventArgs(action));
+		}
+
+		private void RaiseStateChangedEvent()
+		{
+			if (StateChanged != null)
+				StateChanged(this, EventArgs.Empty);
 		}
 
 		#endregion
