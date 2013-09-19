@@ -104,6 +104,7 @@ namespace ProcessManager
 			public static class Defaults
 			{
 				public const string START_WITH_WINDOWS = "False";
+				public const string USER_OWNS_CONTROL_PANEL = "False";
 				public const string SELECTED_HOST_NAME = Constants.LOCALHOST;
 				public const string SELECTED_CONFIGURATION_SECTION = "";
 				public const string SELECTED_TAB = "";
@@ -125,6 +126,7 @@ namespace ProcessManager
 				Machines = new List<Machine>();
 				Macros = new List<Macro>();
 				StartWithWindows = bool.Parse(Defaults.START_WITH_WINDOWS);
+				UserOwnsControlPanel = bool.Parse(Defaults.USER_OWNS_CONTROL_PANEL);
 				CFG_SelectedHostName = Defaults.SELECTED_HOST_NAME;
 				CFG_SelectedConfigurationSection = Defaults.SELECTED_CONFIGURATION_SECTION;
 				CP_SelectedTab = Defaults.SELECTED_TAB;
@@ -158,6 +160,7 @@ namespace ProcessManager
 			public static List<Machine> Machines { get; private set; }
 			public static List<Macro> Macros { get; private set; }
 			public static bool StartWithWindows { get; set; }
+			public static bool UserOwnsControlPanel { get; set; }
 			public static string CFG_SelectedHostName { get; set; }
 			public static string CFG_SelectedConfigurationSection { get; set; }
 			public static string CP_SelectedTab { get; set; }

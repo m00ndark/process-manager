@@ -33,6 +33,9 @@
 			this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
 			this.contextMenuStripSystemTray = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.toolStripMenuItemSystemTrayConfiguration = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItemSystemTrayOptions = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItemSystemTrayOptionsStartWithWindows = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparatorSystemTray1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripMenuItemSystemTrayExit = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanelProcess = new System.Windows.Forms.TableLayoutPanel();
@@ -54,6 +57,7 @@
 			this.comboBoxProcessGroupBy = new System.Windows.Forms.ComboBox();
 			this.labelProcessGroupBy = new System.Windows.Forms.Label();
 			this.panelGlass = new System.Windows.Forms.Panel();
+			this.panelGlassTop = new System.Windows.Forms.Panel();
 			this.tabControlSection = new System.Windows.Forms.TabControl();
 			this.tabPageProcess = new System.Windows.Forms.TabPage();
 			this.tabPageDistribution = new System.Windows.Forms.TabPage();
@@ -62,12 +66,12 @@
 			this.panelTabPageArea = new System.Windows.Forms.Panel();
 			this.tableLayoutPanelMacro = new System.Windows.Forms.TableLayoutPanel();
 			this.panelMacros = new System.Windows.Forms.Panel();
+			this.labelMacroUnavailable = new System.Windows.Forms.Label();
 			this.linkLabelMacroExpandAll = new System.Windows.Forms.LinkLabel();
 			this.linkLabelMacroCollapseAll = new System.Windows.Forms.LinkLabel();
 			this.linkLabelMacroPlayAll = new System.Windows.Forms.LinkLabel();
 			this.labelMacroAllSelected = new System.Windows.Forms.Label();
 			this.flowLayoutPanelMacros = new System.Windows.Forms.FlowLayoutPanel();
-			this.labelMacroUnavailable = new System.Windows.Forms.Label();
 			this.tableLayoutPanelDistribution = new System.Windows.Forms.TableLayoutPanel();
 			this.panelDistributionApplications = new System.Windows.Forms.Panel();
 			this.labelDistributionUnavailable = new System.Windows.Forms.Label();
@@ -118,10 +122,11 @@
 			// 
 			this.contextMenuStripSystemTray.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemSystemTrayConfiguration,
+            this.toolStripMenuItemSystemTrayOptions,
             this.toolStripSeparatorSystemTray1,
             this.toolStripMenuItemSystemTrayExit});
 			this.contextMenuStripSystemTray.Name = "contextMenuStripSystemTray";
-			this.contextMenuStripSystemTray.Size = new System.Drawing.Size(158, 54);
+			this.contextMenuStripSystemTray.Size = new System.Drawing.Size(158, 76);
 			// 
 			// toolStripMenuItemSystemTrayConfiguration
 			// 
@@ -129,6 +134,29 @@
 			this.toolStripMenuItemSystemTrayConfiguration.Size = new System.Drawing.Size(157, 22);
 			this.toolStripMenuItemSystemTrayConfiguration.Text = "Configuration...";
 			this.toolStripMenuItemSystemTrayConfiguration.Click += new System.EventHandler(this.ToolStripMenuItemSystemTrayConfiguration_Click);
+			// 
+			// toolStripMenuItemSystemTrayOptions
+			// 
+			this.toolStripMenuItemSystemTrayOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemSystemTrayOptionsStartWithWindows,
+            this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel});
+			this.toolStripMenuItemSystemTrayOptions.Name = "toolStripMenuItemSystemTrayOptions";
+			this.toolStripMenuItemSystemTrayOptions.Size = new System.Drawing.Size(157, 22);
+			this.toolStripMenuItemSystemTrayOptions.Text = "Options";
+			// 
+			// toolStripMenuItemSystemTrayOptionsStartWithWindows
+			// 
+			this.toolStripMenuItemSystemTrayOptionsStartWithWindows.Name = "toolStripMenuItemSystemTrayOptionsStartWithWindows";
+			this.toolStripMenuItemSystemTrayOptionsStartWithWindows.Size = new System.Drawing.Size(205, 22);
+			this.toolStripMenuItemSystemTrayOptionsStartWithWindows.Text = "Start With Windows";
+			this.toolStripMenuItemSystemTrayOptionsStartWithWindows.Click += new System.EventHandler(this.ToolStripMenuItemSystemTrayOptionsStartWithWindows_Click);
+			// 
+			// toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel
+			// 
+			this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel.Name = "toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel";
+			this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel.Size = new System.Drawing.Size(205, 22);
+			this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel.Text = "User Owns Control Panel";
+			this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel.Click += new System.EventHandler(this.ToolStripMenuItemSystemTrayOptionsUserOwnsControlPanel_Click);
 			// 
 			// toolStripSeparatorSystemTray1
 			// 
@@ -405,11 +433,22 @@
 			// 
 			this.panelGlass.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelGlass.Controls.Add(this.panelGlassTop);
 			this.panelGlass.Controls.Add(this.tabControlSection);
 			this.panelGlass.Location = new System.Drawing.Point(0, 0);
 			this.panelGlass.Name = "panelGlass";
 			this.panelGlass.Size = new System.Drawing.Size(465, 21);
 			this.panelGlass.TabIndex = 3;
+			// 
+			// panelGlassTop
+			// 
+			this.panelGlassTop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelGlassTop.Location = new System.Drawing.Point(179, 0);
+			this.panelGlassTop.Name = "panelGlassTop";
+			this.panelGlassTop.Size = new System.Drawing.Size(289, 21);
+			this.panelGlassTop.TabIndex = 0;
+			this.panelGlassTop.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PanelGlassTop_MouseDown);
 			// 
 			// tabControlSection
 			// 
@@ -519,6 +558,19 @@
 			this.panelMacros.Size = new System.Drawing.Size(449, 235);
 			this.panelMacros.TabIndex = 2;
 			// 
+			// labelMacroUnavailable
+			// 
+			this.labelMacroUnavailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelMacroUnavailable.Location = new System.Drawing.Point(10, 10);
+			this.labelMacroUnavailable.Margin = new System.Windows.Forms.Padding(10);
+			this.labelMacroUnavailable.Name = "labelMacroUnavailable";
+			this.labelMacroUnavailable.Size = new System.Drawing.Size(429, 215);
+			this.labelMacroUnavailable.TabIndex = 0;
+			this.labelMacroUnavailable.Text = "No macros available";
+			this.labelMacroUnavailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
 			// linkLabelMacroExpandAll
 			// 
 			this.linkLabelMacroExpandAll.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
@@ -592,19 +644,6 @@
 			this.flowLayoutPanelMacros.Name = "flowLayoutPanelMacros";
 			this.flowLayoutPanelMacros.Size = new System.Drawing.Size(429, 195);
 			this.flowLayoutPanelMacros.TabIndex = 1;
-			// 
-			// labelMacroUnavailable
-			// 
-			this.labelMacroUnavailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labelMacroUnavailable.Location = new System.Drawing.Point(10, 10);
-			this.labelMacroUnavailable.Margin = new System.Windows.Forms.Padding(10);
-			this.labelMacroUnavailable.Name = "labelMacroUnavailable";
-			this.labelMacroUnavailable.Size = new System.Drawing.Size(429, 215);
-			this.labelMacroUnavailable.TabIndex = 0;
-			this.labelMacroUnavailable.Text = "No macros available";
-			this.labelMacroUnavailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// tableLayoutPanelDistribution
 			// 
@@ -891,6 +930,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Deactivate += new System.EventHandler(this.ControlPanelForm_Deactivate);
 			this.Load += new System.EventHandler(this.ControlPanelForm_Load);
+			this.Resize += new System.EventHandler(this.ControlPanelForm_Resize);
 			this.contextMenuStripSystemTray.ResumeLayout(false);
 			this.tableLayoutPanelProcess.ResumeLayout(false);
 			this.panelProcessApplications.ResumeLayout(false);
@@ -975,5 +1015,9 @@
 		private System.Windows.Forms.LinkLabel linkLabelMacroCollapseAll;
 		private System.Windows.Forms.LinkLabel linkLabelMacroPlayAll;
 		private System.Windows.Forms.Label labelMacroAllSelected;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptions;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptionsStartWithWindows;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel;
+		private System.Windows.Forms.Panel panelGlassTop;
 	}
 }

@@ -823,6 +823,7 @@
 			// 
 			// buttonMacros
 			// 
+			this.buttonMacros.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonMacros.Location = new System.Drawing.Point(688, 11);
 			this.buttonMacros.Name = "buttonMacros";
 			this.buttonMacros.Size = new System.Drawing.Size(75, 23);

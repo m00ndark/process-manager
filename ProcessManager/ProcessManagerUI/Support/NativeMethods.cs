@@ -14,6 +14,9 @@ namespace ProcessManagerUI.Support
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, string lParam);
 
+		[DllImport("user32.dll", CharSet = CharSet.Unicode)]
+		public static extern bool ReleaseCapture();
+
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern void SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
@@ -71,6 +74,7 @@ namespace ProcessManagerUI.Support
 			public int Bottom { get { return _bottom; } set { _bottom = value; } }
 		}
 
+		public const int HT_CAPTION = 0x2;
 
 		public const uint SHGFI_ICON = 0x100;
 		public const uint SHGFI_LARGEICON = 0x0;

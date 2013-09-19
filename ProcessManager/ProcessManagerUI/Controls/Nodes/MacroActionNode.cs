@@ -158,24 +158,21 @@ namespace ProcessManagerUI.Controls.Nodes
 						group = ConnectionStore.Connections[machine].Configuration.Groups.FirstOrDefault(x => x.ID == macroProcessAction.GroupID);
 						application = ConnectionStore.Connections[machine].Configuration.Applications.FirstOrDefault(x => x.ID == macroProcessAction.ApplicationID);
 					}
-					return string.Format("{0} {1} / {2} / {3}", macroProcessAction.Type,
-						machine != null ? machine.HostName : macroProcessAction.MachineID.ToString(),
+					return string.Format("{0} / {1}", 
 						group != null ? group.Name : macroProcessAction.GroupID.ToString(),
 						application != null ? application.Name : macroProcessAction.ApplicationID.ToString());
 				case MacroActionType.Distribute:
 					MacroDistributionAction macroDistributionAction = (MacroDistributionAction) macroAction;
 					Machine sourceMachine = Settings.Client.Machines.FirstOrDefault(x => x.ID == macroDistributionAction.SourceMachineID);
-					Machine destinationMachine = Settings.Client.Machines.FirstOrDefault(x => x.ID == macroDistributionAction.DestinationMachineID);
 					if (sourceMachine != null && ConnectionStore.ConnectionCreated(sourceMachine))
 					{
 						group = ConnectionStore.Connections[sourceMachine].Configuration.Groups.FirstOrDefault(x => x.ID == macroDistributionAction.GroupID);
 						application = ConnectionStore.Connections[sourceMachine].Configuration.Applications.FirstOrDefault(x => x.ID == macroDistributionAction.ApplicationID);
 					}
-					return string.Format("{0} {1} / {2} / {3} to {4}", macroDistributionAction.Type,
+					return string.Format("{0} / {1} / {2}",
 						sourceMachine != null ? sourceMachine.HostName : macroDistributionAction.SourceMachineID.ToString(),
 						group != null ? group.Name : macroDistributionAction.GroupID.ToString(),
-						application != null ? application.Name : macroDistributionAction.ApplicationID.ToString(),
-						destinationMachine != null ? destinationMachine.HostName : macroDistributionAction.DestinationMachineID.ToString());
+						application != null ? application.Name : macroDistributionAction.ApplicationID.ToString());
 				case MacroActionType.Wait:
 					MacroWaitAction macroWaitAction = (MacroWaitAction) macroAction;
 					if (!macroWaitAction.IsValid) throw new InvalidOperationException();

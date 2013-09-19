@@ -137,7 +137,7 @@
 			this.buttonCopyMachineSetup.Name = "buttonCopyMachineSetup";
 			this.buttonCopyMachineSetup.Size = new System.Drawing.Size(92, 23);
 			this.buttonCopyMachineSetup.TabIndex = 12;
-			this.buttonCopyMachineSetup.Text = "Copy Setup";
+			this.buttonCopyMachineSetup.Text = "Copy Setup...";
 			this.buttonCopyMachineSetup.UseVisualStyleBackColor = true;
 			this.buttonCopyMachineSetup.Click += new System.EventHandler(this.ButtonCopyMachineSetup_Click);
 			// 

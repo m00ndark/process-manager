@@ -10,7 +10,6 @@ using ProcessManager.DataObjects;
 using ProcessManager.DataObjects.Comparers;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
-using ProcessManager.Service.Common;
 using ProcessManager.Service.DataObjects;
 using ProcessManager.Utilities;
 using ProcessManagerUI.Controls.Nodes;
@@ -150,6 +149,9 @@ namespace ProcessManagerUI.Forms
 			ExtendGlass();
 			Settings.Client.Load();
 
+			toolStripMenuItemSystemTrayOptionsStartWithWindows.Checked = Settings.Client.StartWithWindows;
+			toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel.Checked = Settings.Client.UserOwnsControlPanel;
+
 			foreach (ProcessGrouping grouping in _processGroupingDescriptions.Keys)
 			{
 				int index = comboBoxProcessGroupBy.Items.Add(new ComboBoxItem<ProcessGrouping>(_processGroupingDescriptions[grouping], grouping));
@@ -193,6 +195,23 @@ namespace ProcessManagerUI.Forms
 		{
 			if (Opacity == 1)
 				HideForm();
+		}
+
+		private void ControlPanelForm_Resize(object sender, EventArgs e)
+		{
+			if (Settings.Client.UserOwnsControlPanel)
+			{
+				CurrentRootNodes.ForEach(node => node.ForceWidth(CurrentFlowLayoutPanel.Size.Width));
+			}
+		}
+
+		private void PanelGlassTop_MouseDown(object sender, MouseEventArgs e)
+		{
+			if (Settings.Client.UserOwnsControlPanel && e.Button == MouseButtons.Left)
+			{
+				NativeMethods.ReleaseCapture();
+				NativeMethods.SendMessage(Handle, NativeMethods.WM_NCLBUTTONDOWN, NativeMethods.HT_CAPTION, 0);
+			}
 		}
 
 		private void TabControlSection_SelectedIndexChanged(object sender, EventArgs e)
@@ -391,6 +410,16 @@ namespace ProcessManagerUI.Forms
 			OpenConfigurationForm();
 		}
 
+		private void ToolStripMenuItemSystemTrayOptionsStartWithWindows_Click(object sender, EventArgs e)
+		{
+			ToggleOptionStartWithWindows();
+		}
+
+		private void ToolStripMenuItemSystemTrayOptionsUserOwnsControlPanel_Click(object sender, EventArgs e)
+		{
+			ToggleOptionUserOwnsControlPanel();
+		}
+
 		private void ToolStripMenuItemSystemTrayExit_Click(object sender, EventArgs e)
 		{
 			Settings.Client.Save(ClientSettingsType.States);
@@ -432,7 +461,8 @@ namespace ProcessManagerUI.Forms
 
 		private void RootNode_SizeChanged(object sender, EventArgs e)
 		{
-			UpdateSize(CurrentRootNodes.Select(node => node.Size).ToList());
+			if (!Settings.Client.UserOwnsControlPanel)
+				UpdateSize(CurrentRootNodes.Select(node => node.Size).ToList());
 		}
 
 		private void Node_CheckedChanged(object sender, EventArgs e)
@@ -533,7 +563,7 @@ namespace ProcessManagerUI.Forms
 		private void ShowForm()
 		{
 			Location = new Point(Math.Min(MousePosition.X - Size.Width / 2, Screen.PrimaryScreen.WorkingArea.Width - Size.Width - 8),
-				Math.Max(Screen.PrimaryScreen.WorkingArea.Top, Screen.PrimaryScreen.WorkingArea.Height - Size.Height - 8) /* (isWindowsSeven ? 8 : 0) */);
+				Math.Max(Screen.PrimaryScreen.WorkingArea.Top, Screen.PrimaryScreen.WorkingArea.Height - Size.Height - 8));
 			Opacity = 1;
 			Show();
             try { Program.SetForegroundWindow(Handle); } catch { ; }
@@ -558,6 +588,24 @@ namespace ProcessManagerUI.Forms
 				TransparencyKey = keyColor;
 				panelGlass.BackColor = keyColor;
 			}
+		}
+
+		private void ToggleOptionStartWithWindows()
+		{
+			Settings.Client.StartWithWindows = !Settings.Client.StartWithWindows;
+			RegistryHandler.SaveClientSettings(ClientSettingsType.Options);
+			RegistryHandler.SetWindowsStartupTrigger(Settings.Client.StartWithWindows ? System.Windows.Forms.Application.ExecutablePath : null);
+			toolStripMenuItemSystemTrayOptionsStartWithWindows.Checked = Settings.Client.StartWithWindows;
+		}
+
+		private void ToggleOptionUserOwnsControlPanel()
+		{
+			Settings.Client.UserOwnsControlPanel = !Settings.Client.UserOwnsControlPanel;
+			RegistryHandler.SaveClientSettings(ClientSettingsType.Options);
+
+			UpdateSize();
+
+			toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel.Checked = Settings.Client.UserOwnsControlPanel;
 		}
 
 		private void DisplaySelectedTabPage()
@@ -1350,6 +1398,11 @@ namespace ProcessManagerUI.Forms
 
 		#endregion
 
+		private void UpdateSize()
+		{
+			UpdateSize(CurrentRootNodes.Select(node => node.Size).ToList());
+		}
+
 		private void UpdateSize(ICollection<Size> rootNodeSizes)
 		{
 			const int MIN_WIDTH = 465;
@@ -1367,8 +1420,14 @@ namespace ProcessManagerUI.Forms
 				Size = new Size(MIN_WIDTH, 220);
 			}
 
-			MinimumSize = MaximumSize = Size;
-			Location = new Point(Location.X, Math.Max(Screen.PrimaryScreen.WorkingArea.Top, Screen.PrimaryScreen.WorkingArea.Height - Size.Height - 8));
+			MinimumSize = Size;
+
+			if (!Settings.Client.UserOwnsControlPanel)
+			{
+				MaximumSize = Size;
+				Location = new Point(Math.Min(Location.X, Screen.PrimaryScreen.WorkingArea.Width - Size.Width - 8),
+					Math.Max(Screen.PrimaryScreen.WorkingArea.Top, Screen.PrimaryScreen.WorkingArea.Height - Size.Height - 8));
+			}
 		}
 
 		private void EnableActionLinks(bool enable)

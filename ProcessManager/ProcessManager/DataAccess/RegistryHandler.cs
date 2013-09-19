@@ -129,6 +129,7 @@ namespace ProcessManager.DataAccess
 					if (optionsKey != null)
 					{
 						Settings.Client.StartWithWindows = bool.Parse((string) optionsKey.GetValue("Start With Windows", Settings.Client.Defaults.START_WITH_WINDOWS));
+						Settings.Client.UserOwnsControlPanel = bool.Parse((string) optionsKey.GetValue("User Owns Control Panel", Settings.Client.Defaults.USER_OWNS_CONTROL_PANEL));
 						optionsKey.Close();
 					}
 					break;
@@ -341,6 +342,7 @@ namespace ProcessManager.DataAccess
 					if (optionsKey != null)
 					{
 						optionsKey.SetValue("Start With Windows", Settings.Client.StartWithWindows.ToString());
+						optionsKey.SetValue("User Owns Control Panel", Settings.Client.UserOwnsControlPanel.ToString());
 						optionsKey.Close();
 					}
 					break;
