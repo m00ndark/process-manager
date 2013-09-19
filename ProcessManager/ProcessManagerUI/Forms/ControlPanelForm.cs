@@ -149,8 +149,8 @@ namespace ProcessManagerUI.Forms
 			ExtendGlass();
 			Settings.Client.Load();
 
-			toolStripMenuItemSystemTrayOptionsStartWithWindows.Checked = Settings.Client.StartWithWindows;
-			toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel.Checked = Settings.Client.UserOwnsControlPanel;
+			EnableOptionStartWithWindows(Settings.Client.StartWithWindows);
+			EnableOptionUserOwnsControlPanel(Settings.Client.UserOwnsControlPanel);
 
 			foreach (ProcessGrouping grouping in _processGroupingDescriptions.Keys)
 			{
@@ -193,7 +193,7 @@ namespace ProcessManagerUI.Forms
 
 		private void ControlPanelForm_Deactivate(object sender, EventArgs e)
 		{
-			if (Opacity == 1)
+			if (!Settings.Client.UserOwnsControlPanel && Opacity == 1)
 				HideForm();
 		}
 
@@ -212,6 +212,21 @@ namespace ProcessManagerUI.Forms
 				NativeMethods.ReleaseCapture();
 				NativeMethods.SendMessage(Handle, NativeMethods.WM_NCLBUTTONDOWN, NativeMethods.HT_CAPTION, 0);
 			}
+		}
+
+		private void PictureBoxClose_MouseEnter(object sender, EventArgs e)
+		{
+			pictureBoxClose.Image = Properties.Resources.close_active_16_14;
+		}
+
+		private void PictureBoxClose_MouseLeave(object sender, EventArgs e)
+		{
+			pictureBoxClose.Image = Properties.Resources.close_16_14;
+		}
+
+		private void PictureBoxClose_Click(object sender, EventArgs e)
+		{
+			HideForm();
 		}
 
 		private void TabControlSection_SelectedIndexChanged(object sender, EventArgs e)
@@ -388,7 +403,7 @@ namespace ProcessManagerUI.Forms
 			if (e.Button != MouseButtons.Left)
 				return;
 
-			if (Opacity == 1)
+			if (!Settings.Client.UserOwnsControlPanel && Opacity == 1)
 				HideForm();
 		}
 
@@ -595,17 +610,27 @@ namespace ProcessManagerUI.Forms
 			Settings.Client.StartWithWindows = !Settings.Client.StartWithWindows;
 			RegistryHandler.SaveClientSettings(ClientSettingsType.Options);
 			RegistryHandler.SetWindowsStartupTrigger(Settings.Client.StartWithWindows ? System.Windows.Forms.Application.ExecutablePath : null);
-			toolStripMenuItemSystemTrayOptionsStartWithWindows.Checked = Settings.Client.StartWithWindows;
+			EnableOptionStartWithWindows(Settings.Client.StartWithWindows);
 		}
 
 		private void ToggleOptionUserOwnsControlPanel()
 		{
 			Settings.Client.UserOwnsControlPanel = !Settings.Client.UserOwnsControlPanel;
 			RegistryHandler.SaveClientSettings(ClientSettingsType.Options);
+			EnableOptionUserOwnsControlPanel(Settings.Client.UserOwnsControlPanel);
+		}
 
+		private void EnableOptionStartWithWindows(bool enable)
+		{
+			toolStripMenuItemSystemTrayOptionsStartWithWindows.Checked = enable;
+		}
+
+		private void EnableOptionUserOwnsControlPanel(bool enable)
+		{
 			UpdateSize();
-
-			toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel.Checked = Settings.Client.UserOwnsControlPanel;
+			pictureBoxClose.Visible = enable;
+			toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel.Checked = enable;
+			TopMost = enable;
 		}
 
 		private void DisplaySelectedTabPage()

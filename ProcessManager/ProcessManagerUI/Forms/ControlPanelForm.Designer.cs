@@ -58,11 +58,14 @@
 			this.labelProcessGroupBy = new System.Windows.Forms.Label();
 			this.panelGlass = new System.Windows.Forms.Panel();
 			this.panelGlassTop = new System.Windows.Forms.Panel();
+			this.pictureBoxClose = new System.Windows.Forms.PictureBox();
 			this.tabControlSection = new System.Windows.Forms.TabControl();
 			this.tabPageProcess = new System.Windows.Forms.TabPage();
 			this.tabPageDistribution = new System.Windows.Forms.TabPage();
 			this.tabPageMacro = new System.Windows.Forms.TabPage();
 			this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
+			this.horizontalPanel = new ProcessManagerUI.Controls.HorizontalPanel();
+			this.linkLabelOpenConfiguration = new System.Windows.Forms.LinkLabel();
 			this.panelTabPageArea = new System.Windows.Forms.Panel();
 			this.tableLayoutPanelMacro = new System.Windows.Forms.TableLayoutPanel();
 			this.panelMacros = new System.Windows.Forms.Panel();
@@ -89,16 +92,18 @@
 			this.labelDistributionFilter = new System.Windows.Forms.Label();
 			this.comboBoxDistributionGroupBy = new System.Windows.Forms.ComboBox();
 			this.labelDistributionGroupBy = new System.Windows.Forms.Label();
-			this.horizontalPanel = new ProcessManagerUI.Controls.HorizontalPanel();
-			this.linkLabelOpenConfiguration = new System.Windows.Forms.LinkLabel();
+			this.controlPanelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripSystemTray.SuspendLayout();
 			this.tableLayoutPanelProcess.SuspendLayout();
 			this.panelProcessApplications.SuspendLayout();
 			this.panelProcessGroupByAndFilter.SuspendLayout();
 			this.tableLayoutPanelProcessFilter.SuspendLayout();
 			this.panelGlass.SuspendLayout();
+			this.panelGlassTop.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxClose)).BeginInit();
 			this.tabControlSection.SuspendLayout();
 			this.tableLayoutPanelMain.SuspendLayout();
+			this.horizontalPanel.SuspendLayout();
 			this.panelTabPageArea.SuspendLayout();
 			this.tableLayoutPanelMacro.SuspendLayout();
 			this.panelMacros.SuspendLayout();
@@ -106,7 +111,6 @@
 			this.panelDistributionApplications.SuspendLayout();
 			this.panelDistributionGroupByAndFilter.SuspendLayout();
 			this.tableLayoutPanelDistributionFilter.SuspendLayout();
-			this.horizontalPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// notifyIcon
@@ -139,7 +143,7 @@
 			// 
 			this.toolStripMenuItemSystemTrayOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemSystemTrayOptionsStartWithWindows,
-            this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel});
+            this.controlPanelToolStripMenuItem});
 			this.toolStripMenuItemSystemTrayOptions.Name = "toolStripMenuItemSystemTrayOptions";
 			this.toolStripMenuItemSystemTrayOptions.Size = new System.Drawing.Size(157, 22);
 			this.toolStripMenuItemSystemTrayOptions.Text = "Options";
@@ -444,11 +448,26 @@
 			// 
 			this.panelGlassTop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelGlassTop.Controls.Add(this.pictureBoxClose);
 			this.panelGlassTop.Location = new System.Drawing.Point(179, 0);
 			this.panelGlassTop.Name = "panelGlassTop";
 			this.panelGlassTop.Size = new System.Drawing.Size(289, 21);
 			this.panelGlassTop.TabIndex = 0;
 			this.panelGlassTop.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PanelGlassTop_MouseDown);
+			// 
+			// pictureBoxClose
+			// 
+			this.pictureBoxClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.pictureBoxClose.Image = global::ProcessManagerUI.Properties.Resources.close_16_14;
+			this.pictureBoxClose.Location = new System.Drawing.Point(253, 0);
+			this.pictureBoxClose.Name = "pictureBoxClose";
+			this.pictureBoxClose.Size = new System.Drawing.Size(16, 14);
+			this.pictureBoxClose.TabIndex = 0;
+			this.pictureBoxClose.TabStop = false;
+			this.pictureBoxClose.Visible = false;
+			this.pictureBoxClose.Click += new System.EventHandler(this.PictureBoxClose_Click);
+			this.pictureBoxClose.MouseEnter += new System.EventHandler(this.PictureBoxClose_MouseEnter);
+			this.pictureBoxClose.MouseLeave += new System.EventHandler(this.PictureBoxClose_MouseLeave);
 			// 
 			// tabControlSection
 			// 
@@ -510,6 +529,37 @@
 			this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 43F));
 			this.tableLayoutPanelMain.Size = new System.Drawing.Size(449, 278);
 			this.tableLayoutPanelMain.TabIndex = 4;
+			// 
+			// horizontalPanel
+			// 
+			this.horizontalPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.horizontalPanel.AutoModifyAddedControls = false;
+			this.horizontalPanel.BackColor = System.Drawing.Color.Transparent;
+			this.horizontalPanel.Controls.Add(this.linkLabelOpenConfiguration);
+			this.horizontalPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.horizontalPanel.Location = new System.Drawing.Point(0, 235);
+			this.horizontalPanel.Margin = new System.Windows.Forms.Padding(0);
+			this.horizontalPanel.Name = "horizontalPanel";
+			this.horizontalPanel.Size = new System.Drawing.Size(449, 43);
+			this.horizontalPanel.TabIndex = 1;
+			// 
+			// linkLabelOpenConfiguration
+			// 
+			this.linkLabelOpenConfiguration.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelOpenConfiguration.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.linkLabelOpenConfiguration.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.linkLabelOpenConfiguration.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelOpenConfiguration.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelOpenConfiguration.Location = new System.Drawing.Point(0, 0);
+			this.linkLabelOpenConfiguration.Name = "linkLabelOpenConfiguration";
+			this.linkLabelOpenConfiguration.Size = new System.Drawing.Size(449, 43);
+			this.linkLabelOpenConfiguration.TabIndex = 0;
+			this.linkLabelOpenConfiguration.TabStop = true;
+			this.linkLabelOpenConfiguration.Text = "Open Configuration";
+			this.linkLabelOpenConfiguration.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.linkLabelOpenConfiguration.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelOpenConfiguration.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelOpenConfiguration_LinkClicked);
 			// 
 			// panelTabPageArea
 			// 
@@ -881,35 +931,13 @@
 			this.labelDistributionGroupBy.TabIndex = 0;
 			this.labelDistributionGroupBy.Text = "Group by:";
 			// 
-			// horizontalPanel
+			// controlPanelToolStripMenuItem
 			// 
-			this.horizontalPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.horizontalPanel.AutoModifyAddedControls = false;
-			this.horizontalPanel.BackColor = System.Drawing.Color.Transparent;
-			this.horizontalPanel.Controls.Add(this.linkLabelOpenConfiguration);
-			this.horizontalPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.horizontalPanel.Location = new System.Drawing.Point(0, 235);
-			this.horizontalPanel.Margin = new System.Windows.Forms.Padding(0);
-			this.horizontalPanel.Name = "horizontalPanel";
-			this.horizontalPanel.Size = new System.Drawing.Size(449, 43);
-			this.horizontalPanel.TabIndex = 1;
-			// 
-			// linkLabelOpenConfiguration
-			// 
-			this.linkLabelOpenConfiguration.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelOpenConfiguration.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.linkLabelOpenConfiguration.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.linkLabelOpenConfiguration.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-			this.linkLabelOpenConfiguration.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelOpenConfiguration.Location = new System.Drawing.Point(0, 0);
-			this.linkLabelOpenConfiguration.Name = "linkLabelOpenConfiguration";
-			this.linkLabelOpenConfiguration.Size = new System.Drawing.Size(449, 43);
-			this.linkLabelOpenConfiguration.TabIndex = 0;
-			this.linkLabelOpenConfiguration.TabStop = true;
-			this.linkLabelOpenConfiguration.Text = "Open Configuration";
-			this.linkLabelOpenConfiguration.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.linkLabelOpenConfiguration.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelOpenConfiguration_LinkClicked);
+			this.controlPanelToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel});
+			this.controlPanelToolStripMenuItem.Name = "controlPanelToolStripMenuItem";
+			this.controlPanelToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+			this.controlPanelToolStripMenuItem.Text = "Control Panel";
 			// 
 			// ControlPanelForm
 			// 
@@ -939,8 +967,11 @@
 			this.panelProcessGroupByAndFilter.PerformLayout();
 			this.tableLayoutPanelProcessFilter.ResumeLayout(false);
 			this.panelGlass.ResumeLayout(false);
+			this.panelGlassTop.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxClose)).EndInit();
 			this.tabControlSection.ResumeLayout(false);
 			this.tableLayoutPanelMain.ResumeLayout(false);
+			this.horizontalPanel.ResumeLayout(false);
 			this.panelTabPageArea.ResumeLayout(false);
 			this.tableLayoutPanelMacro.ResumeLayout(false);
 			this.panelMacros.ResumeLayout(false);
@@ -951,7 +982,6 @@
 			this.panelDistributionGroupByAndFilter.ResumeLayout(false);
 			this.panelDistributionGroupByAndFilter.PerformLayout();
 			this.tableLayoutPanelDistributionFilter.ResumeLayout(false);
-			this.horizontalPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -1019,5 +1049,7 @@
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptionsStartWithWindows;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel;
 		private System.Windows.Forms.Panel panelGlassTop;
+		private System.Windows.Forms.PictureBox pictureBoxClose;
+		private System.Windows.Forms.ToolStripMenuItem controlPanelToolStripMenuItem;
 	}
 }

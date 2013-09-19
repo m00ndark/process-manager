@@ -103,6 +103,26 @@ namespace ProcessManagerUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap close_16_14 {
+            get {
+                object obj = ResourceManager.GetObject("close_16_14", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap close_active_16_14 {
+            get {
+                object obj = ResourceManager.GetObject("close_active_16_14", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap collapsed_16 {
             get {
                 object obj = ResourceManager.GetObject("collapsed_16", resourceCulture);

@@ -130,6 +130,12 @@
   <data name="arrow_up_7_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow-up-7-4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="close_16_14" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\close-16-14.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="close_active_16_14" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\close-active-16-14.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="collapsed_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\collapsed-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
