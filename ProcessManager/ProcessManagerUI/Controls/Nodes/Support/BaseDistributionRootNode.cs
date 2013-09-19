@@ -132,6 +132,22 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		#region Implementation of INode
 
+		public new void Dispose()
+		{
+			foreach (INode node in ChildNodes)
+			{
+				IRootNode rootNode = node as IRootNode;
+				if (rootNode != null)
+					rootNode.SizeChanged -= RootNode_SizeChanged;
+
+				node.CheckedChanged -= Node_CheckedChanged;
+				node.ActionTaken -= Node_ActionTaken;
+
+				node.Dispose();
+			}
+			base.Dispose();
+		}
+
 		public Size LayoutNode()
 		{
 			List<Size> childSizes = ChildNodes.Select(node => node.LayoutNode()).ToList();

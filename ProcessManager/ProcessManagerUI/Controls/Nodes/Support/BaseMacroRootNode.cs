@@ -63,6 +63,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			}
 		}
 
+		public bool IsComplete { get { return NodeName != null && ChildNodes.Aggregate(true, (areComplete, node) => areComplete && node.IsComplete); } }
 		public CheckState CheckState { get { return checkBoxSelected.CheckState; } }
 
 		public virtual Guid ID { get { throw new InvalidOperationException("Class must be inherited!"); } }
@@ -166,6 +167,23 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 		#endregion
 
 		#region Implementation of INode
+
+		public new void Dispose()
+		{
+			foreach (IMacroNode node in ChildNodes)
+			{
+				IRootNode rootNode = node as IRootNode;
+				if (rootNode != null)
+					rootNode.SizeChanged -= RootNode_SizeChanged;
+
+				node.CheckedChanged -= Node_CheckedChanged;
+				node.ActionTaken -= Node_ActionTaken;
+				node.StateChanged -= MacroNode_StateChanged;
+
+				node.Dispose();
+			}
+			base.Dispose();
+		}
 
 		public Size LayoutNode()
 		{

@@ -66,9 +66,9 @@ namespace ProcessManagerUI.Controls.Nodes
 		private string GetNodeName()
 		{
 			Machine machine = Settings.Client.Machines.FirstOrDefault(x => x.ID == MachineID);
-			return machine != null
-				? (Type == MacroActionType.Distribute ? "Distribute to " : Type + " at ") + machine.HostName
-				: null;
+			return machine == null
+				? null
+				: (Type == MacroActionType.Distribute ? "Distribute to " : Type + " at ") + machine.HostName;
 		}
 
 		#endregion

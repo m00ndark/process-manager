@@ -32,13 +32,10 @@ namespace ProcessManagerUI.Forms
 				{ DistributionGrouping.GroupMachineApplicationMachine, "Group > Source Machine > Application > Destination Machine" }
 			};
 		private DateTime _formClosedAt;
-		private readonly List<INode> _allProcessNodes;
 		private readonly List<IRootNode> _processRootNodes;
 		private readonly List<ProcessApplicationNode> _processApplicationNodes;
-		private readonly List<INode> _allDistributionNodes;
 		private readonly List<IRootNode> _distributionRootNodes;
 		private readonly List<DistributionDestinationMachineNode> _distributionDestinationMachineNodes;
-		private readonly List<INode> _allMacroNodes;
 		private readonly List<IRootNode> _macroRootNodes;
 		private readonly List<MacroActionNode> _macroActionNodes;
 		private bool _processNodeLayoutSuspended;
@@ -57,13 +54,10 @@ namespace ProcessManagerUI.Forms
 			tabPageMacro.Tag = ControlPanelTab.Macro;
 			tabPageMacro.Text = tabPageMacro.Tag.ToString();
 			_formClosedAt = DateTime.MinValue;
-			_allProcessNodes = new List<INode>();
 			_processRootNodes = new List<IRootNode>();
 			_processApplicationNodes = new List<ProcessApplicationNode>();
-			_allDistributionNodes = new List<INode>();
 			_distributionRootNodes = new List<IRootNode>();
 			_distributionDestinationMachineNodes = new List<DistributionDestinationMachineNode>();
-			_allMacroNodes = new List<INode>();
 			_macroRootNodes = new List<IRootNode>();
 			_macroActionNodes = new List<MacroActionNode>();
 			_processNodeLayoutSuspended = false;
@@ -878,8 +872,6 @@ namespace ProcessManagerUI.Forms
 			if (SelectedTab != ControlPanelTab.Process)
 				return;
 
-			//try{
-
 			Settings.Client.Save(ClientSettingsType.States);
 			ProcessGrouping grouping = ((ComboBoxItem<ProcessGrouping>) comboBoxProcessGroupBy.SelectedItem).Tag;
 
@@ -891,9 +883,9 @@ namespace ProcessManagerUI.Forms
 						node.SizeChanged -= RootNode_SizeChanged;
 						node.CheckedChanged -= Node_CheckedChanged;
 						node.ActionTaken -= Node_ActionTaken;
+						node.Dispose();
 					});
-				_allProcessNodes.ForEach(node => node.Dispose());
-				_allProcessNodes.Clear();
+				//_allProcessNodes.ForEach(node => node.Dispose());
 				_processRootNodes.Clear();
 				_processApplicationNodes.Clear();
 
@@ -939,7 +931,6 @@ namespace ProcessManagerUI.Forms
 											_processApplicationNodes.AddRange(applicationNodes);
 											return new ProcessGroupNode(groupApplications.Group, groupApplications.Applications.First().Machine.ID, applicationNodes, grouping);
 										}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
-									_allProcessNodes.AddRange(groupNodes);
 									return new ProcessMachineNode(machineGroupsApplications.Machine, null, groupNodes, grouping);
 								}).ToList());
 						}
@@ -966,15 +957,12 @@ namespace ProcessManagerUI.Forms
 											_processApplicationNodes.AddRange(applicationNodes);
 											return new ProcessMachineNode(machineApplications.Machine, machineApplications.Applications.First().Group.ID, applicationNodes, grouping);
 										}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
-									_allProcessNodes.AddRange(machineNodes);
 									return new ProcessGroupNode(groupMachinesApplications.Group, null, machineNodes, grouping);
 								}).ToList());
 						}
 						break;
 				}
 
-				_allProcessNodes.AddRange(_processRootNodes);
-				_allProcessNodes.AddRange(_processApplicationNodes);
 				_processRootNodes.ForEach(node =>
 					{
 						node.SizeChanged += RootNode_SizeChanged;
@@ -986,13 +974,7 @@ namespace ProcessManagerUI.Forms
 			if (_processApplicationNodes.Count > 0)
 			{
 				UpdateSize(_processRootNodes.Select(node => node.LayoutNode()).ToList());
-
-				_processRootNodes.ForEach(node =>
-					{
-						node.ForceWidth(flowLayoutPanelProcessApplications.Size.Width);
-						//flowLayoutPanelProcessApplications.Controls.Add((UserControl) node);
-					});
-
+				_processRootNodes.ForEach(node => node.ForceWidth(flowLayoutPanelProcessApplications.Size.Width));
 				flowLayoutPanelProcessApplications.Controls.AddRange(_processRootNodes.Cast<Control>().ToArray());
 
 				Settings.Client.P_CheckedNodes.ToList()
@@ -1008,10 +990,6 @@ namespace ProcessManagerUI.Forms
 			}
 
 			labelProcessUnavailable.Visible = (_processApplicationNodes.Count == 0);
-			//}
-			//catch (Exception ex)
-			//{
-			//}
 		}
 
 		#endregion
@@ -1151,8 +1129,6 @@ namespace ProcessManagerUI.Forms
 			if (SelectedTab != ControlPanelTab.Distribution)
 				return;
 
-			//try{
-
 			Settings.Client.Save(ClientSettingsType.States);
 			DistributionGrouping grouping = ((ComboBoxItem<DistributionGrouping>) comboBoxDistributionGroupBy.SelectedItem).Tag;
 
@@ -1164,9 +1140,9 @@ namespace ProcessManagerUI.Forms
 						node.SizeChanged -= RootNode_SizeChanged;
 						node.CheckedChanged -= Node_CheckedChanged;
 						node.ActionTaken -= Node_ActionTaken;
+						node.Dispose();
 					});
-				_allDistributionNodes.ForEach(node => node.Dispose());
-				_allDistributionNodes.Clear();
+				//_allDistributionNodes.ForEach(node => node.Dispose());
 				_distributionRootNodes.Clear();
 				_distributionDestinationMachineNodes.Clear();
 
@@ -1224,10 +1200,8 @@ namespace ProcessManagerUI.Forms
 													_distributionDestinationMachineNodes.AddRange(destinationMachineNodes);
 													return new DistributionApplicationNode(applicationMachines.Application, destinationMachineNodes, grouping);
 												}).ToList(); // must make ToList() to ensure DestinationMachineNodes only are created once
-											_allDistributionNodes.AddRange(applicationNodes);
 											return new DistributionGroupNode(groupApplicationsMachines.Group, machineGroupsApplicationsMachines.SourceMachine.ID, applicationNodes, grouping);
 										}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
-									_allDistributionNodes.AddRange(groupNodes);
 									return new DistributionSourceMachineNode(machineGroupsApplicationsMachines.SourceMachine, null, groupNodes, grouping);
 								}).ToList());
 						}
@@ -1260,18 +1234,14 @@ namespace ProcessManagerUI.Forms
 													_distributionDestinationMachineNodes.AddRange(destinationMachineNodes);
 													return new DistributionApplicationNode(applicationMachines.Application, destinationMachineNodes, grouping);
 												}).ToList(); // must make ToList() to ensure DestinationMachineNodes only are created once
-											_allDistributionNodes.AddRange(applicationNodes);
 											return new DistributionSourceMachineNode(machineApplicationsMachines.SourceMachine, groupMachinesApplicationsMachines.Group.ID, applicationNodes, grouping);
 										}).ToList(); // must make ToList() to ensure ApplicationNodes only are created once
-									_allDistributionNodes.AddRange(sourceMachineNodes);
 									return new DistributionGroupNode(groupMachinesApplicationsMachines.Group, null, sourceMachineNodes, grouping);
 								}).ToList());
 						}
 						break;
 				}
 
-				_allDistributionNodes.AddRange(_distributionRootNodes);
-				_allDistributionNodes.AddRange(_distributionDestinationMachineNodes);
 				_distributionRootNodes.ForEach(node =>
 					{
 						node.SizeChanged += RootNode_SizeChanged;
@@ -1283,13 +1253,7 @@ namespace ProcessManagerUI.Forms
 			if (_distributionDestinationMachineNodes.Count > 0)
 			{
 				UpdateSize(_distributionRootNodes.Select(node => node.LayoutNode()).ToList());
-
-				_distributionRootNodes.ForEach(node =>
-					{
-						node.ForceWidth(flowLayoutPanelDistributionDestinations.Size.Width);
-						//flowLayoutPanelDistributionDestinations.Controls.Add((UserControl) node);
-					});
-
+				_distributionRootNodes.ForEach(node => node.ForceWidth(flowLayoutPanelDistributionDestinations.Size.Width));
 				flowLayoutPanelDistributionDestinations.Controls.AddRange(_distributionRootNodes.Cast<Control>().ToArray());
 
 				Settings.Client.D_CheckedNodes.ToList()
@@ -1303,10 +1267,6 @@ namespace ProcessManagerUI.Forms
 			}
 
 			labelDistributionUnavailable.Visible = (_distributionDestinationMachineNodes.Count == 0);
-			//}
-			//catch (Exception ex)
-			//{
-			//}
 		}
 
 		#endregion
@@ -1345,8 +1305,6 @@ namespace ProcessManagerUI.Forms
 			if (SelectedTab != ControlPanelTab.Macro)
 				return;
 
-			//try{
-
 			Settings.Client.Save(ClientSettingsType.States);
 
 			lock (_macroActionNodes)
@@ -1357,9 +1315,9 @@ namespace ProcessManagerUI.Forms
 						node.SizeChanged -= RootNode_SizeChanged;
 						node.CheckedChanged -= Node_CheckedChanged;
 						node.ActionTaken -= Node_ActionTaken;
+						node.Dispose();
 					});
-				_allMacroNodes.ForEach(node => node.Dispose());
-				_allMacroNodes.Clear();
+				//_allMacroNodes.ForEach(node => node.Dispose());
 				_macroRootNodes.Clear();
 				_macroActionNodes.Clear();
 
@@ -1409,30 +1367,30 @@ namespace ProcessManagerUI.Forms
 										throw new InvalidOperationException();
 								}
 							}).ToList();
-						_allMacroNodes.AddRange(levelTwoNodes.Where(node => node is MacroMachineNode));
 						return new MacroNode(macroBundle.Macro, levelTwoNodes);
 					}).ToList());
 
-				_allMacroNodes.AddRange(_macroRootNodes);
-				_allMacroNodes.AddRange(_macroActionNodes);
 				_macroRootNodes.ForEach(node =>
 					{
 						node.SizeChanged += RootNode_SizeChanged;
 						node.CheckedChanged += Node_CheckedChanged;
 						node.ActionTaken += Node_ActionTaken;
 					});
+
+				foreach (IMacroRootNode node in _macroRootNodes.Cast<IMacroRootNode>().Where(node => !node.IsComplete).ToList())
+				{
+					node.SizeChanged -= RootNode_SizeChanged;
+					node.CheckedChanged -= Node_CheckedChanged;
+					node.ActionTaken -= Node_ActionTaken;
+					node.Dispose();
+					_macroRootNodes.Remove(node);
+				}
 			}
 
 			if (_macroActionNodes.Count > 0)
 			{
 				UpdateSize(_macroRootNodes.Select(node => node.LayoutNode()).ToList());
-
-				_macroRootNodes.ForEach(node =>
-					{
-						node.ForceWidth(flowLayoutPanelMacros.Size.Width);
-						//flowLayoutPanelMacros.Controls.Add((UserControl) node);
-					});
-
+				_macroRootNodes.ForEach(node => node.ForceWidth(flowLayoutPanelMacros.Size.Width));
 				flowLayoutPanelMacros.Controls.AddRange(_macroRootNodes.Cast<Control>().ToArray());
 
 				Settings.Client.M_CheckedNodes.ToList()
@@ -1446,10 +1404,6 @@ namespace ProcessManagerUI.Forms
 			}
 
 			labelMacroUnavailable.Visible = (_macroActionNodes.Count == 0);
-			//}
-			//catch (Exception ex)
-			//{
-			//}
 		}
 
 		#endregion

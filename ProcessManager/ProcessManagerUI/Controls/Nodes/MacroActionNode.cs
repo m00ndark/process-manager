@@ -29,7 +29,7 @@ namespace ProcessManagerUI.Controls.Nodes
 		public event EventHandler<ActionEventArgs> ActionTaken;
 		public event EventHandler StateChanged;
 
-        public MacroActionNode(IMacroAction macroAction, Guid macroID)
+		public MacroActionNode(IMacroAction macroAction, Guid macroID)
 		{
 			InitializeComponent();
 			MacroAction = macroAction;
@@ -54,6 +54,7 @@ namespace ProcessManagerUI.Controls.Nodes
 			}
 		}
 
+		public bool IsComplete { get { return _actionName != null; } }
 		public Guid ID { get { return _id; } }
 		public CheckState CheckState { get { return checkBoxSelected.CheckState; } }
 
@@ -158,9 +159,9 @@ namespace ProcessManagerUI.Controls.Nodes
 						group = ConnectionStore.Connections[machine].Configuration.Groups.FirstOrDefault(x => x.ID == macroProcessAction.GroupID);
 						application = ConnectionStore.Connections[machine].Configuration.Applications.FirstOrDefault(x => x.ID == macroProcessAction.ApplicationID);
 					}
-					return string.Format("{0} / {1}", 
-						group != null ? group.Name : macroProcessAction.GroupID.ToString(),
-						application != null ? application.Name : macroProcessAction.ApplicationID.ToString());
+					return machine == null || group == null || application == null
+						? null
+						: string.Format("{0} / {1}", group.Name, application.Name);
 				case MacroActionType.Distribute:
 					MacroDistributionAction macroDistributionAction = (MacroDistributionAction) macroAction;
 					Machine sourceMachine = Settings.Client.Machines.FirstOrDefault(x => x.ID == macroDistributionAction.SourceMachineID);
@@ -169,10 +170,9 @@ namespace ProcessManagerUI.Controls.Nodes
 						group = ConnectionStore.Connections[sourceMachine].Configuration.Groups.FirstOrDefault(x => x.ID == macroDistributionAction.GroupID);
 						application = ConnectionStore.Connections[sourceMachine].Configuration.Applications.FirstOrDefault(x => x.ID == macroDistributionAction.ApplicationID);
 					}
-					return string.Format("{0} / {1} / {2}",
-						sourceMachine != null ? sourceMachine.HostName : macroDistributionAction.SourceMachineID.ToString(),
-						group != null ? group.Name : macroDistributionAction.GroupID.ToString(),
-						application != null ? application.Name : macroDistributionAction.ApplicationID.ToString());
+					return sourceMachine == null || group == null || application == null
+						? null
+						: string.Format("{0} / {1} / {2}", sourceMachine.HostName, group.Name, application.Name);
 				case MacroActionType.Wait:
 					MacroWaitAction macroWaitAction = (MacroWaitAction) macroAction;
 					if (!macroWaitAction.IsValid) throw new InvalidOperationException();
@@ -186,7 +186,7 @@ namespace ProcessManagerUI.Controls.Nodes
 							throw new InvalidOperationException();
 					}
 				default:
-					return string.Format("{0} ({1})", macroAction.Type, macroAction.ID);
+					throw new InvalidOperationException();
 			}
 		}
 
