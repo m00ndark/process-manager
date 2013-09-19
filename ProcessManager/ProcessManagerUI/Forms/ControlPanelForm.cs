@@ -151,6 +151,7 @@ namespace ProcessManagerUI.Forms
 
 			EnableOptionStartWithWindows(Settings.Client.StartWithWindows);
 			EnableOptionUserOwnsControlPanel(Settings.Client.UserOwnsControlPanel);
+			EnableOptionKeepControlPanelTopMost(Settings.Client.KeepControlPanelTopMost);
 
 			foreach (ProcessGrouping grouping in _processGroupingDescriptions.Keys)
 			{
@@ -412,7 +413,7 @@ namespace ProcessManagerUI.Forms
 			if (e.Button != MouseButtons.Left)
 				return;
 
-			if (Opacity == 0 && _formClosedAt.AddMilliseconds(500) < DateTime.Now)
+			if (Settings.Client.UserOwnsControlPanel || Opacity == 0 && _formClosedAt.AddMilliseconds(500) < DateTime.Now)
 				ShowForm();
 		}
 
@@ -433,6 +434,11 @@ namespace ProcessManagerUI.Forms
 		private void ToolStripMenuItemSystemTrayOptionsUserOwnsControlPanel_Click(object sender, EventArgs e)
 		{
 			ToggleOptionUserOwnsControlPanel();
+		}
+
+		private void ToolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost_Click(object sender, EventArgs e)
+		{
+			ToggleOptionKeepControlPanelTopMost();
 		}
 
 		private void ToolStripMenuItemSystemTrayExit_Click(object sender, EventArgs e)
@@ -577,11 +583,15 @@ namespace ProcessManagerUI.Forms
 
 		private void ShowForm()
 		{
-			Location = new Point(Math.Min(MousePosition.X - Size.Width / 2, Screen.PrimaryScreen.WorkingArea.Width - Size.Width - 8),
-				Math.Max(Screen.PrimaryScreen.WorkingArea.Top, Screen.PrimaryScreen.WorkingArea.Height - Size.Height - 8));
-			Opacity = 1;
+			if (Opacity == 0)
+			{
+				Location = new Point(Math.Min(MousePosition.X - Size.Width / 2, Screen.PrimaryScreen.WorkingArea.Width - Size.Width - 8),
+					Math.Max(Screen.PrimaryScreen.WorkingArea.Top, Screen.PrimaryScreen.WorkingArea.Height - Size.Height - 8));
+				Opacity = 1;
+			}
 			Show();
-            try { Program.SetForegroundWindow(Handle); } catch { ; }
+			try { NativeMethods.SetForegroundWindow(Handle); } catch { ; }
+
 		}
 
 		private void HideForm()
@@ -620,6 +630,13 @@ namespace ProcessManagerUI.Forms
 			EnableOptionUserOwnsControlPanel(Settings.Client.UserOwnsControlPanel);
 		}
 
+		private void ToggleOptionKeepControlPanelTopMost()
+		{
+			Settings.Client.KeepControlPanelTopMost = !Settings.Client.KeepControlPanelTopMost;
+			RegistryHandler.SaveClientSettings(ClientSettingsType.Options);
+			EnableOptionKeepControlPanelTopMost(Settings.Client.KeepControlPanelTopMost);
+		}
+
 		private void EnableOptionStartWithWindows(bool enable)
 		{
 			toolStripMenuItemSystemTrayOptionsStartWithWindows.Checked = enable;
@@ -630,6 +647,12 @@ namespace ProcessManagerUI.Forms
 			UpdateSize();
 			pictureBoxClose.Visible = enable;
 			toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel.Checked = enable;
+			toolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost.Enabled = enable;
+		}
+
+		private void EnableOptionKeepControlPanelTopMost(bool enable)
+		{
+			toolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost.Checked = enable;
 			TopMost = enable;
 		}
 

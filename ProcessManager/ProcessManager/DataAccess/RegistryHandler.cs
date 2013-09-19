@@ -130,6 +130,7 @@ namespace ProcessManager.DataAccess
 					{
 						Settings.Client.StartWithWindows = bool.Parse((string) optionsKey.GetValue("Start With Windows", Settings.Client.Defaults.START_WITH_WINDOWS));
 						Settings.Client.UserOwnsControlPanel = bool.Parse((string) optionsKey.GetValue("User Owns Control Panel", Settings.Client.Defaults.USER_OWNS_CONTROL_PANEL));
+						Settings.Client.KeepControlPanelTopMost = bool.Parse((string) optionsKey.GetValue("Keep Control Panel Top Most", Settings.Client.Defaults.KEEP_CONTROL_PANEL_TOP_MOST));
 						optionsKey.Close();
 					}
 					break;
@@ -343,6 +344,7 @@ namespace ProcessManager.DataAccess
 					{
 						optionsKey.SetValue("Start With Windows", Settings.Client.StartWithWindows.ToString());
 						optionsKey.SetValue("User Owns Control Panel", Settings.Client.UserOwnsControlPanel.ToString());
+						optionsKey.SetValue("Keep Control Panel Top Most", Settings.Client.KeepControlPanelTopMost.ToString());
 						optionsKey.Close();
 					}
 					break;

@@ -36,6 +36,7 @@
 			this.toolStripMenuItemSystemTrayOptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItemSystemTrayOptionsStartWithWindows = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparatorSystemTray1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripMenuItemSystemTrayExit = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableLayoutPanelProcess = new System.Windows.Forms.TableLayoutPanel();
@@ -92,7 +93,6 @@
 			this.labelDistributionFilter = new System.Windows.Forms.Label();
 			this.comboBoxDistributionGroupBy = new System.Windows.Forms.ComboBox();
 			this.labelDistributionGroupBy = new System.Windows.Forms.Label();
-			this.controlPanelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripSystemTray.SuspendLayout();
 			this.tableLayoutPanelProcess.SuspendLayout();
 			this.panelProcessApplications.SuspendLayout();
@@ -143,7 +143,8 @@
 			// 
 			this.toolStripMenuItemSystemTrayOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemSystemTrayOptionsStartWithWindows,
-            this.controlPanelToolStripMenuItem});
+            this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel,
+            this.toolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost});
 			this.toolStripMenuItemSystemTrayOptions.Name = "toolStripMenuItemSystemTrayOptions";
 			this.toolStripMenuItemSystemTrayOptions.Size = new System.Drawing.Size(157, 22);
 			this.toolStripMenuItemSystemTrayOptions.Text = "Options";
@@ -151,16 +152,23 @@
 			// toolStripMenuItemSystemTrayOptionsStartWithWindows
 			// 
 			this.toolStripMenuItemSystemTrayOptionsStartWithWindows.Name = "toolStripMenuItemSystemTrayOptionsStartWithWindows";
-			this.toolStripMenuItemSystemTrayOptionsStartWithWindows.Size = new System.Drawing.Size(205, 22);
+			this.toolStripMenuItemSystemTrayOptionsStartWithWindows.Size = new System.Drawing.Size(229, 22);
 			this.toolStripMenuItemSystemTrayOptionsStartWithWindows.Text = "Start With Windows";
 			this.toolStripMenuItemSystemTrayOptionsStartWithWindows.Click += new System.EventHandler(this.ToolStripMenuItemSystemTrayOptionsStartWithWindows_Click);
 			// 
 			// toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel
 			// 
 			this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel.Name = "toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel";
-			this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel.Size = new System.Drawing.Size(205, 22);
+			this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel.Size = new System.Drawing.Size(229, 22);
 			this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel.Text = "User Owns Control Panel";
 			this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel.Click += new System.EventHandler(this.ToolStripMenuItemSystemTrayOptionsUserOwnsControlPanel_Click);
+			// 
+			// toolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost
+			// 
+			this.toolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost.Name = "toolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost";
+			this.toolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost.Size = new System.Drawing.Size(229, 22);
+			this.toolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost.Text = "Keep Control Panel Top Most";
+			this.toolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost.Click += new System.EventHandler(this.ToolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost_Click);
 			// 
 			// toolStripSeparatorSystemTray1
 			// 
@@ -931,14 +939,6 @@
 			this.labelDistributionGroupBy.TabIndex = 0;
 			this.labelDistributionGroupBy.Text = "Group by:";
 			// 
-			// controlPanelToolStripMenuItem
-			// 
-			this.controlPanelToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel});
-			this.controlPanelToolStripMenuItem.Name = "controlPanelToolStripMenuItem";
-			this.controlPanelToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
-			this.controlPanelToolStripMenuItem.Text = "Control Panel";
-			// 
 			// ControlPanelForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1050,6 +1050,6 @@
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel;
 		private System.Windows.Forms.Panel panelGlassTop;
 		private System.Windows.Forms.PictureBox pictureBoxClose;
-		private System.Windows.Forms.ToolStripMenuItem controlPanelToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost;
 	}
 }

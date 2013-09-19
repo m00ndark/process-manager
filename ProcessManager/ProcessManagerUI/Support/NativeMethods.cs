@@ -29,6 +29,14 @@ namespace ProcessManagerUI.Support
 		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
 		public static extern IntPtr GetActiveWindow();
 
+		[DllImport("user32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+		[DllImport("user32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool BringWindowToTop(IntPtr hWnd); 
+
 		[DllImport("dwmapi.dll")]
 		internal static extern void DwmExtendFrameIntoClientArea(IntPtr hWnd, ref Margins pMargins);
 		[DllImport("dwmapi.dll")]
