@@ -65,8 +65,6 @@
 			this.tabPageDistribution = new System.Windows.Forms.TabPage();
 			this.tabPageMacro = new System.Windows.Forms.TabPage();
 			this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
-			this.horizontalPanel = new ProcessManagerUI.Controls.HorizontalPanel();
-			this.linkLabelOpenConfiguration = new System.Windows.Forms.LinkLabel();
 			this.panelTabPageArea = new System.Windows.Forms.Panel();
 			this.tableLayoutPanelMacro = new System.Windows.Forms.TableLayoutPanel();
 			this.panelMacros = new System.Windows.Forms.Panel();
@@ -93,6 +91,8 @@
 			this.labelDistributionFilter = new System.Windows.Forms.Label();
 			this.comboBoxDistributionGroupBy = new System.Windows.Forms.ComboBox();
 			this.labelDistributionGroupBy = new System.Windows.Forms.Label();
+			this.horizontalPanel = new ProcessManagerUI.Controls.HorizontalPanel();
+			this.linkLabelOpenConfiguration = new System.Windows.Forms.LinkLabel();
 			this.contextMenuStripSystemTray.SuspendLayout();
 			this.tableLayoutPanelProcess.SuspendLayout();
 			this.panelProcessApplications.SuspendLayout();
@@ -103,7 +103,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxClose)).BeginInit();
 			this.tabControlSection.SuspendLayout();
 			this.tableLayoutPanelMain.SuspendLayout();
-			this.horizontalPanel.SuspendLayout();
 			this.panelTabPageArea.SuspendLayout();
 			this.tableLayoutPanelMacro.SuspendLayout();
 			this.panelMacros.SuspendLayout();
@@ -111,6 +110,7 @@
 			this.panelDistributionApplications.SuspendLayout();
 			this.panelDistributionGroupByAndFilter.SuspendLayout();
 			this.tableLayoutPanelDistributionFilter.SuspendLayout();
+			this.horizontalPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// notifyIcon
@@ -538,37 +538,6 @@
 			this.tableLayoutPanelMain.Size = new System.Drawing.Size(449, 278);
 			this.tableLayoutPanelMain.TabIndex = 4;
 			// 
-			// horizontalPanel
-			// 
-			this.horizontalPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.horizontalPanel.AutoModifyAddedControls = false;
-			this.horizontalPanel.BackColor = System.Drawing.Color.Transparent;
-			this.horizontalPanel.Controls.Add(this.linkLabelOpenConfiguration);
-			this.horizontalPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.horizontalPanel.Location = new System.Drawing.Point(0, 235);
-			this.horizontalPanel.Margin = new System.Windows.Forms.Padding(0);
-			this.horizontalPanel.Name = "horizontalPanel";
-			this.horizontalPanel.Size = new System.Drawing.Size(449, 43);
-			this.horizontalPanel.TabIndex = 1;
-			// 
-			// linkLabelOpenConfiguration
-			// 
-			this.linkLabelOpenConfiguration.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelOpenConfiguration.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.linkLabelOpenConfiguration.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.linkLabelOpenConfiguration.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-			this.linkLabelOpenConfiguration.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelOpenConfiguration.Location = new System.Drawing.Point(0, 0);
-			this.linkLabelOpenConfiguration.Name = "linkLabelOpenConfiguration";
-			this.linkLabelOpenConfiguration.Size = new System.Drawing.Size(449, 43);
-			this.linkLabelOpenConfiguration.TabIndex = 0;
-			this.linkLabelOpenConfiguration.TabStop = true;
-			this.linkLabelOpenConfiguration.Text = "Open Configuration";
-			this.linkLabelOpenConfiguration.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.linkLabelOpenConfiguration.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelOpenConfiguration.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelOpenConfiguration_LinkClicked);
-			// 
 			// panelTabPageArea
 			// 
 			this.panelTabPageArea.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -939,6 +908,37 @@
 			this.labelDistributionGroupBy.TabIndex = 0;
 			this.labelDistributionGroupBy.Text = "Group by:";
 			// 
+			// horizontalPanel
+			// 
+			this.horizontalPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.horizontalPanel.AutoModifyAddedControls = false;
+			this.horizontalPanel.BackColor = System.Drawing.Color.Transparent;
+			this.horizontalPanel.Controls.Add(this.linkLabelOpenConfiguration);
+			this.horizontalPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.horizontalPanel.Location = new System.Drawing.Point(0, 235);
+			this.horizontalPanel.Margin = new System.Windows.Forms.Padding(0);
+			this.horizontalPanel.Name = "horizontalPanel";
+			this.horizontalPanel.Size = new System.Drawing.Size(449, 43);
+			this.horizontalPanel.TabIndex = 1;
+			// 
+			// linkLabelOpenConfiguration
+			// 
+			this.linkLabelOpenConfiguration.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelOpenConfiguration.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.linkLabelOpenConfiguration.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.linkLabelOpenConfiguration.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelOpenConfiguration.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelOpenConfiguration.Location = new System.Drawing.Point(0, 0);
+			this.linkLabelOpenConfiguration.Name = "linkLabelOpenConfiguration";
+			this.linkLabelOpenConfiguration.Size = new System.Drawing.Size(449, 43);
+			this.linkLabelOpenConfiguration.TabIndex = 0;
+			this.linkLabelOpenConfiguration.TabStop = true;
+			this.linkLabelOpenConfiguration.Text = "Open Configuration";
+			this.linkLabelOpenConfiguration.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.linkLabelOpenConfiguration.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelOpenConfiguration.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelOpenConfiguration_LinkClicked);
+			// 
 			// ControlPanelForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -958,6 +958,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Deactivate += new System.EventHandler(this.ControlPanelForm_Deactivate);
 			this.Load += new System.EventHandler(this.ControlPanelForm_Load);
+			this.Enter += new System.EventHandler(this.ControlPanelForm_Enter);
 			this.Resize += new System.EventHandler(this.ControlPanelForm_Resize);
 			this.contextMenuStripSystemTray.ResumeLayout(false);
 			this.tableLayoutPanelProcess.ResumeLayout(false);
@@ -971,7 +972,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxClose)).EndInit();
 			this.tabControlSection.ResumeLayout(false);
 			this.tableLayoutPanelMain.ResumeLayout(false);
-			this.horizontalPanel.ResumeLayout(false);
 			this.panelTabPageArea.ResumeLayout(false);
 			this.tableLayoutPanelMacro.ResumeLayout(false);
 			this.panelMacros.ResumeLayout(false);
@@ -982,6 +982,7 @@
 			this.panelDistributionGroupByAndFilter.ResumeLayout(false);
 			this.panelDistributionGroupByAndFilter.PerformLayout();
 			this.tableLayoutPanelDistributionFilter.ResumeLayout(false);
+			this.horizontalPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}

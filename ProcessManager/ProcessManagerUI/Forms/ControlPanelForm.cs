@@ -206,6 +206,12 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
+		private void ControlPanelForm_Enter(object sender, EventArgs e)
+		{
+			if (Settings.Client.UserOwnsControlPanel && Settings.Client.KeepControlPanelTopMost)
+				TopMost = true;
+		}
+
 		private void PanelGlassTop_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (Settings.Client.UserOwnsControlPanel && e.Button == MouseButtons.Left)
@@ -683,6 +689,8 @@ namespace ProcessManagerUI.Forms
 		private void OpenConfigurationForm()
 		{
 			ConfigurationForm configurationForm = new ConfigurationForm();
+			if (Settings.Client.UserOwnsControlPanel && Settings.Client.KeepControlPanelTopMost)
+				configurationForm.TopMost = true;
 			configurationForm.FormClosed += ConfigurationForm_FormClosed;
 			configurationForm.ConfigurationChanged += ConfigurationForm_ConfigurationChanged;
 			configurationForm.MacrosChanged += ConfigurationForm_MacrosChanged;

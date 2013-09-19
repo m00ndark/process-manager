@@ -82,6 +82,12 @@ namespace ProcessManagerUI.Forms
 			_initTimer.Start();
 		}
 
+		private void ConfigurationForm_Enter(object sender, EventArgs e)
+		{
+			if (Settings.Client.UserOwnsControlPanel && Settings.Client.KeepControlPanelTopMost)
+				TopMost = true;
+		}
+
 		private void ConfigurationForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			ServiceHelper.ProcessManagerEventHandler.ConfigurationChanged -= ProcessManagerEventHandler_ConfigurationChanged;
