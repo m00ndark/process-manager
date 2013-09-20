@@ -65,9 +65,9 @@
 			this.linkLabelStart.Enabled = false;
 			this.linkLabelStart.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
 			this.linkLabelStart.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelStart.Location = new System.Drawing.Point(3, 4);
+			this.linkLabelStart.Location = new System.Drawing.Point(44, 4);
 			this.linkLabelStart.Name = "linkLabelStart";
-			this.linkLabelStart.Size = new System.Drawing.Size(31, 15);
+			this.linkLabelStart.Size = new System.Drawing.Size(31, 13);
 			this.linkLabelStart.TabIndex = 3;
 			this.linkLabelStart.TabStop = true;
 			this.linkLabelStart.Text = "Start";
@@ -83,7 +83,7 @@
 			this.labelNodeName.Location = new System.Drawing.Point(0, 4);
 			this.labelNodeName.Margin = new System.Windows.Forms.Padding(0);
 			this.labelNodeName.Name = "labelNodeName";
-			this.labelNodeName.Size = new System.Drawing.Size(85, 15);
+			this.labelNodeName.Size = new System.Drawing.Size(82, 13);
 			this.labelNodeName.TabIndex = 2;
 			this.labelNodeName.Text = "<node-name>";
 			this.labelNodeName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -97,12 +97,12 @@
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel.Controls.Add(this.panelMachineName, 0, 0);
 			this.tableLayoutPanel.Controls.Add(this.panelControl, 1, 0);
-			this.tableLayoutPanel.Location = new System.Drawing.Point(44, 0);
+			this.tableLayoutPanel.Location = new System.Drawing.Point(153, 0);
 			this.tableLayoutPanel.Name = "tableLayoutPanel";
 			this.tableLayoutPanel.RowCount = 1;
 			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-			this.tableLayoutPanel.Size = new System.Drawing.Size(306, 22);
+			this.tableLayoutPanel.Size = new System.Drawing.Size(197, 22);
 			this.tableLayoutPanel.TabIndex = 3;
 			// 
 			// panelMachineName
@@ -118,14 +118,11 @@
 			// panelControl
 			// 
 			this.panelControl.Controls.Add(this.labeledDivider);
-			this.panelControl.Controls.Add(this.linkLabelRestart);
-			this.panelControl.Controls.Add(this.linkLabelStop);
-			this.panelControl.Controls.Add(this.linkLabelStart);
 			this.panelControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panelControl.Location = new System.Drawing.Point(93, 0);
 			this.panelControl.Margin = new System.Windows.Forms.Padding(0);
 			this.panelControl.Name = "panelControl";
-			this.panelControl.Size = new System.Drawing.Size(213, 22);
+			this.panelControl.Size = new System.Drawing.Size(104, 22);
 			this.panelControl.TabIndex = 3;
 			// 
 			// labeledDivider
@@ -135,9 +132,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labeledDivider.BackColor = System.Drawing.Color.Transparent;
 			this.labeledDivider.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDivider.Location = new System.Drawing.Point(108, 4);
+			this.labeledDivider.Location = new System.Drawing.Point(0, 4);
 			this.labeledDivider.Name = "labeledDivider";
-			this.labeledDivider.Size = new System.Drawing.Size(105, 15);
+			this.labeledDivider.Size = new System.Drawing.Size(104, 15);
 			this.labeledDivider.TabIndex = 6;
 			this.labeledDivider.Text = "";
 			// 
@@ -151,9 +148,9 @@
 			this.linkLabelRestart.Enabled = false;
 			this.linkLabelRestart.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
 			this.linkLabelRestart.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelRestart.Location = new System.Drawing.Point(63, 4);
+			this.linkLabelRestart.Location = new System.Drawing.Point(104, 4);
 			this.linkLabelRestart.Name = "linkLabelRestart";
-			this.linkLabelRestart.Size = new System.Drawing.Size(43, 15);
+			this.linkLabelRestart.Size = new System.Drawing.Size(43, 13);
 			this.linkLabelRestart.TabIndex = 5;
 			this.linkLabelRestart.TabStop = true;
 			this.linkLabelRestart.Text = "Restart";
@@ -171,9 +168,9 @@
 			this.linkLabelStop.Enabled = false;
 			this.linkLabelStop.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
 			this.linkLabelStop.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelStop.Location = new System.Drawing.Point(33, 4);
+			this.linkLabelStop.Location = new System.Drawing.Point(74, 4);
 			this.linkLabelStop.Name = "linkLabelStop";
-			this.linkLabelStop.Size = new System.Drawing.Size(31, 15);
+			this.linkLabelStop.Size = new System.Drawing.Size(31, 13);
 			this.linkLabelStop.TabIndex = 4;
 			this.linkLabelStop.TabStop = true;
 			this.linkLabelStop.Text = "Stop";
@@ -201,24 +198,26 @@
 			this.pictureBoxExpandCollapse.TabStop = false;
 			this.pictureBoxExpandCollapse.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PictureBoxExpandCollapse_MouseDown);
 			// 
-			// BaseRootNode
+			// BaseProcessRootNode
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.White;
 			this.Controls.Add(this.flowLayoutPanel);
+			this.Controls.Add(this.linkLabelRestart);
 			this.Controls.Add(this.tableLayoutPanel);
+			this.Controls.Add(this.linkLabelStop);
 			this.Controls.Add(this.checkBoxSelected);
+			this.Controls.Add(this.linkLabelStart);
 			this.Controls.Add(this.pictureBoxExpandCollapse);
-			this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Margin = new System.Windows.Forms.Padding(0);
-			this.Name = "BaseRootNode";
+			this.Name = "BaseProcessRootNode";
 			this.Size = new System.Drawing.Size(350, 100);
 			this.tableLayoutPanel.ResumeLayout(false);
 			this.panelMachineName.ResumeLayout(false);
 			this.panelMachineName.PerformLayout();
 			this.panelControl.ResumeLayout(false);
-			this.panelControl.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxExpandCollapse)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();

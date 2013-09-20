@@ -63,9 +63,9 @@
 			this.linkLabelDistribute.Enabled = false;
 			this.linkLabelDistribute.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
 			this.linkLabelDistribute.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelDistribute.Location = new System.Drawing.Point(3, 4);
+			this.linkLabelDistribute.Location = new System.Drawing.Point(44, 4);
 			this.linkLabelDistribute.Name = "linkLabelDistribute";
-			this.linkLabelDistribute.Size = new System.Drawing.Size(58, 15);
+			this.linkLabelDistribute.Size = new System.Drawing.Size(58, 13);
 			this.linkLabelDistribute.TabIndex = 3;
 			this.linkLabelDistribute.TabStop = true;
 			this.linkLabelDistribute.Text = "Distribute";
@@ -81,7 +81,7 @@
 			this.labelNodeName.Location = new System.Drawing.Point(0, 4);
 			this.labelNodeName.Margin = new System.Windows.Forms.Padding(0);
 			this.labelNodeName.Name = "labelNodeName";
-			this.labelNodeName.Size = new System.Drawing.Size(85, 15);
+			this.labelNodeName.Size = new System.Drawing.Size(82, 13);
 			this.labelNodeName.TabIndex = 2;
 			this.labelNodeName.Text = "<node-name>";
 			this.labelNodeName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -95,12 +95,12 @@
 			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel.Controls.Add(this.panelMachineName, 0, 0);
 			this.tableLayoutPanel.Controls.Add(this.panelControl, 1, 0);
-			this.tableLayoutPanel.Location = new System.Drawing.Point(44, 0);
+			this.tableLayoutPanel.Location = new System.Drawing.Point(108, 0);
 			this.tableLayoutPanel.Name = "tableLayoutPanel";
 			this.tableLayoutPanel.RowCount = 1;
 			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-			this.tableLayoutPanel.Size = new System.Drawing.Size(306, 22);
+			this.tableLayoutPanel.Size = new System.Drawing.Size(242, 22);
 			this.tableLayoutPanel.TabIndex = 3;
 			// 
 			// panelMachineName
@@ -116,12 +116,11 @@
 			// panelControl
 			// 
 			this.panelControl.Controls.Add(this.labeledDivider);
-			this.panelControl.Controls.Add(this.linkLabelDistribute);
 			this.panelControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panelControl.Location = new System.Drawing.Point(93, 0);
 			this.panelControl.Margin = new System.Windows.Forms.Padding(0);
 			this.panelControl.Name = "panelControl";
-			this.panelControl.Size = new System.Drawing.Size(213, 22);
+			this.panelControl.Size = new System.Drawing.Size(149, 22);
 			this.panelControl.TabIndex = 3;
 			// 
 			// labeledDivider
@@ -131,9 +130,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labeledDivider.BackColor = System.Drawing.Color.Transparent;
 			this.labeledDivider.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDivider.Location = new System.Drawing.Point(63, 4);
+			this.labeledDivider.Location = new System.Drawing.Point(0, 4);
 			this.labeledDivider.Name = "labeledDivider";
-			this.labeledDivider.Size = new System.Drawing.Size(150, 15);
+			this.labeledDivider.Size = new System.Drawing.Size(149, 15);
 			this.labeledDivider.TabIndex = 6;
 			this.labeledDivider.Text = "";
 			// 
@@ -159,14 +158,15 @@
 			// 
 			// BaseDistributionRootNode
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.White;
+			this.Controls.Add(this.linkLabelDistribute);
 			this.Controls.Add(this.flowLayoutPanel);
 			this.Controls.Add(this.tableLayoutPanel);
 			this.Controls.Add(this.checkBoxSelected);
 			this.Controls.Add(this.pictureBoxExpandCollapse);
-			this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Margin = new System.Windows.Forms.Padding(0);
 			this.Name = "BaseDistributionRootNode";
 			this.Size = new System.Drawing.Size(350, 100);
@@ -174,7 +174,6 @@
 			this.panelMachineName.ResumeLayout(false);
 			this.panelMachineName.PerformLayout();
 			this.panelControl.ResumeLayout(false);
-			this.panelControl.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxExpandCollapse)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();

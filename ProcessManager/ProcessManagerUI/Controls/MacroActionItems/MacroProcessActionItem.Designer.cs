@@ -207,7 +207,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.White;
 			this.Controls.Add(this.tableLayoutPanel);
-			this.Font = new System.Drawing.Font("Segoe UI", 9F);
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
 			this.Margin = new System.Windows.Forms.Padding(0);
 			this.Name = "MacroProcessActionItem";
 			this.Size = new System.Drawing.Size(465, 21);
