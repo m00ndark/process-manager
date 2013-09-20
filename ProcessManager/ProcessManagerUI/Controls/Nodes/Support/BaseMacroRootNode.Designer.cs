@@ -67,7 +67,7 @@
 			this.linkLabelPlay.LinkColor = System.Drawing.SystemColors.HotTrack;
 			this.linkLabelPlay.Location = new System.Drawing.Point(68, 4);
 			this.linkLabelPlay.Name = "linkLabelPlay";
-			this.linkLabelPlay.Size = new System.Drawing.Size(29, 15);
+			this.linkLabelPlay.Size = new System.Drawing.Size(27, 13);
 			this.linkLabelPlay.TabIndex = 3;
 			this.linkLabelPlay.TabStop = true;
 			this.linkLabelPlay.Text = "Play";
@@ -83,7 +83,7 @@
 			this.labelNodeName.Location = new System.Drawing.Point(0, 4);
 			this.labelNodeName.Margin = new System.Windows.Forms.Padding(0);
 			this.labelNodeName.Name = "labelNodeName";
-			this.labelNodeName.Size = new System.Drawing.Size(85, 15);
+			this.labelNodeName.Size = new System.Drawing.Size(82, 13);
 			this.labelNodeName.TabIndex = 2;
 			this.labelNodeName.Text = "<node-name>";
 			this.labelNodeName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -132,7 +132,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labeledDivider.BackColor = System.Drawing.Color.Transparent;
 			this.labeledDivider.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDivider.Location = new System.Drawing.Point(0, 4);
+			this.labeledDivider.Location = new System.Drawing.Point(0, 2);
 			this.labeledDivider.Name = "labeledDivider";
 			this.labeledDivider.Size = new System.Drawing.Size(156, 15);
 			this.labeledDivider.TabIndex = 6;
@@ -168,7 +168,7 @@
 			// 
 			// BaseMacroRootNode
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.White;
 			this.Controls.Add(this.pictureBoxStatus);
@@ -177,7 +177,7 @@
 			this.Controls.Add(this.tableLayoutPanel);
 			this.Controls.Add(this.checkBoxSelected);
 			this.Controls.Add(this.pictureBoxExpandCollapse);
-			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Margin = new System.Windows.Forms.Padding(0);
 			this.Name = "BaseMacroRootNode";
 			this.Size = new System.Drawing.Size(350, 100);

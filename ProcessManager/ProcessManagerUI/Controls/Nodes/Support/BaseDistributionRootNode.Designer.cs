@@ -130,7 +130,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labeledDivider.BackColor = System.Drawing.Color.Transparent;
 			this.labeledDivider.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDivider.Location = new System.Drawing.Point(0, 4);
+			this.labeledDivider.Location = new System.Drawing.Point(0, 2);
 			this.labeledDivider.Name = "labeledDivider";
 			this.labeledDivider.Size = new System.Drawing.Size(149, 15);
 			this.labeledDivider.TabIndex = 6;

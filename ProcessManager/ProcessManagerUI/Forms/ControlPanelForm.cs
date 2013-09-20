@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using ProcessManager;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
@@ -165,17 +166,11 @@ namespace ProcessManagerUI.Forms
 			if (comboBoxDistributionGroupBy.SelectedIndex == -1)
 				comboBoxDistributionGroupBy.SelectedIndex = 0;
 
-			// this will trigger DisplaySelectedTabPage()
-			foreach (TabPage tabPage in tabControlSection.TabPages)
-			{
-				if (tabPage.Tag.ToString() != Settings.Client.CP_SelectedTab)
-					continue;
-
-				if (tabControlSection.SelectedTab != tabPage)
-					tabControlSection.SelectedTab = tabPage;
-				else
-					DisplaySelectedTabPage();
-			}
+			TabPage selectedTabPage = tabControlSection.TabPages.Cast<TabPage>().FirstOrDefault(tabPage => tabPage.Tag.ToString() == Settings.Client.CP_SelectedTab);
+			if (selectedTabPage != null)
+				tabControlSection.SelectedTab = selectedTabPage; // this will trigger DisplaySelectedTabPage()
+			else
+				DisplaySelectedTabPage();
 
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;

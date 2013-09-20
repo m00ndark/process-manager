@@ -126,6 +126,8 @@ namespace ProcessManagerUI
 
 			container.PlayableMacroActions.ForEach(PlayMacroAction);
 
+			WaitWhileOngoing(container.PlayableMacroActions);
+
 			lock (_macroPlaybackContainers)
 				_macroPlaybackContainers.Remove(macro.ID);
 		}
@@ -154,17 +156,7 @@ namespace ProcessManagerUI
 								else
 									previousPlayableMacroActions.Add(previousPlayableMacroAction);
 							}
-							bool anyOngoing = true;
-							while (anyOngoing)
-							{
-								lock (_macroPlaybackContainers)
-								{
-									anyOngoing = previousPlayableMacroActions.Aggregate(false, (current, previousPlayableMacroAction) =>
-										current | (previousPlayableMacroAction.MacroActionState == MacroActionState.Ongoing));
-								}
-								if (anyOngoing)
-									Thread.Sleep(100);
-							}
+							WaitWhileOngoing(previousPlayableMacroActions);
 						}
 						break;
 				}
@@ -182,6 +174,21 @@ namespace ProcessManagerUI
 							: MacroActionState.Ongoing;
 				}
 				ControlPanel.ApplyMacroActionState(playableMacroAction.Macro.ID, playableMacroAction.MacroAction.ID, playableMacroAction.MacroActionState);
+			}
+		}
+
+		private void WaitWhileOngoing(List<PlayableMacroAction> playableMacroActions)
+		{
+			bool anyOngoing = true;
+			while (anyOngoing)
+			{
+				lock (_macroPlaybackContainers)
+				{
+					anyOngoing = playableMacroActions.Aggregate(false, (current, previousPlayableMacroAction) =>
+						current | (previousPlayableMacroAction.MacroActionState == MacroActionState.Ongoing));
+				}
+				if (anyOngoing)
+					Thread.Sleep(100);
 			}
 		}
 

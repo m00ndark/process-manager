@@ -8,18 +8,28 @@ namespace ProcessManager.DataObjects
 	{
 		public const string DEFAULT_HOST_NAME = "<host-name>";
 
+		private string _hostName;
+
 		public Machine() : this(DEFAULT_HOST_NAME) {}
 
 		public Machine(string hostName)
 		{
-			ID = Cryptographer.CreateGUID(hostName);
 			HostName = hostName;
 		}
 
 		#region Properties
 
 		public Guid ID { get; private set; }
-		public string HostName { get; set; }
+
+		public string HostName
+		{
+			get { return _hostName; }
+			set
+			{
+				_hostName = value;
+				ID = Cryptographer.CreateGUID(_hostName);
+			}
+		}
 
 		#endregion
 
