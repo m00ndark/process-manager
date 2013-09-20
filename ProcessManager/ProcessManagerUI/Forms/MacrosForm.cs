@@ -370,10 +370,9 @@ namespace ProcessManagerUI.Forms
 
 		private void EnableControls(bool enable = true)
 		{
-			Machine localhost = new Machine(Settings.Constants.LOCALHOST);
 			buttonApply.Enabled = (enable && _hasUnsavedChanges);
-			buttonRemoveMacro.Enabled = (enable && listViewMacros.SelectedItems.Count > 0 && !listViewMacros.SelectedItems[0].Tag.Equals(localhost));
-			textBoxMacroName.ReadOnly = (listViewMacros.SelectedItems.Count > 0 && listViewMacros.SelectedItems[0].Tag.Equals(localhost));
+			buttonRemoveMacro.Enabled = (enable && listViewMacros.SelectedItems.Count > 0);
+			textBoxMacroName.ReadOnly = (listViewMacros.SelectedItems.Count > 0);
 		}
 
 		#endregion

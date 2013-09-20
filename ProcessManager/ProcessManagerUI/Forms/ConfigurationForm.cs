@@ -640,16 +640,15 @@ namespace ProcessManagerUI.Forms
 
 		private void PopulateMachinesComboBox(bool enableAutoSelect = true)
 		{
-			Machine localhost = new Machine(Settings.Constants.LOCALHOST);
-			if (!Settings.Client.Machines.Contains(localhost))
+			if (!Settings.Client.Machines.Contains(Settings.Constants.LocalMachine))
 			{
-				Settings.Client.Machines.Insert(0, localhost);
+				Settings.Client.Machines.Insert(0, Settings.Constants.LocalMachine);
 				Settings.Client.Save(ClientSettingsType.Machines);
 			}
 
 			Machine selectedMachine = new Machine(Settings.Client.CFG_SelectedHostName);
 			if (!Settings.Client.Machines.Contains(selectedMachine))
-				selectedMachine = localhost;
+				selectedMachine = Settings.Constants.LocalMachine;
 
 			comboBoxMachines.Items.Clear();
 			foreach (Machine machine in Settings.Client.Machines)
@@ -664,7 +663,7 @@ namespace ProcessManagerUI.Forms
 		{
 			Machine selectedMachine = new Machine(Settings.Client.CFG_SelectedHostName);
 			if (!Settings.Client.Machines.Contains(selectedMachine))
-				selectedMachine = new Machine(Settings.Constants.LOCALHOST);
+				selectedMachine = Settings.Constants.LocalMachine;
 
 			int index = comboBoxMachines.Items.IndexOf(selectedMachine);
 			comboBoxMachines.SelectedIndex = (index == -1 ? 0 : index);

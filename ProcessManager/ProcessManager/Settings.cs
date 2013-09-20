@@ -34,6 +34,8 @@ namespace ProcessManager
 		{
 			public const string APPLICATION_NAME = "Process Manager";
 			public const string LOCALHOST = "localhost";
+
+			public static readonly Machine LocalMachine = new Machine(LOCALHOST);
 		}
 
 		#endregion

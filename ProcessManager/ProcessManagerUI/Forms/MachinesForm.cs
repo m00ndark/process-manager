@@ -319,10 +319,9 @@ namespace ProcessManagerUI.Forms
 
 		private void EnableControls(bool enable = true)
 		{
-			Machine localhost = new Machine(Settings.Constants.LOCALHOST);
 			buttonApply.Enabled = (enable && _hasUnsavedChanges);
-			buttonRemoveMachine.Enabled = (enable && listViewMachines.SelectedItems.Count > 0 && !listViewMachines.SelectedItems[0].Tag.Equals(localhost));
-			textBoxMachineHostName.ReadOnly = (listViewMachines.SelectedItems.Count > 0 && listViewMachines.SelectedItems[0].Tag.Equals(localhost));
+			buttonRemoveMachine.Enabled = (enable && listViewMachines.SelectedItems.Count > 0 && !listViewMachines.SelectedItems[0].Tag.Equals(Settings.Constants.LocalMachine));
+			textBoxMachineHostName.ReadOnly = (listViewMachines.SelectedItems.Count > 0 && listViewMachines.SelectedItems[0].Tag.Equals(Settings.Constants.LocalMachine));
 			buttonValidateMachine.Enabled = (enable && !string.IsNullOrEmpty(textBoxMachineHostName.Text));
 			buttonCopyMachineSetup.Enabled = (enable && !_hasUnsavedChanges && !string.IsNullOrEmpty(textBoxMachineHostName.Text));
 		}
