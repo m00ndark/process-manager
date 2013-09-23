@@ -126,7 +126,7 @@ namespace ProcessManager
 
 			static Client()
 			{
-				Machines = new List<Machine>();
+				Machines = new MachineList();
 				Macros = new List<Macro>();
 				StartWithWindows = bool.Parse(Defaults.START_WITH_WINDOWS);
 				UserOwnsControlPanel = bool.Parse(Defaults.USER_OWNS_CONTROL_PANEL);
@@ -161,7 +161,7 @@ namespace ProcessManager
 
 			#region Properties
 
-			public static List<Machine> Machines { get; private set; }
+			public static MachineList Machines { get; private set; }
 			public static List<Macro> Macros { get; private set; }
 			public static bool StartWithWindows { get; set; }
 			public static bool UserOwnsControlPanel { get; set; }

@@ -90,6 +90,7 @@
     <Compile Include="DataObjects\DistributionFile.cs" />
     <Compile Include="DataObjects\DistributionWork.cs" />
     <Compile Include="DataObjects\IMacroAction.cs" />
+    <Compile Include="DataObjects\MachineList.cs" />
     <Compile Include="DataObjects\Macro.cs" />
     <Compile Include="DataObjects\MacroAction.cs" />
     <Compile Include="DataObjects\MacroActionBundle.cs" />

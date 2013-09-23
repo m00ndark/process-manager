@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ProcessManager.DataObjects.Comparers
 {
-	public class MachineEqualityComparer : IEqualityComparer<Machine>
+	public class MachineEqualityComparer : IEqualityComparer<Machine>, IComparer<Machine>
 	{
 		public bool Equals(Machine machine, string hostName)
 		{
@@ -18,6 +18,11 @@ namespace ProcessManager.DataObjects.Comparers
 		public int GetHashCode(Machine obj)
 		{
 			return (obj != null && obj.HostName != null ? obj.HostName.ToLower().GetHashCode() : 0);
+		}
+
+		public int Compare(Machine x, Machine y)
+		{
+			return string.CompareOrdinal(x.HostName, y.HostName);
 		}
 	}
 }

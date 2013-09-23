@@ -167,7 +167,7 @@ namespace ProcessManagerUI.Forms
 				comboBoxDistributionGroupBy.SelectedIndex = 0;
 
 			TabPage selectedTabPage = tabControlSection.TabPages.Cast<TabPage>().FirstOrDefault(tabPage => tabPage.Tag.ToString() == Settings.Client.CP_SelectedTab);
-			if (selectedTabPage != null)
+			if (selectedTabPage != null && tabControlSection.SelectedTab != selectedTabPage)
 				tabControlSection.SelectedTab = selectedTabPage; // this will trigger DisplaySelectedTabPage()
 			else
 				DisplaySelectedTabPage();
@@ -917,11 +917,11 @@ namespace ProcessManagerUI.Forms
 											})
 									}, new MachineEqualityComparer());
 
-							_processRootNodes.AddRange(machinesGroupsApplications.Select(machineGroupsApplications =>
+							_processRootNodes.AddRange(machinesGroupsApplications.OrderBy(x => x.Machine.HostName).Select(machineGroupsApplications =>
 								{
-									IEnumerable<ProcessGroupNode> groupNodes = machineGroupsApplications.Groups.Select(groupApplications =>
+									IEnumerable<ProcessGroupNode> groupNodes = machineGroupsApplications.Groups.OrderBy(x => x.Group.Name).Select(groupApplications =>
 										{
-											IEnumerable<ProcessApplicationNode> applicationNodes = groupApplications.Applications.Select(application =>
+											IEnumerable<ProcessApplicationNode> applicationNodes = groupApplications.Applications.OrderBy(x => x.Application.Name).Select(application =>
 												new ProcessApplicationNode(application.Application, application.Group.ID, application.Machine.ID)).ToList();
 											_processApplicationNodes.AddRange(applicationNodes);
 											return new ProcessGroupNode(groupApplications.Group, groupApplications.Applications.First().Machine.ID, applicationNodes, grouping);
@@ -943,11 +943,11 @@ namespace ProcessManagerUI.Forms
 											})
 									}, new GroupEqualityComparer());
 
-							_processRootNodes.AddRange(groupsMachinesApplications.Select(groupMachinesApplications =>
+							_processRootNodes.AddRange(groupsMachinesApplications.OrderBy(x => x.Group.Name).Select(groupMachinesApplications =>
 								{
-									IEnumerable<ProcessMachineNode> machineNodes = groupMachinesApplications.Machines.Select(machineApplications =>
+									IEnumerable<ProcessMachineNode> machineNodes = groupMachinesApplications.Machines.OrderBy(x => x.Machine.HostName).Select(machineApplications =>
 										{
-											IEnumerable<ProcessApplicationNode> applicationNodes = machineApplications.Applications.Select(application =>
+											IEnumerable<ProcessApplicationNode> applicationNodes = machineApplications.Applications.OrderBy(x => x.Application.Name).Select(application =>
 												new ProcessApplicationNode(application.Application, application.Group.ID, application.Machine.ID)).ToList();
 											_processApplicationNodes.AddRange(applicationNodes);
 											return new ProcessMachineNode(machineApplications.Machine, machineApplications.Applications.First().Group.ID, applicationNodes, grouping);
@@ -1184,13 +1184,13 @@ namespace ProcessManagerUI.Forms
 											})
 									}, new MachineEqualityComparer());
 
-							_distributionRootNodes.AddRange(machinesGroupsApplicationsMachines.Select(machineGroupsApplicationsMachines =>
+							_distributionRootNodes.AddRange(machinesGroupsApplicationsMachines.OrderBy(x => x.SourceMachine.HostName).Select(machineGroupsApplicationsMachines =>
 								{
-									IEnumerable<DistributionGroupNode> groupNodes = machineGroupsApplicationsMachines.Groups.Select(groupApplicationsMachines =>
+									IEnumerable<DistributionGroupNode> groupNodes = machineGroupsApplicationsMachines.Groups.OrderBy(x => x.Group.Name).Select(groupApplicationsMachines =>
 										{
-											IEnumerable<DistributionApplicationNode> applicationNodes = groupApplicationsMachines.Applications.Select(applicationMachines =>
+											IEnumerable<DistributionApplicationNode> applicationNodes = groupApplicationsMachines.Applications.OrderBy(x => x.Application.Name).Select(applicationMachines =>
 												{
-													IEnumerable<DistributionDestinationMachineNode> destinationMachineNodes = applicationMachines.DestinationMachines.Select(machine =>
+													IEnumerable<DistributionDestinationMachineNode> destinationMachineNodes = applicationMachines.DestinationMachines.OrderBy(x => x.DestinationMachine.HostName).Select(machine =>
 														new DistributionDestinationMachineNode(machine.DestinationMachine, machine.Application.ID, machine.Group.ID, machine.SourceMachine.ID)).ToList();
 													_distributionDestinationMachineNodes.AddRange(destinationMachineNodes);
 													return new DistributionApplicationNode(applicationMachines.Application, destinationMachineNodes, grouping);
@@ -1218,13 +1218,13 @@ namespace ProcessManagerUI.Forms
 											})
 									}, new GroupEqualityComparer());
 
-							_distributionRootNodes.AddRange(groupsMachinesApplicationsMachines.Select(groupMachinesApplicationsMachines =>
+							_distributionRootNodes.AddRange(groupsMachinesApplicationsMachines.OrderBy(x => x.Group.Name).Select(groupMachinesApplicationsMachines =>
 								{
-									IEnumerable<DistributionSourceMachineNode> sourceMachineNodes = groupMachinesApplicationsMachines.SourceMachines.Select(machineApplicationsMachines =>
+									IEnumerable<DistributionSourceMachineNode> sourceMachineNodes = groupMachinesApplicationsMachines.SourceMachines.OrderBy(x => x.SourceMachine.HostName).Select(machineApplicationsMachines =>
 										{
-											IEnumerable<DistributionApplicationNode> applicationNodes = machineApplicationsMachines.Applications.Select(applicationMachines =>
+											IEnumerable<DistributionApplicationNode> applicationNodes = machineApplicationsMachines.Applications.OrderBy(x => x.Application.Name).Select(applicationMachines =>
 												{
-													IEnumerable<DistributionDestinationMachineNode> destinationMachineNodes = applicationMachines.DestinationMachines.Select(machine =>
+													IEnumerable<DistributionDestinationMachineNode> destinationMachineNodes = applicationMachines.DestinationMachines.OrderBy(x => x.DestinationMachine.HostName).Select(machine =>
 														new DistributionDestinationMachineNode(machine.DestinationMachine, machine.Application.ID, machine.Group.ID, machine.SourceMachine.ID)).ToList();
 													_distributionDestinationMachineNodes.AddRange(destinationMachineNodes);
 													return new DistributionApplicationNode(applicationMachines.Application, destinationMachineNodes, grouping);
@@ -1337,7 +1337,7 @@ namespace ProcessManagerUI.Forms
 								}))
 					});
 
-				_macroRootNodes.AddRange(macroBundles.Select(macroBundle =>
+				_macroRootNodes.AddRange(macroBundles.OrderBy(x => x.Macro.Name).Select(macroBundle =>
 					{
 						IEnumerable<IMacroNode> levelTwoNodes = macroBundle.GroupedActionBundles.Select(groupedActionBundle =>
 							{

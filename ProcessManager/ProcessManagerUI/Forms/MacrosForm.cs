@@ -60,8 +60,8 @@ namespace ProcessManagerUI.Forms
 				SuspendLayout();
 				panelMacro.Visible = true;
 				ResumeLayout(true);
-				EnableControls();
 			}
+			EnableControls();
 		}
 
 		private void ButtonAddMacro_Click(object sender, EventArgs e)
@@ -372,7 +372,6 @@ namespace ProcessManagerUI.Forms
 		{
 			buttonApply.Enabled = (enable && _hasUnsavedChanges);
 			buttonRemoveMacro.Enabled = (enable && listViewMacros.SelectedItems.Count > 0);
-			textBoxMacroName.ReadOnly = (listViewMacros.SelectedItems.Count > 0);
 		}
 
 		#endregion

@@ -258,6 +258,7 @@ namespace ProcessManagerUI.Forms
 					return false;
 				}
 
+				Settings.Client.Machines.Sort();
 				Settings.Client.Save(ClientSettingsType.Machines);
 				_hasUnsavedChanges = false;
 

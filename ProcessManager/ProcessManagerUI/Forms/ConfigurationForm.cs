@@ -196,9 +196,9 @@ namespace ProcessManagerUI.Forms
 					.Select(application => new ListViewItem(application.Name) { Tag = application.ID })
 					.ToArray());
 				_disableTextChangedEvents = false;
-				EnableControls();
 				panelGroup.Visible = true;
 			}
+			EnableControls();
 		}
 
 		private void ButtonAddGroup_Click(object sender, EventArgs e)
@@ -330,9 +330,9 @@ namespace ProcessManagerUI.Forms
 				checkBoxDistributionOnly.Checked = _selectedApplication.DistributionOnly;
 				DisplayDistributionSourceCount();
 				_disableTextChangedEvents = false;
-				EnableControls();
 				panelApplication.Visible = true;
 			}
+			EnableControls();
 		}
 
 		private void ButtonAddApplication_Click(object sender, EventArgs e)
@@ -1005,15 +1005,19 @@ namespace ProcessManagerUI.Forms
 				}
 			}
 			ShowAllControls(_selectedMachine != null && ConnectionStore.ConfigurationAvailable(_selectedMachine));
+			EnableControls();
 		}
 
 		private void EnableControls(bool enable = true)
 		{
 			buttonApply.Enabled = (enable && HasUnsavedConfiguration);
+
+			buttonRemoveGroup.Enabled = (enable && listViewGroups.SelectedItems.Count > 0);
 			buttonAddGroupApplication.Enabled = (enable && GetNonIncludedGroupApplications().Any());
 			buttonRemoveGroupApplication.Enabled = (enable && listViewGroupApplications.SelectedItems.Count > 0);
 			buttonCopyGroupApplications.Enabled = (enable && GetAllGroups(true).Any());
 
+			buttonRemoveApplication.Enabled = (enable && listViewApplications.SelectedItems.Count > 0);
 			labelApplicationRelativePath.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
 			labelApplicationArguments.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
 			textBoxApplicationRelativePath.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
