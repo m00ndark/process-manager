@@ -1467,6 +1467,21 @@ namespace ProcessManagerUI.Forms
 					if (!ConnectionStore.ConnectionCreated(processAction.Machine))
 						throw new Exception("No connection to machine " + processAction.Machine);
 
+					if (!ConnectionStore.ConfigurationAvailable(processAction.Machine))
+						throw new Exception("No configuration available for machine " + processAction.Machine);
+
+					Group group = ConnectionStore.Connections[processAction.Machine].Configuration.Groups.FirstOrDefault(x => Comparer.GroupsEqual(processAction.Group, x));
+					Application application = ConnectionStore.Connections[processAction.Machine].Configuration.Applications.FirstOrDefault(x => Comparer.ApplicationsEqual(processAction.Application, x));
+
+					if (group == null)
+						throw new Exception("Group " + processAction.Group + " missing on machine " + processAction.Machine);
+
+					if (application == null)
+						throw new Exception("Application " + processAction.Application + " missing on machine " + processAction.Machine);
+
+					processAction.Group = group;
+					processAction.Application = application;
+
 					return ConnectionStore.Connections[processAction.Machine].ServiceHandler.Service.TakeProcessAction(new DTOProcessAction(processAction));
 				}
 
@@ -1479,9 +1494,6 @@ namespace ProcessManagerUI.Forms
 
 					if (!ConnectionStore.ConnectionCreated(distributionAction.SourceMachine))
 						throw new Exception("No connection to source machine " + distributionAction.SourceMachine);
-
-					if (!ConnectionStore.ConnectionCreated(distributionAction.DestinationMachine))
-						throw new Exception("No connection to destination machine " + distributionAction.DestinationMachine);
 
 					return ConnectionStore.Connections[distributionAction.SourceMachine].ServiceHandler.Service.TakeDistributionAction(new DTODistributionAction(distributionAction));
 				}
