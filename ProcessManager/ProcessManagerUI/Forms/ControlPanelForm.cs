@@ -1341,27 +1341,32 @@ namespace ProcessManagerUI.Forms
 					{
 						IEnumerable<IMacroNode> levelTwoNodes = macroBundle.GroupedActionBundles.Select(groupedActionBundle =>
 							{
-								IEnumerable<MacroActionNode> levelThreeNodes;
 								switch (groupedActionBundle.Type)
 								{
 									case MacroActionType.Start:
 									case MacroActionType.Stop:
 									case MacroActionType.Restart:
-										levelThreeNodes = groupedActionBundle.GroupedActions.Select(groupedAction => new MacroActionNode(groupedAction.Action, macroBundle.Macro.ID)).ToList();
-										_macroActionNodes.AddRange(levelThreeNodes);
-										return (IMacroNode) new MacroMachineNode(groupedActionBundle.MachineID, groupedActionBundle.Type, macroBundle.Macro, levelThreeNodes);
 									case MacroActionType.Distribute:
-										levelThreeNodes = groupedActionBundle.GroupedActions.Select(groupedAction => new MacroActionNode(groupedAction.Action, macroBundle.Macro.ID)).ToList();
-										_macroActionNodes.AddRange(levelThreeNodes);
-										return (IMacroNode) new MacroMachineNode(groupedActionBundle.MachineID, groupedActionBundle.Type, macroBundle.Macro, levelThreeNodes);
+										Dictionary<bool, List<MacroActionNode>> macroActionNodes = groupedActionBundle.GroupedActions
+											.Select(groupedAction => new MacroActionNode(groupedAction.Action, macroBundle.Macro.ID))
+											.GroupBy(macroActionNode => macroActionNode.IsComplete)
+											.ToDictionary(x => x.Key, x => x.ToList());
+										if (macroActionNodes.ContainsKey(false)) 
+											macroActionNodes[false].ForEach(macroActionNode => macroActionNode.Dispose());
+										if (macroActionNodes.ContainsKey(true))
+										{
+											_macroActionNodes.AddRange(macroActionNodes[true]);
+											return (IMacroNode) new MacroMachineNode(groupedActionBundle.MachineID, groupedActionBundle.Type, macroBundle.Macro, macroActionNodes[true]);
+										}
+										return null;
 									case MacroActionType.Wait:
-										MacroActionNode macroActionNode = new MacroActionNode(groupedActionBundle.GroupedActions.First().Action, macroBundle.Macro.ID);
-										_macroActionNodes.Add(macroActionNode);
-										return (IMacroNode) macroActionNode;
+										MacroActionNode waitMacroActionNode = new MacroActionNode(groupedActionBundle.GroupedActions.First().Action, macroBundle.Macro.ID);
+										_macroActionNodes.Add(waitMacroActionNode);
+										return (IMacroNode) waitMacroActionNode;
 									default:
 										throw new InvalidOperationException();
 								}
-							}).ToList();
+							}).Where(node => node != null).ToList();
 						return new MacroNode(macroBundle.Macro, levelTwoNodes);
 					}).ToList());
 
@@ -1372,14 +1377,14 @@ namespace ProcessManagerUI.Forms
 						node.ActionTaken += Node_ActionTaken;
 					});
 
-				foreach (IMacroRootNode node in _macroRootNodes.Cast<IMacroRootNode>().Where(node => !node.IsComplete).ToList())
-				{
-					node.SizeChanged -= RootNode_SizeChanged;
-					node.CheckedChanged -= Node_CheckedChanged;
-					node.ActionTaken -= Node_ActionTaken;
-					node.Dispose();
-					_macroRootNodes.Remove(node);
-				}
+				//foreach (IMacroRootNode node in _macroRootNodes.Cast<IMacroRootNode>().Where(node => !node.IsComplete).ToList())
+				//{
+				//	node.SizeChanged -= RootNode_SizeChanged;
+				//	node.CheckedChanged -= Node_CheckedChanged;
+				//	node.ActionTaken -= Node_ActionTaken;
+				//	node.Dispose();
+				//	_macroRootNodes.Remove(node);
+				//}
 			}
 
 			if (_macroActionNodes.Count > 0)

@@ -158,6 +158,8 @@ namespace ProcessManagerUI.Controls.Nodes
 						: string.Format("{0} / {1}", group.Name, application.Name);
 				case MacroActionType.Distribute:
 					MacroDistributionAction macroDistributionAction = (MacroDistributionAction) macroAction;
+					Machine destinationMachine = Settings.Client.Machines.FirstOrDefault(x => x.ID == macroDistributionAction.DestinationMachineID);
+					if (destinationMachine == null || !ConnectionStore.ConnectionCreated(destinationMachine)) return null;
 					Machine sourceMachine = Settings.Client.Machines.FirstOrDefault(x => x.ID == macroDistributionAction.SourceMachineID);
 					if (sourceMachine != null && ConnectionStore.ConnectionCreated(sourceMachine))
 					{
