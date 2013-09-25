@@ -69,92 +69,93 @@ namespace ProcessManager.DataObjects
 
 		public Configuration CopyTo(Configuration configuration, ConfigurationParts configurationParts)
 		{
+			IDictionary<Guid, Guid> applicationIDMappings = new Dictionary<Guid, Guid>();
+			List<Group> oldGroups = configuration.Groups;
 			List<Application> oldApplications = configuration.Applications;
 
 			if ((configurationParts & ConfigurationParts.Groups) != 0)
 			{
-				configuration.Groups = new List<Group>();
-				configuration.Groups.AddRange(Groups.Select(group => group.Clone()));
+				configuration.Groups = new List<Group>(Groups.Select(group => group.Clone()));
+				configuration.Groups.ForEach(group =>
+					{
+						Group oldGroup = oldGroups.FirstOrDefault(x => Comparer.GroupsEqual(x, group));
+						group.ID = oldGroup != null ? oldGroup.ID : Guid.NewGuid();
+					});
 			}
 
 			if ((configurationParts & ConfigurationParts.Applications) != 0)
 			{
-				configuration.Applications = new List<Application>();
-				configuration.Applications.AddRange(Applications.Select(application => application.Clone()));
+				configuration.Applications = new List<Application>(Applications.Select(application => application.Clone()));
+				configuration.Applications.ForEach(application =>
+					{
+						Application oldApplication = oldApplications.FirstOrDefault(x => Comparer.ApplicationsEqual(x, application));
+						Guid updatedApplicationID = oldApplication != null ? oldApplication.ID : Guid.NewGuid();
+						applicationIDMappings.Add(application.ID, updatedApplicationID);
+						application.ID = updatedApplicationID;
+						application.Sources.ForEach(source => source.ID = Guid.NewGuid());
+					});
 			}
 
+			// update application references of groups to match existing applications
 			if (configurationParts == ConfigurationParts.All)
 			{
-				configuration.Groups.ForEach(group => group.ID = Guid.NewGuid());
-				configuration.Applications.ForEach(application =>
+				foreach (Group group in configuration.Groups)
 				{
-					application.Sources.ForEach(source => source.ID = Guid.NewGuid());
-					Guid oldID = application.ID;
-					application.ID = Guid.NewGuid();
-					configuration.Groups.ForEach(group =>
+					List<Guid> toRemove = new List<Guid>(), toAdd = new List<Guid>();
+					foreach (Guid applicationID in group.Applications.Where(applicationID => applicationIDMappings.ContainsKey(applicationID)))
 					{
-						if (group.Applications.Contains(oldID))
-						{
-							group.Applications.Remove(oldID);
-							group.Applications.Add(application.ID);
-						}
-					});
-				});
-			}
-			else if ((configurationParts & ConfigurationParts.Groups) != 0)
-			{
-				configuration.Groups.ForEach(group => group.ID = Guid.NewGuid());
-				if ((configurationParts & ConfigurationParts.Applications) == 0)
-				{
-					foreach (Group group in configuration.Groups)
-					{
-						List<Guid> toRemove = new List<Guid>(), toAdd = new List<Guid>();
-						foreach (Application application in group.Applications.Select(applicationID => Applications.First(application => application.ID == applicationID)))
-						{
-							toRemove.Add(application.ID);
-							Application existingApplication = configuration.Applications.FirstOrDefault(x => Comparer.ApplicationsEqual(x, application));
-							if (existingApplication != null)
-								toAdd.Add(existingApplication.ID);
-						}
-						toRemove.ForEach(id => group.Applications.Remove(id));
-						toAdd.ForEach(id => group.Applications.Add(id));
+						toRemove.Add(applicationID);
+						toAdd.Add(applicationIDMappings[applicationID]);
 					}
+					toRemove.ForEach(id => group.Applications.Remove(id));
+					toAdd.ForEach(id => group.Applications.Add(id));
+				}				
+			}
+			else if (configurationParts == ConfigurationParts.Groups)
+			{
+				foreach (Group group in configuration.Groups)
+				{
+					List<Guid> toRemove = new List<Guid>(), toAdd = new List<Guid>();
+					foreach (Application sourceApplication in group.Applications.Select(applicationID => Applications.First(application => application.ID == applicationID)))
+					{
+						toRemove.Add(sourceApplication.ID);
+						Application existingApplication = configuration.Applications.FirstOrDefault(application => Comparer.ApplicationsEqual(application, sourceApplication));
+						if (existingApplication != null)
+							toAdd.Add(existingApplication.ID);
+					}
+					toRemove.ForEach(id => group.Applications.Remove(id));
+					toAdd.ForEach(id => group.Applications.Add(id));
 				}
 			}
-			else if ((configurationParts & ConfigurationParts.Applications) != 0)
+			else if (configurationParts == ConfigurationParts.Applications)
 			{
-				configuration.Applications.ForEach(application =>
-					{
-						application.Sources.ForEach(source => source.ID = Guid.NewGuid());
-						if ((configurationParts & ConfigurationParts.Groups) != 0)
-						{
-							Guid oldID = application.ID;
-							application.ID = Guid.NewGuid();
-							configuration.Groups.ForEach(group =>
-								{
-									if (group.Applications.Contains(oldID))
-									{
-										group.Applications.Remove(oldID);
-										group.Applications.Add(application.ID);
-									}
-								});
-						}
-						else
-						{
-							Application oldApplication = oldApplications.FirstOrDefault(x => Comparer.ApplicationsEqual(x, application));
-							if (oldApplication != null)
-							{
-								application.ID = oldApplication.ID;
-							}
-							else
-							{
-								List<Group> referringGroups = Groups.Where(group => group.Applications.Any(applicationID => applicationID == application.ID)).ToList();
-								application.ID = Guid.NewGuid();
-								configuration.Groups.Where(group => referringGroups.Any(refGroup => Comparer.GroupsEqual(refGroup, group))).ToList().ForEach(group => group.Applications.Add(application.ID));
-							}
-						}
-					});
+				// remove references to applications that do not exist anymore
+				foreach (Group group in configuration.Groups)
+				{
+					group.Applications
+						.Select(applicationID => oldApplications.First(oldApplication => oldApplication.ID == applicationID))
+						.Where(oldApplication => !configuration.Applications.Any(x => Comparer.ApplicationsEqual(x, oldApplication)))
+						.ToList()
+						.ForEach(oldApplication => group.Applications.Remove(oldApplication.ID));
+				}
+				// add references to new application based on source references
+				foreach (Application application in configuration.Applications.Where(application => oldApplications.All(oldApplication => oldApplication.ID != application.ID)))
+				{
+					Guid sourceApplicationID = applicationIDMappings
+						.Where(x => x.Value == application.ID)
+						.Select(x => x.Key)
+						.First();
+					List<Group> referringSourceGroups = Groups
+						.Where(group => group.Applications.Any(applicationID => applicationID == sourceApplicationID))
+						.ToList();
+					configuration.Groups
+						.Where(group => referringSourceGroups.Any(refGroup => Comparer.GroupsEqual(refGroup, group)))
+						//.Where(group => group.Applications.All(applicationID => applicationID != application.ID))
+						.ToList()
+						.ForEach(group => group.Applications.Add(application.ID));
+				}
 			}
+
 			return configuration;
 		}
 

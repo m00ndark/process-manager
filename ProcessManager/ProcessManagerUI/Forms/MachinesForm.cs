@@ -273,7 +273,7 @@ namespace ProcessManagerUI.Forms
 			return ConnectionStore.MachineIsValid(machine);
 		}
 
-		private void CopyConfiguration(ConfigurationParts configurationPart, Machine sourceMachine, Machine destinationMachine)
+		private void CopyConfiguration(ConfigurationParts configurationParts, Machine sourceMachine, Machine destinationMachine)
 		{
 			ServiceHelper.ConnectMachines();
 			ServiceHelper.WaitForConfiguration(sourceMachine, destinationMachine);
@@ -290,7 +290,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			if (configurationPart == ConfigurationParts.All)
+			if (configurationParts == ConfigurationParts.All)
 			{
 				if (Messenger.ShowWarningQuestion("Confirm setup copy", "Are you sure you want to copy the setup from "
 					+ sourceMachine + " to " + destinationMachine + ", overwriting the existing setup?") == DialogResult.No)
@@ -300,8 +300,8 @@ namespace ProcessManagerUI.Forms
 			}
 			else
 			{
-				if (Messenger.ShowWarningQuestion("Confirm setup copy", "Are you sure you want to copy the " + configurationPart.ToString().ToLower() + " setup from "
-					+ sourceMachine + " to " + destinationMachine + ", overwriting the existing " + configurationPart.ToString().ToLower() + "?") == DialogResult.No)
+				if (Messenger.ShowWarningQuestion("Confirm setup copy", "Are you sure you want to copy the " + configurationParts.ToString().ToLower() + " setup from "
+					+ sourceMachine + " to " + destinationMachine + ", overwriting the existing " + configurationParts.ToString().ToLower() + "?") == DialogResult.No)
 				{
 					return;
 				}
@@ -309,7 +309,7 @@ namespace ProcessManagerUI.Forms
 
 			Configuration configurationBackup = ConnectionStore.Connections[destinationMachine].Configuration;
 
-			ConnectionStore.Connections[destinationMachine].Configuration = ConnectionStore.Connections[sourceMachine].Configuration.CopyTo(configurationBackup.Clone(), configurationPart);
+			ConnectionStore.Connections[destinationMachine].Configuration = ConnectionStore.Connections[sourceMachine].Configuration.CopyTo(configurationBackup.Clone(), configurationParts);
 			ConnectionStore.Connections[destinationMachine].ConfigurationModified = true;
 
 			if (!ServiceHelper.SaveConfiguration())
