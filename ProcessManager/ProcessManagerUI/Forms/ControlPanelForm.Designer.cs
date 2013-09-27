@@ -65,8 +65,6 @@
 			this.tabPageDistribution = new System.Windows.Forms.TabPage();
 			this.tabPageMacro = new System.Windows.Forms.TabPage();
 			this.tableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
-			this.horizontalPanel = new ProcessManagerUI.Controls.HorizontalPanel();
-			this.linkLabelOpenConfiguration = new System.Windows.Forms.LinkLabel();
 			this.panelTabPageArea = new System.Windows.Forms.Panel();
 			this.tableLayoutPanelMacro = new System.Windows.Forms.TableLayoutPanel();
 			this.panelMacros = new System.Windows.Forms.Panel();
@@ -93,6 +91,14 @@
 			this.labelDistributionFilter = new System.Windows.Forms.Label();
 			this.comboBoxDistributionGroupBy = new System.Windows.Forms.ComboBox();
 			this.labelDistributionGroupBy = new System.Windows.Forms.Label();
+			this.horizontalPanel = new ProcessManagerUI.Controls.HorizontalPanel();
+			this.linkLabelOpenConfiguration = new System.Windows.Forms.LinkLabel();
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevel = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelError = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelWarning = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelFlow = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelVerbose = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelDebug = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripSystemTray.SuspendLayout();
 			this.tableLayoutPanelProcess.SuspendLayout();
 			this.panelProcessApplications.SuspendLayout();
@@ -103,7 +109,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxClose)).BeginInit();
 			this.tabControlSection.SuspendLayout();
 			this.tableLayoutPanelMain.SuspendLayout();
-			this.horizontalPanel.SuspendLayout();
 			this.panelTabPageArea.SuspendLayout();
 			this.tableLayoutPanelMacro.SuspendLayout();
 			this.panelMacros.SuspendLayout();
@@ -111,6 +116,7 @@
 			this.panelDistributionApplications.SuspendLayout();
 			this.panelDistributionGroupByAndFilter.SuspendLayout();
 			this.tableLayoutPanelDistributionFilter.SuspendLayout();
+			this.horizontalPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// notifyIcon
@@ -130,7 +136,7 @@
             this.toolStripSeparatorSystemTray1,
             this.toolStripMenuItemSystemTrayExit});
 			this.contextMenuStripSystemTray.Name = "contextMenuStripSystemTray";
-			this.contextMenuStripSystemTray.Size = new System.Drawing.Size(158, 76);
+			this.contextMenuStripSystemTray.Size = new System.Drawing.Size(158, 98);
 			// 
 			// toolStripMenuItemSystemTrayConfiguration
 			// 
@@ -144,7 +150,8 @@
 			this.toolStripMenuItemSystemTrayOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemSystemTrayOptionsStartWithWindows,
             this.toolStripMenuItemSystemTrayOptionsUserOwnsControlPanel,
-            this.toolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost});
+            this.toolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost,
+            this.toolStripMenuItemSystemTrayOptionsMinimumLogLevel});
 			this.toolStripMenuItemSystemTrayOptions.Name = "toolStripMenuItemSystemTrayOptions";
 			this.toolStripMenuItemSystemTrayOptions.Size = new System.Drawing.Size(157, 22);
 			this.toolStripMenuItemSystemTrayOptions.Text = "Options";
@@ -538,37 +545,6 @@
 			this.tableLayoutPanelMain.Size = new System.Drawing.Size(449, 278);
 			this.tableLayoutPanelMain.TabIndex = 4;
 			// 
-			// horizontalPanel
-			// 
-			this.horizontalPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.horizontalPanel.AutoModifyAddedControls = false;
-			this.horizontalPanel.BackColor = System.Drawing.Color.Transparent;
-			this.horizontalPanel.Controls.Add(this.linkLabelOpenConfiguration);
-			this.horizontalPanel.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-			this.horizontalPanel.Location = new System.Drawing.Point(0, 235);
-			this.horizontalPanel.Margin = new System.Windows.Forms.Padding(0);
-			this.horizontalPanel.Name = "horizontalPanel";
-			this.horizontalPanel.Size = new System.Drawing.Size(449, 43);
-			this.horizontalPanel.TabIndex = 1;
-			// 
-			// linkLabelOpenConfiguration
-			// 
-			this.linkLabelOpenConfiguration.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelOpenConfiguration.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.linkLabelOpenConfiguration.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-			this.linkLabelOpenConfiguration.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-			this.linkLabelOpenConfiguration.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelOpenConfiguration.Location = new System.Drawing.Point(0, 0);
-			this.linkLabelOpenConfiguration.Name = "linkLabelOpenConfiguration";
-			this.linkLabelOpenConfiguration.Size = new System.Drawing.Size(449, 43);
-			this.linkLabelOpenConfiguration.TabIndex = 0;
-			this.linkLabelOpenConfiguration.TabStop = true;
-			this.linkLabelOpenConfiguration.Text = "Open Configuration";
-			this.linkLabelOpenConfiguration.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.linkLabelOpenConfiguration.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
-			this.linkLabelOpenConfiguration.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelOpenConfiguration_LinkClicked);
-			// 
 			// panelTabPageArea
 			// 
 			this.panelTabPageArea.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -939,6 +915,84 @@
 			this.labelDistributionGroupBy.TabIndex = 0;
 			this.labelDistributionGroupBy.Text = "Group by:";
 			// 
+			// horizontalPanel
+			// 
+			this.horizontalPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.horizontalPanel.AutoModifyAddedControls = false;
+			this.horizontalPanel.BackColor = System.Drawing.Color.Transparent;
+			this.horizontalPanel.Controls.Add(this.linkLabelOpenConfiguration);
+			this.horizontalPanel.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			this.horizontalPanel.Location = new System.Drawing.Point(0, 235);
+			this.horizontalPanel.Margin = new System.Windows.Forms.Padding(0);
+			this.horizontalPanel.Name = "horizontalPanel";
+			this.horizontalPanel.Size = new System.Drawing.Size(449, 43);
+			this.horizontalPanel.TabIndex = 1;
+			// 
+			// linkLabelOpenConfiguration
+			// 
+			this.linkLabelOpenConfiguration.ActiveLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelOpenConfiguration.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.linkLabelOpenConfiguration.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+			this.linkLabelOpenConfiguration.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+			this.linkLabelOpenConfiguration.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelOpenConfiguration.Location = new System.Drawing.Point(0, 0);
+			this.linkLabelOpenConfiguration.Name = "linkLabelOpenConfiguration";
+			this.linkLabelOpenConfiguration.Size = new System.Drawing.Size(449, 43);
+			this.linkLabelOpenConfiguration.TabIndex = 0;
+			this.linkLabelOpenConfiguration.TabStop = true;
+			this.linkLabelOpenConfiguration.Text = "Open Configuration";
+			this.linkLabelOpenConfiguration.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.linkLabelOpenConfiguration.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
+			this.linkLabelOpenConfiguration.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelOpenConfiguration_LinkClicked);
+			// 
+			// toolStripMenuItemSystemTrayOptionsMinimumLogLevel
+			// 
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevel.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelError,
+            this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelWarning,
+            this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelFlow,
+            this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelVerbose,
+            this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelDebug});
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevel.Name = "toolStripMenuItemSystemTrayOptionsMinimumLogLevel";
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevel.Size = new System.Drawing.Size(229, 22);
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevel.Text = "Minimum Log Level";
+			// 
+			// toolStripMenuItemSystemTrayOptionsMinimumLogLevelError
+			// 
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelError.Name = "toolStripMenuItemSystemTrayOptionsMinimumLogLevelError";
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelError.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelError.Text = "Error";
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelError.Click += new System.EventHandler(this.ToolStripMenuItemSystemTrayOptionsMinimumLogLevelError_Click);
+			// 
+			// toolStripMenuItemSystemTrayOptionsMinimumLogLevelWarning
+			// 
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelWarning.Name = "toolStripMenuItemSystemTrayOptionsMinimumLogLevelWarning";
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelWarning.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelWarning.Text = "Warning";
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelWarning.Click += new System.EventHandler(this.ToolStripMenuItemSystemTrayOptionsMinimumLogLevelWarning_Click);
+			// 
+			// toolStripMenuItemSystemTrayOptionsMinimumLogLevelFlow
+			// 
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelFlow.Name = "toolStripMenuItemSystemTrayOptionsMinimumLogLevelFlow";
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelFlow.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelFlow.Text = "Flow";
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelFlow.Click += new System.EventHandler(this.ToolStripMenuItemSystemTrayOptionsMinimumLogLevelFlow_Click);
+			// 
+			// toolStripMenuItemSystemTrayOptionsMinimumLogLevelVerbose
+			// 
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelVerbose.Name = "toolStripMenuItemSystemTrayOptionsMinimumLogLevelVerbose";
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelVerbose.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelVerbose.Text = "Verbose";
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelVerbose.Click += new System.EventHandler(this.ToolStripMenuItemSystemTrayOptionsMinimumLogLevelVerbose_Click);
+			// 
+			// toolStripMenuItemSystemTrayOptionsMinimumLogLevelDebug
+			// 
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelDebug.Name = "toolStripMenuItemSystemTrayOptionsMinimumLogLevelDebug";
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelDebug.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelDebug.Text = "Debug";
+			this.toolStripMenuItemSystemTrayOptionsMinimumLogLevelDebug.Click += new System.EventHandler(this.ToolStripMenuItemSystemTrayOptionsMinimumLogLevelDebug_Click);
+			// 
 			// ControlPanelForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -972,7 +1026,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxClose)).EndInit();
 			this.tabControlSection.ResumeLayout(false);
 			this.tableLayoutPanelMain.ResumeLayout(false);
-			this.horizontalPanel.ResumeLayout(false);
 			this.panelTabPageArea.ResumeLayout(false);
 			this.tableLayoutPanelMacro.ResumeLayout(false);
 			this.panelMacros.ResumeLayout(false);
@@ -983,6 +1036,7 @@
 			this.panelDistributionGroupByAndFilter.ResumeLayout(false);
 			this.panelDistributionGroupByAndFilter.PerformLayout();
 			this.tableLayoutPanelDistributionFilter.ResumeLayout(false);
+			this.horizontalPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -1052,5 +1106,11 @@
 		private System.Windows.Forms.Panel panelGlassTop;
 		private System.Windows.Forms.PictureBox pictureBoxClose;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptionsMinimumLogLevel;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptionsMinimumLogLevelError;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptionsMinimumLogLevelWarning;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptionsMinimumLogLevelFlow;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptionsMinimumLogLevelVerbose;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptionsMinimumLogLevelDebug;
 	}
 }

@@ -147,6 +147,7 @@ namespace ProcessManagerUI.Forms
 			EnableOptionStartWithWindows(Settings.Client.StartWithWindows);
 			EnableOptionUserOwnsControlPanel(Settings.Client.UserOwnsControlPanel);
 			EnableOptionKeepControlPanelTopMost(Settings.Client.KeepControlPanelTopMost);
+			CheckOptionMinimumLogLevel(Settings.Client.LogTypeMinLevel);
 
 			foreach (ProcessGrouping grouping in _processGroupingDescriptions.Keys)
 			{
@@ -436,6 +437,31 @@ namespace ProcessManagerUI.Forms
 			ToggleOptionKeepControlPanelTopMost();
 		}
 
+		private void ToolStripMenuItemSystemTrayOptionsMinimumLogLevelError_Click(object sender, EventArgs e)
+		{
+			ToggleOptionMinimumLogLevel(LogType.Error);
+		}
+
+		private void ToolStripMenuItemSystemTrayOptionsMinimumLogLevelWarning_Click(object sender, EventArgs e)
+		{
+			ToggleOptionMinimumLogLevel(LogType.Warning);
+		}
+
+		private void ToolStripMenuItemSystemTrayOptionsMinimumLogLevelFlow_Click(object sender, EventArgs e)
+		{
+			ToggleOptionMinimumLogLevel(LogType.Flow);
+		}
+
+		private void ToolStripMenuItemSystemTrayOptionsMinimumLogLevelVerbose_Click(object sender, EventArgs e)
+		{
+			ToggleOptionMinimumLogLevel(LogType.Verbose);
+		}
+
+		private void ToolStripMenuItemSystemTrayOptionsMinimumLogLevelDebug_Click(object sender, EventArgs e)
+		{
+			ToggleOptionMinimumLogLevel(LogType.Debug);
+		}
+
 		private void ToolStripMenuItemSystemTrayExit_Click(object sender, EventArgs e)
 		{
 			Settings.Client.Save(ClientSettingsType.States);
@@ -632,6 +658,13 @@ namespace ProcessManagerUI.Forms
 			EnableOptionKeepControlPanelTopMost(Settings.Client.KeepControlPanelTopMost);
 		}
 
+		private void ToggleOptionMinimumLogLevel(LogType logType)
+		{
+			Settings.Client.LogTypeMinLevel = logType;
+			RegistryHandler.SaveClientSettings(ClientSettingsType.Options);
+			CheckOptionMinimumLogLevel(Settings.Client.LogTypeMinLevel);
+		}
+
 		private void EnableOptionStartWithWindows(bool enable)
 		{
 			toolStripMenuItemSystemTrayOptionsStartWithWindows.Checked = enable;
@@ -649,6 +682,16 @@ namespace ProcessManagerUI.Forms
 		{
 			toolStripMenuItemSystemTrayOptionsKeepControlPanelTopMost.Checked = enable;
 			TopMost = enable;
+		}
+
+		private void CheckOptionMinimumLogLevel(LogType logType)
+		{
+			toolStripMenuItemSystemTrayOptionsMinimumLogLevelError.Checked = logType == LogType.Error;
+			toolStripMenuItemSystemTrayOptionsMinimumLogLevelWarning.Checked = logType == LogType.Warning;
+			toolStripMenuItemSystemTrayOptionsMinimumLogLevelFlow.Checked = logType == LogType.Flow;
+			toolStripMenuItemSystemTrayOptionsMinimumLogLevelVerbose.Checked = logType == LogType.Verbose;
+			toolStripMenuItemSystemTrayOptionsMinimumLogLevelDebug.Checked = logType == LogType.Debug;
+			Logger.LogTypeMinLevel = logType;
 		}
 
 		private void DisplaySelectedTabPage()

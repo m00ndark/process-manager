@@ -78,7 +78,7 @@ namespace ProcessManager
 
 			public static T Read<T>(string settingName) where T : struct
 			{
-				return (T) Convert.ChangeType(Read(settingName), typeof(T));
+				return Cast<T>(Read(settingName));
 			}
 
 			public static string Read(string settingName)
@@ -89,12 +89,17 @@ namespace ProcessManager
 
 			public static T Read<T>(string settingName, string defaultValue) where T : struct
 			{
-				return (T) Convert.ChangeType(Read(settingName, defaultValue), typeof(T));
+				return Cast<T>(Read(settingName, defaultValue));
 			}
 
 			public static string Read(string settingName, string defaultValue)
 			{
 				return ConfigurationManager.AppSettings[settingName] ?? defaultValue;
+			}
+
+			private static T Cast<T>(string settingValue)
+			{
+				return (T) (typeof(T).IsEnum ? Enum.Parse(typeof(T), settingValue) : Convert.ChangeType(settingValue, typeof(T)));
 			}
 		}
 
