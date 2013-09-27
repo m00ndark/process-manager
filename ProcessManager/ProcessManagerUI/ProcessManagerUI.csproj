@@ -249,6 +249,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Support\ShellIcon.cs" />
+    <Compile Include="Support\TabPageData.cs" />
     <Compile Include="Support\TaskActionWrapper.cs" />
     <Compile Include="Support\TaskDialog.cs" />
     <Compile Include="Support\WaitCursor.cs" />

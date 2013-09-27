@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using ProcessManager;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
@@ -50,11 +48,11 @@ namespace ProcessManagerUI.Forms
 		public ControlPanelForm()
 		{
 			InitializeComponent();
-			tabPageProcess.Tag = ControlPanelTab.Process;
+			tabPageProcess.Tag = new TabPageData(ControlPanelTab.Process);
 			tabPageProcess.Text = tabPageProcess.Tag.ToString();
-			tabPageDistribution.Tag = ControlPanelTab.Distribution;
+			tabPageDistribution.Tag = new TabPageData(ControlPanelTab.Distribution);
 			tabPageDistribution.Text = tabPageDistribution.Tag.ToString();
-			tabPageMacro.Tag = ControlPanelTab.Macro;
+			tabPageMacro.Tag = new TabPageData(ControlPanelTab.Macro);
 			tabPageMacro.Text = tabPageMacro.Tag.ToString();
 			_formClosedAt = DateTime.MinValue;
 			_configurationForm = null;
@@ -73,7 +71,8 @@ namespace ProcessManagerUI.Forms
 		#region Properties
 
 		private MacroPlayer MacroPlayer { get; set; }
-		private ControlPanelTab SelectedTab { get { return (ControlPanelTab) tabControlSection.SelectedTab.Tag; } }
+		private TabPageData SelectedTabData { get { return (TabPageData) tabControlSection.SelectedTab.Tag; } }
+		private ControlPanelTab SelectedTab { get { return SelectedTabData.ControlPanelTab; } }
 
 		private FlowLayoutPanel CurrentFlowLayoutPanel
 		{
@@ -240,6 +239,7 @@ namespace ProcessManagerUI.Forms
 		private void ComboBoxProcessGroupBy_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxProcessGroupBy.SelectedIndex == -1) return;
+			if (_processNodeLayoutSuspended) return;
 
 			ProcessGrouping grouping = ((ComboBoxItem<ProcessGrouping>) comboBoxProcessGroupBy.Items[comboBoxProcessGroupBy.SelectedIndex]).Tag;
 			Settings.Client.P_SelectedGrouping = grouping.ToString();
@@ -251,6 +251,7 @@ namespace ProcessManagerUI.Forms
 		private void ComboBoxProcessMachineFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxProcessMachineFilter.SelectedIndex == -1) return;
+			if (_processNodeLayoutSuspended) return;
 
 			Settings.Client.P_SelectedFilterMachine = ((ComboBoxItem) comboBoxProcessMachineFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
@@ -261,6 +262,7 @@ namespace ProcessManagerUI.Forms
 		private void ComboBoxProcessGroupFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxProcessGroupFilter.SelectedIndex == -1) return;
+			if (_processNodeLayoutSuspended) return;
 
 			Settings.Client.P_SelectedFilterGroup = ((ComboBoxItem) comboBoxProcessGroupFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
@@ -271,6 +273,7 @@ namespace ProcessManagerUI.Forms
 		private void ComboBoxProcessApplicationFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxProcessApplicationFilter.SelectedIndex == -1) return;
+			if (_processNodeLayoutSuspended) return;
 
 			Settings.Client.P_SelectedFilterApplication = ((ComboBoxItem) comboBoxProcessApplicationFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
@@ -305,8 +308,8 @@ namespace ProcessManagerUI.Forms
 
 		private void ComboBoxDistributionGroupBy_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (comboBoxDistributionGroupBy.SelectedIndex == -1)
-				return;
+			if (comboBoxDistributionGroupBy.SelectedIndex == -1) return;
+			if (_distributionNodeLayoutSuspended) return;
 
 			DistributionGrouping grouping = ((ComboBoxItem<DistributionGrouping>) comboBoxDistributionGroupBy.Items[comboBoxDistributionGroupBy.SelectedIndex]).Tag;
 			Settings.Client.D_SelectedGrouping = grouping.ToString();
@@ -317,8 +320,8 @@ namespace ProcessManagerUI.Forms
 
 		private void ComboBoxDistributionSourceMachineFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (comboBoxDistributionSourceMachineFilter.SelectedIndex == -1)
-				return;
+			if (comboBoxDistributionSourceMachineFilter.SelectedIndex == -1) return;
+			if (_distributionNodeLayoutSuspended) return;
 
 			Settings.Client.D_SelectedFilterSourceMachine = ((ComboBoxItem) comboBoxDistributionSourceMachineFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
@@ -328,8 +331,8 @@ namespace ProcessManagerUI.Forms
 
 		private void ComboBoxDistributionGroupFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (comboBoxDistributionGroupFilter.SelectedIndex == -1)
-				return;
+			if (comboBoxDistributionGroupFilter.SelectedIndex == -1) return;
+			if (_distributionNodeLayoutSuspended) return;
 
 			Settings.Client.D_SelectedFilterGroup = ((ComboBoxItem) comboBoxDistributionGroupFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
@@ -339,8 +342,8 @@ namespace ProcessManagerUI.Forms
 
 		private void ComboBoxDistributionApplicationFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (comboBoxDistributionApplicationFilter.SelectedIndex == -1)
-				return;
+			if (comboBoxDistributionApplicationFilter.SelectedIndex == -1) return;
+			if (_distributionNodeLayoutSuspended) return;
 
 			Settings.Client.D_SelectedFilterApplication = ((ComboBoxItem) comboBoxDistributionApplicationFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
@@ -350,8 +353,8 @@ namespace ProcessManagerUI.Forms
 
 		private void ComboBoxDistributionDestinationMachineFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (comboBoxDistributionDestinationMachineFilter.SelectedIndex == -1)
-				return;
+			if (comboBoxDistributionDestinationMachineFilter.SelectedIndex == -1) return;
+			if (_distributionNodeLayoutSuspended) return;
 
 			Settings.Client.D_SelectedFilterDestinationMachine = ((ComboBoxItem) comboBoxDistributionDestinationMachineFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
@@ -713,7 +716,10 @@ namespace ProcessManagerUI.Forms
 				tableLayoutPanelMacro.Visible = true;
 			}
 
-			UpdateFiltersAndLayout();
+			if (SelectedTabData.Initialized)
+				UpdateSize();
+			else
+				UpdateFiltersAndLayout();
 		}
 
 		private void OpenConfigurationForm()
@@ -764,6 +770,7 @@ namespace ProcessManagerUI.Forms
 			UpdateProcessFilterAndLayout();
 			UpdateDistributionFilterAndLayout();
 			LayoutMacroNodes();
+			SelectedTabData.Initialized = true;
 		}
 
 		#region Process tab
