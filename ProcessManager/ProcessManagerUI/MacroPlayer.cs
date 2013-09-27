@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using ProcessManager;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
@@ -95,7 +96,7 @@ namespace ProcessManagerUI
 
 		public void Play(Macro macro, List<IMacroAction> macroActions)
 		{
-			new Thread(() => PlayThread(macro, macroActions)).Start();
+			Task.Factory.StartNew(() => PlayThread(macro, macroActions));
 		}
 
 		private void PlayThread(Macro macro, List<IMacroAction> macroActions)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using ProcessManager;
 using ProcessManager.Utilities;
 using ProcessManagerUI.Support;
@@ -21,9 +22,8 @@ namespace ProcessManagerUI.Utilities
 
 		#endregion
 
-		private void ExceuteDo(object inParam)
+		private void ExceuteDo(Action work)
 		{
-			Action work = (Action) inParam;
 			try
 			{
 				work();
@@ -35,9 +35,8 @@ namespace ProcessManagerUI.Utilities
 			ExecuteCompleted = true;
 		}
 
-		private void ExceuteWaitFor(object inParam)
+		private void ExceuteWaitFor(Func<bool> signal)
 		{
-			Func<bool> signal = (Func<bool>) inParam;
 			try
 			{
 				while (!signal()) Thread.Sleep(200);
@@ -58,7 +57,7 @@ namespace ProcessManagerUI.Utilities
 		public static void Do(string message, Action work)
 		{
 			Worker worker = new Worker();
-			new Thread(worker.ExceuteDo).Start(work);
+			Task.Factory.StartNew(() => worker.ExceuteDo(work));
 			Wait(message, worker);
 		}
 
@@ -71,7 +70,7 @@ namespace ProcessManagerUI.Utilities
 		{
 			if (signal()) return;
 			Worker worker = new Worker();
-			new Thread(worker.ExceuteWaitFor).Start(signal);
+			Task.Factory.StartNew(() => worker.ExceuteWaitFor(signal));
 			Wait(message, worker);
 		}
 

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
 using ProcessManager.DataObjects.Comparers;
@@ -75,7 +75,7 @@ namespace ProcessManager
 
 		public void AddWork(DistributionWork work)
 		{
-			new Thread(() => AddWorkThread(work)).Start();
+			Task.Factory.StartNew(() => AddWorkThread(work));
 		}
 
 		#region Implementation of IProcessManagerEventHandler
@@ -96,8 +96,7 @@ namespace ProcessManager
 		{
 			if (e.Status == ProcessManagerServiceHandlerStatus.Connected)
 			{
-				foreach (DistributionWork work in _pendingDistributionWork.Where(work => Equals(work.DestinationMachine, e.ServiceHandler.Machine)))
-					new Thread(() => DistributeSourceFilesThread(work)).Start();
+				Task.Factory.StartNew(() => DistributeSourceFilesThread(e.ServiceHandler.Machine));
 			}
 			else
 			{
@@ -116,11 +115,11 @@ namespace ProcessManager
 
 		private void StartDistributionConnectionManagementThread()
 		{
-			if (_distributionConnectionManagementThread == null)
-			{
-				_distributionConnectionManagementThread = new Thread(DistributionConnectionManagementThread);
-				_distributionConnectionManagementThread.Start();
-			}
+			if (_distributionConnectionManagementThread != null)
+				return;
+
+			_distributionConnectionManagementThread = new Thread(DistributionConnectionManagementThread);
+			_distributionConnectionManagementThread.Start();
 		}
 
 		private void StopDistributionConnectionManagementThread()
@@ -133,23 +132,34 @@ namespace ProcessManager
 		{
 			try
 			{
+				int cleanInterval = Settings.Service.Read<int>("DistributionConnectionCleanInterval");
 				while (true)
 				{
 					try
 					{
-						ConnectionStore.Connections.Keys
-							.Where(destinationMachine => !_pendingDistributionWork.Any(work => Equals(work.DestinationMachine, destinationMachine)))
-							.ToList()
-							.ForEach(RemoveConnection);
-
-						foreach (Machine destinationMachine in _pendingDistributionWork.Select(work => work.DestinationMachine).Distinct(new MachineEqualityComparer()))
+						lock (_pendingDistributionWork)
 						{
-							if (!ConnectionStore.Connections.ContainsKey(destinationMachine))
+							ConnectionStore.Connections.Keys
+								.Where(machine => !_pendingDistributionWork.Any(work => Comparer.MachinesEqual(work.DestinationMachine, machine)))
+								.ToList()
+								.ForEach(ConnectionStore.RemoveConnection);
+						}
+
+						List<Machine> machinesToConnect;
+						lock (_pendingDistributionWork)
+						{
+							machinesToConnect = _pendingDistributionWork
+								.Select(work => work.DestinationMachine)
+								.Distinct(new MachineEqualityComparer())
+								.Where(destinationMachine => !ConnectionStore.Connections.ContainsKey(destinationMachine))
+								.ToList();
+						}
+
+						machinesToConnect.ForEach(destinationMachine =>
 							{
 								MachineConnection connection = ConnectionStore.CreateConnection(this, destinationMachine);
 								connection.ServiceHandler.Initialize();
-							}
-						}
+							});
 					}
 					catch (ThreadAbortException) { throw; }
 					catch (Exception ex)
@@ -157,7 +167,7 @@ namespace ProcessManager
 						Logger.Add("An unexpected error occurred in distribution connection management thread", ex);
 					}
 
-					Thread.Sleep(Settings.Service.Read<int>("DistributionConnectionCleanInterval"));
+					Thread.Sleep(cleanInterval);
 				}
 			}
 			catch (ThreadAbortException)
@@ -168,11 +178,6 @@ namespace ProcessManager
 			{
 				Logger.Add("Fatal exception in distribution connection management thread, dying....", ex);
 			}
-		}
-
-		private static void RemoveConnection(Machine machine)
-		{
-			ConnectionStore.RemoveConnection(machine);
 		}
 
 		#endregion
@@ -211,7 +216,10 @@ namespace ProcessManager
 						break;
 				}
 				
-				_pendingDistributionWork.Add(work);
+				Logger.Add(LogType.Verbose, "Adding distribution work to queue: destination machine = " + work.DestinationMachine + ", files = " + work.Files.Count);
+
+				lock (_pendingDistributionWork)
+					_pendingDistributionWork.Add(work);
 			}
 			catch (ThreadAbortException) { }
 			catch (Exception ex)
@@ -220,46 +228,71 @@ namespace ProcessManager
 			}
 		}
 
-		private void DistributeSourceFilesThread(DistributionWork work)
+		private void DistributeSourceFilesThread(Machine machine)
 		{
-			try
+			List<DistributionWork> processedDistributionWork = new List<DistributionWork>();
+			while (ConnectionStore.ConnectionCreated(machine))
 			{
-				Group destinationGroup = ConnectionStore.Connections[work.DestinationMachine].Configuration.Groups
-					.FirstOrDefault(group => Comparer.GroupsEqual(group, work.Group));
-				
-				if (destinationGroup == null)
+				DistributionWork work;
+
+				lock (_pendingDistributionWork)
 				{
-					Logger.Add(LogType.Warning, "Could not distribute application " + work.Application.Name + " in group " + work.Group.Name
-						+ " to destination machine " + work.DestinationMachine.HostName + ". Destination machine does not contain a matching group.");
-					RaiseDistributionCompletedEvent(new DistributionResult(work, DistributionResultValue.Failure), work.Caller);
-					return;
+					work = _pendingDistributionWork
+						.Where(pendingWork => Comparer.MachinesEqual(pendingWork.DestinationMachine, machine))
+						.FirstOrDefault(pendingWork => !processedDistributionWork.Contains(pendingWork));
 				}
 
-				bool totalSuccess = true;
-				foreach (DistributionFile file in work.Files)
+				if (work == null)
 				{
-					file.DestinationGroupID = destinationGroup.ID;
-					file.Content = FileSystemHandler.GetFileContent(Path.Combine(work.Group.Path, file.RelativePath.Trim(Path.DirectorySeparatorChar)));
-
-					bool success = ConnectionStore.Connections[work.DestinationMachine].ServiceHandler.Service.DistributeFile(new DTODistributionFile(file));
-
-					Logger.Add(LogType.Verbose, "Distribution of file to " + work.DestinationMachine.HostName + " " + (success ? "succeeded" : "failed") + ": " + file.RelativePath + ", " + file.Content.Length + " bytes");
-
-					file.IsDistributed = true;
-					totalSuccess &= success;
+					Thread.Sleep(10);
+					continue;
 				}
 
-				RaiseDistributionCompletedEvent(new DistributionResult(work, totalSuccess ? DistributionResultValue.Success : DistributionResultValue.Failure), work.Caller);
-			}
-			catch (ThreadAbortException) { }
-			catch (Exception ex)
-			{
-				Logger.Add("An unexpected error occurred while distributing source files, aborting..", ex);
-				RaiseDistributionCompletedEvent(new DistributionResult(work, DistributionResultValue.Failure), work.Caller);
-			}
-			finally
-			{
-				_pendingDistributionWork.Remove(work);
+				processedDistributionWork.Add(work);
+
+				Task.Factory.StartNew(() =>
+					{
+						try
+						{
+							Group destinationGroup = ConnectionStore.Connections[work.DestinationMachine].Configuration.Groups
+								.FirstOrDefault(group => Comparer.GroupsEqual(group, work.Group));
+
+							if (destinationGroup == null)
+							{
+								Logger.Add(LogType.Warning, "Could not distribute application " + work.Application.Name + " in group " + work.Group.Name
+									+ " to destination machine " + work.DestinationMachine.HostName + ". Destination machine does not contain a matching group.");
+								RaiseDistributionCompletedEvent(new DistributionResult(work, DistributionResultValue.Failure), work.Caller);
+								return;
+							}
+
+							bool totalSuccess = true;
+							foreach (DistributionFile file in work.Files)
+							{
+								file.DestinationGroupID = destinationGroup.ID;
+								file.Content = FileSystemHandler.GetFileContent(Path.Combine(work.Group.Path, file.RelativePath.Trim(Path.DirectorySeparatorChar)));
+
+								bool success = ConnectionStore.Connections[work.DestinationMachine].ServiceHandler.Service.DistributeFile(new DTODistributionFile(file));
+
+								Logger.Add(LogType.Verbose, "Distribution of file to " + work.DestinationMachine.HostName + " " + (success ? "succeeded" : "failed") + ": " + file.RelativePath + ", " + file.Content.Length + " bytes");
+
+								file.IsDistributed = true;
+								totalSuccess &= success;
+							}
+
+							RaiseDistributionCompletedEvent(new DistributionResult(work, totalSuccess ? DistributionResultValue.Success : DistributionResultValue.Failure), work.Caller);
+						}
+						catch (ThreadAbortException) {}
+						catch (Exception ex)
+						{
+							Logger.Add("An unexpected error occurred while distributing source files, aborting..", ex);
+							RaiseDistributionCompletedEvent(new DistributionResult(work, DistributionResultValue.Failure), work.Caller);
+						}
+						finally
+						{
+							lock (_pendingDistributionWork)
+								_pendingDistributionWork.Remove(work);
+						}
+					});
 			}
 		}
 

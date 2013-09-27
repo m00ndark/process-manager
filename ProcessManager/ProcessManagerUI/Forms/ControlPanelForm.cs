@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using ProcessManager;
@@ -33,6 +34,7 @@ namespace ProcessManagerUI.Forms
 				{ DistributionGrouping.GroupMachineApplicationMachine, "Group > Source Machine > Application > Destination Machine" }
 			};
 		private DateTime _formClosedAt;
+		private ConfigurationForm _configurationForm;
 		private readonly List<IRootNode> _processRootNodes;
 		private readonly List<ProcessApplicationNode> _processApplicationNodes;
 		private readonly List<IRootNode> _distributionRootNodes;
@@ -55,6 +57,7 @@ namespace ProcessManagerUI.Forms
 			tabPageMacro.Tag = ControlPanelTab.Macro;
 			tabPageMacro.Text = tabPageMacro.Tag.ToString();
 			_formClosedAt = DateTime.MinValue;
+			_configurationForm = null;
 			_processRootNodes = new List<IRootNode>();
 			_processApplicationNodes = new List<ProcessApplicationNode>();
 			_distributionRootNodes = new List<IRootNode>();
@@ -300,11 +303,6 @@ namespace ProcessManagerUI.Forms
 			_processRootNodes.ForEach(node => node.ExpandAll(false));
 		}
 
-		private void LinkLabelOpenConfiguration_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			OpenConfigurationForm();
-		}
-
 		private void ComboBoxDistributionGroupBy_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxDistributionGroupBy.SelectedIndex == -1)
@@ -389,6 +387,11 @@ namespace ProcessManagerUI.Forms
 		private void LinkLabelMacroCollapseAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			_macroRootNodes.ForEach(node => node.ExpandAll(false));
+		}
+
+		private void LinkLabelOpenConfiguration_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			OpenConfigurationForm();
 		}
 
 		#endregion
@@ -527,9 +530,13 @@ namespace ProcessManagerUI.Forms
 
 		private void ConfigurationForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			((ConfigurationForm) sender).FormClosed -= ConfigurationForm_FormClosed;
-			((ConfigurationForm) sender).ConfigurationChanged -= ConfigurationForm_ConfigurationChanged;
-			((ConfigurationForm) sender).MacrosChanged -= ConfigurationForm_MacrosChanged;
+			if (_configurationForm == null)
+				return;
+
+			_configurationForm.FormClosed -= ConfigurationForm_FormClosed;
+			_configurationForm.ConfigurationChanged -= ConfigurationForm_ConfigurationChanged;
+			_configurationForm.MacrosChanged -= ConfigurationForm_MacrosChanged;
+			_configurationForm = null;
 		}
 
 		private void ConfigurationForm_ConfigurationChanged(object sender, MachinesEventArgs e)
@@ -570,34 +577,25 @@ namespace ProcessManagerUI.Forms
 
 		private void HandleProcessStatusesChanged(IEnumerable<ProcessStatus> processStatuses)
 		{
-			new Thread(() => HandleProcessStatusesChangedThread(processStatuses)).Start();
-		}
-
-		private void HandleProcessStatusesChangedThread(IEnumerable<ProcessStatus> processStatuses)
-		{
-			ApplyProcessStatuses(processStatuses);
+			Task.Factory.StartNew(() => ApplyProcessStatuses(processStatuses));
 		}
 
 		private void HandleConfigurationChanged(Machine machine, string configurationHash)
 		{
-			new Thread(() => HandleConfigurationChangedThread(machine, configurationHash)).Start();
-		}
-
-		private void HandleConfigurationChangedThread(Machine machine, string configurationHash)
-		{
-			if (!RaiseConfigurationChangedEvent(machine, configurationHash) && ConnectionStore.Connections[machine].Configuration.Hash != configurationHash)
-				ReloadConfiguration(machine);
+			Task.Factory.StartNew(() =>
+				{
+					if (!RaiseConfigurationChangedEvent(machine, configurationHash) && ConnectionStore.Connections[machine].Configuration.Hash != configurationHash)
+						ReloadConfiguration(machine);
+				});
 		}
 
 		private void HandleDistributionCompleted(DistributionResult distributionResult)
 		{
-			new Thread(() => HandleDistributionCompletedThread(distributionResult)).Start();
-		}
-
-		private void HandleDistributionCompletedThread(DistributionResult distributionResult)
-		{
-			if (RaiseDistributionCompletedEvent(distributionResult))
-				ApplyDistributionState(distributionResult);
+			Task.Factory.StartNew(() =>
+				{
+					if (RaiseDistributionCompletedEvent(distributionResult))
+						ApplyDistributionState(distributionResult);
+				});
 		}
 
 		#endregion
@@ -720,13 +718,19 @@ namespace ProcessManagerUI.Forms
 
 		private void OpenConfigurationForm()
 		{
-			ConfigurationForm configurationForm = new ConfigurationForm();
+			if (_configurationForm != null)
+			{
+				try { NativeMethods.SetForegroundWindow(_configurationForm.Handle); } catch { ; }
+				return;
+			}
+
+			_configurationForm = new ConfigurationForm();
 			if (Settings.Client.UserOwnsControlPanel && Settings.Client.KeepControlPanelTopMost)
-				configurationForm.TopMost = true;
-			configurationForm.FormClosed += ConfigurationForm_FormClosed;
-			configurationForm.ConfigurationChanged += ConfigurationForm_ConfigurationChanged;
-			configurationForm.MacrosChanged += ConfigurationForm_MacrosChanged;
-			configurationForm.Show();
+				_configurationForm.TopMost = true;
+			_configurationForm.FormClosed += ConfigurationForm_FormClosed;
+			_configurationForm.ConfigurationChanged += ConfigurationForm_ConfigurationChanged;
+			_configurationForm.MacrosChanged += ConfigurationForm_MacrosChanged;
+			_configurationForm.Show();
 		}
 
 		private void ReloadConfiguration(Machine machine)
@@ -744,7 +748,7 @@ namespace ProcessManagerUI.Forms
 
 		private void UpdateFiltersAndLayoutAsync()
 		{
-			new Thread(UpdateFiltersAndLayout).Start();
+			Task.Factory.StartNew(UpdateFiltersAndLayout);
 		}
 
 		private delegate void UpdateFiltersAndLayoutDelegate();
@@ -766,28 +770,26 @@ namespace ProcessManagerUI.Forms
 
 		private void RetrieveAllProcessStatuses()
 		{
-			new Thread(RetrieveAllProcessStatusesThread).Start();
-		}
-
-		private void RetrieveAllProcessStatusesThread()
-		{
-			List<ProcessStatus> processStatuses = new List<ProcessStatus>();
-			foreach (Machine machine in Settings.Client.Machines)
-			{
-				try
+			Task.Factory.StartNew(() =>
 				{
-					if (!ConnectionStore.ConnectionCreated(machine))
-						throw new Exception("No connection to machine " + machine);
+					List<ProcessStatus> processStatuses = new List<ProcessStatus>();
+					foreach (Machine machine in Settings.Client.Machines)
+					{
+						try
+						{
+							if (!ConnectionStore.ConnectionCreated(machine))
+								throw new Exception("No connection to machine " + machine);
 
-					processStatuses.AddRange(ConnectionStore.Connections[machine].ServiceHandler.Service
-						.GetAllProcessStatuses().Select(x => x.FromDTO(machine)));
-				}
-				catch (Exception ex)
-				{
-					Logger.Add("Failed to retrieve all process statuses from machine " + machine, ex);
-				}
-			}
-			ApplyProcessStatuses(processStatuses);
+							processStatuses.AddRange(ConnectionStore.Connections[machine].ServiceHandler.Service
+								.GetAllProcessStatuses().Select(x => x.FromDTO(machine)));
+						}
+						catch (Exception ex)
+						{
+							Logger.Add("Failed to retrieve all process statuses from machine " + machine, ex);
+						}
+					}
+					ApplyProcessStatuses(processStatuses);
+				});
 		}
 
 		private delegate void ApplyProcessStatusesDelegate(IEnumerable<ProcessStatus> processStatuses);
