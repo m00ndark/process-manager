@@ -54,7 +54,7 @@ namespace ProcessManager
 				public const string CONFIGURATION_FILE_NAME = "processmanager_config.xml";
 				public const string LOG_FOLDER_NAME = "Logs";
 				public const string LOG_FILE_NAME = "processmanager_%date%.log";
-				public const LogType LOG_TYPE_MIN_LEVEL = LogType.Verbose;
+				public const LogType LOG_TYPE_MIN_LEVEL = LogType.Flow;
 				public const int STATUS_UPDATE_INTERVAL = 500;
 				public const int DISTRIBUTION_CONNECTION_CLEAN_INTERVAL = 1000;
 			}
