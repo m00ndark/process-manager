@@ -17,9 +17,10 @@ namespace ProcessManager.Utilities
 	public enum LogType
 	{
 		Debug = 0,
-		Flow = 1,
-		Warning = 2,
-		Error = 3
+		Verbose = 1,
+		Flow = 2,
+		Warning = 3,
+		Error = 4
 	}
 
 	public static class Logger
@@ -45,6 +46,7 @@ namespace ProcessManager.Utilities
 			SetupLogTypeIndentationDepth();
 			LogSource = LogSource.Undefined;
 			DefaultLogType = LogType.Flow;
+			LogTypeMinLevel = Settings.Service.Defaults.LOG_TYPE_MIN_LEVEL;
 
 			new Thread(LogWriterThread) { IsBackground = true, Name = "Log Writer Thread" }.Start();
 		}
@@ -52,8 +54,8 @@ namespace ProcessManager.Utilities
 		#region Properties
 
 		public static LogSource LogSource { get; set; }
-
 		public static LogType DefaultLogType { get; set; }
+		public static LogType LogTypeMinLevel { get; set; }
 
 		private static string LogPathName
 		{
@@ -91,6 +93,9 @@ namespace ProcessManager.Utilities
 
 		public static void Add(LogType logType, string logText)
 		{
+			if (logType < LogTypeMinLevel)
+				return;
+
 			lock (_logQueue)
 			{
 				_logQueue.Enqueue(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")

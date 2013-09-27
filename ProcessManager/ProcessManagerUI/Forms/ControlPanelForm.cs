@@ -522,7 +522,7 @@ namespace ProcessManagerUI.Forms
 
 		public void ProcessManagerServiceEventHandler_ProcessStatusesChanged(object sender, ProcessStatusesEventArgs e)
 		{
-			Logger.Add(LogType.Debug, "Received ProcessStatusesChanged event: count = " + e.ProcessStatuses.Count + e.ProcessStatuses.Aggregate("", (x, y) => x + ", " + y.GroupID + " / " + y.ApplicationID));
+			Logger.Add(LogType.Verbose, "Received ProcessStatusesChanged event: count = " + e.ProcessStatuses.Count + e.ProcessStatuses.Aggregate("", (x, y) => x + ", " + y.GroupID + " / " + y.ApplicationID));
 			HandleProcessStatusesChanged(e.ProcessStatuses);
 		}
 

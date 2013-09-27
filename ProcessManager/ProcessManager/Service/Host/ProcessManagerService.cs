@@ -59,56 +59,56 @@ namespace ProcessManager.Service.Host
 
 		public void Ping()
 		{
-			Logger.Add(LogType.Debug, "Ping call received");
+			Logger.Add(LogType.Verbose, "Ping call received");
 			// do nothing
 		}
 
 		public DTOConfiguration GetConfiguration()
 		{
-			Logger.Add(LogType.Debug, "GetConfiguration call received");
+			Logger.Add(LogType.Verbose, "GetConfiguration call received");
 			return new DTOConfiguration(ProcessManager.Instance.GetConfiguration());
 		}
 
 		public void SetConfiguration(DTOConfiguration configuration)
 		{
-			Logger.Add(LogType.Debug, "SetConfiguration call received");
+			Logger.Add(LogType.Verbose, "SetConfiguration call received");
 			ProcessManager.Instance.SetConfiguration(configuration.FromDTO());
 		}
 
 		public List<DTOProcessStatus> GetAllProcessStatuses()
 		{
-			Logger.Add(LogType.Debug, "GetAllProcessStatuses call received");
+			Logger.Add(LogType.Verbose, "GetAllProcessStatuses call received");
 			return ProcessManager.Instance.GetAllProcessStatuses().Select(x => new DTOProcessStatus(x)).ToList();
 		}
 
 		public bool TakeProcessAction(DTOProcessAction processAction)
 		{
-			Logger.Add(LogType.Debug, "TakeProcessAction call received: action = " + processAction.Type + ", " + processAction.GroupID + " / " + processAction.ApplicationID);
+			Logger.Add(LogType.Verbose, "TakeProcessAction call received: action = " + processAction.Type + ", " + processAction.GroupID + " / " + processAction.ApplicationID);
 			return ProcessManager.Instance.TakeProcessAction(processAction.GroupID, processAction.ApplicationID, processAction.Type);
 		}
 
 		public bool TakeDistributionAction(DTODistributionAction distributionAction)
 		{
-			Logger.Add(LogType.Debug, "TakeDistributionAction call received: action = " + distributionAction.Type + ", " + distributionAction.SourceMachineHostName + " / " + distributionAction.GroupID + " / " + distributionAction.ApplicationID + " / " + distributionAction.DestinationMachineHostName);
+			Logger.Add(LogType.Verbose, "TakeDistributionAction call received: action = " + distributionAction.Type + ", " + distributionAction.SourceMachineHostName + " / " + distributionAction.GroupID + " / " + distributionAction.ApplicationID + " / " + distributionAction.DestinationMachineHostName);
 			IProcessManagerServiceEventHandler caller = OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>();
 			return ProcessManager.Instance.TakeDistributionAction(distributionAction.SourceMachineHostName, distributionAction.GroupID, distributionAction.ApplicationID, distributionAction.DestinationMachineHostName, distributionAction.Type, caller);
 		}
 
 		public List<DTOFileSystemDrive> GetFileSystemDrives()
 		{
-			Logger.Add(LogType.Debug, "GetFileSystemDrives call received");
+			Logger.Add(LogType.Verbose, "GetFileSystemDrives call received");
 			return ProcessManager.Instance.GetFileSystemDrives().Select(x => new DTOFileSystemDrive(x)).ToList();
 		}
 
 		public List<DTOFileSystemEntry> GetFileSystemEntries(string path, string filter)
 		{
-			Logger.Add(LogType.Debug, "GetFileSystemEntries call received: path = " + path + ", filter = " + filter);
+			Logger.Add(LogType.Verbose, "GetFileSystemEntries call received: path = " + path + ", filter = " + filter);
 			return ProcessManager.Instance.GetFileSystemEntries(path, filter).Select(x => new DTOFileSystemEntry(x)).ToList();
 		}
 
 		public bool DistributeFile(DTODistributionFile distributionFile)
 		{
-			Logger.Add(LogType.Debug, "DistributeFile call received: relative path = " + distributionFile.RelativePath + ", destination group id = " + distributionFile.DestinationGroupID + ", content length = " + distributionFile.Content.Length);
+			Logger.Add(LogType.Verbose, "DistributeFile call received: relative path = " + distributionFile.RelativePath + ", destination group id = " + distributionFile.DestinationGroupID + ", content length = " + distributionFile.Content.Length);
 			return ProcessManager.Instance.DistributeFile(distributionFile.FromDTO());
 		}
 
@@ -118,14 +118,12 @@ namespace ProcessManager.Service.Host
 
 		public void ProcessManagerEventProvider_ProcessStatusesChanged(object sender, ProcessStatusesEventArgs e)
 		{
-			//Logger.Add("ProcessManagerEventProvider_ProcessStatusesChanged: client count = " + _clients.Count);
 			List<IProcessManagerServiceEventHandler> faultedClients = new List<IProcessManagerServiceEventHandler>();
 			foreach (IProcessManagerServiceEventHandler client in SubscribingClients)
 			{
 				try
 				{
-					//Logger.Add(LogType.Debug, "InstanceContext.State = " + _clientsInstances[client].State);
-					Logger.Add(LogType.Debug, "Sending ProcessStatusesChanged event: count = " + e.ProcessStatuses.Count + e.ProcessStatuses.Aggregate("", (x, y) => x + ", " + y.GroupID + " / " + y.ApplicationID));
+					Logger.Add(LogType.Verbose, "Sending ProcessStatusesChanged event: count = " + e.ProcessStatuses.Count + e.ProcessStatuses.Aggregate("", (x, y) => x + ", " + y.GroupID + " / " + y.ApplicationID));
 					client.ServiceEvent_ProcessStatusesChanged(e.ProcessStatuses.Select(x => new DTOProcessStatus(x)).ToList());
 				}
 				catch (Exception ex)
@@ -144,7 +142,7 @@ namespace ProcessManager.Service.Host
 			{
 				try
 				{
-					Logger.Add(LogType.Debug, "Sending ConfigurationChanged event: hash = " + e.ConfigurationHash);
+					Logger.Add(LogType.Verbose, "Sending ConfigurationChanged event: hash = " + e.ConfigurationHash);
 					client.ServiceEvent_ConfigurationChanged(e.ConfigurationHash);
 				}
 				catch (Exception ex)
@@ -166,7 +164,7 @@ namespace ProcessManager.Service.Host
 				{
 					try
 					{
-						Logger.Add(LogType.Debug, "Sending DistributionCompleted event: action = " + e.DistributionResult.Type + ", " + e.DistributionResult.SourceMachineHostName + " / " + e.DistributionResult.GroupID + " / " + e.DistributionResult.ApplicationID + " / " + e.DistributionResult.DestinationMachineHostName);
+						Logger.Add(LogType.Verbose, "Sending DistributionCompleted event: action = " + e.DistributionResult.Type + ", " + e.DistributionResult.SourceMachineHostName + " / " + e.DistributionResult.GroupID + " / " + e.DistributionResult.ApplicationID + " / " + e.DistributionResult.DestinationMachineHostName);
 						client.ServiceEvent_DistributionCompleted(new DTODistributionResult(e.DistributionResult));
 					}
 					catch (Exception ex)
@@ -176,19 +174,6 @@ namespace ProcessManager.Service.Host
 					}
 				}
 			}
-			//foreach (IProcessManagerServiceEventHandler client in SubscribingClients)
-			//{
-			//	try
-			//	{
-			//		Logger.Add(LogType.Debug, "Sending DistributionCompleted event: action = " + e.DistributionResult.Type + ", " + e.DistributionResult.SourceMachineHostName + " / " + e.DistributionResult.GroupID + " / " + e.DistributionResult.ApplicationID + " / " + e.DistributionResult.DestinationMachineHostName);
-			//		client.ServiceEvent_DistributionCompleted(new DTODistributionResult(e.DistributionResult));
-			//	}
-			//	catch (Exception ex)
-			//	{
-			//		Logger.Add("Failed to send DistributionCompleted event: action = " + e.DistributionResult.Type + ", " + e.DistributionResult.SourceMachineHostName + " / " + e.DistributionResult.GroupID + " / " + e.DistributionResult.ApplicationID + " / " + e.DistributionResult.DestinationMachineHostName, ex);
-			//		faultedClients.Add(client);
-			//	}
-			//}
 			RemoveFaultedClients(faultedClients);
 		}
 

@@ -15,8 +15,8 @@ namespace ProcessManagerUI.Controls.Nodes
 	{
 		Unknown,
 		Success,
-		Ongoing,
-		Failure
+		Failure,
+		Ongoing
 	}
 
 	public partial class MacroActionNode : UserControl, IMacroNode

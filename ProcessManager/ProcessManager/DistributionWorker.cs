@@ -243,7 +243,7 @@ namespace ProcessManager
 
 					bool success = ConnectionStore.Connections[work.DestinationMachine].ServiceHandler.Service.DistributeFile(new DTODistributionFile(file));
 
-					Logger.Add(LogType.Debug, "Distribution of file to " + work.DestinationMachine.HostName + " " + (success ? "succeeded" : "failed") + ": " + file.RelativePath + ", " + file.Content.Length + " bytes");
+					Logger.Add(LogType.Verbose, "Distribution of file to " + work.DestinationMachine.HostName + " " + (success ? "succeeded" : "failed") + ": " + file.RelativePath + ", " + file.Content.Length + " bytes");
 
 					file.IsDistributed = true;
 					totalSuccess &= success;

@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Globalization;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
+using ProcessManager.Utilities;
 
 namespace ProcessManager
 {
@@ -53,6 +54,7 @@ namespace ProcessManager
 				public const string CONFIGURATION_FILE_NAME = "processmanager_config.xml";
 				public const string LOG_FOLDER_NAME = "Logs";
 				public const string LOG_FILE_NAME = "processmanager_%date%.log";
+				public const LogType LOG_TYPE_MIN_LEVEL = LogType.Verbose;
 				public const int STATUS_UPDATE_INTERVAL = 500;
 				public const int DISTRIBUTION_CONNECTION_CLEAN_INTERVAL = 1000;
 			}
@@ -68,6 +70,7 @@ namespace ProcessManager
 						{ "ConfigurationFileName", Defaults.CONFIGURATION_FILE_NAME },
 						{ "LogFolderName", Defaults.LOG_FOLDER_NAME },
 						{ "LogFileName", Defaults.LOG_FILE_NAME },
+						{ "LogTypeMinLevel", Defaults.LOG_TYPE_MIN_LEVEL.ToString() },
 						{ "StatusUpdateInterval", Defaults.STATUS_UPDATE_INTERVAL.ToString(CultureInfo.InvariantCulture) },
 						{ "DistributionConnectionCleanInterval", Defaults.DISTRIBUTION_CONNECTION_CLEAN_INTERVAL.ToString(CultureInfo.InvariantCulture) }
 					};
@@ -108,6 +111,7 @@ namespace ProcessManager
 				public const string START_WITH_WINDOWS = "False";
 				public const string USER_OWNS_CONTROL_PANEL = "False";
 				public const string KEEP_CONTROL_PANEL_TOP_MOST = "True";
+				public const string LOG_TYPE_MIN_LEVEL = "Verbose";
 				public const string SELECTED_HOST_NAME = Constants.LOCALHOST;
 				public const string SELECTED_CONFIGURATION_SECTION = "";
 				public const string SELECTED_TAB = "";
@@ -131,6 +135,7 @@ namespace ProcessManager
 				StartWithWindows = bool.Parse(Defaults.START_WITH_WINDOWS);
 				UserOwnsControlPanel = bool.Parse(Defaults.USER_OWNS_CONTROL_PANEL);
 				KeepControlPanelTopMost = bool.Parse(Defaults.KEEP_CONTROL_PANEL_TOP_MOST);
+				LogTypeMinLevel = (LogType) Enum.Parse(typeof(LogType), Defaults.LOG_TYPE_MIN_LEVEL);
 				CFG_SelectedHostName = Defaults.SELECTED_HOST_NAME;
 				CFG_SelectedConfigurationSection = Defaults.SELECTED_CONFIGURATION_SECTION;
 				CP_SelectedTab = Defaults.SELECTED_TAB;
@@ -166,6 +171,7 @@ namespace ProcessManager
 			public static bool StartWithWindows { get; set; }
 			public static bool UserOwnsControlPanel { get; set; }
 			public static bool KeepControlPanelTopMost { get; set; }
+			public static LogType LogTypeMinLevel { get; set; }
 			public static string CFG_SelectedHostName { get; set; }
 			public static string CFG_SelectedConfigurationSection { get; set; }
 			public static string CP_SelectedTab { get; set; }

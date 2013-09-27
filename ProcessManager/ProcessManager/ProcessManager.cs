@@ -24,6 +24,7 @@ namespace ProcessManager
 		{
 			_mainThread = null;
 			_processStatuses = new Dictionary<Guid, Dictionary<Guid, ProcessStatus>>();
+			Logger.LogTypeMinLevel = Settings.Service.Read<LogType>("LogTypeMinLevel");
 			DistributionWorker.Instance.DistributionCompleted += DistributionWorker_DistributionCompleted;
 		}
 
