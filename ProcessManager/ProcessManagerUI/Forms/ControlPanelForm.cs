@@ -49,6 +49,7 @@ namespace ProcessManagerUI.Forms
 		public ControlPanelForm()
 		{
 			InitializeComponent();
+			MouseWheel += ControlPanelForm_MouseWheel;
 			tabPageProcess.Tag = new TabPageData(ControlPanelTab.Process);
 			tabPageProcess.Text = tabPageProcess.Tag.ToString();
 			tabPageDistribution.Tag = new TabPageData(ControlPanelTab.Distribution);
@@ -100,10 +101,10 @@ namespace ProcessManagerUI.Forms
 			{
 				switch (SelectedTab)
 				{
-					//case ControlPanelTab.Process:
-					//	return flowLayoutPanelProcessApplications;
-					//case ControlPanelTab.Distribution:
-					//	return flowLayoutPanelDistributionDestinations;
+					case ControlPanelTab.Process:
+						return panelScrollProcessApplications;
+					case ControlPanelTab.Distribution:
+						return panelScrollDistributionDestinations;
 					case ControlPanelTab.Macro:
 						return panelScrollMacros;
 					default:
@@ -162,13 +163,6 @@ namespace ProcessManagerUI.Forms
 
 		private void ControlPanelForm_Load(object sender, EventArgs e)
 		{
-			panelScrollMacros.VerticalScroll.Enabled = true;
-			panelScrollMacros.VerticalScroll.Visible = true;
-
-
-
-
-
 			HideForm();
 			ExtendGlass();
 			Settings.Client.Load();
@@ -229,6 +223,11 @@ namespace ProcessManagerUI.Forms
 		{
 			if (Settings.Client.UserOwnsControlPanel && Settings.Client.KeepControlPanelTopMost)
 				TopMost = true;
+		}
+
+		private void ControlPanelForm_MouseWheel(object sender, MouseEventArgs e)
+		{
+			CurrentScrollPanel.Focus();
 		}
 
 		private void PanelGlassTop_MouseDown(object sender, MouseEventArgs e)
@@ -516,6 +515,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
+			Console.WriteLine("InitializationCompleted");
 			UpdateFiltersAndLayout();
 		}
 
@@ -1326,8 +1326,13 @@ namespace ProcessManagerUI.Forms
 
 			if (_distributionDestinationMachineNodes.Count > 0)
 			{
-				UpdateSize(_distributionRootNodes.Select(node => node.LayoutNode()).ToList());
-				_distributionRootNodes.ForEach(node => node.ForceWidth(flowLayoutPanelDistributionDestinations.Size.Width));
+				_rootNodeSizeChangedSuspended = true;
+				List<Size> rootNodeSizes = _distributionRootNodes.Select(node => node.LayoutNode()).ToList();
+				_rootNodeSizeChangedSuspended = false;
+				UpdateSize(rootNodeSizes);
+				_rootNodeSizeChangedSuspended = true;
+				_distributionRootNodes.ForEach(node => node.ForceWidth(flowLayoutPanelDistributionDestinations.Width));
+				_rootNodeSizeChangedSuspended = false;
 				flowLayoutPanelDistributionDestinations.Controls.AddRange(_distributionRootNodes.Cast<Control>().ToArray());
 
 				Settings.Client.D_CheckedNodes.ToList()
@@ -1502,6 +1507,8 @@ namespace ProcessManagerUI.Forms
 
 		private void UpdateSize(ICollection<Size> rootNodeSizes)
 		{
+			Console.WriteLine("UpdateSize()");
+
 			const int MIN_WIDTH = 465;
 			MinimumSize = MaximumSize = new Size(0, 0);
 
@@ -1511,7 +1518,7 @@ namespace ProcessManagerUI.Forms
 				int maxNodeWidth = rootNodeSizes.Max(size => size.Width);
 				Size = new Size(Math.Max(MIN_WIDTH, Width - CurrentScrollPanel.Width + maxNodeWidth),
 					Math.Min(Height - CurrentScrollPanel.Height + totalNodesHeight, Screen.PrimaryScreen.WorkingArea.Height));
-				CurrentFlowLayoutPanel.Size = new Size(maxNodeWidth, totalNodesHeight);
+				CurrentFlowLayoutPanel.Size = new Size(Math.Max(MIN_WIDTH, maxNodeWidth), totalNodesHeight);
 			}
 			else
 			{

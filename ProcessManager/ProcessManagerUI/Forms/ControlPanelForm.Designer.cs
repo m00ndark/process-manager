@@ -56,6 +56,7 @@ namespace ProcessManagerUI.Forms
 			this.linkLabelProcessStartAll = new System.Windows.Forms.LinkLabel();
 			this.linkLabelProcessRestartAll = new System.Windows.Forms.LinkLabel();
 			this.labelProcessAllSelected = new System.Windows.Forms.Label();
+			this.panelScrollProcessApplications = new System.Windows.Forms.Panel();
 			this.flowLayoutPanelProcessApplications = new System.Windows.Forms.FlowLayoutPanel();
 			this.panelProcessGroupByAndFilter = new System.Windows.Forms.Panel();
 			this.tableLayoutPanelProcessFilter = new System.Windows.Forms.TableLayoutPanel();
@@ -86,12 +87,13 @@ namespace ProcessManagerUI.Forms
 			this.panelScrollMacros = new System.Windows.Forms.Panel();
 			this.flowLayoutPanelMacros = new System.Windows.Forms.FlowLayoutPanel();
 			this.tableLayoutPanelDistribution = new System.Windows.Forms.TableLayoutPanel();
-			this.panelDistributionApplications = new System.Windows.Forms.Panel();
+			this.panelDistributionDestinations = new System.Windows.Forms.Panel();
 			this.labelDistributionUnavailable = new System.Windows.Forms.Label();
 			this.linkLabelDistributionExpandAll = new System.Windows.Forms.LinkLabel();
 			this.linkLabelDistributionCollapseAll = new System.Windows.Forms.LinkLabel();
 			this.linkLabelDistributionDistributeAll = new System.Windows.Forms.LinkLabel();
 			this.labelDistributionAllSelected = new System.Windows.Forms.Label();
+			this.panelScrollDistributionDestinations = new System.Windows.Forms.Panel();
 			this.flowLayoutPanelDistributionDestinations = new System.Windows.Forms.FlowLayoutPanel();
 			this.panelDistributionGroupByAndFilter = new System.Windows.Forms.Panel();
 			this.tableLayoutPanelDistributionFilter = new System.Windows.Forms.TableLayoutPanel();
@@ -105,6 +107,7 @@ namespace ProcessManagerUI.Forms
 			this.contextMenuStripSystemTray.SuspendLayout();
 			this.tableLayoutPanelProcess.SuspendLayout();
 			this.panelProcessApplications.SuspendLayout();
+			this.panelScrollProcessApplications.SuspendLayout();
 			this.panelProcessGroupByAndFilter.SuspendLayout();
 			this.tableLayoutPanelProcessFilter.SuspendLayout();
 			this.panelGlass.SuspendLayout();
@@ -118,7 +121,8 @@ namespace ProcessManagerUI.Forms
 			this.panelMacros.SuspendLayout();
 			this.panelScrollMacros.SuspendLayout();
 			this.tableLayoutPanelDistribution.SuspendLayout();
-			this.panelDistributionApplications.SuspendLayout();
+			this.panelDistributionDestinations.SuspendLayout();
+			this.panelScrollDistributionDestinations.SuspendLayout();
 			this.panelDistributionGroupByAndFilter.SuspendLayout();
 			this.tableLayoutPanelDistributionFilter.SuspendLayout();
 			this.SuspendLayout();
@@ -268,7 +272,7 @@ namespace ProcessManagerUI.Forms
 			this.panelProcessApplications.Controls.Add(this.linkLabelProcessStartAll);
 			this.panelProcessApplications.Controls.Add(this.linkLabelProcessRestartAll);
 			this.panelProcessApplications.Controls.Add(this.labelProcessAllSelected);
-			this.panelProcessApplications.Controls.Add(this.flowLayoutPanelProcessApplications);
+			this.panelProcessApplications.Controls.Add(this.panelScrollProcessApplications);
 			this.panelProcessApplications.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panelProcessApplications.Location = new System.Drawing.Point(0, 63);
 			this.panelProcessApplications.Margin = new System.Windows.Forms.Padding(0);
@@ -388,13 +392,25 @@ namespace ProcessManagerUI.Forms
 			this.labelProcessAllSelected.TabIndex = 2;
 			this.labelProcessAllSelected.Text = "All Selected:";
 			// 
-			// flowLayoutPanelProcessApplications
+			// panelScrollProcessApplications
 			// 
-			this.flowLayoutPanelProcessApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.panelScrollProcessApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.flowLayoutPanelProcessApplications.Location = new System.Drawing.Point(10, 30);
-			this.flowLayoutPanelProcessApplications.Margin = new System.Windows.Forms.Padding(10);
+			this.panelScrollProcessApplications.AutoScroll = true;
+			this.panelScrollProcessApplications.Controls.Add(this.flowLayoutPanelProcessApplications);
+			this.panelScrollProcessApplications.Location = new System.Drawing.Point(10, 30);
+			this.panelScrollProcessApplications.Margin = new System.Windows.Forms.Padding(10);
+			this.panelScrollProcessApplications.Name = "panelScrollProcessApplications";
+			this.panelScrollProcessApplications.Size = new System.Drawing.Size(429, 132);
+			this.panelScrollProcessApplications.TabIndex = 1;
+			// 
+			// flowLayoutPanelProcessApplications
+			// 
+			this.flowLayoutPanelProcessApplications.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.flowLayoutPanelProcessApplications.Location = new System.Drawing.Point(0, 0);
+			this.flowLayoutPanelProcessApplications.Margin = new System.Windows.Forms.Padding(0);
 			this.flowLayoutPanelProcessApplications.Name = "flowLayoutPanelProcessApplications";
 			this.flowLayoutPanelProcessApplications.Size = new System.Drawing.Size(429, 132);
 			this.flowLayoutPanelProcessApplications.TabIndex = 1;
@@ -756,7 +772,6 @@ namespace ProcessManagerUI.Forms
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panelScrollMacros.AutoScroll = true;
-			this.panelScrollMacros.BackColor = System.Drawing.Color.SeaGreen;
 			this.panelScrollMacros.Controls.Add(this.flowLayoutPanelMacros);
 			this.panelScrollMacros.Location = new System.Drawing.Point(10, 30);
 			this.panelScrollMacros.Margin = new System.Windows.Forms.Padding(10);
@@ -771,7 +786,7 @@ namespace ProcessManagerUI.Forms
 			this.flowLayoutPanelMacros.Location = new System.Drawing.Point(0, 0);
 			this.flowLayoutPanelMacros.Margin = new System.Windows.Forms.Padding(0);
 			this.flowLayoutPanelMacros.Name = "flowLayoutPanelMacros";
-			this.flowLayoutPanelMacros.Size = new System.Drawing.Size(389, 195);
+			this.flowLayoutPanelMacros.Size = new System.Drawing.Size(429, 195);
 			this.flowLayoutPanelMacros.TabIndex = 1;
 			// 
 			// tableLayoutPanelDistribution
@@ -781,7 +796,7 @@ namespace ProcessManagerUI.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tableLayoutPanelDistribution.ColumnCount = 1;
 			this.tableLayoutPanelDistribution.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanelDistribution.Controls.Add(this.panelDistributionApplications, 0, 1);
+			this.tableLayoutPanelDistribution.Controls.Add(this.panelDistributionDestinations, 0, 1);
 			this.tableLayoutPanelDistribution.Controls.Add(this.panelDistributionGroupByAndFilter, 0, 0);
 			this.tableLayoutPanelDistribution.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanelDistribution.Margin = new System.Windows.Forms.Padding(0);
@@ -793,20 +808,20 @@ namespace ProcessManagerUI.Forms
 			this.tableLayoutPanelDistribution.TabIndex = 3;
 			this.tableLayoutPanelDistribution.Visible = false;
 			// 
-			// panelDistributionApplications
+			// panelDistributionDestinations
 			// 
-			this.panelDistributionApplications.Controls.Add(this.labelDistributionUnavailable);
-			this.panelDistributionApplications.Controls.Add(this.linkLabelDistributionExpandAll);
-			this.panelDistributionApplications.Controls.Add(this.linkLabelDistributionCollapseAll);
-			this.panelDistributionApplications.Controls.Add(this.linkLabelDistributionDistributeAll);
-			this.panelDistributionApplications.Controls.Add(this.labelDistributionAllSelected);
-			this.panelDistributionApplications.Controls.Add(this.flowLayoutPanelDistributionDestinations);
-			this.panelDistributionApplications.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelDistributionApplications.Location = new System.Drawing.Point(0, 63);
-			this.panelDistributionApplications.Margin = new System.Windows.Forms.Padding(0);
-			this.panelDistributionApplications.Name = "panelDistributionApplications";
-			this.panelDistributionApplications.Size = new System.Drawing.Size(449, 172);
-			this.panelDistributionApplications.TabIndex = 5;
+			this.panelDistributionDestinations.Controls.Add(this.labelDistributionUnavailable);
+			this.panelDistributionDestinations.Controls.Add(this.linkLabelDistributionExpandAll);
+			this.panelDistributionDestinations.Controls.Add(this.linkLabelDistributionCollapseAll);
+			this.panelDistributionDestinations.Controls.Add(this.linkLabelDistributionDistributeAll);
+			this.panelDistributionDestinations.Controls.Add(this.labelDistributionAllSelected);
+			this.panelDistributionDestinations.Controls.Add(this.panelScrollDistributionDestinations);
+			this.panelDistributionDestinations.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelDistributionDestinations.Location = new System.Drawing.Point(0, 63);
+			this.panelDistributionDestinations.Margin = new System.Windows.Forms.Padding(0);
+			this.panelDistributionDestinations.Name = "panelDistributionDestinations";
+			this.panelDistributionDestinations.Size = new System.Drawing.Size(449, 172);
+			this.panelDistributionDestinations.TabIndex = 5;
 			// 
 			// labelDistributionUnavailable
 			// 
@@ -884,13 +899,25 @@ namespace ProcessManagerUI.Forms
 			this.labelDistributionAllSelected.TabIndex = 2;
 			this.labelDistributionAllSelected.Text = "All Selected:";
 			// 
-			// flowLayoutPanelDistributionDestinations
+			// panelScrollDistributionDestinations
 			// 
-			this.flowLayoutPanelDistributionDestinations.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.panelScrollDistributionDestinations.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.flowLayoutPanelDistributionDestinations.Location = new System.Drawing.Point(10, 30);
-			this.flowLayoutPanelDistributionDestinations.Margin = new System.Windows.Forms.Padding(10);
+			this.panelScrollDistributionDestinations.AutoScroll = true;
+			this.panelScrollDistributionDestinations.Controls.Add(this.flowLayoutPanelDistributionDestinations);
+			this.panelScrollDistributionDestinations.Location = new System.Drawing.Point(10, 30);
+			this.panelScrollDistributionDestinations.Margin = new System.Windows.Forms.Padding(10);
+			this.panelScrollDistributionDestinations.Name = "panelScrollDistributionDestinations";
+			this.panelScrollDistributionDestinations.Size = new System.Drawing.Size(429, 132);
+			this.panelScrollDistributionDestinations.TabIndex = 1;
+			// 
+			// flowLayoutPanelDistributionDestinations
+			// 
+			this.flowLayoutPanelDistributionDestinations.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.flowLayoutPanelDistributionDestinations.Location = new System.Drawing.Point(0, 0);
+			this.flowLayoutPanelDistributionDestinations.Margin = new System.Windows.Forms.Padding(0);
 			this.flowLayoutPanelDistributionDestinations.Name = "flowLayoutPanelDistributionDestinations";
 			this.flowLayoutPanelDistributionDestinations.Size = new System.Drawing.Size(429, 132);
 			this.flowLayoutPanelDistributionDestinations.TabIndex = 1;
@@ -1035,6 +1062,7 @@ namespace ProcessManagerUI.Forms
 			this.tableLayoutPanelProcess.ResumeLayout(false);
 			this.panelProcessApplications.ResumeLayout(false);
 			this.panelProcessApplications.PerformLayout();
+			this.panelScrollProcessApplications.ResumeLayout(false);
 			this.panelProcessGroupByAndFilter.ResumeLayout(false);
 			this.panelProcessGroupByAndFilter.PerformLayout();
 			this.tableLayoutPanelProcessFilter.ResumeLayout(false);
@@ -1050,8 +1078,9 @@ namespace ProcessManagerUI.Forms
 			this.panelMacros.PerformLayout();
 			this.panelScrollMacros.ResumeLayout(false);
 			this.tableLayoutPanelDistribution.ResumeLayout(false);
-			this.panelDistributionApplications.ResumeLayout(false);
-			this.panelDistributionApplications.PerformLayout();
+			this.panelDistributionDestinations.ResumeLayout(false);
+			this.panelDistributionDestinations.PerformLayout();
+			this.panelScrollDistributionDestinations.ResumeLayout(false);
 			this.panelDistributionGroupByAndFilter.ResumeLayout(false);
 			this.panelDistributionGroupByAndFilter.PerformLayout();
 			this.tableLayoutPanelDistributionFilter.ResumeLayout(false);
@@ -1070,6 +1099,7 @@ namespace ProcessManagerUI.Forms
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelProcess;
 		private System.Windows.Forms.LinkLabel linkLabelOpenConfiguration;
 		private System.Windows.Forms.Panel panelProcessApplications;
+		private System.Windows.Forms.Panel panelScrollProcessApplications;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelProcessApplications;
 		private System.Windows.Forms.Label labelProcessUnavailable;
 		private System.Windows.Forms.Panel panelProcessGroupByAndFilter;
@@ -1101,12 +1131,13 @@ namespace ProcessManagerUI.Forms
 		private System.Windows.Forms.Label labelDistributionFilter;
 		private System.Windows.Forms.ComboBox comboBoxDistributionGroupBy;
 		private System.Windows.Forms.Label labelDistributionGroupBy;
-		private System.Windows.Forms.Panel panelDistributionApplications;
+		private System.Windows.Forms.Panel panelDistributionDestinations;
 		private System.Windows.Forms.Label labelDistributionUnavailable;
 		private System.Windows.Forms.LinkLabel linkLabelDistributionExpandAll;
 		private System.Windows.Forms.LinkLabel linkLabelDistributionCollapseAll;
 		private System.Windows.Forms.LinkLabel linkLabelDistributionDistributeAll;
 		private System.Windows.Forms.Label labelDistributionAllSelected;
+		private System.Windows.Forms.Panel panelScrollDistributionDestinations;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelDistributionDestinations;
 		private System.Windows.Forms.ComboBox comboBoxDistributionDestinationMachineFilter;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanelMacro;
