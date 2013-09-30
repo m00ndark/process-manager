@@ -252,9 +252,7 @@
     <Compile Include="Support\TabPageData.cs" />
     <Compile Include="Support\TaskActionWrapper.cs" />
     <Compile Include="Support\TaskDialog.cs" />
-    <Compile Include="Support\SuspendableForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Support\UISuspension.cs" />
     <Compile Include="Support\WaitCursor.cs" />
     <Compile Include="Utilities\Messenger.cs" />
     <Compile Include="Utilities\Picker.cs" />

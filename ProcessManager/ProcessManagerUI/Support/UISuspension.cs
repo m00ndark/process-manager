@@ -1,15 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Windows.Forms;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ProcessManagerUI.Support
 {
-	public abstract class SuspendableForm<T> : Form
+	public class UISuspension<T>
 	{
 		private readonly IDictionary<T, bool> _uiSuspended;
 
-		protected SuspendableForm()
+		public UISuspension()
 		{
 			_uiSuspended = new Dictionary<T, bool>();
+			if (typeof(T).IsEnum)
+			{
+				foreach (T value in Enum.GetValues(typeof(T)))
+					_uiSuspended[value] = false;
+			}
 		}
 
 		public void Suspend(T key)

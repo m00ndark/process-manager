@@ -21,6 +21,13 @@ namespace ProcessManagerUI.Forms
 {
 	public partial class ControlPanelForm : Form, IControlPanel, IProcessManagerEventHandler
 	{
+		private enum SuspensionType
+		{
+			TabLayout,
+			NodeLayout,
+			RootNodeSizeChanged
+		}
+
 		private static readonly IDictionary<ProcessGrouping, string> _processGroupingDescriptions = new Dictionary<ProcessGrouping, string>()
 			{
 				{ ProcessGrouping.MachineGroupApplication, "Machine > Group > Application" },
@@ -39,9 +46,8 @@ namespace ProcessManagerUI.Forms
 		private readonly List<DistributionDestinationMachineNode> _distributionDestinationMachineNodes;
 		private readonly List<IRootNode> _macroRootNodes;
 		private readonly List<MacroActionNode> _macroActionNodes;
-		private bool _processNodeLayoutSuspended;
-		private bool _distributionNodeLayoutSuspended;
-		private bool _rootNodeSizeChangedSuspended;
+		private readonly UISuspension<SuspensionType> _ui;
+		private readonly List<MachineConnection> _startupInitializedConnetions;
 
 		public event EventHandler<MachineConfigurationHashEventArgs> ConfigurationChanged;
 		public event EventHandler<DistributionResultEventArgs> DistributionCompleted;
@@ -64,9 +70,8 @@ namespace ProcessManagerUI.Forms
 			_distributionDestinationMachineNodes = new List<DistributionDestinationMachineNode>();
 			_macroRootNodes = new List<IRootNode>();
 			_macroActionNodes = new List<MacroActionNode>();
-			_processNodeLayoutSuspended = false;
-			_distributionNodeLayoutSuspended = false;
-			_rootNodeSizeChangedSuspended = false;
+			_ui = new UISuspension<SuspensionType>();
+			_startupInitializedConnetions = new List<MachineConnection>();
 			MacroPlayer = new MacroPlayer(this);
 			ServiceHelper.Initialize(this);
 		}
@@ -198,9 +203,12 @@ namespace ProcessManagerUI.Forms
 
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;
-			foreach (Machine machine in Settings.Client.Machines.Where(machine => !ConnectionStore.ConnectionCreated(machine)))
+			List<Machine> machinesToConnect = Settings.Client.Machines.Where(machine => !ConnectionStore.ConnectionCreated(machine)).ToList();
+			if (machinesToConnect.Count > 0)
+				_ui.Suspend(SuspensionType.TabLayout);
+			foreach (MachineConnection connection in machinesToConnect.Select(machine => ConnectionStore.CreateConnection(this, machine)))
 			{
-				MachineConnection connection = ConnectionStore.CreateConnection(this, machine);
+				_startupInitializedConnetions.Add(connection);
 				connection.ServiceHandler.Initialize();
 			}
 		}
@@ -265,7 +273,7 @@ namespace ProcessManagerUI.Forms
 		private void ComboBoxProcessGroupBy_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxProcessGroupBy.SelectedIndex == -1) return;
-			if (_processNodeLayoutSuspended) return;
+			if (_ui.IsSuspended(SuspensionType.NodeLayout)) return;
 
 			ProcessGrouping grouping = ((ComboBoxItem<ProcessGrouping>) comboBoxProcessGroupBy.Items[comboBoxProcessGroupBy.SelectedIndex]).Tag;
 			Settings.Client.P_SelectedGrouping = grouping.ToString();
@@ -277,7 +285,7 @@ namespace ProcessManagerUI.Forms
 		private void ComboBoxProcessMachineFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxProcessMachineFilter.SelectedIndex == -1) return;
-			if (_processNodeLayoutSuspended) return;
+			if (_ui.IsSuspended(SuspensionType.NodeLayout)) return;
 
 			Settings.Client.P_SelectedFilterMachine = ((ComboBoxItem) comboBoxProcessMachineFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
@@ -288,7 +296,7 @@ namespace ProcessManagerUI.Forms
 		private void ComboBoxProcessGroupFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxProcessGroupFilter.SelectedIndex == -1) return;
-			if (_processNodeLayoutSuspended) return;
+			if (_ui.IsSuspended(SuspensionType.NodeLayout)) return;
 
 			Settings.Client.P_SelectedFilterGroup = ((ComboBoxItem) comboBoxProcessGroupFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
@@ -299,7 +307,7 @@ namespace ProcessManagerUI.Forms
 		private void ComboBoxProcessApplicationFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxProcessApplicationFilter.SelectedIndex == -1) return;
-			if (_processNodeLayoutSuspended) return;
+			if (_ui.IsSuspended(SuspensionType.NodeLayout)) return;
 
 			Settings.Client.P_SelectedFilterApplication = ((ComboBoxItem) comboBoxProcessApplicationFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
@@ -335,7 +343,7 @@ namespace ProcessManagerUI.Forms
 		private void ComboBoxDistributionGroupBy_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxDistributionGroupBy.SelectedIndex == -1) return;
-			if (_distributionNodeLayoutSuspended) return;
+			if (_ui.IsSuspended(SuspensionType.NodeLayout)) return;
 
 			DistributionGrouping grouping = ((ComboBoxItem<DistributionGrouping>) comboBoxDistributionGroupBy.Items[comboBoxDistributionGroupBy.SelectedIndex]).Tag;
 			Settings.Client.D_SelectedGrouping = grouping.ToString();
@@ -347,7 +355,7 @@ namespace ProcessManagerUI.Forms
 		private void ComboBoxDistributionSourceMachineFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxDistributionSourceMachineFilter.SelectedIndex == -1) return;
-			if (_distributionNodeLayoutSuspended) return;
+			if (_ui.IsSuspended(SuspensionType.NodeLayout)) return;
 
 			Settings.Client.D_SelectedFilterSourceMachine = ((ComboBoxItem) comboBoxDistributionSourceMachineFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
@@ -358,7 +366,7 @@ namespace ProcessManagerUI.Forms
 		private void ComboBoxDistributionGroupFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxDistributionGroupFilter.SelectedIndex == -1) return;
-			if (_distributionNodeLayoutSuspended) return;
+			if (_ui.IsSuspended(SuspensionType.NodeLayout)) return;
 
 			Settings.Client.D_SelectedFilterGroup = ((ComboBoxItem) comboBoxDistributionGroupFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
@@ -369,7 +377,7 @@ namespace ProcessManagerUI.Forms
 		private void ComboBoxDistributionApplicationFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxDistributionApplicationFilter.SelectedIndex == -1) return;
-			if (_distributionNodeLayoutSuspended) return;
+			if (_ui.IsSuspended(SuspensionType.NodeLayout)) return;
 
 			Settings.Client.D_SelectedFilterApplication = ((ComboBoxItem) comboBoxDistributionApplicationFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
@@ -380,7 +388,7 @@ namespace ProcessManagerUI.Forms
 		private void ComboBoxDistributionDestinationMachineFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (comboBoxDistributionDestinationMachineFilter.SelectedIndex == -1) return;
-			if (_distributionNodeLayoutSuspended) return;
+			if (_ui.IsSuspended(SuspensionType.NodeLayout)) return;
 
 			Settings.Client.D_SelectedFilterDestinationMachine = ((ComboBoxItem) comboBoxDistributionDestinationMachineFilter.SelectedItem).Text;
 			Settings.Client.Save(ClientSettingsType.States);
@@ -509,13 +517,25 @@ namespace ProcessManagerUI.Forms
 
 		private void ServiceConnectionHandler_ServiceHandlerInitializationCompleted(object sender, ServiceHandlerConnectionChangedEventArgs e)
 		{
+			lock (_startupInitializedConnetions)
+			{
+				_startupInitializedConnetions
+					.Where(connection => connection.ServiceHandler == e.ServiceHandler)
+					.ToList()
+					.ForEach(connection => _startupInitializedConnetions.Remove(connection));
+			}
+
+			if (_startupInitializedConnetions.Count > 0)
+				return;
+
+			_ui.Resume(SuspensionType.TabLayout);
+
 			if (InvokeRequired)
 			{
 				Invoke(new EventHandler<ServiceHandlerConnectionChangedEventArgs>(ServiceConnectionHandler_ServiceHandlerInitializationCompleted), sender, e);
 				return;
 			}
 
-			Console.WriteLine("InitializationCompleted");
 			UpdateFiltersAndLayout();
 		}
 
@@ -536,7 +556,7 @@ namespace ProcessManagerUI.Forms
 
 		private void RootNode_SizeChanged(object sender, EventArgs e)
 		{
-			if (!_rootNodeSizeChangedSuspended && !Settings.Client.UserOwnsControlPanel)
+			if (!_ui.IsSuspended(SuspensionType.RootNodeSizeChanged) && !Settings.Client.UserOwnsControlPanel)
 				UpdateSize();
 		}
 
@@ -781,6 +801,9 @@ namespace ProcessManagerUI.Forms
 
 		private void UpdateFiltersAndLayoutAsync()
 		{
+			if (_ui.IsSuspended(SuspensionType.TabLayout))
+				return;
+
 			Task.Factory.StartNew(UpdateFiltersAndLayout);
 		}
 
@@ -788,6 +811,9 @@ namespace ProcessManagerUI.Forms
 
 		private void UpdateFiltersAndLayout()
 		{
+			if (_ui.IsSuspended(SuspensionType.TabLayout))
+				return;
+
 			if (InvokeRequired)
 			{
 				Invoke(new UpdateFiltersAndLayoutDelegate(UpdateFiltersAndLayout));
@@ -854,9 +880,9 @@ namespace ProcessManagerUI.Forms
 			if (SelectedTab != ControlPanelTab.Process)
 				return;
 
-			SuspendProcessNodeLayout();
+			_ui.Suspend(SuspensionType.NodeLayout);
 			UpdateProcessFilter();
-			ResumeProcessNodeLayout();
+			_ui.Resume(SuspensionType.NodeLayout);
 			LayoutProcessNodes();
 		}
 
@@ -920,21 +946,11 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
-		private void SuspendProcessNodeLayout()
-		{
-			_processNodeLayoutSuspended = true;
-		}
-
-		private void ResumeProcessNodeLayout()
-		{
-			_processNodeLayoutSuspended = false;
-		}
-
 		private delegate void LayoutProcessNodesDelegate();
 
 		private void LayoutProcessNodes()
 		{
-			if (_processNodeLayoutSuspended)
+			if (_ui.IsSuspended(SuspensionType.NodeLayout))
 				return;
 
 			if (InvokeRequired)
@@ -1047,8 +1063,10 @@ namespace ProcessManagerUI.Forms
 
 			if (_processApplicationNodes.Count > 0)
 			{
+				_ui.Suspend(SuspensionType.RootNodeSizeChanged);
 				UpdateSize(_processRootNodes.Select(node => node.LayoutNode()).ToList());
 				_processRootNodes.ForEach(node => node.ForceWidth(flowLayoutPanelProcessApplications.Size.Width));
+				_ui.Resume(SuspensionType.RootNodeSizeChanged);
 				flowLayoutPanelProcessApplications.Controls.AddRange(_processRootNodes.Cast<Control>().ToArray());
 
 				Settings.Client.P_CheckedNodes.ToList()
@@ -1096,9 +1114,9 @@ namespace ProcessManagerUI.Forms
 			if (SelectedTab != ControlPanelTab.Distribution)
 				return;
 
-			SuspendDistributionNodeLayout();
+			_ui.Suspend(SuspensionType.NodeLayout);
 			UpdateDistributionFilter();
-			ResumeDistributionNodeLayout();
+			_ui.Resume(SuspensionType.NodeLayout);
 			LayoutDistributionNodes();
 		}
 
@@ -1177,21 +1195,11 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
-		private void SuspendDistributionNodeLayout()
-		{
-			_distributionNodeLayoutSuspended = true;
-		}
-
-		private void ResumeDistributionNodeLayout()
-		{
-			_distributionNodeLayoutSuspended = false;
-		}
-
 		private delegate void LayoutDistributionNodesDelegate();
 
 		private void LayoutDistributionNodes()
 		{
-			if (_distributionNodeLayoutSuspended)
+			if (_ui.IsSuspended(SuspensionType.NodeLayout))
 				return;
 
 			if (InvokeRequired)
@@ -1216,7 +1224,6 @@ namespace ProcessManagerUI.Forms
 						node.ActionTaken -= Node_ActionTaken;
 						node.Dispose();
 					});
-				//_allDistributionNodes.ForEach(node => node.Dispose());
 				_distributionRootNodes.Clear();
 				_distributionDestinationMachineNodes.Clear();
 
@@ -1326,13 +1333,10 @@ namespace ProcessManagerUI.Forms
 
 			if (_distributionDestinationMachineNodes.Count > 0)
 			{
-				_rootNodeSizeChangedSuspended = true;
-				List<Size> rootNodeSizes = _distributionRootNodes.Select(node => node.LayoutNode()).ToList();
-				_rootNodeSizeChangedSuspended = false;
-				UpdateSize(rootNodeSizes);
-				_rootNodeSizeChangedSuspended = true;
+				_ui.Suspend(SuspensionType.RootNodeSizeChanged);
+				UpdateSize(_distributionRootNodes.Select(node => node.LayoutNode()).ToList());
 				_distributionRootNodes.ForEach(node => node.ForceWidth(flowLayoutPanelDistributionDestinations.Width));
-				_rootNodeSizeChangedSuspended = false;
+				_ui.Resume(SuspensionType.RootNodeSizeChanged);
 				flowLayoutPanelDistributionDestinations.Controls.AddRange(_distributionRootNodes.Cast<Control>().ToArray());
 
 				Settings.Client.D_CheckedNodes.ToList()
@@ -1494,9 +1498,9 @@ namespace ProcessManagerUI.Forms
 
 		private void ExpandAll(bool expand)
 		{
-			_rootNodeSizeChangedSuspended = true;
+			_ui.Suspend(SuspensionType.RootNodeSizeChanged);
 			CurrentRootNodes.ForEach(node => node.ExpandAll(expand));
-			_rootNodeSizeChangedSuspended = false;
+			_ui.Resume(SuspensionType.RootNodeSizeChanged);
 			UpdateSize();
 		}
 
@@ -1507,8 +1511,6 @@ namespace ProcessManagerUI.Forms
 
 		private void UpdateSize(ICollection<Size> rootNodeSizes)
 		{
-			Console.WriteLine("UpdateSize()");
-
 			const int MIN_WIDTH = 465;
 			MinimumSize = MaximumSize = new Size(0, 0);
 
