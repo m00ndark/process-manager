@@ -94,6 +94,24 @@ namespace ProcessManagerUI.Forms
 			}
 		}
 
+		private Panel CurrentScrollPanel
+		{
+			get
+			{
+				switch (SelectedTab)
+				{
+					//case ControlPanelTab.Process:
+					//	return flowLayoutPanelProcessApplications;
+					//case ControlPanelTab.Distribution:
+					//	return flowLayoutPanelDistributionDestinations;
+					case ControlPanelTab.Macro:
+						return panelScrollMacros;
+					default:
+						return null;
+				}
+			}
+		}
+
 		private List<IRootNode> CurrentRootNodes
 		{
 			get
@@ -144,6 +162,13 @@ namespace ProcessManagerUI.Forms
 
 		private void ControlPanelForm_Load(object sender, EventArgs e)
 		{
+			panelScrollMacros.VerticalScroll.Enabled = true;
+			panelScrollMacros.VerticalScroll.Visible = true;
+
+
+
+
+
 			HideForm();
 			ExtendGlass();
 			Settings.Client.Load();
@@ -1484,8 +1509,9 @@ namespace ProcessManagerUI.Forms
 			{
 				int totalNodesHeight = rootNodeSizes.Sum(size => size.Height);
 				int maxNodeWidth = rootNodeSizes.Max(size => size.Width);
-				Size = new Size(Math.Max(MIN_WIDTH, Size.Width - CurrentFlowLayoutPanel.Size.Width + maxNodeWidth),
-					Size.Height - CurrentFlowLayoutPanel.Size.Height + totalNodesHeight);
+				Size = new Size(Math.Max(MIN_WIDTH, Width - CurrentScrollPanel.Width + maxNodeWidth),
+					Math.Min(Height - CurrentScrollPanel.Height + totalNodesHeight, Screen.PrimaryScreen.WorkingArea.Height));
+				CurrentFlowLayoutPanel.Size = new Size(maxNodeWidth, totalNodesHeight);
 			}
 			else
 			{
