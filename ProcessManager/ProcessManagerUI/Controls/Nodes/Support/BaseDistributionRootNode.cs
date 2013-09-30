@@ -124,8 +124,8 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		public void ExpandAll(bool expanded)
 		{
-			ChildNodes.Select(node => node as IRootNode).Where(node => node != null).ToList().ForEach(node => node.ExpandAll(expanded));
 			Expanded = expanded;
+			ChildNodes.Select(node => node as IRootNode).Where(node => node != null).ToList().ForEach(node => node.ExpandAll(expanded));
 		}
 
 		#endregion

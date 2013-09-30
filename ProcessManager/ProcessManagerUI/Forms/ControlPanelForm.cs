@@ -41,6 +41,7 @@ namespace ProcessManagerUI.Forms
 		private readonly List<MacroActionNode> _macroActionNodes;
 		private bool _processNodeLayoutSuspended;
 		private bool _distributionNodeLayoutSuspended;
+		private bool _rootNodeSizeChangedSuspended;
 
 		public event EventHandler<MachineConfigurationHashEventArgs> ConfigurationChanged;
 		public event EventHandler<DistributionResultEventArgs> DistributionCompleted;
@@ -64,6 +65,7 @@ namespace ProcessManagerUI.Forms
 			_macroActionNodes = new List<MacroActionNode>();
 			_processNodeLayoutSuspended = false;
 			_distributionNodeLayoutSuspended = false;
+			_rootNodeSizeChangedSuspended = false;
 			MacroPlayer = new MacroPlayer(this);
 			ServiceHelper.Initialize(this);
 		}
@@ -298,12 +300,12 @@ namespace ProcessManagerUI.Forms
 
 		private void LinkLabelProcessExpandAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_processRootNodes.ForEach(node => node.ExpandAll(true));
+			ExpandAll(true);
 		}
 
 		private void LinkLabelProcessCollapseAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_processRootNodes.ForEach(node => node.ExpandAll(false));
+			ExpandAll(false);
 		}
 
 		private void ComboBoxDistributionGroupBy_SelectedIndexChanged(object sender, EventArgs e)
@@ -369,12 +371,12 @@ namespace ProcessManagerUI.Forms
 
 		private void LinkLabelDistributionExpandAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_distributionRootNodes.ForEach(node => node.ExpandAll(true));
+			ExpandAll(true);
 		}
 
 		private void LinkLabelDistributionCollapseAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_distributionRootNodes.ForEach(node => node.ExpandAll(false));
+			ExpandAll(false);
 		}
 
 		private void LinkLabelMacroPlayAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -384,12 +386,12 @@ namespace ProcessManagerUI.Forms
 
 		private void LinkLabelMacroExpandAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_macroRootNodes.ForEach(node => node.ExpandAll(true));
+			ExpandAll(true);
 		}
 
 		private void LinkLabelMacroCollapseAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_macroRootNodes.ForEach(node => node.ExpandAll(false));
+			ExpandAll(false);
 		}
 
 		private void LinkLabelOpenConfiguration_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -509,8 +511,8 @@ namespace ProcessManagerUI.Forms
 
 		private void RootNode_SizeChanged(object sender, EventArgs e)
 		{
-			if (!Settings.Client.UserOwnsControlPanel)
-				UpdateSize(CurrentRootNodes.Select(node => node.Size).ToList());
+			if (!_rootNodeSizeChangedSuspended && !Settings.Client.UserOwnsControlPanel)
+				UpdateSize();
 		}
 
 		private void Node_CheckedChanged(object sender, EventArgs e)
@@ -1459,6 +1461,14 @@ namespace ProcessManagerUI.Forms
 		}
 
 		#endregion
+
+		private void ExpandAll(bool expand)
+		{
+			_rootNodeSizeChangedSuspended = true;
+			CurrentRootNodes.ForEach(node => node.ExpandAll(expand));
+			_rootNodeSizeChangedSuspended = false;
+			UpdateSize();
+		}
 
 		private void UpdateSize()
 		{
