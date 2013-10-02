@@ -558,7 +558,7 @@ namespace ProcessManagerUI.Forms
 
 		private void RootNode_SizeChanged(object sender, EventArgs e)
 		{
-			if (!_ui.IsSuspended(SuspensionType.RootNodeSizeChanged) && !Settings.Client.UserOwnsControlPanel)
+			if (!_ui.IsSuspended(SuspensionType.RootNodeSizeChanged))
 				UpdateSize();
 		}
 
@@ -1093,9 +1093,7 @@ namespace ProcessManagerUI.Forms
 				RetrieveAllProcessStatuses();
 			}
 			else
-			{
 				UpdateSize(null);
-			}
 
 			labelProcessUnavailable.Visible = (_processApplicationNodes.Count == 0);
 		}
@@ -1361,9 +1359,7 @@ namespace ProcessManagerUI.Forms
 					.ToList().ForEach(node => node.Check(true));
 			}
 			else
-			{
 				UpdateSize(null);
-			}
 
 			labelDistributionUnavailable.Visible = (_distributionDestinationMachineNodes.Count == 0);
 		}
@@ -1416,7 +1412,6 @@ namespace ProcessManagerUI.Forms
 						node.ActionTaken -= Node_ActionTaken;
 						node.Dispose();
 					});
-				//_allMacroNodes.ForEach(node => node.Dispose());
 				_macroRootNodes.Clear();
 				_macroActionNodes.Clear();
 
@@ -1480,15 +1475,6 @@ namespace ProcessManagerUI.Forms
 						node.CheckedChanged += Node_CheckedChanged;
 						node.ActionTaken += Node_ActionTaken;
 					});
-
-				//foreach (IMacroRootNode node in _macroRootNodes.Cast<IMacroRootNode>().Where(node => !node.IsComplete).ToList())
-				//{
-				//	node.SizeChanged -= RootNode_SizeChanged;
-				//	node.CheckedChanged -= Node_CheckedChanged;
-				//	node.ActionTaken -= Node_ActionTaken;
-				//	node.Dispose();
-				//	_macroRootNodes.Remove(node);
-				//}
 			}
 
 			if (_macroActionNodes.Count > 0)
@@ -1503,9 +1489,7 @@ namespace ProcessManagerUI.Forms
 					.ToList().ForEach(node => node.Check(true));
 			}
 			else
-			{
 				UpdateSize(null);
-			}
 
 			labelMacroUnavailable.Visible = (_macroActionNodes.Count == 0);
 		}
@@ -1527,30 +1511,31 @@ namespace ProcessManagerUI.Forms
 
 		private void UpdateSize(ICollection<Size> rootNodeSizes)
 		{
-			const int MIN_WIDTH = 465;
+			const int MIN_WIDTH = 465, MIN_HEIGHT = 220;
 			MinimumSize = MaximumSize = new Size(0, 0);
 
 			if (rootNodeSizes != null && rootNodeSizes.Count > 0)
 			{
 				int totalNodesHeight = rootNodeSizes.Sum(size => size.Height);
 				int maxNodeWidth = rootNodeSizes.Max(size => size.Width);
-				Size = new Size(Math.Max(MIN_WIDTH, Width - CurrentScrollPanel.Width + maxNodeWidth),
-					Math.Min(Height - CurrentScrollPanel.Height + totalNodesHeight, Screen.PrimaryScreen.WorkingArea.Height));
+				if (!Settings.Client.UserOwnsControlPanel)
+				{
+					Size = new Size(Math.Max(MIN_WIDTH, Width - CurrentScrollPanel.Width + maxNodeWidth),
+						Math.Min(Height - CurrentScrollPanel.Height + totalNodesHeight, Screen.PrimaryScreen.WorkingArea.Height));
+				}
 				CurrentFlowLayoutPanel.Size = new Size(Math.Max(MIN_WIDTH, maxNodeWidth), totalNodesHeight);
 			}
 			else
-			{
-				Size = new Size(MIN_WIDTH, 220);
-			}
-
-			MinimumSize = Size;
+				Size = new Size(MIN_WIDTH, MIN_HEIGHT);
 
 			if (!Settings.Client.UserOwnsControlPanel)
 			{
-				MaximumSize = Size;
+				MinimumSize = MaximumSize = Size;
 				Location = new Point(Math.Min(Location.X, Screen.PrimaryScreen.WorkingArea.Width - Size.Width - 8),
 					Math.Max(Screen.PrimaryScreen.WorkingArea.Top, Screen.PrimaryScreen.WorkingArea.Height - Size.Height - 8));
 			}
+			else
+				MinimumSize = new Size(MIN_WIDTH, MIN_HEIGHT);
 		}
 
 		private void EnableActionLinks(bool enable)
