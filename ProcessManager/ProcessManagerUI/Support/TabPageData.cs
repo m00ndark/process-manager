@@ -7,15 +7,25 @@ namespace ProcessManagerUI.Support
 		public TabPageData(ControlPanelTab controlPanelTab)
 		{
 			ControlPanelTab = controlPanelTab;
-			Initialized = false;
+			Invalidate();
 		}
 
 		#region Properties
 
 		public ControlPanelTab ControlPanelTab { get; private set; }
-		public bool Initialized { get; set; }
+		public bool Invalidated { get; private set; }
 
 		#endregion
+
+		public void Validate()
+		{
+			Invalidated = false;
+		}
+
+		public void Invalidate()
+		{
+			Invalidated = true;
+		}
 
 		public override string ToString()
 		{

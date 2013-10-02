@@ -536,6 +536,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
+			InvalidateTabPages();
 			UpdateFiltersAndLayout();
 		}
 
@@ -547,6 +548,7 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
+			InvalidateTabPages();
 			UpdateFiltersAndLayout();
 		}
 
@@ -591,11 +593,13 @@ namespace ProcessManagerUI.Forms
 
 		private void ConfigurationForm_ConfigurationChanged(object sender, MachinesEventArgs e)
 		{
+			InvalidateTabPages();
 			UpdateFiltersAndLayoutAsync();
 		}
 
 		private void ConfigurationForm_MacrosChanged(object sender, EventArgs e)
 		{
+			InvalidateTabPages(ControlPanelTab.Macro);
 			UpdateFiltersAndLayoutAsync();
 		}
 
@@ -763,10 +767,21 @@ namespace ProcessManagerUI.Forms
 				tableLayoutPanelMacro.Visible = true;
 			}
 
-			if (SelectedTabData.Initialized)
+			if (!SelectedTabData.Invalidated)
 				UpdateSize();
 			else
 				UpdateFiltersAndLayout();
+		}
+
+		private void InvalidateTabPages(ControlPanelTab? tab = null)
+		{
+			foreach (TabPageData tabPageData in tabControlSection.TabPages
+				.Cast<TabPage>()
+				.Select(tabPage => (TabPageData) tabPage.Tag)
+				.Where(data => tab == null || data.ControlPanelTab == tab.Value))
+			{
+				tabPageData.Invalidate();
+			}
 		}
 
 		private void OpenConfigurationForm()
@@ -791,6 +806,7 @@ namespace ProcessManagerUI.Forms
 			try
 			{
 				ConnectionStore.Connections[machine].Configuration = ConnectionStore.Connections[machine].ServiceHandler.Service.GetConfiguration().FromDTO();
+				InvalidateTabPages();
 				UpdateFiltersAndLayout();
 			}
 			catch (Exception ex)
@@ -823,7 +839,7 @@ namespace ProcessManagerUI.Forms
 			UpdateProcessFilterAndLayout();
 			UpdateDistributionFilterAndLayout();
 			LayoutMacroNodes();
-			SelectedTabData.Initialized = true;
+			SelectedTabData.Validate();
 		}
 
 		#region Process tab
