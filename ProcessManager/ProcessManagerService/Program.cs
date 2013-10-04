@@ -21,49 +21,44 @@ namespace ProcessManagerService
 			try
 			{
 				string[] args = Environment.CommandLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Skip(1).ToArray();
+
 				if (args.Contains("-stop"))
 				{
-					ServiceController serviceController = ServiceController.GetServices().FirstOrDefault(sc => sc.ServiceName == SERVICE_NAME);
-					if (serviceController != null && serviceController.Status == ServiceControllerStatus.Running)
-					{
-						serviceController.Stop();
-						WaitForServiceStatus(serviceController, ServiceControllerStatus.Stopped);
-					}
+					StopService();
 
-					if (!args.Except(new[] { "-stop" }).Any())
+					if (ShouldExitAfter("-stop", ref args))
 						return;
 				}
+
 				if (args.Contains("-uninstall"))
 				{
-					if (ServiceController.GetServices().Any(sc => sc.ServiceName == SERVICE_NAME))
-						UninstallService();
+					UninstallService();
 
-					if (!args.Except(new [] { "-uninstall" }).Any())
+					if (ShouldExitAfter("-uninstall", ref args))
 						return;
 				}
+
 				if (args.Contains("-install"))
 				{
-					if (ServiceController.GetServices().All(sc => sc.ServiceName != SERVICE_NAME))
-						InstallService();
+					InstallService();
 
-					if (!args.Except(new[] { "-install" }).Any())
+					if (ShouldExitAfter("-install", ref args))
 						return;
 				}
+
 				if (args.Contains("-standalone"))
 				{
+					// this process will keep running
 					ProcessManager.ProcessManager.Instance.Start();
 				}
 				else if (args.Contains("-start"))
 				{
-					ServiceController serviceController = ServiceController.GetServices().FirstOrDefault(sc => sc.ServiceName == SERVICE_NAME);
-					if (serviceController != null && serviceController.Status == ServiceControllerStatus.Stopped)
-					{
-						serviceController.Start();
-						WaitForServiceStatus(serviceController, ServiceControllerStatus.Running);
-					}
+					// another process will be started
+					StartService();
 				}
 				else
 				{
+					// this process will keep running
 					ServiceBase[] servicesToRun = new ServiceBase[] { new ProcessManagerService() };
 					ServiceBase.Run(servicesToRun);
 				}
@@ -73,6 +68,34 @@ namespace ProcessManagerService
 				Logger.Add("Fatal error", ex);
 			}
 			Logger.Flush();
+		}
+
+		private static bool ShouldExitAfter(string flag, ref string[] args)
+		{
+			args = args.Except(new[] { flag }).ToArray();
+			return !args.Any();
+		}
+
+		private static void StartService()
+		{
+			ServiceController serviceController = ServiceController.GetServices().FirstOrDefault(sc => sc.ServiceName == SERVICE_NAME);
+
+			if (serviceController == null || serviceController.Status != ServiceControllerStatus.Stopped)
+				return;
+
+			serviceController.Start();
+			WaitForServiceStatus(serviceController, ServiceControllerStatus.Running);
+		}
+
+		private static void StopService()
+		{
+			ServiceController serviceController = ServiceController.GetServices().FirstOrDefault(sc => sc.ServiceName == SERVICE_NAME);
+
+			if (serviceController == null || serviceController.Status != ServiceControllerStatus.Running)
+				return;
+
+			serviceController.Stop();
+			WaitForServiceStatus(serviceController, ServiceControllerStatus.Stopped);
 		}
 
 		private static void WaitForServiceStatus(ServiceController serviceController, ServiceControllerStatus status)
@@ -86,6 +109,9 @@ namespace ProcessManagerService
 
 		private static void InstallService()
 		{
+			if (ServiceController.GetServices().Any(sc => sc.ServiceName == SERVICE_NAME))
+				return;
+
 			AssemblyInstaller assemblyInstaller = new AssemblyInstaller(Assembly.GetExecutingAssembly(), null) { UseNewContext = true };
 			IDictionary savedState = new Hashtable();
 			assemblyInstaller.Install(savedState);
@@ -97,6 +123,9 @@ namespace ProcessManagerService
 
 		private static void UninstallService()
 		{
+			if (ServiceController.GetServices().All(sc => sc.ServiceName != SERVICE_NAME))
+				return;
+
 			IDictionary savedState = null;
 			string stateFilePath = GetServiceInstallerSavedStateFileName();
 			if (File.Exists(stateFilePath))
