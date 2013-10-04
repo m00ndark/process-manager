@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -100,10 +102,19 @@ namespace ProcessManager.Utilities
 			{
 				_logQueue.Enqueue(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
 					+ " > " + logType.ToString().PadRight(_logTypeIndentationDepth) + " "
-					+ (LogSource != LogSource.Undefined ? LogSource.ToString().ToUpper() + "/" + Thread.CurrentThread.ManagedThreadId.ToString().PadRight(4) : string.Empty)
+					+ (LogSource != LogSource.Undefined
+						? LogSource.ToString().ToUpper() + "/" + Thread.CurrentThread.ManagedThreadId.ToString(CultureInfo.InvariantCulture).PadRight(4)
+						: string.Empty)
 					+ ": " + logText);
 			}
 			_logEntryAddedEvent.Set();
+		}
+
+		public static void Flush()
+		{
+			_logEntryAddedEvent.Set();
+			while (_logQueue.Count > 0)
+				Thread.Sleep(50);
 		}
 
 		private static void LogWriterThread()

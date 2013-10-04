@@ -691,7 +691,7 @@ namespace ProcessManagerUI.Forms
 		private void ToggleOptionStartWithWindows()
 		{
 			Settings.Client.StartWithWindows = !Settings.Client.StartWithWindows;
-			RegistryHandler.SaveClientSettings(ClientSettingsType.Options);
+			Settings.Client.Save(ClientSettingsType.Options);
 			RegistryHandler.SetWindowsStartupTrigger(Settings.Client.StartWithWindows ? System.Windows.Forms.Application.ExecutablePath : null);
 			EnableOptionStartWithWindows(Settings.Client.StartWithWindows);
 		}
@@ -699,21 +699,21 @@ namespace ProcessManagerUI.Forms
 		private void ToggleOptionUserOwnsControlPanel()
 		{
 			Settings.Client.UserOwnsControlPanel = !Settings.Client.UserOwnsControlPanel;
-			RegistryHandler.SaveClientSettings(ClientSettingsType.Options);
+			Settings.Client.Save(ClientSettingsType.Options);
 			EnableOptionUserOwnsControlPanel(Settings.Client.UserOwnsControlPanel);
 		}
 
 		private void ToggleOptionKeepControlPanelTopMost()
 		{
 			Settings.Client.KeepControlPanelTopMost = !Settings.Client.KeepControlPanelTopMost;
-			RegistryHandler.SaveClientSettings(ClientSettingsType.Options);
+			Settings.Client.Save(ClientSettingsType.Options);
 			EnableOptionKeepControlPanelTopMost(Settings.Client.KeepControlPanelTopMost);
 		}
 
 		private void ToggleOptionMinimumLogLevel(LogType logType)
 		{
 			Settings.Client.LogTypeMinLevel = logType;
-			RegistryHandler.SaveClientSettings(ClientSettingsType.Options);
+			Settings.Client.Save(ClientSettingsType.Options);
 			CheckOptionMinimumLogLevel(Settings.Client.LogTypeMinLevel);
 		}
 

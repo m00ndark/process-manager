@@ -20,17 +20,31 @@ namespace ProcessManager.DataAccess
 		private const string APPLICATION_REGISTRY_KEY = @"SOFTWARE\QlikTech\ProcessManager";
 		private const string WINDOWS_RUN_REGISTRY_KEY = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
 
+		private static RegistryKey _registryHive;
+
+		static RegistryHandler()
+		{
+			_registryHive = Registry.CurrentUser;
+		}
+
+		public static void MigrateSettings()
+		{
+			_registryHive = Registry.LocalMachine;
+			LoadClientSettings();
+			SetWindowsStartupTrigger(null);
+			_registryHive = Registry.CurrentUser;
+			SaveClientSettings();
+		}
+
 		public static void LoadClientSettings()
 		{
 			foreach (string clientSettingsType in Enum.GetNames(typeof(ClientSettingsType)))
-			{
 				LoadClientSettings((ClientSettingsType) Enum.Parse(typeof(ClientSettingsType), clientSettingsType));
-			}
 		}
 
 		public static void LoadClientSettings(ClientSettingsType clientSettingsType)
 		{
-			RegistryKey key = Registry.LocalMachine.OpenSubKey(APPLICATION_REGISTRY_KEY, false);
+			RegistryKey key = _registryHive.OpenSubKey(APPLICATION_REGISTRY_KEY, false);
 			if (key == null) return;
 			switch (clientSettingsType)
 			{
@@ -251,14 +265,12 @@ namespace ProcessManager.DataAccess
 		public static void SaveClientSettings()
 		{
 			foreach (string clientSettingsType in Enum.GetNames(typeof(ClientSettingsType)))
-			{
 				SaveClientSettings((ClientSettingsType) Enum.Parse(typeof(ClientSettingsType), clientSettingsType));
-			}
 		}
 
 		public static void SaveClientSettings(ClientSettingsType clientSettingsType)
 		{
-			RegistryKey key = Registry.LocalMachine.CreateSubKey(APPLICATION_REGISTRY_KEY);
+			RegistryKey key = _registryHive.CreateSubKey(APPLICATION_REGISTRY_KEY);
 			if (key == null) return;
 			switch (clientSettingsType)
 			{
@@ -471,7 +483,7 @@ namespace ProcessManager.DataAccess
 
 		public static void SetWindowsStartupTrigger(string executablePath)
 		{
-			RegistryKey key = Registry.LocalMachine.OpenSubKey(WINDOWS_RUN_REGISTRY_KEY, true);
+			RegistryKey key = _registryHive.OpenSubKey(WINDOWS_RUN_REGISTRY_KEY, true);
 			if (key == null) return;
 			if (string.IsNullOrEmpty(executablePath))
 				key.DeleteValue("Process Manager", false);

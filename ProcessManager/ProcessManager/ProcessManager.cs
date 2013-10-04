@@ -18,11 +18,13 @@ namespace ProcessManager
 		private static readonly object _lock = new object();
 
 		private Thread _mainThread;
+		private volatile bool _shutDownRequested;
 		private Dictionary<Guid, Dictionary<Guid, ProcessStatus>> _processStatuses;
 
 		private ProcessManager()
 		{
 			_mainThread = null;
+			_shutDownRequested = false;
 			_processStatuses = new Dictionary<Guid, Dictionary<Guid, ProcessStatus>>();
 			Logger.LogTypeMinLevel = Settings.Service.Read<LogType>("LogTypeMinLevel");
 			DistributionWorker.Instance.DistributionCompleted += DistributionWorker_DistributionCompleted;
@@ -214,38 +216,44 @@ namespace ProcessManager
 
 		public void Start()
 		{
-			if (!IsRunning)
-			{
-				_mainThread = new Thread(MainThread);
-				_mainThread.Start();
-			}
+			if (IsRunning)
+				return;
+
+			_shutDownRequested = false;
+			_mainThread = new Thread(MainThread);
+			_mainThread.Start();
 		}
 
 		public void ShutDown()
 		{
 			if (IsRunning)
-			{
-				_mainThread.Abort();
-			}
+				_shutDownRequested = true;
 		}
 
 		private void MainThread()
 		{
 			try
 			{
-				DistributionWorker.Instance.Initialize();
+				Logger.Add("STARTUP -- Initializing...");
+
+				DistributionWorker.Instance.Start();
 
 				ProcessManagerServiceHost.Open(this);
 
 				Thread.Sleep(2000);
 
-				EnterMainLoop();
+				try
+				{
+					EnterMainLoop();
+				}
+				finally
+				{
+					ProcessManagerServiceHost.Close();
 
-				ProcessManagerServiceHost.Close();
+					DistributionWorker.Instance.ShutDown();
+				}
 
-				DistributionWorker.Instance.Dispose();
-
-				Logger.Add("ABORTING -- Shut down completed, signing off");
+				Logger.Add("SHUTDOWN -- Shut down completed, signing off");
 			}
 			catch (Exception ex)
 			{
@@ -262,7 +270,9 @@ namespace ProcessManager
 		{
 			try
 			{
-				while (true)
+				Logger.Add("STARTUP -- Entering main loop...");
+
+				while (!_shutDownRequested)
 				{
 					try
 					{
@@ -309,7 +319,6 @@ namespace ProcessManager
 								RaiseProcessStatusesChangedEvent(changedProcessStatuses);
 						}
 					}
-					catch (ThreadAbortException) { throw; }
 					catch (Exception ex)
 					{
 						Logger.Add("An unexpected error occurred in main loop", ex);
@@ -317,10 +326,8 @@ namespace ProcessManager
 
 					Thread.Sleep(Settings.Service.Read<int>("StatusUpdateInterval"));
 				}
-			}
-			catch (ThreadAbortException)
-			{
-				Logger.Add("ABORTING -- Exiting main loop...");
+
+				Logger.Add("SHUTDOWN -- Exiting main loop...");
 			}
 			catch (Exception ex)
 			{

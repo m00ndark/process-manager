@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using ProcessManager;
+using ProcessManager.DataAccess;
 using ProcessManager.Utilities;
 using ProcessManagerUI.Forms;
 using ProcessManagerUI.Support;
@@ -20,9 +22,23 @@ namespace ProcessManagerUI
 				if (createdNew)
 				{
 					Logger.LogSource = LogSource.Client;
-					Application.EnableVisualStyles();
-					Application.SetCompatibleTextRenderingDefault(false);
-					Application.Run(new ControlPanelForm());
+
+					if (Environment.CommandLine.Contains("-migratesettings"))
+					{
+						RegistryHandler.MigrateSettings();
+
+						if (Settings.Client.StartWithWindows)
+							RegistryHandler.SetWindowsStartupTrigger(Application.ExecutablePath);
+
+						Logger.Add("Settings migrated");
+					}
+					else
+					{
+						Application.EnableVisualStyles();
+						Application.SetCompatibleTextRenderingDefault(false);
+						Application.Run(new ControlPanelForm());
+					}
+					Logger.Flush();
 				}
 				else
 				{

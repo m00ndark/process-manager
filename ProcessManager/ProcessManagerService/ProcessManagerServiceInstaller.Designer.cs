@@ -40,7 +40,7 @@
 			// serviceInstaller
 			// 
 			this.serviceInstaller.DisplayName = "Process Manager Service";
-			this.serviceInstaller.ServiceName = "ProcessManagerService";
+			this.serviceInstaller.ServiceName = Program.SERVICE_NAME;
 			this.serviceInstaller.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
 			// 
 			// ProcessManagerServiceInstaller

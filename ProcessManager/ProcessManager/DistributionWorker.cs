@@ -15,17 +15,19 @@ using ProcessManager.Utilities;
 
 namespace ProcessManager
 {
-	public class DistributionWorker : IDisposable, IProcessManagerEventHandler
+	public class DistributionWorker : IProcessManagerEventHandler
 	{
 		private static volatile DistributionWorker _instance;
 		private static readonly object _lock = new object();
 
 		private Thread _distributionConnectionManagementThread;
+		private volatile bool _shutDownRequested;
 		private readonly List<DistributionWork> _pendingDistributionWork;
 
 		private DistributionWorker()
 		{
 			_distributionConnectionManagementThread = null;
+			_shutDownRequested = false;
 			_pendingDistributionWork = new List<DistributionWork>();
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;
@@ -51,6 +53,8 @@ namespace ProcessManager
 			}
 		}
 
+		public bool IsRunning { get { return (_distributionConnectionManagementThread != null); } }
+
 		#endregion
 
 		#region Event raisers
@@ -62,16 +66,6 @@ namespace ProcessManager
 		}
 
 		#endregion
-
-		public void Initialize()
-		{
-			StartDistributionConnectionManagementThread();
-		}
-
-		public void Dispose()
-		{
-			StopDistributionConnectionManagementThread();
-		}
 
 		public void AddWork(DistributionWork work)
 		{
@@ -113,27 +107,33 @@ namespace ProcessManager
 
 		#region Distribution connection management
 
-		private void StartDistributionConnectionManagementThread()
+		public void Start()
 		{
-			if (_distributionConnectionManagementThread != null)
+			if (IsRunning)
 				return;
 
+			_shutDownRequested = false;
 			_distributionConnectionManagementThread = new Thread(DistributionConnectionManagementThread);
 			_distributionConnectionManagementThread.Start();
 		}
 
-		private void StopDistributionConnectionManagementThread()
+		public void ShutDown()
 		{
-			if (_distributionConnectionManagementThread != null)
-				_distributionConnectionManagementThread.Abort();
+			if (!IsRunning)
+				return;
+
+			_shutDownRequested = true;
+			while (IsRunning)
+				Thread.Sleep(10);
 		}
 
 		private void DistributionConnectionManagementThread()
 		{
 			try
 			{
-				int cleanInterval = Settings.Service.Read<int>("DistributionConnectionCleanInterval");
-				while (true)
+				Logger.Add("STARTUP -- Starting distribution connection management thread...");
+
+				while (!_shutDownRequested)
 				{
 					try
 					{
@@ -161,22 +161,24 @@ namespace ProcessManager
 								connection.ServiceHandler.Initialize();
 							});
 					}
-					catch (ThreadAbortException) { throw; }
 					catch (Exception ex)
 					{
 						Logger.Add("An unexpected error occurred in distribution connection management thread", ex);
 					}
 
-					Thread.Sleep(cleanInterval);
+					Thread.Sleep(Settings.Service.Read<int>("DistributionConnectionCleanInterval"));
 				}
-			}
-			catch (ThreadAbortException)
-			{
-				Logger.Add("ABORTING -- Shutting down distribution connection management thread...");
+
+				Logger.Add("SHUTDOWN -- Shutting down distribution connection management thread...");
 			}
 			catch (Exception ex)
 			{
 				Logger.Add("Fatal exception in distribution connection management thread, dying....", ex);
+			}
+			finally
+			{
+				// indicate that we are no longer running
+				_distributionConnectionManagementThread = null;
 			}
 		}
 
