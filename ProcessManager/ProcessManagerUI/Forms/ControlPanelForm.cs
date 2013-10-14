@@ -40,6 +40,7 @@ namespace ProcessManagerUI.Forms
 			};
 		private DateTime _formClosedAt;
 		private ConfigurationForm _configurationForm;
+		private MacrosForm _macrosForm;
 		private readonly List<IRootNode> _processRootNodes;
 		private readonly List<ProcessApplicationNode> _processApplicationNodes;
 		private readonly List<IRootNode> _distributionRootNodes;
@@ -64,6 +65,7 @@ namespace ProcessManagerUI.Forms
 			tabPageMacro.Text = tabPageMacro.Tag.ToString();
 			_formClosedAt = DateTime.MinValue;
 			_configurationForm = null;
+			_macrosForm = null;
 			_processRootNodes = new List<IRootNode>();
 			_processApplicationNodes = new List<ProcessApplicationNode>();
 			_distributionRootNodes = new List<IRootNode>();
@@ -462,6 +464,11 @@ namespace ProcessManagerUI.Forms
 			OpenConfigurationForm();
 		}
 
+		private void ToolStripMenuItemSystemTrayMacros_Click(object sender, EventArgs e)
+		{
+			OpenMacrosForm();
+		}
+
 		private void ToolStripMenuItemSystemTrayOptionsStartWithWindows_Click(object sender, EventArgs e)
 		{
 			ToggleOptionStartWithWindows();
@@ -598,6 +605,26 @@ namespace ProcessManagerUI.Forms
 		}
 
 		private void ConfigurationForm_MacrosChanged(object sender, EventArgs e)
+		{
+			InvalidateTabPages(ControlPanelTab.Macro);
+			UpdateFiltersAndLayoutAsync();
+		}
+
+		#endregion
+
+		#region Macros form event handlers
+
+		private void MacrosForm_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			if (_macrosForm == null)
+				return;
+
+			_macrosForm.FormClosed -= MacrosForm_FormClosed;
+			_macrosForm.MacrosChanged -= MacrosForm_MacrosChanged;
+			_macrosForm = null;
+		}
+
+		private void MacrosForm_MacrosChanged(object sender, EventArgs e)
 		{
 			InvalidateTabPages(ControlPanelTab.Macro);
 			UpdateFiltersAndLayoutAsync();
@@ -792,13 +819,29 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			_configurationForm = new ConfigurationForm();
+			_configurationForm = new ConfigurationForm(() => _macrosForm, macrosForm => _macrosForm = macrosForm);
 			if (Settings.Client.UserOwnsControlPanel && Settings.Client.KeepControlPanelTopMost)
 				_configurationForm.TopMost = true;
 			_configurationForm.FormClosed += ConfigurationForm_FormClosed;
 			_configurationForm.ConfigurationChanged += ConfigurationForm_ConfigurationChanged;
 			_configurationForm.MacrosChanged += ConfigurationForm_MacrosChanged;
 			_configurationForm.Show();
+		}
+
+		private void OpenMacrosForm()
+		{
+			if (_macrosForm != null)
+			{
+				try { NativeMethods.SetForegroundWindow(_macrosForm.Handle); } catch { ; }
+				return;
+			}
+
+			_macrosForm = new MacrosForm() { StartPosition = FormStartPosition.CenterScreen };
+			if (Settings.Client.UserOwnsControlPanel && Settings.Client.KeepControlPanelTopMost)
+				_macrosForm.TopMost = true;
+			_macrosForm.FormClosed += MacrosForm_FormClosed;
+			_macrosForm.MacrosChanged += MacrosForm_MacrosChanged;
+			_macrosForm.Show();
 		}
 
 		private void ReloadConfiguration(Machine machine)
@@ -1466,8 +1509,8 @@ namespace ProcessManagerUI.Forms
 										throw new InvalidOperationException();
 								}
 							}).Where(node => node != null).ToList();
-						return new MacroNode(macroBundle.Macro, levelTwoNodes);
-					}).ToList());
+						return levelTwoNodes.Any() ? new MacroNode(macroBundle.Macro, levelTwoNodes) : null;
+					}).Where(node => node != null).ToList());
 
 				_macroRootNodes.ForEach(node =>
 					{

@@ -9,6 +9,7 @@ using ProcessManager.DataObjects;
 using ProcessManager.DataObjects.Comparers;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
+using ProcessManagerUI.Support;
 using ProcessManagerUI.Utilities;
 using Application = ProcessManager.DataObjects.Application;
 using Timer = System.Windows.Forms.Timer;
@@ -18,6 +19,8 @@ namespace ProcessManagerUI.Forms
 	public partial class ConfigurationForm : Form
 	{
 		private readonly Timer _initTimer;
+		private readonly Func<MacrosForm> _getMacrosForm;
+		private readonly Action<MacrosForm> _setMacrosForm;
 		private Panel _currentPanel;
 		private Machine _selectedMachine;
 		private Group _selectedGroup;
@@ -31,6 +34,8 @@ namespace ProcessManagerUI.Forms
 		{
 			InitializeComponent();
 			ServiceHelper.ProcessManagerEventHandler.ConfigurationChanged += ProcessManagerEventHandler_ConfigurationChanged;
+			_getMacrosForm = null;
+			_setMacrosForm = null;
 			_currentPanel = null;
 			_selectedMachine = null;
 			_selectedGroup = null;
@@ -38,6 +43,12 @@ namespace ProcessManagerUI.Forms
 			_disableTextChangedEvents = false;
 			_initTimer = new Timer() { Enabled = false, Interval = 100 };
 			_initTimer.Tick += InitTimer_Tick;
+		}
+
+		public ConfigurationForm(Func<MacrosForm> getMacrosForm, Action<MacrosForm> setMacrosForm) : this()
+		{
+			_getMacrosForm = getMacrosForm;
+			_setMacrosForm = setMacrosForm;
 		}
 
 		#region Properties
@@ -129,10 +140,19 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonMacros_Click(object sender, EventArgs e)
 		{
-			MacrosForm macrosForm = new MacrosForm();
-			macrosForm.MacrosChanged += MachinesForm_MacrosChanged;
-			macrosForm.ShowDialog(this);
-			macrosForm.MacrosChanged -= MachinesForm_MacrosChanged;
+			MacrosForm macrosForm = _getMacrosForm();
+			if (macrosForm != null)
+			{
+				try { NativeMethods.SetForegroundWindow(macrosForm.Handle); } catch { ; }
+				return;
+			}
+
+			_setMacrosForm(macrosForm = new MacrosForm());
+			if (Settings.Client.UserOwnsControlPanel && Settings.Client.KeepControlPanelTopMost)
+				macrosForm.TopMost = true;
+			macrosForm.FormClosed += MacrosForm_FormClosed;
+			macrosForm.MacrosChanged += MacrosForm_MacrosChanged;
+			macrosForm.Show();
 		}
 
 		private void TreeViewConfiguration_AfterSelect(object sender, TreeViewEventArgs e)
@@ -605,7 +625,18 @@ namespace ProcessManagerUI.Forms
 
 		#region Macros form event handlers
 
-		private void MachinesForm_MacrosChanged(object sender, EventArgs e)
+		private void MacrosForm_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			MacrosForm macrosForm = _getMacrosForm();
+			if (macrosForm == null)
+				return;
+
+			macrosForm.FormClosed -= MacrosForm_FormClosed;
+			macrosForm.MacrosChanged -= MacrosForm_MacrosChanged;
+			_setMacrosForm(null);
+		}
+
+		private void MacrosForm_MacrosChanged(object sender, EventArgs e)
 		{
 			RaiseMacrosChangedEvent();
 		}

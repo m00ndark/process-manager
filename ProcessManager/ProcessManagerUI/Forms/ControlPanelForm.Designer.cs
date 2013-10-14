@@ -104,6 +104,7 @@ namespace ProcessManagerUI.Forms
 			this.labelDistributionFilter = new System.Windows.Forms.Label();
 			this.comboBoxDistributionGroupBy = new System.Windows.Forms.ComboBox();
 			this.labelDistributionGroupBy = new System.Windows.Forms.Label();
+			this.toolStripMenuItemSystemTrayMacros = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripSystemTray.SuspendLayout();
 			this.tableLayoutPanelProcess.SuspendLayout();
 			this.panelProcessApplications.SuspendLayout();
@@ -140,11 +141,12 @@ namespace ProcessManagerUI.Forms
 			// 
 			this.contextMenuStripSystemTray.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemSystemTrayConfiguration,
+            this.toolStripMenuItemSystemTrayMacros,
             this.toolStripMenuItemSystemTrayOptions,
             this.toolStripSeparatorSystemTray1,
             this.toolStripMenuItemSystemTrayExit});
 			this.contextMenuStripSystemTray.Name = "contextMenuStripSystemTray";
-			this.contextMenuStripSystemTray.Size = new System.Drawing.Size(158, 76);
+			this.contextMenuStripSystemTray.Size = new System.Drawing.Size(158, 120);
 			// 
 			// toolStripMenuItemSystemTrayConfiguration
 			// 
@@ -1037,6 +1039,13 @@ namespace ProcessManagerUI.Forms
 			this.labelDistributionGroupBy.TabIndex = 0;
 			this.labelDistributionGroupBy.Text = "Group by:";
 			// 
+			// toolStripMenuItemSystemTrayMacros
+			// 
+			this.toolStripMenuItemSystemTrayMacros.Name = "toolStripMenuItemSystemTrayMacros";
+			this.toolStripMenuItemSystemTrayMacros.Size = new System.Drawing.Size(157, 22);
+			this.toolStripMenuItemSystemTrayMacros.Text = "Macros...";
+			this.toolStripMenuItemSystemTrayMacros.Click += new System.EventHandler(this.ToolStripMenuItemSystemTrayMacros_Click);
+			// 
 			// ControlPanelForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1162,5 +1171,6 @@ namespace ProcessManagerUI.Forms
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptionsMinimumLogLevelFlow;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptionsMinimumLogLevelVerbose;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayOptionsMinimumLogLevelDebug;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSystemTrayMacros;
 	}
 }
