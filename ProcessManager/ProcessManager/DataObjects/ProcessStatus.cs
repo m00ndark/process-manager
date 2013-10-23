@@ -6,7 +6,8 @@ namespace ProcessManager.DataObjects
 	{
 		Unknown,
 		Stopped,
-		Running
+		Running,
+		ActionError
 	}
 
 	public class ProcessStatus

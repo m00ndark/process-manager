@@ -14,6 +14,7 @@ namespace ProcessManagerUI.Controls.Nodes
 	{
 		private readonly Guid _id;
 		private ProcessStatusValue _status;
+		private string _message;
 
 		public event EventHandler CheckedChanged;
 		public event EventHandler<ActionEventArgs> ActionTaken;
@@ -26,6 +27,7 @@ namespace ProcessManagerUI.Controls.Nodes
 			MachineID = machineID;
 			_id = MakeID(MachineID, GroupID, Application.ID);
 			_status = ProcessStatusValue.Unknown;
+			_message = null;
 			//BackColor = Color.FromArgb(255, 192, 128);
 		}
 
@@ -42,6 +44,16 @@ namespace ProcessManagerUI.Controls.Nodes
 			{
 				_status = value;
 				ApplyStatus();
+			}
+		}
+		
+		public string Message
+		{
+			get { return _message; }
+			set
+			{
+				_message = value;
+				ApplyMessage();
 			}
 		}
 
@@ -140,10 +152,18 @@ namespace ProcessManagerUI.Controls.Nodes
 				case ProcessStatusValue.Stopped:
 					pictureBoxStatus.Image = Properties.Resources.stopped_16;
 					break;
+				case ProcessStatusValue.ActionError:
+					pictureBoxStatus.Image = Properties.Resources.action_error_16;
+					break;
 				default:
 					pictureBoxStatus.Image = Properties.Resources.unknown_16;
 					break;
 			}
+		}
+
+		private void ApplyMessage()
+		{
+			toolTip.SetToolTip(pictureBoxStatus, _message);
 		}
 
 		#endregion

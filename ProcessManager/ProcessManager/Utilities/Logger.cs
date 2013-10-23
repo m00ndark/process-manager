@@ -77,6 +77,18 @@ namespace ProcessManager.Utilities
 			return _logFileNameTemplate.Replace("%date%", date.ToString("yyyy-MM-dd"));
 		}
 
+		public static void AddAndThrow<T>(string logText, Exception exception) where T : Exception
+		{
+			Add(logText, exception);
+			throw (T) Activator.CreateInstance(typeof(T), logText, exception);
+		}
+
+		public static void AddAndThrow<T>(LogType logType, string logText) where T : Exception
+		{
+			Add(logType, logText);
+			throw (T) Activator.CreateInstance(typeof(T), logText);
+		}
+
 		public static void Add(string logText)
 		{
 			Add(DefaultLogType, logText);

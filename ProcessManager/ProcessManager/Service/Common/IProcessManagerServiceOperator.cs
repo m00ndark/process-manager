@@ -20,7 +20,7 @@ namespace ProcessManager.Service.Common
 		List<DTOProcessStatus> GetAllProcessStatuses();
 
 		[OperationContract]
-		bool TakeProcessAction(DTOProcessAction processAction);
+		DTOProcessActionResult TakeProcessAction(DTOProcessAction processAction);
 
 		[OperationContract]
 		bool TakeDistributionAction(DTODistributionAction distributionAction);

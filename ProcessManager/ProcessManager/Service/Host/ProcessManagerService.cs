@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Common;
 using ProcessManager.Service.DataObjects;
@@ -81,10 +82,11 @@ namespace ProcessManager.Service.Host
 			return ProcessManager.Instance.GetAllProcessStatuses().Select(x => new DTOProcessStatus(x)).ToList();
 		}
 
-		public bool TakeProcessAction(DTOProcessAction processAction)
+		public DTOProcessActionResult TakeProcessAction(DTOProcessAction processAction)
 		{
 			Logger.Add(LogType.Verbose, "TakeProcessAction call received: action = " + processAction.Type + ", " + processAction.GroupID + " / " + processAction.ApplicationID);
-			return ProcessManager.Instance.TakeProcessAction(processAction.GroupID, processAction.ApplicationID, processAction.Type);
+			ProcessActionResult processActionResult = ProcessManager.Instance.TakeProcessAction(processAction.GroupID, processAction.ApplicationID, processAction.Type);
+			return new DTOProcessActionResult(processActionResult);
 		}
 
 		public bool TakeDistributionAction(DTODistributionAction distributionAction)

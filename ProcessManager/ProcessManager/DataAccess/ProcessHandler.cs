@@ -5,47 +5,68 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using ProcessManager.DataObjects;
+using ProcessManager.Exceptions;
 using ProcessManager.Utilities;
 
 namespace ProcessManager.DataAccess
 {
 	public static class ProcessHandler
 	{
+		private const int WAIT_FOR_EXIT_TIMEOUT = 60000;
+
 		public static List<string> GetProcesses(List<Application> applications)
 		{
 			return applications.SelectMany(application => GetProcesses(application).Select(process => process.GetPathName())).ToList();
 		}
 
-		public static bool Start(Group group, Application application)
+		public static void Start(Group group, Application application)
 		{
-			return Start(group, application, false);
+			Start(group, application, false);
 		}
 
-		private static bool Start(Group group, Application application, bool waitUntilStopped)
+		private static void Start(Group group, Application application, bool waitUntilStopped)
 		{
 			if (waitUntilStopped)
 				WaitForProcessToTerminate(group, application);
 
 			if (ProcessExists(group, application))
-				return false;
+				throw new ProcessActionException("Could not start process as it is already running");
 
 			string fullPath = Path.Combine(group.Path, application.RelativePath.TrimStart('\\'));
 			Process process = new Process() { StartInfo = { FileName = fullPath, Arguments = application.Arguments } };
 			try
 			{
 				process.Start();
-				return true;
 			}
 			catch (Exception ex)
 			{
-				Logger.Add("Failed to start process with path " + fullPath, ex);
-				return false;
+				Logger.AddAndThrow<ProcessActionException>("Failed to start process with path " + fullPath, ex);
 			}
+
+			if (!application.WaitForExit)
+				return;
+
+			if (process.WaitForExit(WAIT_FOR_EXIT_TIMEOUT))
+			{
+				switch (application.SuccessExitCode)
+				{
+					case SuccessExitCode.Zero:
+						if (process.ExitCode != 0) throw new ProcessActionException("Process exit code was " + process.ExitCode + " (expected zero)");
+						break;
+					case SuccessExitCode.Positive:
+						if (process.ExitCode < 0) throw new ProcessActionException("Process exit code was " + process.ExitCode + " (expected positive)");
+						break;
+					case SuccessExitCode.Negative:
+						if (process.ExitCode >= 0) throw new ProcessActionException("Process exit code was " + process.ExitCode + " (expected negative)");
+						break;
+				}
+			}
+			else
+				throw new ProcessActionException("Process did not exit within " + WAIT_FOR_EXIT_TIMEOUT + " milliseconds");
 		}
 
-		public static bool Stop(Group group, Application application)
+		public static void Stop(Group group, Application application)
 		{
-			bool success = true;
 			foreach (Process process in GetProcesses(group, application))
 			{
 				try
@@ -54,16 +75,15 @@ namespace ProcessManager.DataAccess
 				}
 				catch (Exception ex)
 				{
-					success = false;
-					Logger.Add("Failed to kill process with path " + process.GetPathName(), ex);
+					Logger.AddAndThrow<ProcessActionException>("Failed to kill process with path " + process.GetPathName(), ex);
 				}
 			}
-			return success;
 		}
 
-		public static bool Restart(Group group, Application application)
+		public static void Restart(Group group, Application application)
 		{
-			return Stop(group, application) && Start(group, application, true);
+			Stop(group, application);
+			Start(group, application, true);
 		}
 
 		private static void WaitForProcessToTerminate(Group group, Application application)

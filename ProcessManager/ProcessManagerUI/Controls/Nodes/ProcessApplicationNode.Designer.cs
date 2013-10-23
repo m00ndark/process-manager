@@ -28,22 +28,16 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.pictureBoxStatus = new System.Windows.Forms.PictureBox();
+			this.components = new System.ComponentModel.Container();
 			this.linkLabelStop = new System.Windows.Forms.LinkLabel();
 			this.linkLabelStart = new System.Windows.Forms.LinkLabel();
 			this.labelApplicationName = new System.Windows.Forms.Label();
 			this.checkBoxSelected = new System.Windows.Forms.CheckBox();
 			this.linkLabelRestart = new System.Windows.Forms.LinkLabel();
+			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+			this.pictureBoxStatus = new System.Windows.Forms.PictureBox();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxStatus)).BeginInit();
 			this.SuspendLayout();
-			// 
-			// pictureBoxStatus
-			// 
-			this.pictureBoxStatus.Location = new System.Drawing.Point(46, 3);
-			this.pictureBoxStatus.Name = "pictureBoxStatus";
-			this.pictureBoxStatus.Size = new System.Drawing.Size(16, 16);
-			this.pictureBoxStatus.TabIndex = 6;
-			this.pictureBoxStatus.TabStop = false;
 			// 
 			// linkLabelStop
 			// 
@@ -125,6 +119,18 @@
 			this.linkLabelRestart.VisitedLinkColor = System.Drawing.SystemColors.HotTrack;
 			this.linkLabelRestart.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelRestart_LinkClicked);
 			// 
+			// toolTip
+			// 
+			this.toolTip.AutomaticDelay = 0;
+			// 
+			// pictureBoxStatus
+			// 
+			this.pictureBoxStatus.Location = new System.Drawing.Point(46, 3);
+			this.pictureBoxStatus.Name = "pictureBoxStatus";
+			this.pictureBoxStatus.Size = new System.Drawing.Size(16, 16);
+			this.pictureBoxStatus.TabIndex = 6;
+			this.pictureBoxStatus.TabStop = false;
+			// 
 			// ProcessApplicationNode
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -154,5 +160,6 @@
 		private System.Windows.Forms.Label labelApplicationName;
 		private System.Windows.Forms.CheckBox checkBoxSelected;
 		private System.Windows.Forms.LinkLabel linkLabelRestart;
+		private System.Windows.Forms.ToolTip toolTip;
 	}
 }

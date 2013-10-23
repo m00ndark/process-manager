@@ -8,6 +8,14 @@ using ProcessManager.DataObjects.Comparers;
 
 namespace ProcessManager.DataObjects
 {
+	public enum SuccessExitCode
+	{
+		Any,
+		Zero,
+		Positive,
+		Negative
+	}
+
 	public class Application : IIDObject, IXmlSerializable
 	{
 		public Application()
@@ -21,6 +29,8 @@ namespace ProcessManager.DataObjects
 			Name = name;
 			RelativePath = string.Empty;
 			Arguments = string.Empty;
+			WaitForExit = false;
+			SuccessExitCode = SuccessExitCode.Any;
 			DistributionOnly = false;
 		}
 
@@ -35,6 +45,8 @@ namespace ProcessManager.DataObjects
 		public string Name { get; set; }
 		public string RelativePath { get; set; }
 		public string Arguments { get; set; }
+		public bool WaitForExit { get; set; }
+		public SuccessExitCode SuccessExitCode { get; set; }
 		public bool DistributionOnly { get; set; }
 		public List<DistributionSource> Sources { get; set; }
 
@@ -42,7 +54,8 @@ namespace ProcessManager.DataObjects
 
 		public Application Clone()
 		{
-			Application application = new Application() { ID = ID, Name = Name, RelativePath = RelativePath, Arguments = Arguments, DistributionOnly = DistributionOnly };
+			Application application = new Application() { ID = ID, Name = Name, RelativePath = RelativePath, Arguments = Arguments,
+				WaitForExit = WaitForExit, SuccessExitCode = SuccessExitCode, DistributionOnly = DistributionOnly };
 			application.Sources.AddRange(Sources.Select(source => source.Clone()));
 			return application;
 		}
@@ -104,6 +117,12 @@ namespace ProcessManager.DataObjects
 					case "Arguments":
 						Arguments = reader.Value;
 						break;
+					case "WaitForExit":
+						WaitForExit = bool.Parse(reader.Value);
+						break;
+					case "SuccessExitCode":
+						SuccessExitCode = (SuccessExitCode) Enum.Parse(typeof(SuccessExitCode), reader.Value);
+						break;
 					case "DistributionOnly":
 						DistributionOnly = bool.Parse(reader.Value);
 						break;
@@ -135,6 +154,8 @@ namespace ProcessManager.DataObjects
 			writer.WriteAttributeString("Name", Name);
 			writer.WriteAttributeString("RelativePath", RelativePath);
 			writer.WriteAttributeString("Arguments", Arguments);
+			writer.WriteAttributeString("WaitForExit", WaitForExit.ToString());
+			writer.WriteAttributeString("SuccessExitCode", SuccessExitCode.ToString());
 			writer.WriteAttributeString("DistributionOnly", DistributionOnly.ToString());
 			foreach (DistributionSource source in Sources)
 				source.WriteXml(writer);

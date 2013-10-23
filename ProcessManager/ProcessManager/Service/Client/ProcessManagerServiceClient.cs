@@ -47,7 +47,7 @@ namespace ProcessManager.Service.Client
 			return Channel.GetAllProcessStatuses();
 		}
 
-		public bool TakeProcessAction(DTOProcessAction processAction)
+		public DTOProcessActionResult TakeProcessAction(DTOProcessAction processAction)
 		{
 			return Channel.TakeProcessAction(processAction);
 		}

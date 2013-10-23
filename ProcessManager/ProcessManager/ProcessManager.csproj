@@ -111,6 +111,7 @@
     <Compile Include="DataObjects\IIDObject.cs" />
     <Compile Include="DataObjects\Machine.cs" />
     <Compile Include="DataObjects\MachineConnection.cs" />
+    <Compile Include="DataObjects\ProcessActionResult.cs" />
     <Compile Include="DistributionWorker.cs" />
     <Compile Include="EventArguments\ActionEventArgs.cs" />
     <Compile Include="EventArguments\DistributionResultEventArgs.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="EventArguments\MachineConfigurationHashEventArgs.cs" />
     <Compile Include="EventArguments\MachinesEventArgs.cs" />
     <Compile Include="EventArguments\ServiceHandlerConnectionChangedEventArgs.cs" />
+    <Compile Include="Exceptions\ProcessActionException.cs" />
     <Compile Include="IProcessManagerEventHandler.cs" />
     <Compile Include="IProcessManagerEventProvider.cs" />
     <Compile Include="Service\Client\ProcessManagerServiceConnectionHandler.cs" />
@@ -133,6 +135,7 @@
     <Compile Include="Service\DataObjects\DTODistributionFile.cs" />
     <Compile Include="Service\DataObjects\DTODistributionResult.cs" />
     <Compile Include="Service\DataObjects\DTOProcessAction.cs" />
+    <Compile Include="Service\DataObjects\DTOProcessActionResult.cs" />
     <Compile Include="Service\DataObjects\DTOProcessStatus.cs" />
     <Compile Include="Service\DataObjects\DTOConfiguration.cs" />
     <Compile Include="Service\DataObjects\DTODistributionSource.cs" />

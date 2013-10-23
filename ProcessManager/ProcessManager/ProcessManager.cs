@@ -6,6 +6,7 @@ using System.Threading;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
+using ProcessManager.Exceptions;
 using ProcessManager.Service.Common;
 using ProcessManager.Service.Host;
 using ProcessManager.Utilities;
@@ -110,35 +111,45 @@ namespace ProcessManager
 				return _processStatuses.Values.SelectMany(x => x.Values).ToList();
 		}
 
-		public bool TakeProcessAction(Guid groupID, Guid applicationID, ActionType type)
+		public ProcessActionResult TakeProcessAction(Guid groupID, Guid applicationID, ActionType type)
 		{
-			Configuration configuration = Configuration.Read();
-			Group group = configuration.Groups.FirstOrDefault(x => x.ID == groupID);
-			Application application = configuration.Applications.FirstOrDefault(x => x.ID == applicationID);
+			string errorMessage = null;
 
-			if (group == null)
+			try
 			{
-				Logger.Add(LogType.Error, "Application " + type + ": Could not find group with ID " + groupID);
-				return false;
+				Configuration configuration = Configuration.Read();
+				Group group = configuration.Groups.FirstOrDefault(x => x.ID == groupID);
+				Application application = configuration.Applications.FirstOrDefault(x => x.ID == applicationID);
+
+				if (group == null)
+					Logger.AddAndThrow<ProcessActionException>(LogType.Error, "Application " + type + ": Could not find group with ID " + groupID);
+
+				if (application == null)
+					Logger.AddAndThrow<ProcessActionException>(LogType.Error, "Application " + type + ": Could not find application with ID " + applicationID);
+
+				switch (type)
+				{
+					case ActionType.Start:
+						ProcessHandler.Start(group, application);
+						break;
+					case ActionType.Stop:
+						ProcessHandler.Stop(group, application);
+						break;
+					case ActionType.Restart:
+						ProcessHandler.Restart(group, application);
+						break;
+					default:
+						Logger.AddAndThrow<ProcessActionException>(LogType.Error, "Process action type invalid: " + type);
+						break;
+				}
+			}
+			catch (ProcessActionException ex)
+			{
+				errorMessage = ex.Message;
 			}
 
-			if (application == null)
-			{
-				Logger.Add(LogType.Error, "Application " + type + ": Could not find application with ID " + applicationID);
-				return false;
-			}
-
-			switch (type)
-			{
-				case ActionType.Start:
-					return ProcessHandler.Start(group, application);
-				case ActionType.Stop:
-					return ProcessHandler.Stop(group, application);
-				case ActionType.Restart:
-					return ProcessHandler.Restart(group, application);
-				default:
-					return false;
-			}
+			return new ProcessActionResult(type, errorMessage,
+				_processStatuses.ContainsKey(groupID) && _processStatuses[groupID].ContainsKey(applicationID) ? _processStatuses[groupID][applicationID] : null);
 		}
 
 		public bool TakeDistributionAction(string sourceMachineHostName, Guid groupID, Guid applicationID, string destinationMachineHostName, ActionType type, IProcessManagerServiceEventHandler caller)

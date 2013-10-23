@@ -924,14 +924,20 @@ namespace ProcessManagerUI.Forms
 			lock (_processApplicationNodes)
 			{
 				foreach (ProcessStatus processStatus in processStatuses)
-				{
-					ProcessApplicationNode applicationNode = _processApplicationNodes.FirstOrDefault(node =>
-						node.Matches(processStatus.Machine.ID, processStatus.GroupID, processStatus.ApplicationID));
-
-					if (applicationNode != null)
-						applicationNode.Status = processStatus.Value;
-				}
+					ApplyProcessStatus(processStatus);
 			}
+		}
+
+		private void ApplyProcessStatus(ProcessStatus processStatus, string message = null)
+		{
+			ProcessApplicationNode applicationNode = _processApplicationNodes.FirstOrDefault(node =>
+				node.Matches(processStatus.Machine.ID, processStatus.GroupID, processStatus.ApplicationID));
+
+			if (applicationNode == null)
+				return;
+
+			applicationNode.Status = processStatus.Value;
+			applicationNode.Message = message;
 		}
 
 		private void UpdateProcessFilterAndLayout()
@@ -1628,7 +1634,13 @@ namespace ProcessManagerUI.Forms
 					processAction.Group = group;
 					processAction.Application = application;
 
-					return ConnectionStore.Connections[processAction.Machine].ServiceHandler.Service.TakeProcessAction(new DTOProcessAction(processAction));
+					ProcessActionResult processActionResult = ConnectionStore.Connections[processAction.Machine].ServiceHandler.Service
+						.TakeProcessAction(new DTOProcessAction(processAction)).FromDTO(processAction.Machine);
+
+					if (!processActionResult.Success)
+						ApplyProcessStatus(new ProcessStatus(processAction.Machine, processAction.Group.ID, processAction.Application.ID, ProcessStatusValue.ActionError), processActionResult.ErrorMessage);
+
+					return processActionResult.Success;
 				}
 
 				DistributionAction distributionAction = action as DistributionAction;
