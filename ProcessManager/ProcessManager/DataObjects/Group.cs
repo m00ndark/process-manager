@@ -42,6 +42,14 @@ namespace ProcessManager.DataObjects
 			return group;
 		}
 
+		public Group Copy(string name = null)
+		{
+			Group group = Clone();
+			group.ID = Guid.NewGuid();
+			if (name != null) group.Name = name;
+			return group;
+		}
+
 		#region Equality
 
 		public bool Equals(string name)

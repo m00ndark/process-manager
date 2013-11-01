@@ -37,7 +37,29 @@
 			this.labelNothingToShow = new System.Windows.Forms.Label();
 			this.labelMachineNotAvailable = new System.Windows.Forms.Label();
 			this.buttonMacros = new System.Windows.Forms.Button();
+			this.panelGroups = new ProcessManagerUI.Controls.BackgroundPanel();
+			this.buttonCopyGroup = new System.Windows.Forms.Button();
+			this.panelGroup = new System.Windows.Forms.Panel();
+			this.labeledDividerGroup = new ProcessManagerUI.Controls.LabeledDivider();
+			this.buttonCopyGroupApplications = new System.Windows.Forms.Button();
+			this.labelGroupName = new System.Windows.Forms.Label();
+			this.buttonRemoveGroupApplication = new System.Windows.Forms.Button();
+			this.textBoxGroupName = new System.Windows.Forms.TextBox();
+			this.buttonAddGroupApplication = new System.Windows.Forms.Button();
+			this.labelGroupPath = new System.Windows.Forms.Label();
+			this.listViewGroupApplications = new ProcessManagerUI.Controls.ListView();
+			this.columnHeaderApplicationMappings = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.textBoxGroupPath = new System.Windows.Forms.TextBox();
+			this.labelGroupApplications = new System.Windows.Forms.Label();
+			this.labeledDividerGroupApplicationMappings = new ProcessManagerUI.Controls.LabeledDivider();
+			this.buttonBrowseGroupPath = new System.Windows.Forms.Button();
+			this.labelNoGroupSelected = new System.Windows.Forms.Label();
+			this.buttonRemoveGroup = new System.Windows.Forms.Button();
+			this.buttonAddGroup = new System.Windows.Forms.Button();
+			this.listViewGroups = new ProcessManagerUI.Controls.ListView();
+			this.columnHeaderGroups = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.panelApplications = new ProcessManagerUI.Controls.BackgroundPanel();
+			this.buttonCopyApplication = new System.Windows.Forms.Button();
 			this.panelApplication = new System.Windows.Forms.Panel();
 			this.labelApplicationSuccessExitCode = new System.Windows.Forms.Label();
 			this.comboBoxApplicationSuccessExitCode = new System.Windows.Forms.ComboBox();
@@ -61,26 +83,6 @@
 			this.buttonAddApplication = new System.Windows.Forms.Button();
 			this.listViewApplications = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderApplications = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.panelGroups = new ProcessManagerUI.Controls.BackgroundPanel();
-			this.panelGroup = new System.Windows.Forms.Panel();
-			this.labeledDividerGroup = new ProcessManagerUI.Controls.LabeledDivider();
-			this.buttonCopyGroupApplications = new System.Windows.Forms.Button();
-			this.labelGroupName = new System.Windows.Forms.Label();
-			this.buttonRemoveGroupApplication = new System.Windows.Forms.Button();
-			this.textBoxGroupName = new System.Windows.Forms.TextBox();
-			this.buttonAddGroupApplication = new System.Windows.Forms.Button();
-			this.labelGroupPath = new System.Windows.Forms.Label();
-			this.listViewGroupApplications = new ProcessManagerUI.Controls.ListView();
-			this.columnHeaderApplicationMappings = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.textBoxGroupPath = new System.Windows.Forms.TextBox();
-			this.labelGroupApplications = new System.Windows.Forms.Label();
-			this.labeledDividerGroupApplicationMappings = new ProcessManagerUI.Controls.LabeledDivider();
-			this.buttonBrowseGroupPath = new System.Windows.Forms.Button();
-			this.labelNoGroupSelected = new System.Windows.Forms.Label();
-			this.buttonRemoveGroup = new System.Windows.Forms.Button();
-			this.buttonAddGroup = new System.Windows.Forms.Button();
-			this.listViewGroups = new ProcessManagerUI.Controls.ListView();
-			this.columnHeaderGroups = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.panelPlugins = new ProcessManagerUI.Controls.BackgroundPanel();
 			this.panelPlugin = new System.Windows.Forms.Panel();
 			this.checkBoxPluginEnabled = new System.Windows.Forms.CheckBox();
@@ -94,11 +96,10 @@
 			this.listViewPlugins = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderPlugins = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.treeViewConfiguration = new ProcessManagerUI.Controls.TreeView();
-			this.buttonCopyApplication = new System.Windows.Forms.Button();
-			this.panelApplications.SuspendLayout();
-			this.panelApplication.SuspendLayout();
 			this.panelGroups.SuspendLayout();
 			this.panelGroup.SuspendLayout();
+			this.panelApplications.SuspendLayout();
+			this.panelApplication.SuspendLayout();
 			this.panelPlugins.SuspendLayout();
 			this.panelPlugin.SuspendLayout();
 			this.SuspendLayout();
@@ -197,6 +198,262 @@
 			this.buttonMacros.UseVisualStyleBackColor = true;
 			this.buttonMacros.Click += new System.EventHandler(this.ButtonMacros_Click);
 			// 
+			// panelGroups
+			// 
+			this.panelGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelGroups.BackColor = System.Drawing.SystemColors.Window;
+			this.panelGroups.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
+			this.panelGroups.Controls.Add(this.buttonCopyGroup);
+			this.panelGroups.Controls.Add(this.panelGroup);
+			this.panelGroups.Controls.Add(this.labelNoGroupSelected);
+			this.panelGroups.Controls.Add(this.buttonRemoveGroup);
+			this.panelGroups.Controls.Add(this.buttonAddGroup);
+			this.panelGroups.Controls.Add(this.listViewGroups);
+			this.panelGroups.Location = new System.Drawing.Point(144, 39);
+			this.panelGroups.Name = "panelGroups";
+			this.panelGroups.Padding = new System.Windows.Forms.Padding(5);
+			this.panelGroups.Size = new System.Drawing.Size(618, 362);
+			this.panelGroups.TabIndex = 3;
+			this.panelGroups.Visible = false;
+			// 
+			// buttonCopyGroup
+			// 
+			this.buttonCopyGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonCopyGroup.Image = global::ProcessManagerUI.Properties.Resources.copy_16;
+			this.buttonCopyGroup.Location = new System.Drawing.Point(49, 330);
+			this.buttonCopyGroup.Name = "buttonCopyGroup";
+			this.buttonCopyGroup.Size = new System.Drawing.Size(38, 24);
+			this.buttonCopyGroup.TabIndex = 25;
+			this.buttonCopyGroup.UseVisualStyleBackColor = true;
+			this.buttonCopyGroup.Click += new System.EventHandler(this.ButtonCopyGroup_Click);
+			// 
+			// panelGroup
+			// 
+			this.panelGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelGroup.Controls.Add(this.labeledDividerGroup);
+			this.panelGroup.Controls.Add(this.buttonCopyGroupApplications);
+			this.panelGroup.Controls.Add(this.labelGroupName);
+			this.panelGroup.Controls.Add(this.buttonRemoveGroupApplication);
+			this.panelGroup.Controls.Add(this.textBoxGroupName);
+			this.panelGroup.Controls.Add(this.buttonAddGroupApplication);
+			this.panelGroup.Controls.Add(this.labelGroupPath);
+			this.panelGroup.Controls.Add(this.listViewGroupApplications);
+			this.panelGroup.Controls.Add(this.textBoxGroupPath);
+			this.panelGroup.Controls.Add(this.labelGroupApplications);
+			this.panelGroup.Controls.Add(this.labeledDividerGroupApplicationMappings);
+			this.panelGroup.Controls.Add(this.buttonBrowseGroupPath);
+			this.panelGroup.Location = new System.Drawing.Point(144, 8);
+			this.panelGroup.Margin = new System.Windows.Forms.Padding(0);
+			this.panelGroup.Name = "panelGroup";
+			this.panelGroup.Size = new System.Drawing.Size(466, 345);
+			this.panelGroup.TabIndex = 17;
+			this.panelGroup.Visible = false;
+			// 
+			// labeledDividerGroup
+			// 
+			this.labeledDividerGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labeledDividerGroup.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDividerGroup.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.labeledDividerGroup.Location = new System.Drawing.Point(0, 0);
+			this.labeledDividerGroup.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
+			this.labeledDividerGroup.Name = "labeledDividerGroup";
+			this.labeledDividerGroup.Size = new System.Drawing.Size(466, 15);
+			this.labeledDividerGroup.TabIndex = 10;
+			this.labeledDividerGroup.Text = "Group";
+			// 
+			// buttonCopyGroupApplications
+			// 
+			this.buttonCopyGroupApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCopyGroupApplications.Image = global::ProcessManagerUI.Properties.Resources.copy_16;
+			this.buttonCopyGroupApplications.Location = new System.Drawing.Point(422, 178);
+			this.buttonCopyGroupApplications.Name = "buttonCopyGroupApplications";
+			this.buttonCopyGroupApplications.Size = new System.Drawing.Size(38, 24);
+			this.buttonCopyGroupApplications.TabIndex = 16;
+			this.buttonCopyGroupApplications.UseVisualStyleBackColor = true;
+			this.buttonCopyGroupApplications.Click += new System.EventHandler(this.ButtonCopyGroupApplications_Click);
+			// 
+			// labelGroupName
+			// 
+			this.labelGroupName.AutoSize = true;
+			this.labelGroupName.Location = new System.Drawing.Point(20, 26);
+			this.labelGroupName.Name = "labelGroupName";
+			this.labelGroupName.Size = new System.Drawing.Size(39, 13);
+			this.labelGroupName.TabIndex = 5;
+			this.labelGroupName.Text = "Name:";
+			// 
+			// buttonRemoveGroupApplication
+			// 
+			this.buttonRemoveGroupApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonRemoveGroupApplication.Image = global::ProcessManagerUI.Properties.Resources.remove_16;
+			this.buttonRemoveGroupApplication.Location = new System.Drawing.Point(422, 148);
+			this.buttonRemoveGroupApplication.Name = "buttonRemoveGroupApplication";
+			this.buttonRemoveGroupApplication.Size = new System.Drawing.Size(38, 24);
+			this.buttonRemoveGroupApplication.TabIndex = 15;
+			this.buttonRemoveGroupApplication.UseVisualStyleBackColor = true;
+			this.buttonRemoveGroupApplication.Click += new System.EventHandler(this.ButtonRemoveGroupApplication_Click);
+			// 
+			// textBoxGroupName
+			// 
+			this.textBoxGroupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxGroupName.Location = new System.Drawing.Point(100, 23);
+			this.textBoxGroupName.Name = "textBoxGroupName";
+			this.textBoxGroupName.Size = new System.Drawing.Size(316, 22);
+			this.textBoxGroupName.TabIndex = 6;
+			this.textBoxGroupName.TextChanged += new System.EventHandler(this.TextBoxGroupName_TextChanged);
+			this.textBoxGroupName.Leave += new System.EventHandler(this.TextBoxGroupName_Leave);
+			// 
+			// buttonAddGroupApplication
+			// 
+			this.buttonAddGroupApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonAddGroupApplication.Image = global::ProcessManagerUI.Properties.Resources.add_16;
+			this.buttonAddGroupApplication.Location = new System.Drawing.Point(422, 118);
+			this.buttonAddGroupApplication.Name = "buttonAddGroupApplication";
+			this.buttonAddGroupApplication.Size = new System.Drawing.Size(38, 24);
+			this.buttonAddGroupApplication.TabIndex = 14;
+			this.buttonAddGroupApplication.UseVisualStyleBackColor = true;
+			this.buttonAddGroupApplication.Click += new System.EventHandler(this.ButtonAddGroupApplication_Click);
+			// 
+			// labelGroupPath
+			// 
+			this.labelGroupPath.AutoSize = true;
+			this.labelGroupPath.Location = new System.Drawing.Point(20, 54);
+			this.labelGroupPath.Name = "labelGroupPath";
+			this.labelGroupPath.Size = new System.Drawing.Size(33, 13);
+			this.labelGroupPath.TabIndex = 7;
+			this.labelGroupPath.Text = "Path:";
+			// 
+			// listViewGroupApplications
+			// 
+			this.listViewGroupApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.listViewGroupApplications.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderApplicationMappings});
+			this.listViewGroupApplications.FullRowSelect = true;
+			this.listViewGroupApplications.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewGroupApplications.HideSelection = false;
+			this.listViewGroupApplications.Location = new System.Drawing.Point(100, 119);
+			this.listViewGroupApplications.MultiSelect = false;
+			this.listViewGroupApplications.Name = "listViewGroupApplications";
+			this.listViewGroupApplications.Size = new System.Drawing.Size(316, 226);
+			this.listViewGroupApplications.Sorting = System.Windows.Forms.SortOrder.Ascending;
+			this.listViewGroupApplications.TabIndex = 13;
+			this.listViewGroupApplications.UseCompatibleStateImageBehavior = false;
+			this.listViewGroupApplications.View = System.Windows.Forms.View.Details;
+			this.listViewGroupApplications.SelectedIndexChanged += new System.EventHandler(this.ListViewGroupApplications_SelectedIndexChanged);
+			// 
+			// columnHeaderApplicationMappings
+			// 
+			this.columnHeaderApplicationMappings.Text = "ApplicationMappings";
+			this.columnHeaderApplicationMappings.Width = 265;
+			// 
+			// textBoxGroupPath
+			// 
+			this.textBoxGroupPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxGroupPath.Location = new System.Drawing.Point(100, 51);
+			this.textBoxGroupPath.Name = "textBoxGroupPath";
+			this.textBoxGroupPath.Size = new System.Drawing.Size(316, 22);
+			this.textBoxGroupPath.TabIndex = 8;
+			this.textBoxGroupPath.TextChanged += new System.EventHandler(this.TextBoxGroupPath_TextChanged);
+			this.textBoxGroupPath.MouseLeave += new System.EventHandler(this.TextBoxGroupPath_MouseLeave);
+			// 
+			// labelGroupApplications
+			// 
+			this.labelGroupApplications.AutoSize = true;
+			this.labelGroupApplications.Location = new System.Drawing.Point(20, 122);
+			this.labelGroupApplications.Name = "labelGroupApplications";
+			this.labelGroupApplications.Size = new System.Drawing.Size(74, 13);
+			this.labelGroupApplications.TabIndex = 12;
+			this.labelGroupApplications.Text = "Applications:";
+			// 
+			// labeledDividerGroupApplicationMappings
+			// 
+			this.labeledDividerGroupApplicationMappings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labeledDividerGroupApplicationMappings.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+			this.labeledDividerGroupApplicationMappings.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.labeledDividerGroupApplicationMappings.Location = new System.Drawing.Point(0, 95);
+			this.labeledDividerGroupApplicationMappings.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
+			this.labeledDividerGroupApplicationMappings.Name = "labeledDividerGroupApplicationMappings";
+			this.labeledDividerGroupApplicationMappings.Size = new System.Drawing.Size(466, 15);
+			this.labeledDividerGroupApplicationMappings.TabIndex = 9;
+			this.labeledDividerGroupApplicationMappings.Text = "Mappings";
+			// 
+			// buttonBrowseGroupPath
+			// 
+			this.buttonBrowseGroupPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonBrowseGroupPath.Location = new System.Drawing.Point(422, 50);
+			this.buttonBrowseGroupPath.Name = "buttonBrowseGroupPath";
+			this.buttonBrowseGroupPath.Size = new System.Drawing.Size(38, 23);
+			this.buttonBrowseGroupPath.TabIndex = 11;
+			this.buttonBrowseGroupPath.Text = "...";
+			this.buttonBrowseGroupPath.UseVisualStyleBackColor = true;
+			this.buttonBrowseGroupPath.Click += new System.EventHandler(this.ButtonBrowseGroupPath_Click);
+			// 
+			// labelNoGroupSelected
+			// 
+			this.labelNoGroupSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelNoGroupSelected.Location = new System.Drawing.Point(144, 8);
+			this.labelNoGroupSelected.Name = "labelNoGroupSelected";
+			this.labelNoGroupSelected.Size = new System.Drawing.Size(466, 345);
+			this.labelNoGroupSelected.TabIndex = 22;
+			this.labelNoGroupSelected.Text = "No group selected";
+			this.labelNoGroupSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// buttonRemoveGroup
+			// 
+			this.buttonRemoveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonRemoveGroup.Image = global::ProcessManagerUI.Properties.Resources.remove_16;
+			this.buttonRemoveGroup.Location = new System.Drawing.Point(91, 330);
+			this.buttonRemoveGroup.Name = "buttonRemoveGroup";
+			this.buttonRemoveGroup.Size = new System.Drawing.Size(38, 24);
+			this.buttonRemoveGroup.TabIndex = 2;
+			this.buttonRemoveGroup.UseVisualStyleBackColor = true;
+			this.buttonRemoveGroup.Click += new System.EventHandler(this.ButtonRemoveGroup_Click);
+			// 
+			// buttonAddGroup
+			// 
+			this.buttonAddGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonAddGroup.Image = global::ProcessManagerUI.Properties.Resources.add_16;
+			this.buttonAddGroup.Location = new System.Drawing.Point(7, 330);
+			this.buttonAddGroup.Name = "buttonAddGroup";
+			this.buttonAddGroup.Size = new System.Drawing.Size(38, 24);
+			this.buttonAddGroup.TabIndex = 1;
+			this.buttonAddGroup.UseVisualStyleBackColor = true;
+			this.buttonAddGroup.Click += new System.EventHandler(this.ButtonAddGroup_Click);
+			// 
+			// listViewGroups
+			// 
+			this.listViewGroups.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.listViewGroups.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderGroups});
+			this.listViewGroups.FullRowSelect = true;
+			this.listViewGroups.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listViewGroups.HideSelection = false;
+			this.listViewGroups.Location = new System.Drawing.Point(8, 8);
+			this.listViewGroups.Name = "listViewGroups";
+			this.listViewGroups.Size = new System.Drawing.Size(120, 316);
+			this.listViewGroups.Sorting = System.Windows.Forms.SortOrder.Ascending;
+			this.listViewGroups.TabIndex = 0;
+			this.listViewGroups.UseCompatibleStateImageBehavior = false;
+			this.listViewGroups.View = System.Windows.Forms.View.Details;
+			this.listViewGroups.SelectedIndexChanged += new System.EventHandler(this.ListViewGroups_SelectedIndexChanged);
+			// 
+			// columnHeaderGroups
+			// 
+			this.columnHeaderGroups.Text = "Groups";
+			this.columnHeaderGroups.Width = 99;
+			// 
 			// panelApplications
 			// 
 			this.panelApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -216,6 +473,17 @@
 			this.panelApplications.Size = new System.Drawing.Size(618, 362);
 			this.panelApplications.TabIndex = 17;
 			this.panelApplications.Visible = false;
+			// 
+			// buttonCopyApplication
+			// 
+			this.buttonCopyApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonCopyApplication.Image = global::ProcessManagerUI.Properties.Resources.copy_16;
+			this.buttonCopyApplication.Location = new System.Drawing.Point(49, 330);
+			this.buttonCopyApplication.Name = "buttonCopyApplication";
+			this.buttonCopyApplication.Size = new System.Drawing.Size(38, 24);
+			this.buttonCopyApplication.TabIndex = 24;
+			this.buttonCopyApplication.UseVisualStyleBackColor = true;
+			this.buttonCopyApplication.Click += new System.EventHandler(this.ButtonCopyApplication_Click);
 			// 
 			// panelApplication
 			// 
@@ -468,7 +736,6 @@
 			this.listViewApplications.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewApplications.HideSelection = false;
 			this.listViewApplications.Location = new System.Drawing.Point(8, 8);
-			this.listViewApplications.MultiSelect = false;
 			this.listViewApplications.Name = "listViewApplications";
 			this.listViewApplications.Size = new System.Drawing.Size(120, 316);
 			this.listViewApplications.Sorting = System.Windows.Forms.SortOrder.Ascending;
@@ -481,251 +748,6 @@
 			// 
 			this.columnHeaderApplications.Text = "Applications";
 			this.columnHeaderApplications.Width = 99;
-			// 
-			// panelGroups
-			// 
-			this.panelGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelGroups.BackColor = System.Drawing.SystemColors.Window;
-			this.panelGroups.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
-			this.panelGroups.Controls.Add(this.panelGroup);
-			this.panelGroups.Controls.Add(this.labelNoGroupSelected);
-			this.panelGroups.Controls.Add(this.buttonRemoveGroup);
-			this.panelGroups.Controls.Add(this.buttonAddGroup);
-			this.panelGroups.Controls.Add(this.listViewGroups);
-			this.panelGroups.Location = new System.Drawing.Point(144, 39);
-			this.panelGroups.Name = "panelGroups";
-			this.panelGroups.Padding = new System.Windows.Forms.Padding(5);
-			this.panelGroups.Size = new System.Drawing.Size(618, 362);
-			this.panelGroups.TabIndex = 3;
-			this.panelGroups.Visible = false;
-			// 
-			// panelGroup
-			// 
-			this.panelGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelGroup.Controls.Add(this.labeledDividerGroup);
-			this.panelGroup.Controls.Add(this.buttonCopyGroupApplications);
-			this.panelGroup.Controls.Add(this.labelGroupName);
-			this.panelGroup.Controls.Add(this.buttonRemoveGroupApplication);
-			this.panelGroup.Controls.Add(this.textBoxGroupName);
-			this.panelGroup.Controls.Add(this.buttonAddGroupApplication);
-			this.panelGroup.Controls.Add(this.labelGroupPath);
-			this.panelGroup.Controls.Add(this.listViewGroupApplications);
-			this.panelGroup.Controls.Add(this.textBoxGroupPath);
-			this.panelGroup.Controls.Add(this.labelGroupApplications);
-			this.panelGroup.Controls.Add(this.labeledDividerGroupApplicationMappings);
-			this.panelGroup.Controls.Add(this.buttonBrowseGroupPath);
-			this.panelGroup.Location = new System.Drawing.Point(144, 8);
-			this.panelGroup.Margin = new System.Windows.Forms.Padding(0);
-			this.panelGroup.Name = "panelGroup";
-			this.panelGroup.Size = new System.Drawing.Size(466, 345);
-			this.panelGroup.TabIndex = 17;
-			this.panelGroup.Visible = false;
-			// 
-			// labeledDividerGroup
-			// 
-			this.labeledDividerGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDividerGroup.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDividerGroup.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.labeledDividerGroup.Location = new System.Drawing.Point(0, 0);
-			this.labeledDividerGroup.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
-			this.labeledDividerGroup.Name = "labeledDividerGroup";
-			this.labeledDividerGroup.Size = new System.Drawing.Size(466, 15);
-			this.labeledDividerGroup.TabIndex = 10;
-			this.labeledDividerGroup.Text = "Group";
-			// 
-			// buttonCopyGroupApplications
-			// 
-			this.buttonCopyGroupApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonCopyGroupApplications.Image = global::ProcessManagerUI.Properties.Resources.copy_16;
-			this.buttonCopyGroupApplications.Location = new System.Drawing.Point(422, 178);
-			this.buttonCopyGroupApplications.Name = "buttonCopyGroupApplications";
-			this.buttonCopyGroupApplications.Size = new System.Drawing.Size(38, 24);
-			this.buttonCopyGroupApplications.TabIndex = 16;
-			this.buttonCopyGroupApplications.UseVisualStyleBackColor = true;
-			this.buttonCopyGroupApplications.Click += new System.EventHandler(this.ButtonCopyGroupApplications_Click);
-			// 
-			// labelGroupName
-			// 
-			this.labelGroupName.AutoSize = true;
-			this.labelGroupName.Location = new System.Drawing.Point(20, 26);
-			this.labelGroupName.Name = "labelGroupName";
-			this.labelGroupName.Size = new System.Drawing.Size(39, 13);
-			this.labelGroupName.TabIndex = 5;
-			this.labelGroupName.Text = "Name:";
-			// 
-			// buttonRemoveGroupApplication
-			// 
-			this.buttonRemoveGroupApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonRemoveGroupApplication.Image = global::ProcessManagerUI.Properties.Resources.remove_16;
-			this.buttonRemoveGroupApplication.Location = new System.Drawing.Point(422, 148);
-			this.buttonRemoveGroupApplication.Name = "buttonRemoveGroupApplication";
-			this.buttonRemoveGroupApplication.Size = new System.Drawing.Size(38, 24);
-			this.buttonRemoveGroupApplication.TabIndex = 15;
-			this.buttonRemoveGroupApplication.UseVisualStyleBackColor = true;
-			this.buttonRemoveGroupApplication.Click += new System.EventHandler(this.ButtonRemoveGroupApplication_Click);
-			// 
-			// textBoxGroupName
-			// 
-			this.textBoxGroupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxGroupName.Location = new System.Drawing.Point(100, 23);
-			this.textBoxGroupName.Name = "textBoxGroupName";
-			this.textBoxGroupName.Size = new System.Drawing.Size(316, 22);
-			this.textBoxGroupName.TabIndex = 6;
-			this.textBoxGroupName.TextChanged += new System.EventHandler(this.TextBoxGroupName_TextChanged);
-			this.textBoxGroupName.Leave += new System.EventHandler(this.TextBoxGroupName_Leave);
-			// 
-			// buttonAddGroupApplication
-			// 
-			this.buttonAddGroupApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonAddGroupApplication.Image = global::ProcessManagerUI.Properties.Resources.add_16;
-			this.buttonAddGroupApplication.Location = new System.Drawing.Point(422, 118);
-			this.buttonAddGroupApplication.Name = "buttonAddGroupApplication";
-			this.buttonAddGroupApplication.Size = new System.Drawing.Size(38, 24);
-			this.buttonAddGroupApplication.TabIndex = 14;
-			this.buttonAddGroupApplication.UseVisualStyleBackColor = true;
-			this.buttonAddGroupApplication.Click += new System.EventHandler(this.ButtonAddGroupApplication_Click);
-			// 
-			// labelGroupPath
-			// 
-			this.labelGroupPath.AutoSize = true;
-			this.labelGroupPath.Location = new System.Drawing.Point(20, 54);
-			this.labelGroupPath.Name = "labelGroupPath";
-			this.labelGroupPath.Size = new System.Drawing.Size(33, 13);
-			this.labelGroupPath.TabIndex = 7;
-			this.labelGroupPath.Text = "Path:";
-			// 
-			// listViewGroupApplications
-			// 
-			this.listViewGroupApplications.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.listViewGroupApplications.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeaderApplicationMappings});
-			this.listViewGroupApplications.FullRowSelect = true;
-			this.listViewGroupApplications.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.listViewGroupApplications.HideSelection = false;
-			this.listViewGroupApplications.Location = new System.Drawing.Point(100, 119);
-			this.listViewGroupApplications.MultiSelect = false;
-			this.listViewGroupApplications.Name = "listViewGroupApplications";
-			this.listViewGroupApplications.Size = new System.Drawing.Size(316, 226);
-			this.listViewGroupApplications.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.listViewGroupApplications.TabIndex = 13;
-			this.listViewGroupApplications.UseCompatibleStateImageBehavior = false;
-			this.listViewGroupApplications.View = System.Windows.Forms.View.Details;
-			this.listViewGroupApplications.SelectedIndexChanged += new System.EventHandler(this.ListViewGroupApplications_SelectedIndexChanged);
-			// 
-			// columnHeaderApplicationMappings
-			// 
-			this.columnHeaderApplicationMappings.Text = "ApplicationMappings";
-			this.columnHeaderApplicationMappings.Width = 265;
-			// 
-			// textBoxGroupPath
-			// 
-			this.textBoxGroupPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxGroupPath.Location = new System.Drawing.Point(100, 51);
-			this.textBoxGroupPath.Name = "textBoxGroupPath";
-			this.textBoxGroupPath.Size = new System.Drawing.Size(316, 22);
-			this.textBoxGroupPath.TabIndex = 8;
-			this.textBoxGroupPath.TextChanged += new System.EventHandler(this.TextBoxGroupPath_TextChanged);
-			this.textBoxGroupPath.MouseLeave += new System.EventHandler(this.TextBoxGroupPath_MouseLeave);
-			// 
-			// labelGroupApplications
-			// 
-			this.labelGroupApplications.AutoSize = true;
-			this.labelGroupApplications.Location = new System.Drawing.Point(20, 122);
-			this.labelGroupApplications.Name = "labelGroupApplications";
-			this.labelGroupApplications.Size = new System.Drawing.Size(74, 13);
-			this.labelGroupApplications.TabIndex = 12;
-			this.labelGroupApplications.Text = "Applications:";
-			// 
-			// labeledDividerGroupApplicationMappings
-			// 
-			this.labeledDividerGroupApplicationMappings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labeledDividerGroupApplicationMappings.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-			this.labeledDividerGroupApplicationMappings.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.labeledDividerGroupApplicationMappings.Location = new System.Drawing.Point(0, 95);
-			this.labeledDividerGroupApplicationMappings.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
-			this.labeledDividerGroupApplicationMappings.Name = "labeledDividerGroupApplicationMappings";
-			this.labeledDividerGroupApplicationMappings.Size = new System.Drawing.Size(466, 15);
-			this.labeledDividerGroupApplicationMappings.TabIndex = 9;
-			this.labeledDividerGroupApplicationMappings.Text = "Mappings";
-			// 
-			// buttonBrowseGroupPath
-			// 
-			this.buttonBrowseGroupPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonBrowseGroupPath.Location = new System.Drawing.Point(422, 50);
-			this.buttonBrowseGroupPath.Name = "buttonBrowseGroupPath";
-			this.buttonBrowseGroupPath.Size = new System.Drawing.Size(38, 23);
-			this.buttonBrowseGroupPath.TabIndex = 11;
-			this.buttonBrowseGroupPath.Text = "...";
-			this.buttonBrowseGroupPath.UseVisualStyleBackColor = true;
-			this.buttonBrowseGroupPath.Click += new System.EventHandler(this.ButtonBrowseGroupPath_Click);
-			// 
-			// labelNoGroupSelected
-			// 
-			this.labelNoGroupSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labelNoGroupSelected.Location = new System.Drawing.Point(144, 8);
-			this.labelNoGroupSelected.Name = "labelNoGroupSelected";
-			this.labelNoGroupSelected.Size = new System.Drawing.Size(466, 345);
-			this.labelNoGroupSelected.TabIndex = 22;
-			this.labelNoGroupSelected.Text = "No group selected";
-			this.labelNoGroupSelected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// buttonRemoveGroup
-			// 
-			this.buttonRemoveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonRemoveGroup.Location = new System.Drawing.Point(71, 331);
-			this.buttonRemoveGroup.Name = "buttonRemoveGroup";
-			this.buttonRemoveGroup.Size = new System.Drawing.Size(58, 23);
-			this.buttonRemoveGroup.TabIndex = 2;
-			this.buttonRemoveGroup.Text = "Remove";
-			this.buttonRemoveGroup.UseVisualStyleBackColor = true;
-			this.buttonRemoveGroup.Click += new System.EventHandler(this.ButtonRemoveGroup_Click);
-			// 
-			// buttonAddGroup
-			// 
-			this.buttonAddGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonAddGroup.Location = new System.Drawing.Point(7, 331);
-			this.buttonAddGroup.Name = "buttonAddGroup";
-			this.buttonAddGroup.Size = new System.Drawing.Size(58, 23);
-			this.buttonAddGroup.TabIndex = 1;
-			this.buttonAddGroup.Text = "Add";
-			this.buttonAddGroup.UseVisualStyleBackColor = true;
-			this.buttonAddGroup.Click += new System.EventHandler(this.ButtonAddGroup_Click);
-			// 
-			// listViewGroups
-			// 
-			this.listViewGroups.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.listViewGroups.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeaderGroups});
-			this.listViewGroups.FullRowSelect = true;
-			this.listViewGroups.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.listViewGroups.HideSelection = false;
-			this.listViewGroups.Location = new System.Drawing.Point(8, 8);
-			this.listViewGroups.MultiSelect = false;
-			this.listViewGroups.Name = "listViewGroups";
-			this.listViewGroups.Size = new System.Drawing.Size(120, 317);
-			this.listViewGroups.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.listViewGroups.TabIndex = 0;
-			this.listViewGroups.UseCompatibleStateImageBehavior = false;
-			this.listViewGroups.View = System.Windows.Forms.View.Details;
-			this.listViewGroups.SelectedIndexChanged += new System.EventHandler(this.ListViewGroups_SelectedIndexChanged);
-			// 
-			// columnHeaderGroups
-			// 
-			this.columnHeaderGroups.Text = "Groups";
-			this.columnHeaderGroups.Width = 99;
 			// 
 			// panelPlugins
 			// 
@@ -880,17 +902,6 @@
 			this.treeViewConfiguration.TabIndex = 2;
 			this.treeViewConfiguration.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewConfiguration_AfterSelect);
 			// 
-			// buttonCopyApplication
-			// 
-			this.buttonCopyApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonCopyApplication.Image = global::ProcessManagerUI.Properties.Resources.copy_16;
-			this.buttonCopyApplication.Location = new System.Drawing.Point(49, 330);
-			this.buttonCopyApplication.Name = "buttonCopyApplication";
-			this.buttonCopyApplication.Size = new System.Drawing.Size(38, 24);
-			this.buttonCopyApplication.TabIndex = 24;
-			this.buttonCopyApplication.UseVisualStyleBackColor = true;
-			this.buttonCopyApplication.Click += new System.EventHandler(this.ButtonCopyApplication_Click);
-			// 
 			// ConfigurationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -921,12 +932,12 @@
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigurationForm_FormClosing);
 			this.Load += new System.EventHandler(this.ConfigurationForm_Load);
 			this.Enter += new System.EventHandler(this.ConfigurationForm_Enter);
-			this.panelApplications.ResumeLayout(false);
-			this.panelApplication.ResumeLayout(false);
-			this.panelApplication.PerformLayout();
 			this.panelGroups.ResumeLayout(false);
 			this.panelGroup.ResumeLayout(false);
 			this.panelGroup.PerformLayout();
+			this.panelApplications.ResumeLayout(false);
+			this.panelApplication.ResumeLayout(false);
+			this.panelApplication.PerformLayout();
 			this.panelPlugins.ResumeLayout(false);
 			this.panelPlugin.ResumeLayout(false);
 			this.panelPlugin.PerformLayout();
@@ -1002,6 +1013,7 @@
 		private System.Windows.Forms.Label labelApplicationWaitForExit;
 		private System.Windows.Forms.Label labelApplicationSuccessExitCode;
 		private System.Windows.Forms.Button buttonCopyApplication;
+		private System.Windows.Forms.Button buttonCopyGroup;
 
 	}
 }

@@ -203,7 +203,7 @@ namespace ProcessManagerUI.Forms
 		{
 			if (_selectedMachine == null) return;
 
-			if (listViewGroups.SelectedItems.Count == 0)
+			if (listViewGroups.SelectedItems.Count != 1)
 			{
 				panelGroup.Visible = false;
 			}
@@ -229,20 +229,15 @@ namespace ProcessManagerUI.Forms
 		{
 			if (_selectedMachine == null) return;
 
-			UpdateSelectedGroup();
-			string groupName = GetFirstAvailableDefaultName(
-				ConnectionStore.Connections[_selectedMachine].Configuration.Groups.Select(group => group.Name).ToList(), "Group");
-			_selectedGroup = new Group(groupName);
-			ConnectionStore.Connections[_selectedMachine].Configuration.Groups.Add(_selectedGroup);
-			ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
-			textBoxGroupName.Text = _selectedGroup.Name;
-			textBoxGroupPath.Text = _selectedGroup.Path;
-			listViewGroupApplications.Items.Clear();
-			ListViewItem item = listViewGroups.Items.Add(new ListViewItem(_selectedGroup.Name) { Tag = _selectedGroup });
-			item.Selected = true;
-			panelGroup.Visible = true;
-			EnableControls();
-			textBoxGroupName.Focus();
+			AddGroup(false);
+		}
+
+		private void ButtonCopyGroup_Click(object sender, EventArgs e)
+		{
+			if (_selectedMachine == null) return;
+
+			if (listViewGroups.SelectedItems.Count == 1)
+				AddGroup(true);
 		}
 
 		private void ButtonRemoveGroup_Click(object sender, EventArgs e)
@@ -251,10 +246,12 @@ namespace ProcessManagerUI.Forms
 
 			if (listViewGroups.SelectedItems.Count > 0)
 			{
-				_selectedGroup = (Group) listViewGroups.SelectedItems[0].Tag;
-				ConnectionStore.Connections[_selectedMachine].Configuration.Groups.Remove(_selectedGroup);
+				foreach (ListViewItem item in listViewGroups.SelectedItems)
+				{
+					ConnectionStore.Connections[_selectedMachine].Configuration.Groups.Remove((Group) item.Tag);
+					listViewGroups.Items.Remove(item);
+				}
 				ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
-				listViewGroups.Items.Remove(listViewGroups.SelectedItems[0]);
 				_selectedGroup = null;
 				EnableControls();
 			}
@@ -340,7 +337,7 @@ namespace ProcessManagerUI.Forms
 		{
 			if (_selectedMachine == null) return;
 
-			if (listViewApplications.SelectedItems.Count == 0)
+			if (listViewApplications.SelectedItems.Count != 1)
 			{
 				panelApplication.Visible = false;
 			}
@@ -374,7 +371,6 @@ namespace ProcessManagerUI.Forms
 
 			if (listViewApplications.SelectedItems.Count == 1)
 			{
-				_selectedApplication = (Application) listViewApplications.SelectedItems[0].Tag;
 				AddApplication(true);
 			}
 		}
@@ -385,14 +381,17 @@ namespace ProcessManagerUI.Forms
 
 			if (listViewApplications.SelectedItems.Count > 0)
 			{
-				_selectedApplication = (Application) listViewApplications.SelectedItems[0].Tag;
-				ConnectionStore.Connections[_selectedMachine].Configuration.Applications.Remove(_selectedApplication);
-				ConnectionStore.Connections[_selectedMachine].Configuration.Groups.ForEach(group => group.Applications.Remove(_selectedApplication.ID));
+				foreach (ListViewItem item in listViewApplications.SelectedItems)
+				{
+					Application application = (Application) item.Tag;
+					ConnectionStore.Connections[_selectedMachine].Configuration.Applications.Remove(application);
+					ConnectionStore.Connections[_selectedMachine].Configuration.Groups.ForEach(group => group.Applications.Remove(application.ID));
+					listViewApplications.Items.Remove(item);
+					listViewGroupApplications.Items.Cast<ListViewItem>()
+						.Where(x => (Guid) x.Tag == application.ID).ToList()
+						.ForEach(x => listViewGroupApplications.Items.Remove(x));
+				}
 				ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
-				listViewApplications.Items.Remove(listViewApplications.SelectedItems[0]);
-				listViewGroupApplications.Items.Cast<ListViewItem>()
-					.Where(item => (Guid) item.Tag == _selectedApplication.ID).ToList()
-					.ForEach(item => listViewGroupApplications.Items.Remove(item));
 				_selectedApplication = null;
 				EnableControls();
 			}
@@ -718,6 +717,26 @@ namespace ProcessManagerUI.Forms
 
 		#region Groups
 
+		private void AddGroup(bool makeCopy)
+		{
+			UpdateSelectedGroup();
+			string groupName = GetFirstAvailableDefaultName(
+				ConnectionStore.Connections[_selectedMachine].Configuration.Groups.Select(group => group.Name).ToList(),
+					makeCopy ? _selectedGroup.Name : "Group");
+			_selectedGroup = makeCopy ? _selectedGroup.Copy(groupName) : new Group(groupName);
+			ConnectionStore.Connections[_selectedMachine].Configuration.Groups.Add(_selectedGroup);
+			ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
+			textBoxGroupName.Text = _selectedGroup.Name;
+			textBoxGroupPath.Text = _selectedGroup.Path;
+			listViewGroupApplications.Items.Clear();
+			ListViewItem item = listViewGroups.Items.Add(new ListViewItem(_selectedGroup.Name) { Tag = _selectedGroup });
+			listViewGroups.SelectedItems.Clear();
+			item.Selected = true;
+			panelGroup.Visible = true;
+			EnableControls();
+			textBoxGroupName.Focus();
+		}
+
 		private void UpdateSelectedGroup()
 		{
 			if (_selectedGroup != null)
@@ -867,6 +886,7 @@ namespace ProcessManagerUI.Forms
 			checkBoxDistributionOnly.Checked = _selectedApplication.DistributionOnly;
 			DisplayDistributionSourceCount();
 			ListViewItem item = listViewApplications.Items.Add(new ListViewItem(_selectedApplication.Name) { Tag = _selectedApplication });
+			listViewApplications.SelectedItems.Clear();
 			item.Selected = true;
 
 			if (makeCopy && listViewGroupApplications.Items.Cast<ListViewItem>().Any(x => (Guid) x.Tag == previousApplication.ID))
@@ -1106,6 +1126,7 @@ namespace ProcessManagerUI.Forms
 		{
 			buttonApply.Enabled = (enable && HasUnsavedConfiguration);
 
+			buttonCopyGroup.Enabled = (enable && listViewGroups.SelectedItems.Count == 1);
 			buttonRemoveGroup.Enabled = (enable && listViewGroups.SelectedItems.Count > 0);
 			buttonAddGroupApplication.Enabled = (enable && GetNonIncludedGroupApplications().Any());
 			buttonRemoveGroupApplication.Enabled = (enable && listViewGroupApplications.SelectedItems.Count > 0);
@@ -1142,6 +1163,11 @@ namespace ProcessManagerUI.Forms
 			nameTemplate = (foundNo ? nameTemplate.Substring(0, lastIndex) : nameTemplate.Trim()) + " ";
 			while (existingNames.Contains(name = nameTemplate + (++tryNo))) { }
 			return name;
+		}
+
+		private void buttonCopyGroup_Click(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
