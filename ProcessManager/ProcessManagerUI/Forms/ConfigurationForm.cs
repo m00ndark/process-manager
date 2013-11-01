@@ -76,6 +76,10 @@ namespace ProcessManagerUI.Forms
 		{
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted += ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged += ServiceConnectionHandler_ServiceHandlerConnectionChanged;
+
+			foreach (SuccessExitCode successExitCode in Enum.GetValues(typeof(SuccessExitCode)))
+				comboBoxApplicationSuccessExitCode.Items.Add(new ComboBoxItem<SuccessExitCode>(successExitCode));
+
 			ShowAllControls(false);
 			ClearAllControls();
 			PopulateMachinesComboBox(false);
@@ -347,6 +351,8 @@ namespace ProcessManagerUI.Forms
 				textBoxApplicationName.Text = _selectedApplication.Name;
 				textBoxApplicationRelativePath.Text = _selectedApplication.RelativePath;
 				textBoxApplicationArguments.Text = _selectedApplication.Arguments;
+				checkBoxApplicationWaitForExit.Checked = _selectedApplication.WaitForExit;
+				comboBoxApplicationSuccessExitCode.SelectedItem = GetSuccessExitCodeItem(_selectedApplication.SuccessExitCode);
 				checkBoxDistributionOnly.Checked = _selectedApplication.DistributionOnly;
 				DisplayDistributionSourceCount();
 				_disableTextChangedEvents = false;
@@ -368,6 +374,8 @@ namespace ProcessManagerUI.Forms
 			textBoxApplicationName.Text = _selectedApplication.Name;
 			textBoxApplicationRelativePath.Text = _selectedApplication.RelativePath;
 			textBoxApplicationArguments.Text = _selectedApplication.Arguments;
+			checkBoxApplicationWaitForExit.Checked = _selectedApplication.WaitForExit;
+			comboBoxApplicationSuccessExitCode.SelectedItem = GetSuccessExitCodeItem(_selectedApplication.SuccessExitCode);
 			checkBoxDistributionOnly.Checked = _selectedApplication.DistributionOnly;
 			DisplayDistributionSourceCount();
 			ListViewItem item = listViewApplications.Items.Add(new ListViewItem(_selectedApplication.Name) { Tag = _selectedApplication });
@@ -445,6 +453,16 @@ namespace ProcessManagerUI.Forms
 			UpdateSelectedApplication();
 		}
 
+		private void CheckBoxApplicationWaitForExit_CheckedChanged(object sender, EventArgs e)
+		{
+			UpdateSelectedApplication();
+		}
+
+		private void ComboBoxApplicationSuccessExitCode_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			UpdateSelectedApplication();
+		}
+
 		private void ButtonEditDistributionSources_Click(object sender, EventArgs e)
 		{
 			DistributionSourcesForm distributionSourcesForm = new DistributionSourcesForm(_selectedMachine, _selectedApplication, () => GetAllGroups(false));
@@ -485,6 +503,8 @@ namespace ProcessManagerUI.Forms
 			{
 				textBoxApplicationRelativePath.Text = string.Empty;
 				textBoxApplicationArguments.Text = string.Empty;
+				checkBoxApplicationWaitForExit.Checked = false;
+				comboBoxApplicationSuccessExitCode.SelectedItem = GetSuccessExitCodeItem(SuccessExitCode.Any);
 			}
 			UpdateSelectedApplication();
 		}
@@ -837,6 +857,8 @@ namespace ProcessManagerUI.Forms
 					_selectedApplication.Name = textBoxApplicationName.Text;
 					_selectedApplication.RelativePath = textBoxApplicationRelativePath.Text;
 					_selectedApplication.Arguments = textBoxApplicationArguments.Text;
+					_selectedApplication.WaitForExit = checkBoxApplicationWaitForExit.Checked;
+					_selectedApplication.SuccessExitCode = GetSelectedSuccessExitCode();
 					_selectedApplication.DistributionOnly = checkBoxDistributionOnly.Checked;
 					ListViewItem item = listViewApplications.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedApplication);
 					item.Text = _selectedApplication.Name;
@@ -855,6 +877,8 @@ namespace ProcessManagerUI.Forms
 				applicationChanged = (_selectedApplication.Name != textBoxApplicationName.Text
 					|| _selectedApplication.RelativePath != textBoxApplicationRelativePath.Text
 					|| _selectedApplication.Arguments != textBoxApplicationArguments.Text
+					|| _selectedApplication.WaitForExit != checkBoxApplicationWaitForExit.Checked
+					|| _selectedApplication.SuccessExitCode != GetSelectedSuccessExitCode()
 					|| _selectedApplication.DistributionOnly != checkBoxDistributionOnly.Checked);
 				ConnectionStore.Connections[_selectedMachine].ConfigurationModified |= applicationChanged;
 			}
@@ -937,6 +961,16 @@ namespace ProcessManagerUI.Forms
 		{
 			labelDistributionSourcesCount.Text = _selectedApplication.Sources.Count
 				+ " source" + (_selectedApplication.Sources.Count == 1 ? string.Empty : "s");
+		}
+
+		private SuccessExitCode GetSelectedSuccessExitCode()
+		{
+			return comboBoxApplicationSuccessExitCode.SelectedIndex > 0 ? ((ComboBoxItem<SuccessExitCode>) comboBoxApplicationSuccessExitCode.SelectedItem).Tag : SuccessExitCode.Any;
+		}
+
+		private ComboBoxItem<SuccessExitCode> GetSuccessExitCodeItem(SuccessExitCode successExitCode)
+		{
+			return comboBoxApplicationSuccessExitCode.Items.Cast<ComboBoxItem<SuccessExitCode>>().FirstOrDefault(x => x.Tag == successExitCode);
 		}
 
 		#endregion
@@ -1054,6 +1088,10 @@ namespace ProcessManagerUI.Forms
 			textBoxApplicationRelativePath.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
 			textBoxApplicationArguments.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
 			buttonBrowseApplicationRelativePath.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
+			labelApplicationWaitForExit.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
+			checkBoxApplicationWaitForExit.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
+			labelApplicationSuccessExitCode.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly && checkBoxApplicationWaitForExit.Checked);
+			comboBoxApplicationSuccessExitCode.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly && checkBoxApplicationWaitForExit.Checked);
 		}
 
 		#endregion

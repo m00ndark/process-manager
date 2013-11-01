@@ -39,6 +39,10 @@
 			this.buttonMacros = new System.Windows.Forms.Button();
 			this.panelApplications = new ProcessManagerUI.Controls.BackgroundPanel();
 			this.panelApplication = new System.Windows.Forms.Panel();
+			this.labelApplicationSuccessExitCode = new System.Windows.Forms.Label();
+			this.comboBoxApplicationSuccessExitCode = new System.Windows.Forms.ComboBox();
+			this.checkBoxApplicationWaitForExit = new System.Windows.Forms.CheckBox();
+			this.labelApplicationWaitForExit = new System.Windows.Forms.Label();
 			this.checkBoxDistributionOnly = new System.Windows.Forms.CheckBox();
 			this.labeledDividerDistribution = new ProcessManagerUI.Controls.LabeledDivider();
 			this.labelDistributionSourcesCount = new System.Windows.Forms.Label();
@@ -216,6 +220,10 @@
 			this.panelApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelApplication.Controls.Add(this.labelApplicationSuccessExitCode);
+			this.panelApplication.Controls.Add(this.comboBoxApplicationSuccessExitCode);
+			this.panelApplication.Controls.Add(this.checkBoxApplicationWaitForExit);
+			this.panelApplication.Controls.Add(this.labelApplicationWaitForExit);
 			this.panelApplication.Controls.Add(this.checkBoxDistributionOnly);
 			this.panelApplication.Controls.Add(this.labeledDividerDistribution);
 			this.panelApplication.Controls.Add(this.labelDistributionSourcesCount);
@@ -236,6 +244,44 @@
 			this.panelApplication.TabIndex = 14;
 			this.panelApplication.Visible = false;
 			// 
+			// labelApplicationSuccessExitCode
+			// 
+			this.labelApplicationSuccessExitCode.AutoSize = true;
+			this.labelApplicationSuccessExitCode.Location = new System.Drawing.Point(228, 111);
+			this.labelApplicationSuccessExitCode.Name = "labelApplicationSuccessExitCode";
+			this.labelApplicationSuccessExitCode.Size = new System.Drawing.Size(98, 13);
+			this.labelApplicationSuccessExitCode.TabIndex = 28;
+			this.labelApplicationSuccessExitCode.Text = "Success exit code:";
+			// 
+			// comboBoxApplicationSuccessExitCode
+			// 
+			this.comboBoxApplicationSuccessExitCode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxApplicationSuccessExitCode.FormattingEnabled = true;
+			this.comboBoxApplicationSuccessExitCode.Location = new System.Drawing.Point(332, 107);
+			this.comboBoxApplicationSuccessExitCode.Name = "comboBoxApplicationSuccessExitCode";
+			this.comboBoxApplicationSuccessExitCode.Size = new System.Drawing.Size(84, 21);
+			this.comboBoxApplicationSuccessExitCode.TabIndex = 27;
+			this.comboBoxApplicationSuccessExitCode.SelectedIndexChanged += new System.EventHandler(this.ComboBoxApplicationSuccessExitCode_SelectedIndexChanged);
+			// 
+			// checkBoxApplicationWaitForExit
+			// 
+			this.checkBoxApplicationWaitForExit.AutoSize = true;
+			this.checkBoxApplicationWaitForExit.Location = new System.Drawing.Point(103, 111);
+			this.checkBoxApplicationWaitForExit.Name = "checkBoxApplicationWaitForExit";
+			this.checkBoxApplicationWaitForExit.Size = new System.Drawing.Size(15, 14);
+			this.checkBoxApplicationWaitForExit.TabIndex = 26;
+			this.checkBoxApplicationWaitForExit.UseVisualStyleBackColor = true;
+			this.checkBoxApplicationWaitForExit.CheckedChanged += new System.EventHandler(this.CheckBoxApplicationWaitForExit_CheckedChanged);
+			// 
+			// labelApplicationWaitForExit
+			// 
+			this.labelApplicationWaitForExit.AutoSize = true;
+			this.labelApplicationWaitForExit.Location = new System.Drawing.Point(20, 111);
+			this.labelApplicationWaitForExit.Name = "labelApplicationWaitForExit";
+			this.labelApplicationWaitForExit.Size = new System.Drawing.Size(73, 13);
+			this.labelApplicationWaitForExit.TabIndex = 25;
+			this.labelApplicationWaitForExit.Text = "Wait for exit:";
+			// 
 			// checkBoxDistributionOnly
 			// 
 			this.checkBoxDistributionOnly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -254,7 +300,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labeledDividerDistribution.DividerColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
 			this.labeledDividerDistribution.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.labeledDividerDistribution.Location = new System.Drawing.Point(0, 124);
+			this.labeledDividerDistribution.Location = new System.Drawing.Point(0, 159);
 			this.labeledDividerDistribution.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
 			this.labeledDividerDistribution.Name = "labeledDividerDistribution";
 			this.labeledDividerDistribution.Size = new System.Drawing.Size(466, 15);
@@ -266,7 +312,7 @@
 			this.labelDistributionSourcesCount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelDistributionSourcesCount.ForeColor = System.Drawing.Color.Gray;
-			this.labelDistributionSourcesCount.Location = new System.Drawing.Point(161, 151);
+			this.labelDistributionSourcesCount.Location = new System.Drawing.Point(161, 186);
 			this.labelDistributionSourcesCount.Name = "labelDistributionSourcesCount";
 			this.labelDistributionSourcesCount.Size = new System.Drawing.Size(253, 13);
 			this.labelDistributionSourcesCount.TabIndex = 22;
@@ -275,7 +321,7 @@
 			// 
 			// buttonEditDistributionSources
 			// 
-			this.buttonEditDistributionSources.Location = new System.Drawing.Point(103, 146);
+			this.buttonEditDistributionSources.Location = new System.Drawing.Point(103, 181);
 			this.buttonEditDistributionSources.Name = "buttonEditDistributionSources";
 			this.buttonEditDistributionSources.Size = new System.Drawing.Size(58, 23);
 			this.buttonEditDistributionSources.TabIndex = 21;
@@ -286,7 +332,7 @@
 			// labelDistributionSources
 			// 
 			this.labelDistributionSources.AutoSize = true;
-			this.labelDistributionSources.Location = new System.Drawing.Point(20, 151);
+			this.labelDistributionSources.Location = new System.Drawing.Point(20, 186);
 			this.labelDistributionSources.Name = "labelDistributionSources";
 			this.labelDistributionSources.Size = new System.Drawing.Size(50, 13);
 			this.labelDistributionSources.TabIndex = 20;
@@ -938,6 +984,10 @@
 		private System.Windows.Forms.Label labelDistributionSources;
 		private System.Windows.Forms.CheckBox checkBoxDistributionOnly;
 		private System.Windows.Forms.Button buttonMacros;
+		private System.Windows.Forms.ComboBox comboBoxApplicationSuccessExitCode;
+		private System.Windows.Forms.CheckBox checkBoxApplicationWaitForExit;
+		private System.Windows.Forms.Label labelApplicationWaitForExit;
+		private System.Windows.Forms.Label labelApplicationSuccessExitCode;
 
 	}
 }

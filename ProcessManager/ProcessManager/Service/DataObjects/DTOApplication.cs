@@ -15,6 +15,8 @@ namespace ProcessManager.Service.DataObjects
 			Name = application.Name;
 			RelativePath = application.RelativePath;
 			Arguments = application.Arguments;
+			WaitForExit = application.WaitForExit;
+			SuccessExitCode = application.SuccessExitCode;
 			DistributionOnly = application.DistributionOnly;
 			Sources = new List<DTODistributionSource>();
 			Sources.AddRange(application.Sources.Select(source => new DTODistributionSource(source)));
@@ -35,6 +37,12 @@ namespace ProcessManager.Service.DataObjects
 		public string Arguments { get; set; }
 
 		[DataMember]
+		public bool WaitForExit { get; set; }
+
+		[DataMember]
+		public SuccessExitCode SuccessExitCode { get; set; }
+
+		[DataMember]
 		public bool DistributionOnly { get; set; }
 
 		[DataMember]
@@ -44,7 +52,8 @@ namespace ProcessManager.Service.DataObjects
 
 		public Application FromDTO()
 		{
-			Application application = new Application() { ID = ID, Name = Name, RelativePath = RelativePath, Arguments = Arguments, DistributionOnly = DistributionOnly };
+			Application application = new Application() { ID = ID, Name = Name, RelativePath = RelativePath, Arguments = Arguments,
+				WaitForExit = WaitForExit, SuccessExitCode = SuccessExitCode, DistributionOnly = DistributionOnly };
 			application.Sources.AddRange(Sources.Select(source => source.FromDTO()));
 			return application;
 		}
