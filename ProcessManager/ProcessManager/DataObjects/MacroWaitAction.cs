@@ -29,7 +29,12 @@ namespace ProcessManager.DataObjects
 
         #endregion
 
-		public void ChangeActionType(MacroActionType actionType)
+	    public IMacroAction Copy()
+	    {
+			return new MacroWaitAction(Guid.NewGuid(), Type, WaitForEvent, TimeoutMilliseconds);
+	    }
+
+	    public void ChangeActionType(MacroActionType actionType)
 		{
 			throw new InvalidOperationException("Cannot change action type of macro wait action");
 		}

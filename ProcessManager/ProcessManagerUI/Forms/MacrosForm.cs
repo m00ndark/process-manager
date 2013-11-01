@@ -42,12 +42,14 @@ namespace ProcessManagerUI.Forms
 		private void MachinesForm_Load(object sender, EventArgs e)
 		{
 			Settings.Client.Macros.ForEach(macro => listViewMacros.Items.Add(new ListViewItem(macro.Name) { Tag = macro }));
+			EnableControls();
 		}
 
 		private void ListViewMacros_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (listViewMacros.SelectedItems.Count == 0)
+			if (listViewMacros.SelectedItems.Count != 1)
 			{
+				labelNoMacroSelected.Text = listViewMacros.SelectedItems.Count == 0 ? "No macro selected" : "Multiple macros selected";
 				panelMacro.Visible = false;
 			}
 			else
@@ -66,18 +68,13 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonAddMacro_Click(object sender, EventArgs e)
 		{
-			UpdateSelectedMacro();
-			AnyMachinesChanged = _hasUnsavedChanges = true;
-			string macroName = ConfigurationForm.GetFirstAvailableDefaultName(
-				Settings.Client.Macros.Select(macro => macro.Name).ToList(), "Macro");
-			_selectedMacro = new Macro(macroName);
-			Settings.Client.Macros.Add(_selectedMacro);
-			textBoxMacroName.Text = _selectedMacro.Name;
-			ListViewItem item = listViewMacros.Items.Add(new ListViewItem(_selectedMacro.Name) { Tag = _selectedMacro });
-			item.Selected = true;
-			panelMacro.Visible = true;
-			EnableControls();
-			textBoxMacroName.Focus();
+			AddMacro(false);
+		}
+
+		private void ButtonCopyMacro_Click(object sender, EventArgs e)
+		{
+			if (listViewMacros.SelectedItems.Count == 1)
+				AddMacro(true);
 		}
 
 		private void ButtonRemoveMacro_Click(object sender, EventArgs e)
@@ -85,9 +82,11 @@ namespace ProcessManagerUI.Forms
 			if (listViewMacros.SelectedItems.Count > 0)
 			{
 				AnyMachinesChanged = _hasUnsavedChanges = true;
-				_selectedMacro = (Macro) listViewMacros.SelectedItems[0].Tag;
-				Settings.Client.Macros.Remove(_selectedMacro);
-				listViewMacros.Items.Remove(listViewMacros.SelectedItems[0]);
+				foreach (ListViewItem item in listViewMacros.SelectedItems)
+				{
+					Settings.Client.Macros.Remove((Macro) item.Tag);
+					listViewMacros.Items.Remove(item);
+				}
 				_selectedMacro = null;
 				EnableControls();
 			}
@@ -195,6 +194,23 @@ namespace ProcessManagerUI.Forms
 
 		#region Helpers
 
+		private void AddMacro(bool makeCopy)
+		{
+			UpdateSelectedMacro();
+			AnyMachinesChanged = _hasUnsavedChanges = true;
+			string macroName = ConfigurationForm.GetFirstAvailableDefaultName(
+				Settings.Client.Macros.Select(macro => macro.Name).ToList(), makeCopy ? _selectedMacro.Name : "Macro");
+			_selectedMacro = makeCopy ? _selectedMacro.Copy(macroName) : new Macro(macroName);
+			Settings.Client.Macros.Add(_selectedMacro);
+			textBoxMacroName.Text = _selectedMacro.Name;
+			ListViewItem item = listViewMacros.Items.Add(new ListViewItem(_selectedMacro.Name) { Tag = _selectedMacro });
+			listViewMacros.SelectedItems.Clear();
+			item.Selected = true;
+			panelMacro.Visible = true;
+			EnableControls();
+			textBoxMacroName.Focus();
+		}
+
 		private void UpdateSelectedMacro()
 		{
 			if (_selectedMacro != null)
@@ -204,7 +220,7 @@ namespace ProcessManagerUI.Forms
 					_selectedMacro.Name = textBoxMacroName.Text;
 					_selectedMacro.ActionBundles.Clear();
 					_macroActionItems.ForEach(macroActionItem => _selectedMacro.ActionBundles.Add(
-						macroActionItem.ActionBundle != null ? macroActionItem.ActionBundle.Copy() : null));
+						macroActionItem.ActionBundle != null ? macroActionItem.ActionBundle.Clone() : null));
 					ListViewItem item = listViewMacros.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedMacro);
 					item.Text = _selectedMacro.Name;
 					listViewMacros.Sort();
@@ -230,7 +246,7 @@ namespace ProcessManagerUI.Forms
 
 		private MacroActionItem CreateMacroActionItem(MacroActionBundle actionBundle = null)
 		{
-			MacroActionItem macroActionItem = new MacroActionItem(actionBundle != null ? actionBundle.Copy() : null);
+			MacroActionItem macroActionItem = new MacroActionItem(actionBundle != null ? actionBundle.Clone() : null);
 			macroActionItem.MacroActionItemChanged += MacroActionItem_MacroActionItemChanged;
 			macroActionItem.MacroActionItemRemoved += MacroActionItem_MacroActionItemRemoved;
 			macroActionItem.MacroActionItemMovedUp += MacroActionItem_MacroActionItemMovedUp;
@@ -371,6 +387,7 @@ namespace ProcessManagerUI.Forms
 		private void EnableControls(bool enable = true)
 		{
 			buttonApply.Enabled = (enable && _hasUnsavedChanges);
+			buttonCopyMacro.Enabled = (enable && listViewMacros.SelectedItems.Count == 1);
 			buttonRemoveMacro.Enabled = (enable && listViewMacros.SelectedItems.Count > 0);
 		}
 

@@ -23,7 +23,8 @@ namespace ProcessManager.DataObjects
         MacroActionType Type { get; }
         bool IsValid { get; }
 
-	    void ChangeActionType(MacroActionType actionType);
+		IMacroAction Copy();
+		void ChangeActionType(MacroActionType actionType);
 
 	    bool Equals(object obj);
 	    int GetHashCode();

@@ -205,6 +205,7 @@ namespace ProcessManagerUI.Forms
 
 			if (listViewGroups.SelectedItems.Count != 1)
 			{
+				labelNoGroupSelected.Text = listViewGroups.SelectedItems.Count == 0 ? "No group selected" : "Multiple groups selected";
 				panelGroup.Visible = false;
 			}
 			else
@@ -339,6 +340,7 @@ namespace ProcessManagerUI.Forms
 
 			if (listViewApplications.SelectedItems.Count != 1)
 			{
+				labelNoApplicationSelected.Text = listViewApplications.SelectedItems.Count == 0 ? "No application selected" : "Multiple applications selected";
 				panelApplication.Visible = false;
 			}
 			else
@@ -370,9 +372,7 @@ namespace ProcessManagerUI.Forms
 			if (_selectedMachine == null) return;
 
 			if (listViewApplications.SelectedItems.Count == 1)
-			{
 				AddApplication(true);
-			}
 		}
 
 		private void ButtonRemoveApplication_Click(object sender, EventArgs e)

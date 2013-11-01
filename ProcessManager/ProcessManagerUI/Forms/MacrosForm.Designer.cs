@@ -43,13 +43,14 @@
 			this.buttonAddMacro = new System.Windows.Forms.Button();
 			this.listViewMacros = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderMacros = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.buttonCopyMacro = new System.Windows.Forms.Button();
 			this.panelMacro.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// buttonOK
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOK.Location = new System.Drawing.Point(555, 428);
+			this.buttonOK.Location = new System.Drawing.Point(563, 428);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(92, 23);
 			this.buttonOK.TabIndex = 23;
@@ -61,7 +62,7 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(653, 428);
+			this.buttonCancel.Location = new System.Drawing.Point(661, 428);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(92, 23);
 			this.buttonCancel.TabIndex = 22;
@@ -73,7 +74,7 @@
 			// 
 			this.buttonApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonApply.Enabled = false;
-			this.buttonApply.Location = new System.Drawing.Point(751, 428);
+			this.buttonApply.Location = new System.Drawing.Point(759, 428);
 			this.buttonApply.Name = "buttonApply";
 			this.buttonApply.Size = new System.Drawing.Size(92, 23);
 			this.buttonApply.TabIndex = 21;
@@ -86,7 +87,7 @@
 			this.labelNoMacroSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.labelNoMacroSelected.Location = new System.Drawing.Point(180, 12);
+			this.labelNoMacroSelected.Location = new System.Drawing.Point(188, 12);
 			this.labelNoMacroSelected.Name = "labelNoMacroSelected";
 			this.labelNoMacroSelected.Size = new System.Drawing.Size(662, 410);
 			this.labelNoMacroSelected.TabIndex = 24;
@@ -106,7 +107,7 @@
 			this.panelMacro.Controls.Add(this.labeledDividerMacro);
 			this.panelMacro.Controls.Add(this.labelMacroName);
 			this.panelMacro.Controls.Add(this.textBoxMacroName);
-			this.panelMacro.Location = new System.Drawing.Point(180, 12);
+			this.panelMacro.Location = new System.Drawing.Point(188, 12);
 			this.panelMacro.Name = "panelMacro";
 			this.panelMacro.Padding = new System.Windows.Forms.Padding(5);
 			this.panelMacro.Size = new System.Drawing.Size(662, 410);
@@ -184,9 +185,9 @@
 			// buttonRemoveMacro
 			// 
 			this.buttonRemoveMacro.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonRemoveMacro.Location = new System.Drawing.Point(95, 400);
+			this.buttonRemoveMacro.Location = new System.Drawing.Point(127, 400);
 			this.buttonRemoveMacro.Name = "buttonRemoveMacro";
-			this.buttonRemoveMacro.Size = new System.Drawing.Size(78, 23);
+			this.buttonRemoveMacro.Size = new System.Drawing.Size(55, 23);
 			this.buttonRemoveMacro.TabIndex = 2;
 			this.buttonRemoveMacro.Text = "Remove";
 			this.buttonRemoveMacro.UseVisualStyleBackColor = true;
@@ -197,7 +198,7 @@
 			this.buttonAddMacro.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonAddMacro.Location = new System.Drawing.Point(11, 400);
 			this.buttonAddMacro.Name = "buttonAddMacro";
-			this.buttonAddMacro.Size = new System.Drawing.Size(78, 23);
+			this.buttonAddMacro.Size = new System.Drawing.Size(55, 23);
 			this.buttonAddMacro.TabIndex = 1;
 			this.buttonAddMacro.Text = "Add";
 			this.buttonAddMacro.UseVisualStyleBackColor = true;
@@ -213,9 +214,8 @@
 			this.listViewMacros.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewMacros.HideSelection = false;
 			this.listViewMacros.Location = new System.Drawing.Point(12, 12);
-			this.listViewMacros.MultiSelect = false;
 			this.listViewMacros.Name = "listViewMacros";
-			this.listViewMacros.Size = new System.Drawing.Size(160, 382);
+			this.listViewMacros.Size = new System.Drawing.Size(169, 382);
 			this.listViewMacros.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listViewMacros.TabIndex = 0;
 			this.listViewMacros.UseCompatibleStateImageBehavior = false;
@@ -227,12 +227,24 @@
 			this.columnHeaderMacros.Text = "Applications";
 			this.columnHeaderMacros.Width = 139;
 			// 
+			// buttonCopyMacro
+			// 
+			this.buttonCopyMacro.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonCopyMacro.Location = new System.Drawing.Point(69, 400);
+			this.buttonCopyMacro.Name = "buttonCopyMacro";
+			this.buttonCopyMacro.Size = new System.Drawing.Size(55, 23);
+			this.buttonCopyMacro.TabIndex = 26;
+			this.buttonCopyMacro.Text = "Copy";
+			this.buttonCopyMacro.UseVisualStyleBackColor = true;
+			this.buttonCopyMacro.Click += new System.EventHandler(this.ButtonCopyMacro_Click);
+			// 
 			// MacrosForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(854, 463);
+			this.ClientSize = new System.Drawing.Size(862, 463);
+			this.Controls.Add(this.buttonCopyMacro);
 			this.Controls.Add(this.panelMacro);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonRemoveMacro);
@@ -274,5 +286,6 @@
 		private System.Windows.Forms.Button buttonAddMacro;
 		private Controls.ListView listViewMacros;
 		private System.Windows.Forms.ColumnHeader columnHeaderMacros;
+		private System.Windows.Forms.Button buttonCopyMacro;
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ProcessManager.DataObjects.Comparers;
 
 namespace ProcessManager.DataObjects
@@ -26,6 +27,22 @@ namespace ProcessManager.DataObjects
 		public List<MacroActionBundle> ActionBundles { get; private set; }
 
 		#endregion
+
+		public Macro Clone(bool cloneBundles = true)
+		{
+			Macro macro = new Macro() { ID = ID, Name = Name };
+			if (cloneBundles) macro.ActionBundles.AddRange(ActionBundles.Select(bundle => bundle.Clone()));
+			return macro;
+		}
+
+		public Macro Copy(string name = null)
+		{
+			Macro macro = Clone(false);
+			macro.ID = Guid.NewGuid();
+			if (name != null) macro.Name = name;
+			macro.ActionBundles.AddRange(ActionBundles.Select(bundle => bundle.Copy()));
+			return macro;
+		}
 
 		#region Equality
 

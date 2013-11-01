@@ -31,6 +31,11 @@ namespace ProcessManager.DataObjects
 
 		#endregion
 
+		public IMacroAction Copy()
+		{
+			return new MacroProcessAction(Guid.NewGuid(), Type, MachineID, GroupID, ApplicationID);
+		}
+
 		public void ChangeActionType(MacroActionType actionType)
 		{
 			if (actionType == MacroActionType.Distribute || actionType == MacroActionType.Wait)

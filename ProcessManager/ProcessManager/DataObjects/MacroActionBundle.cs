@@ -12,10 +12,12 @@ namespace ProcessManager.DataObjects
 			Actions = new List<IMacroAction>();
 		}
 
-		private MacroActionBundle(MacroActionBundle macroActionBundle)
+		private MacroActionBundle(MacroActionBundle macroActionBundle, bool copy)
 		{
 			Type = macroActionBundle.Type;
-			Actions = new List<IMacroAction>(macroActionBundle.Actions);
+			Actions = new List<IMacroAction>(copy
+				? macroActionBundle.Actions.Select(action => action.Copy())
+				: macroActionBundle.Actions);
 		}
 
 		#region Properties
@@ -39,9 +41,14 @@ namespace ProcessManager.DataObjects
 			Actions.ForEach(action => action.ChangeActionType(actionType));
 		}
 
+		public MacroActionBundle Clone()
+		{
+			return new MacroActionBundle(this, false);
+		}
+
 		public MacroActionBundle Copy()
 		{
-			return new MacroActionBundle(this);
+			return new MacroActionBundle(this, true);
 		}
 
 		#region Equality

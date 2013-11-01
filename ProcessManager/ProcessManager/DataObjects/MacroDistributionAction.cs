@@ -33,6 +33,11 @@ namespace ProcessManager.DataObjects
 
 		#endregion
 
+		public IMacroAction Copy()
+		{
+			return new MacroDistributionAction(Guid.NewGuid(), Type, SourceMachineID, GroupID, ApplicationID, DestinationMachineID);
+		}
+
 		public void ChangeActionType(MacroActionType actionType)
 		{
 			throw new InvalidOperationException("Cannot change action type of macro wait action");

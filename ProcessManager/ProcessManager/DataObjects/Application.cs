@@ -52,17 +52,17 @@ namespace ProcessManager.DataObjects
 
 		#endregion
 
-		public Application Clone()
+		public Application Clone(bool cloneSources = true)
 		{
 			Application application = new Application() { ID = ID, Name = Name, RelativePath = RelativePath, Arguments = Arguments,
 				WaitForExit = WaitForExit, SuccessExitCode = SuccessExitCode, DistributionOnly = DistributionOnly };
-			application.Sources.AddRange(Sources.Select(source => source.Clone()));
+			if (cloneSources) application.Sources.AddRange(Sources.Select(source => source.Clone()));
 			return application;
 		}
 
 		public Application Copy(string name = null)
 		{
-			Application application = Clone();
+			Application application = Clone(false);
 			application.ID = Guid.NewGuid();
 			if (name != null) application.Name = name;
 			application.Sources.AddRange(Sources.Select(source => source.Copy()));
