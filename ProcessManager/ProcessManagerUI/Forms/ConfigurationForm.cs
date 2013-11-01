@@ -365,24 +365,18 @@ namespace ProcessManagerUI.Forms
 		{
 			if (_selectedMachine == null) return;
 
-			UpdateSelectedApplication();
-			string applicationName = GetFirstAvailableDefaultName(
-				ConnectionStore.Connections[_selectedMachine].Configuration.Applications.Select(application => application.Name).ToList(), "Application");
-			_selectedApplication = new Application(applicationName);
-			ConnectionStore.Connections[_selectedMachine].Configuration.Applications.Add(_selectedApplication);
-			ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
-			textBoxApplicationName.Text = _selectedApplication.Name;
-			textBoxApplicationRelativePath.Text = _selectedApplication.RelativePath;
-			textBoxApplicationArguments.Text = _selectedApplication.Arguments;
-			checkBoxApplicationWaitForExit.Checked = _selectedApplication.WaitForExit;
-			comboBoxApplicationSuccessExitCode.SelectedItem = GetSuccessExitCodeItem(_selectedApplication.SuccessExitCode);
-			checkBoxDistributionOnly.Checked = _selectedApplication.DistributionOnly;
-			DisplayDistributionSourceCount();
-			ListViewItem item = listViewApplications.Items.Add(new ListViewItem(_selectedApplication.Name) { Tag = _selectedApplication });
-			item.Selected = true;
-			panelApplication.Visible = true;
-			EnableControls();
-			textBoxApplicationName.Focus();
+			AddApplication(false);
+		}
+
+		private void ButtonCopyApplication_Click(object sender, EventArgs e)
+		{
+			if (_selectedMachine == null) return;
+
+			if (listViewApplications.SelectedItems.Count == 1)
+			{
+				_selectedApplication = (Application) listViewApplications.SelectedItems[0].Tag;
+				AddApplication(true);
+			}
 		}
 
 		private void ButtonRemoveApplication_Click(object sender, EventArgs e)
@@ -478,10 +472,10 @@ namespace ProcessManagerUI.Forms
 
 					distributionSourcesForm.DistributionSources
 						.Select(x => new
-						{
-							New = x,
-							Old = _selectedApplication.Sources.FirstOrDefault(y => y.ID == x.ID)
-						})
+							{
+								New = x,
+								Old = _selectedApplication.Sources.FirstOrDefault(y => y.ID == x.ID)
+							})
 						.Where(x => x.Old != null)
 						.ToList()
 						.ForEach(x => x.New.CopyTo(x.Old));
@@ -848,6 +842,41 @@ namespace ProcessManagerUI.Forms
 
 		#region Applications
 
+		private void AddApplication(bool makeCopy)
+		{
+			UpdateSelectedApplication();
+			string applicationName = GetFirstAvailableDefaultName(
+				ConnectionStore.Connections[_selectedMachine].Configuration.Applications.Select(application => application.Name).ToList(),
+					makeCopy ? _selectedApplication.Name : "Application");
+			Application previousApplication = _selectedApplication;
+			_selectedApplication = makeCopy ? _selectedApplication.Copy(applicationName) : new Application(applicationName);
+			ConnectionStore.Connections[_selectedMachine].Configuration.Applications.Add(_selectedApplication);
+			if (makeCopy)
+			{
+				ConnectionStore.Connections[_selectedMachine].Configuration.Groups
+					.Where(group => group.Applications.Contains(previousApplication.ID))
+					.ToList()
+					.ForEach(group => group.Applications.Add(_selectedApplication.ID));
+			}
+			ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
+			textBoxApplicationName.Text = _selectedApplication.Name;
+			textBoxApplicationRelativePath.Text = _selectedApplication.RelativePath;
+			textBoxApplicationArguments.Text = _selectedApplication.Arguments;
+			checkBoxApplicationWaitForExit.Checked = _selectedApplication.WaitForExit;
+			comboBoxApplicationSuccessExitCode.SelectedItem = GetSuccessExitCodeItem(_selectedApplication.SuccessExitCode);
+			checkBoxDistributionOnly.Checked = _selectedApplication.DistributionOnly;
+			DisplayDistributionSourceCount();
+			ListViewItem item = listViewApplications.Items.Add(new ListViewItem(_selectedApplication.Name) { Tag = _selectedApplication });
+			item.Selected = true;
+
+			if (makeCopy && listViewGroupApplications.Items.Cast<ListViewItem>().Any(x => (Guid) x.Tag == previousApplication.ID))
+				listViewGroupApplications.Items.Add(new ListViewItem(_selectedApplication.Name) { Tag = _selectedApplication.ID });
+
+			panelApplication.Visible = true;
+			EnableControls();
+			textBoxApplicationName.Focus();
+		}
+
 		private void UpdateSelectedApplication()
 		{
 			if (_selectedApplication != null)
@@ -1082,6 +1111,7 @@ namespace ProcessManagerUI.Forms
 			buttonRemoveGroupApplication.Enabled = (enable && listViewGroupApplications.SelectedItems.Count > 0);
 			buttonCopyGroupApplications.Enabled = (enable && GetAllGroups(true).Any());
 
+			buttonCopyApplication.Enabled = (enable && listViewApplications.SelectedItems.Count == 1);
 			buttonRemoveApplication.Enabled = (enable && listViewApplications.SelectedItems.Count > 0);
 			labelApplicationRelativePath.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
 			labelApplicationArguments.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
@@ -1098,8 +1128,18 @@ namespace ProcessManagerUI.Forms
 
 		public static string GetFirstAvailableDefaultName(ICollection<string> existingNames, string nameTemplate)
 		{
-			nameTemplate = nameTemplate.Trim() + " ";
-			int tryNo = 0; string name;
+			int tryNo = 0; string name; bool foundNo = false;
+			int lastIndex = nameTemplate.LastIndexOf(' ');
+			if (lastIndex != -1 && lastIndex < nameTemplate.Length - 1)
+			{
+				int existingNo;
+				if (int.TryParse(nameTemplate.Substring(lastIndex + 1), out existingNo))
+				{
+					tryNo = existingNo;
+					foundNo = true;
+				}
+			}
+			nameTemplate = (foundNo ? nameTemplate.Substring(0, lastIndex) : nameTemplate.Trim()) + " ";
 			while (existingNames.Contains(name = nameTemplate + (++tryNo))) { }
 			return name;
 		}

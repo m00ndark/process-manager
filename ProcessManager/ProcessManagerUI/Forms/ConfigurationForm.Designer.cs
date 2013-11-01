@@ -94,6 +94,7 @@
 			this.listViewPlugins = new ProcessManagerUI.Controls.ListView();
 			this.columnHeaderPlugins = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.treeViewConfiguration = new ProcessManagerUI.Controls.TreeView();
+			this.buttonCopyApplication = new System.Windows.Forms.Button();
 			this.panelApplications.SuspendLayout();
 			this.panelApplication.SuspendLayout();
 			this.panelGroups.SuspendLayout();
@@ -203,6 +204,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panelApplications.BackColor = System.Drawing.SystemColors.Window;
 			this.panelApplications.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(130)))), ((int)(((byte)(135)))), ((int)(((byte)(144)))));
+			this.panelApplications.Controls.Add(this.buttonCopyApplication);
 			this.panelApplications.Controls.Add(this.panelApplication);
 			this.panelApplications.Controls.Add(this.labelNoApplicationSelected);
 			this.panelApplications.Controls.Add(this.buttonRemoveApplication);
@@ -437,22 +439,22 @@
 			// buttonRemoveApplication
 			// 
 			this.buttonRemoveApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonRemoveApplication.Location = new System.Drawing.Point(71, 331);
+			this.buttonRemoveApplication.Image = global::ProcessManagerUI.Properties.Resources.remove_16;
+			this.buttonRemoveApplication.Location = new System.Drawing.Point(91, 330);
 			this.buttonRemoveApplication.Name = "buttonRemoveApplication";
-			this.buttonRemoveApplication.Size = new System.Drawing.Size(58, 23);
+			this.buttonRemoveApplication.Size = new System.Drawing.Size(38, 24);
 			this.buttonRemoveApplication.TabIndex = 2;
-			this.buttonRemoveApplication.Text = "Remove";
 			this.buttonRemoveApplication.UseVisualStyleBackColor = true;
 			this.buttonRemoveApplication.Click += new System.EventHandler(this.ButtonRemoveApplication_Click);
 			// 
 			// buttonAddApplication
 			// 
 			this.buttonAddApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonAddApplication.Location = new System.Drawing.Point(7, 331);
+			this.buttonAddApplication.Image = global::ProcessManagerUI.Properties.Resources.add_16;
+			this.buttonAddApplication.Location = new System.Drawing.Point(7, 330);
 			this.buttonAddApplication.Name = "buttonAddApplication";
-			this.buttonAddApplication.Size = new System.Drawing.Size(58, 23);
+			this.buttonAddApplication.Size = new System.Drawing.Size(38, 24);
 			this.buttonAddApplication.TabIndex = 1;
-			this.buttonAddApplication.Text = "Add";
 			this.buttonAddApplication.UseVisualStyleBackColor = true;
 			this.buttonAddApplication.Click += new System.EventHandler(this.ButtonAddApplication_Click);
 			// 
@@ -468,7 +470,7 @@
 			this.listViewApplications.Location = new System.Drawing.Point(8, 8);
 			this.listViewApplications.MultiSelect = false;
 			this.listViewApplications.Name = "listViewApplications";
-			this.listViewApplications.Size = new System.Drawing.Size(120, 317);
+			this.listViewApplications.Size = new System.Drawing.Size(120, 316);
 			this.listViewApplications.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listViewApplications.TabIndex = 0;
 			this.listViewApplications.UseCompatibleStateImageBehavior = false;
@@ -878,15 +880,26 @@
 			this.treeViewConfiguration.TabIndex = 2;
 			this.treeViewConfiguration.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewConfiguration_AfterSelect);
 			// 
+			// buttonCopyApplication
+			// 
+			this.buttonCopyApplication.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonCopyApplication.Image = global::ProcessManagerUI.Properties.Resources.copy_16;
+			this.buttonCopyApplication.Location = new System.Drawing.Point(49, 330);
+			this.buttonCopyApplication.Name = "buttonCopyApplication";
+			this.buttonCopyApplication.Size = new System.Drawing.Size(38, 24);
+			this.buttonCopyApplication.TabIndex = 24;
+			this.buttonCopyApplication.UseVisualStyleBackColor = true;
+			this.buttonCopyApplication.Click += new System.EventHandler(this.ButtonCopyApplication_Click);
+			// 
 			// ConfigurationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(774, 442);
-			this.Controls.Add(this.buttonMacros);
 			this.Controls.Add(this.panelApplications);
 			this.Controls.Add(this.panelGroups);
+			this.Controls.Add(this.buttonMacros);
 			this.Controls.Add(this.panelPlugins);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.labelNothingToShow);
@@ -988,6 +1001,7 @@
 		private System.Windows.Forms.CheckBox checkBoxApplicationWaitForExit;
 		private System.Windows.Forms.Label labelApplicationWaitForExit;
 		private System.Windows.Forms.Label labelApplicationSuccessExitCode;
+		private System.Windows.Forms.Button buttonCopyApplication;
 
 	}
 }

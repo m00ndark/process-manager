@@ -60,6 +60,15 @@ namespace ProcessManager.DataObjects
 			return application;
 		}
 
+		public Application Copy(string name = null)
+		{
+			Application application = Clone();
+			application.ID = Guid.NewGuid();
+			if (name != null) application.Name = name;
+			application.Sources.AddRange(Sources.Select(source => source.Copy()));
+			return application;
+		}
+
 		#region Equality
 
 		public bool Equals(string name)

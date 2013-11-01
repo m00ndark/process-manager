@@ -37,6 +37,13 @@ namespace ProcessManager.DataObjects
 			return new DistributionSource() { ID = ID, Path = Path, Filter = Filter, Recursive = Recursive, Inclusive = Inclusive };
 		}
 
+		public DistributionSource Copy()
+		{
+			DistributionSource distributionSource = Clone();
+			distributionSource.ID = Guid.NewGuid();
+			return distributionSource;
+		}
+
 		public void CopyTo(DistributionSource source)
 		{
 			source.ID = ID;
