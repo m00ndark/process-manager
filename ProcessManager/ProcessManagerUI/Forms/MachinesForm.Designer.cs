@@ -195,7 +195,6 @@
 			this.listViewMachines.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewMachines.HideSelection = false;
 			this.listViewMachines.Location = new System.Drawing.Point(12, 12);
-			this.listViewMachines.MultiSelect = false;
 			this.listViewMachines.Name = "listViewMachines";
 			this.listViewMachines.Size = new System.Drawing.Size(120, 180);
 			this.listViewMachines.Sorting = System.Windows.Forms.SortOrder.Ascending;

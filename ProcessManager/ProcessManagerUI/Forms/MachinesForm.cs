@@ -71,6 +71,13 @@ namespace ProcessManagerUI.Forms
 			{
 				panelMachine.Visible = false;
 			}
+			else if (listViewMachines.SelectedItems.Count > 1)
+			{
+				_selectedMachine = null;
+				textBoxMachineHostName.Text = string.Empty;
+				panelMachine.Visible = true;
+				EnableControls();
+			}
 			else
 			{
 				_selectedMachine = ((Machine) listViewMachines.SelectedItems[0].Tag);
@@ -99,9 +106,11 @@ namespace ProcessManagerUI.Forms
 			if (listViewMachines.SelectedItems.Count > 0)
 			{
 				AnyMachinesChanged = _hasUnsavedChanges = true;
-				_selectedMachine = (Machine) listViewMachines.SelectedItems[0].Tag;
-				Settings.Client.Machines.Remove(_selectedMachine);
-				listViewMachines.Items.Remove(listViewMachines.SelectedItems[0]);
+				foreach (ListViewItem item in listViewMachines.SelectedItems)
+				{
+					Settings.Client.Machines.Remove((Machine) item.Tag);
+					listViewMachines.Items.Remove(item);
+				}
 				_selectedMachine = null;
 				EnableControls();
 			}
@@ -137,9 +146,13 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonCopyMachineSetup_Click(object sender, EventArgs e)
 		{
-			if (_selectedMachine != null)
+			//if (_selectedMachine != null)
+			if (listViewMachines.SelectedItems.Count > 0)
+			{
+				List<Machine> selectedMachines = listViewMachines.SelectedItems.Cast<ListViewItem>().Select(item => (Machine) item.Tag).ToList();
 				Picker.ShowMenu(buttonCopyMachineSetup, new[] { ConfigurationParts.All, ConfigurationParts.Groups, ConfigurationParts.Applications },
-					Settings.Client.Machines.Where(machine => !machine.Equals(_selectedMachine)).Select(machine => new MachineWrapper(machine)), ContextMenu_CopyMachineSetup_MachineClicked);
+					Settings.Client.Machines.Where(machine => !selectedMachines.Any(machine.Equals)).Select(machine => new MachineWrapper(machine)), ContextMenu_CopyMachineSetup_MachineClicked);
+			}
 		}
 
 		private void ButtonOK_Click(object sender, EventArgs e)
@@ -173,8 +186,11 @@ namespace ProcessManagerUI.Forms
 
 		private void ContextMenu_CopyMachineSetup_MachineClicked(ConfigurationParts configurationPart, MachineWrapper machineWrapper)
 		{
-			if (_selectedMachine != null && machineWrapper != null)
-				CopyConfiguration(configurationPart, machineWrapper.Machine, _selectedMachine);
+			if (listViewMachines.SelectedItems.Count == 0 || machineWrapper == null)
+				return;
+
+			List<Machine> selectedMachines = listViewMachines.SelectedItems.Cast<ListViewItem>().Select(item => (Machine) item.Tag).ToList();
+			CopyConfiguration(configurationPart, machineWrapper.Machine, selectedMachines);
 		}
 
 		#endregion
@@ -273,10 +289,10 @@ namespace ProcessManagerUI.Forms
 			return ConnectionStore.MachineIsValid(machine);
 		}
 
-		private void CopyConfiguration(ConfigurationParts configurationParts, Machine sourceMachine, Machine destinationMachine)
+		private void CopyConfiguration(ConfigurationParts configurationParts, Machine sourceMachine, List<Machine> destinationMachines)
 		{
 			ServiceHelper.ConnectMachines();
-			ServiceHelper.WaitForConfiguration(sourceMachine, destinationMachine);
+			ServiceHelper.WaitForConfiguration(destinationMachines.Concat(new List<Machine>() { sourceMachine }).ToList());
 
 			if (ConnectionStore.Connections[sourceMachine].ServiceHandler.Status != ProcessManagerServiceHandlerStatus.Connected)
 			{
@@ -284,16 +300,19 @@ namespace ProcessManagerUI.Forms
 				return;
 			}
 
-			if (ConnectionStore.Connections[destinationMachine].ServiceHandler.Status != ProcessManagerServiceHandlerStatus.Connected)
+			string disconnectedMachines = string.Join(", ", destinationMachines.Where(destinationMachine =>
+				ConnectionStore.Connections[destinationMachine].ServiceHandler.Status != ProcessManagerServiceHandlerStatus.Connected));
+
+			if (!string.IsNullOrEmpty(disconnectedMachines))
 			{
-				Messenger.ShowError("Machine disconnected", "Could not establish a connection to Process Manager service at " + destinationMachine);
+				Messenger.ShowError("Machines disconnected", "Could not establish a connection to Process Manager service at " + disconnectedMachines);
 				return;
 			}
 
 			if (configurationParts == ConfigurationParts.All)
 			{
 				if (Messenger.ShowWarningQuestion("Confirm setup copy", "Are you sure you want to copy the setup from "
-					+ sourceMachine + " to " + destinationMachine + ", overwriting the existing setup?") == DialogResult.No)
+					+ sourceMachine + " to " + string.Join(", ", destinationMachines) + ", overwriting the existing setup?") == DialogResult.No)
 				{
 					return;
 				}
@@ -301,30 +320,42 @@ namespace ProcessManagerUI.Forms
 			else
 			{
 				if (Messenger.ShowWarningQuestion("Confirm setup copy", "Are you sure you want to copy the " + configurationParts.ToString().ToLower() + " setup from "
-					+ sourceMachine + " to " + destinationMachine + ", overwriting the existing " + configurationParts.ToString().ToLower() + "?") == DialogResult.No)
+					+ sourceMachine + " to " + string.Join(", ", destinationMachines) + ", overwriting the existing " + configurationParts.ToString().ToLower() + "?") == DialogResult.No)
 				{
 					return;
 				}
 			}
 
-			Configuration configurationBackup = ConnectionStore.Connections[destinationMachine].Configuration;
+			IDictionary<Machine, Configuration> backedUpConfigurations = new Dictionary<Machine, Configuration>();
+			foreach (Machine destinationMachine in destinationMachines)
+			{
+				Configuration configurationBackup = ConnectionStore.Connections[destinationMachine].Configuration;
+				backedUpConfigurations.Add(destinationMachine, configurationBackup);
+				ConnectionStore.Connections[destinationMachine].Configuration = ConnectionStore.Connections[sourceMachine].Configuration.CopyTo(configurationBackup.Clone(), configurationParts);
+				ConnectionStore.Connections[destinationMachine].ConfigurationModified = true;
 
-			ConnectionStore.Connections[destinationMachine].Configuration = ConnectionStore.Connections[sourceMachine].Configuration.CopyTo(configurationBackup.Clone(), configurationParts);
-			ConnectionStore.Connections[destinationMachine].ConfigurationModified = true;
+			}
+			Machine[] failedMachines = ServiceHelper.SaveConfiguration();
 
-			if (!ServiceHelper.SaveConfiguration())
-				ConnectionStore.Connections[destinationMachine].Configuration = configurationBackup;
-			else
-				RaiseMachinesChangedEvent(destinationMachine);
+			// todo: NOTE! not tested!
+
+			foreach (Machine failedMachine in failedMachines)
+				ConnectionStore.Connections[failedMachine].Configuration = backedUpConfigurations[failedMachine];
+
+			if (failedMachines.Length < destinationMachines.Count)
+				RaiseMachinesChangedEvent(destinationMachines.Except(failedMachines).ToList());
 		}
 
 		private void EnableControls(bool enable = true)
 		{
 			buttonApply.Enabled = (enable && _hasUnsavedChanges);
-			buttonRemoveMachine.Enabled = (enable && listViewMachines.SelectedItems.Count > 0 && !listViewMachines.SelectedItems[0].Tag.Equals(Settings.Constants.LocalMachine));
-			textBoxMachineHostName.ReadOnly = (listViewMachines.SelectedItems.Count > 0 && listViewMachines.SelectedItems[0].Tag.Equals(Settings.Constants.LocalMachine));
+			buttonRemoveMachine.Enabled = (enable && listViewMachines.SelectedItems.Count > 0 && !listViewMachines.SelectedItems
+				.Cast<ListViewItem>().Any(item => item.Tag.Equals(Settings.Constants.LocalMachine)));
+			labelMachineHostName.Enabled = (enable && listViewMachines.SelectedItems.Count == 1);
+			textBoxMachineHostName.Enabled = (enable && listViewMachines.SelectedItems.Count == 1);
+			textBoxMachineHostName.ReadOnly = (listViewMachines.SelectedItems.Count == 1 && listViewMachines.SelectedItems[0].Tag.Equals(Settings.Constants.LocalMachine));
 			buttonValidateMachine.Enabled = (enable && !string.IsNullOrEmpty(textBoxMachineHostName.Text));
-			buttonCopyMachineSetup.Enabled = (enable && !_hasUnsavedChanges && !string.IsNullOrEmpty(textBoxMachineHostName.Text));
+			buttonCopyMachineSetup.Enabled = (enable && !_hasUnsavedChanges);// && !string.IsNullOrEmpty(textBoxMachineHostName.Text));
 		}
 
 		#endregion

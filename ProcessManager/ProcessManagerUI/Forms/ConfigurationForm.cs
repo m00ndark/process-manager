@@ -1044,7 +1044,7 @@ namespace ProcessManagerUI.Forms
 					.ToList();
 
 				// save
-				if (!ServiceHelper.SaveConfiguration())
+				if (!ServiceHelper.TrySaveConfiguration())
 					return false;
 
 				RaiseConfigurationChangedEvent(modifiedMachines);

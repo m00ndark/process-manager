@@ -71,7 +71,12 @@ namespace ProcessManagerUI
 				});
 		}
 
-		public static bool SaveConfiguration()
+		public static bool TrySaveConfiguration()
+		{
+			return !SaveConfiguration().Any();
+		}
+
+		public static Machine[] SaveConfiguration()
 		{
 			IDictionary<Machine, Exception> exceptions = new Dictionary<Machine, Exception>();
 			Worker.Do("Saving configuration...", () =>
@@ -95,9 +100,9 @@ namespace ProcessManagerUI
 				Messenger.ShowError("Failed to save configuration",
 					"Could not save configuration for " + exceptions.Aggregate(string.Empty, (x, y) => x + ", " + y.Key).Trim(", ".ToCharArray()),
 					exceptions.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine + y.Value.Message).Trim());
-				return false;
+				return exceptions.Keys.ToArray();
 			}
-			return true;
+			return new Machine[0];
 		}
 	}
 }
