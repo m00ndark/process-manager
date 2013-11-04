@@ -86,6 +86,8 @@
     <Compile Include="DataObjects\Comparers\Comparer.cs" />
     <Compile Include="DataObjects\Comparers\DistributionFileEqualityComparer.cs" />
     <Compile Include="DataObjects\Comparers\MacroEqualityComparer.cs" />
+    <Compile Include="DataObjects\DistributeFileResult.cs" />
+    <Compile Include="DataObjects\DistributionActionResult.cs" />
     <Compile Include="DataObjects\DistributionResult.cs" />
     <Compile Include="DataObjects\DistributionFile.cs" />
     <Compile Include="DataObjects\DistributionWork.cs" />
@@ -119,6 +121,8 @@
     <Compile Include="EventArguments\MachineConfigurationHashEventArgs.cs" />
     <Compile Include="EventArguments\MachinesEventArgs.cs" />
     <Compile Include="EventArguments\ServiceHandlerConnectionChangedEventArgs.cs" />
+    <Compile Include="Exceptions\DistributeFileException.cs" />
+    <Compile Include="Exceptions\DistributionActionException.cs" />
     <Compile Include="Exceptions\ProcessActionException.cs" />
     <Compile Include="IProcessManagerEventHandler.cs" />
     <Compile Include="IProcessManagerEventProvider.cs" />
@@ -131,9 +135,11 @@
     <Compile Include="Service\Common\IProcessManagerServiceOperator.cs" />
     <Compile Include="Service\Common\Constants.cs" />
     <Compile Include="Service\DataObjects\DTOApplication.cs" />
+    <Compile Include="Service\DataObjects\DTODistributeFileResult.cs" />
     <Compile Include="Service\DataObjects\DTODistributionAction.cs" />
-    <Compile Include="Service\DataObjects\DTODistributionFile.cs" />
+    <Compile Include="Service\DataObjects\DTODistributionActionResult.cs" />
     <Compile Include="Service\DataObjects\DTODistributionResult.cs" />
+    <Compile Include="Service\DataObjects\DTODistributionFile.cs" />
     <Compile Include="Service\DataObjects\DTOProcessAction.cs" />
     <Compile Include="Service\DataObjects\DTOProcessActionResult.cs" />
     <Compile Include="Service\DataObjects\DTOProcessStatus.cs" />

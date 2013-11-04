@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using ProcessManager.DataObjects;
 using ProcessManager.Service.Common;
 using ProcessManager.Service.DataObjects;
 
@@ -52,7 +53,7 @@ namespace ProcessManager.Service.Client
 			return Channel.TakeProcessAction(processAction);
 		}
 
-		public bool TakeDistributionAction(DTODistributionAction distributionAction)
+		public DTODistributionActionResult TakeDistributionAction(DTODistributionAction distributionAction)
 		{
 			return Channel.TakeDistributionAction(distributionAction);
 		}
@@ -67,7 +68,7 @@ namespace ProcessManager.Service.Client
 			return Channel.GetFileSystemEntries(path, filter);
 		}
 
-		public bool DistributeFile(DTODistributionFile distributionFile)
+		public DTODistributeFileResult DistributeFile(DTODistributionFile distributionFile)
 		{
 			return Channel.DistributeFile(distributionFile);
 		}

@@ -89,11 +89,12 @@ namespace ProcessManager.Service.Host
 			return new DTOProcessActionResult(processActionResult);
 		}
 
-		public bool TakeDistributionAction(DTODistributionAction distributionAction)
+		public DTODistributionActionResult TakeDistributionAction(DTODistributionAction distributionAction)
 		{
 			Logger.Add(LogType.Verbose, "TakeDistributionAction call received: action = " + distributionAction.Type + ", " + distributionAction.SourceMachineHostName + " / " + distributionAction.GroupID + " / " + distributionAction.ApplicationID + " / " + distributionAction.DestinationMachineHostName);
 			IProcessManagerServiceEventHandler caller = OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>();
-			return ProcessManager.Instance.TakeDistributionAction(distributionAction.SourceMachineHostName, distributionAction.GroupID, distributionAction.ApplicationID, distributionAction.DestinationMachineHostName, distributionAction.Type, caller);
+			DistributionActionResult distributionActionResult = ProcessManager.Instance.TakeDistributionAction(distributionAction.SourceMachineHostName, distributionAction.GroupID, distributionAction.ApplicationID, distributionAction.DestinationMachineHostName, distributionAction.Type, caller);
+			return new DTODistributionActionResult(distributionActionResult);
 		}
 
 		public List<DTOFileSystemDrive> GetFileSystemDrives()
@@ -108,10 +109,11 @@ namespace ProcessManager.Service.Host
 			return ProcessManager.Instance.GetFileSystemEntries(path, filter).Select(x => new DTOFileSystemEntry(x)).ToList();
 		}
 
-		public bool DistributeFile(DTODistributionFile distributionFile)
+		public DTODistributeFileResult DistributeFile(DTODistributionFile distributionFile)
 		{
 			Logger.Add(LogType.Verbose, "DistributeFile call received: relative path = " + distributionFile.RelativePath + ", destination group id = " + distributionFile.DestinationGroupID + ", content length = " + distributionFile.Content.Length);
-			return ProcessManager.Instance.DistributeFile(distributionFile.FromDTO());
+			DistributeFileResult distributeFileResult = ProcessManager.Instance.DistributeFile(distributionFile.FromDTO());
+			return new DTODistributeFileResult(distributeFileResult);
 		}
 
 		#endregion

@@ -28,10 +28,12 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.linkLabelDistribute = new System.Windows.Forms.LinkLabel();
 			this.labelMachineName = new System.Windows.Forms.Label();
 			this.checkBoxSelected = new System.Windows.Forms.CheckBox();
 			this.pictureBoxStatus = new System.Windows.Forms.PictureBox();
+			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxStatus)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -85,6 +87,10 @@
 			this.pictureBoxStatus.TabIndex = 10;
 			this.pictureBoxStatus.TabStop = false;
 			// 
+			// toolTip
+			// 
+			this.toolTip.AutomaticDelay = 0;
+			// 
 			// DistributionDestinationMachineNode
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -110,5 +116,6 @@
 		private System.Windows.Forms.Label labelMachineName;
 		private System.Windows.Forms.CheckBox checkBoxSelected;
 		private System.Windows.Forms.PictureBox pictureBoxStatus;
+		private System.Windows.Forms.ToolTip toolTip;
 	}
 }

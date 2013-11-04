@@ -152,38 +152,36 @@ namespace ProcessManager
 				_processStatuses.ContainsKey(groupID) && _processStatuses[groupID].ContainsKey(applicationID) ? _processStatuses[groupID][applicationID] : null);
 		}
 
-		public bool TakeDistributionAction(string sourceMachineHostName, Guid groupID, Guid applicationID, string destinationMachineHostName, ActionType type, IProcessManagerServiceEventHandler caller)
+		public DistributionActionResult TakeDistributionAction(string sourceMachineHostName, Guid groupID, Guid applicationID, string destinationMachineHostName, ActionType type, IProcessManagerServiceEventHandler caller)
 		{
-			Configuration configuration = Configuration.Read();
-			Group group = configuration.Groups.FirstOrDefault(x => x.ID == groupID);
-			Application application = configuration.Applications.FirstOrDefault(x => x.ID == applicationID);
+			string errorMessage = null;
 
-			if (string.IsNullOrEmpty(sourceMachineHostName))
+			try
 			{
-				Logger.Add(LogType.Error, "Application " + type + ": Missing source machine host name");
-				return false;
+				Configuration configuration = Configuration.Read();
+				Group group = configuration.Groups.FirstOrDefault(x => x.ID == groupID);
+				Application application = configuration.Applications.FirstOrDefault(x => x.ID == applicationID);
+
+				if (string.IsNullOrEmpty(sourceMachineHostName))
+					Logger.AddAndThrow<DistributionActionException>(LogType.Error, "Application " + type + ": Missing source machine host name");
+
+				if (group == null)
+					Logger.AddAndThrow<DistributionActionException>(LogType.Error, "Application " + type + ": Could not find group with ID " + groupID);
+
+				if (application == null)
+					Logger.AddAndThrow<DistributionActionException>(LogType.Error, "Application " + type + ": Could not find application with ID " + applicationID);
+
+				if (string.IsNullOrEmpty(destinationMachineHostName))
+					Logger.AddAndThrow<DistributionActionException>(LogType.Error, "Application " + type + ": Missing destination machine host name");
+
+				DistributionWorker.Instance.AddWork(new DistributionWork(type, new Machine(sourceMachineHostName), group, application, new Machine(destinationMachineHostName), caller));
+			}
+			catch (DistributionActionException ex)
+			{
+				errorMessage = ex.Message;
 			}
 
-			if (group == null)
-			{
-				Logger.Add(LogType.Error, "Application " + type + ": Could not find group with ID " + groupID);
-				return false;
-			}
-
-			if (application == null)
-			{
-				Logger.Add(LogType.Error, "Application " + type + ": Could not find application with ID " + applicationID);
-				return false;
-			}
-
-			if (string.IsNullOrEmpty(destinationMachineHostName))
-			{
-				Logger.Add(LogType.Error, "Application " + type + ": Missing destination machine host name");
-				return false;
-			}
-
-			DistributionWorker.Instance.AddWork(new DistributionWork(type, new Machine(sourceMachineHostName), group, application, new Machine(destinationMachineHostName), caller));
-			return true;
+			return new DistributionActionResult(type, errorMessage);
 		}
 
 		public List<FileSystemDrive> GetFileSystemDrives()
@@ -196,29 +194,35 @@ namespace ProcessManager
 			return FileSystemHandler.GetFileSystemEntries(path, filter, SearchOption.TopDirectoryOnly).ToList();
 		}
 
-		public bool DistributeFile(DistributionFile distributionFile)
+		public DistributeFileResult DistributeFile(DistributionFile distributionFile)
 		{
-			Configuration configuration = Configuration.Read();
-			Group group = configuration.Groups.FirstOrDefault(x => x.ID == distributionFile.DestinationGroupID);
-
-			if (group == null)
-			{
-				Logger.Add(LogType.Error, "Distribute file: Could not find group with ID " + distributionFile.DestinationGroupID);
-				return false;
-			}
-
-			string filePath = Path.Combine(group.Path, distributionFile.RelativePath.Trim(Path.DirectorySeparatorChar));
+			string errorMessage = null;
 
 			try
 			{
-				FileSystemHandler.PutFileContent(filePath, distributionFile.Content);
-				return true;
+				Configuration configuration = Configuration.Read();
+				Group group = configuration.Groups.FirstOrDefault(x => x.ID == distributionFile.DestinationGroupID);
+
+				if (group == null)
+					Logger.AddAndThrow<DistributeFileException>(LogType.Error, "Could not find group with ID " + distributionFile.DestinationGroupID);
+
+				string filePath = Path.Combine(group.Path, distributionFile.RelativePath.Trim(Path.DirectorySeparatorChar));
+
+				try
+				{
+					FileSystemHandler.PutFileContent(filePath, distributionFile.Content);
+				}
+				catch (Exception ex)
+				{
+					Logger.AddAndThrow<DistributeFileException>("Failed to persist file content of " + filePath, ex);
+				}
 			}
-			catch (Exception ex)
+			catch (DistributeFileException ex)
 			{
-				Logger.Add("Distribute file: Failed to persist file content of " + filePath, ex);
-				return false;
+				errorMessage = ex.Message;
 			}
+
+			return new DistributeFileResult(distributionFile.RelativePath, distributionFile.DestinationGroupID, errorMessage);
 		}
 
 		#endregion

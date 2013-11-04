@@ -23,7 +23,7 @@ namespace ProcessManager.Service.Common
 		DTOProcessActionResult TakeProcessAction(DTOProcessAction processAction);
 
 		[OperationContract]
-		bool TakeDistributionAction(DTODistributionAction distributionAction);
+		DTODistributionActionResult TakeDistributionAction(DTODistributionAction distributionAction);
 
 		[OperationContract]
 		List<DTOFileSystemDrive> GetFileSystemDrives();
@@ -32,6 +32,6 @@ namespace ProcessManager.Service.Common
 		List<DTOFileSystemEntry> GetFileSystemEntries(string path, string filter = null);
 
 		[OperationContract]
-		bool DistributeFile(DTODistributionFile distributionFile);
+		DTODistributeFileResult DistributeFile(DTODistributionFile distributionFile);
 	}
 }

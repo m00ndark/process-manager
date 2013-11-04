@@ -21,6 +21,7 @@ namespace ProcessManagerUI.Controls.Nodes
 	{
 		private readonly Guid _id;
 		private DistributionState _state;
+		private string _message;
 
 		public event EventHandler CheckedChanged;
 		public event EventHandler<ActionEventArgs> ActionTaken;
@@ -34,6 +35,7 @@ namespace ProcessManagerUI.Controls.Nodes
 			SourceMachineID = sourceMachineID;
 			_id = MakeID(SourceMachineID, SourceGroupID, SourceApplicationID, DestinationMachine.ID);
 			_state = DistributionState.Unknown;
+			_message = null;
 			//BackColor = Color.FromArgb(255, 192, 128);
 		}
 
@@ -51,6 +53,16 @@ namespace ProcessManagerUI.Controls.Nodes
 			{
 				_state = value;
 				ApplyState();
+			}
+		}
+
+		public string Message
+		{
+			get { return _message; }
+			set
+			{
+				_message = value;
+				ApplyMessage();
 			}
 		}
 
@@ -74,7 +86,7 @@ namespace ProcessManagerUI.Controls.Nodes
 		private void LinkLabelDistribute_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			State = DistributionState.Ongoing;
-
+			Message = null;
 			RaiseActionTakenEvent(new DistributionAction(ActionType.Distribute, DestinationMachine));
 		}
 
@@ -108,6 +120,7 @@ namespace ProcessManagerUI.Controls.Nodes
 			if (checkBoxSelected.Checked)
 			{
 				State = DistributionState.Ongoing;
+				Message = null;
 				RaiseActionTakenEvent(new DistributionAction(ActionType.Distribute, DestinationMachine));
 			}
 		}
@@ -155,6 +168,11 @@ namespace ProcessManagerUI.Controls.Nodes
 					pictureBoxStatus.Image = Properties.Resources.distribution_unknown_16;
 					break;
 			}
+		}
+
+		private void ApplyMessage()
+		{
+			toolTip.SetToolTip(pictureBoxStatus, _message);
 		}
 
 		#endregion

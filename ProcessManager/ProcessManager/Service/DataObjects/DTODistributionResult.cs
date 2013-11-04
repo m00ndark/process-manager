@@ -7,14 +7,15 @@ namespace ProcessManager.Service.DataObjects
 	[DataContract]
 	public class DTODistributionResult
 	{
-		public DTODistributionResult(DistributionResult distributionResult)
+		public DTODistributionResult(DistributionResult distributionActionResult)
 		{
-			Type = distributionResult.Type;
-			SourceMachineHostName = distributionResult.SourceMachineHostName;
-			GroupID = distributionResult.GroupID;
-			ApplicationID = distributionResult.ApplicationID;
-			DestinationMachineHostName = distributionResult.DestinationMachineHostName;
-			Result = distributionResult.Result;
+			Type = distributionActionResult.Type;
+			SourceMachineHostName = distributionActionResult.SourceMachineHostName;
+			GroupID = distributionActionResult.GroupID;
+			ApplicationID = distributionActionResult.ApplicationID;
+			DestinationMachineHostName = distributionActionResult.DestinationMachineHostName;
+			ErrorMessage = distributionActionResult.ErrorMessage;
+			Result = distributionActionResult.Result;
 		}
 
 		#region Properties
@@ -35,13 +36,16 @@ namespace ProcessManager.Service.DataObjects
 		public string DestinationMachineHostName { get; private set; }
 
 		[DataMember]
+		public string ErrorMessage { get; private set; }
+
+		[DataMember]
 		public DistributionResultValue Result { get; private set; }
 
 		#endregion
 
 		public DistributionResult FromDTO()
 		{
-			return new DistributionResult(Type, SourceMachineHostName, GroupID, ApplicationID, DestinationMachineHostName, Result);
+			return new DistributionResult(Type, SourceMachineHostName, GroupID, ApplicationID, DestinationMachineHostName, Result, ErrorMessage);
 		}
 	}
 }

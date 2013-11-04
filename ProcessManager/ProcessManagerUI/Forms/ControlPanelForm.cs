@@ -152,11 +152,11 @@ namespace ProcessManagerUI.Forms
 			return false;
 		}
 
-		private bool RaiseDistributionCompletedEvent(DistributionResult distributionResult)
+		private bool RaiseDistributionCompletedEvent(DistributionResult distributionActionResult)
 		{
 			if (DistributionCompleted != null)
 			{
-				DistributionCompleted(this, new DistributionResultEventArgs(distributionResult));
+				DistributionCompleted(this, new DistributionResultEventArgs(distributionActionResult));
 				return true;
 			}
 			return false;
@@ -675,7 +675,9 @@ namespace ProcessManagerUI.Forms
 			Task.Factory.StartNew(() =>
 				{
 					if (RaiseDistributionCompletedEvent(distributionResult))
-						ApplyDistributionState(distributionResult);
+						ApplyDistributionState(new Machine(distributionResult.SourceMachineHostName), distributionResult.GroupID,
+							distributionResult.ApplicationID, new Machine(distributionResult.DestinationMachineHostName),
+							distributionResult.Result == DistributionResultValue.Success, distributionResult.ErrorMessage);
 				});
 		}
 
@@ -1151,24 +1153,26 @@ namespace ProcessManagerUI.Forms
 
 		#region Distribution tab
 
-		private delegate void ApplyDistributionStateDelegate(DistributionResult distributionResult);
+		private delegate void ApplyDistributionStateDelegate(Machine sourceMachine, Guid groupID, Guid applicationID, Machine destinationMachine, bool success, string message);
 
-		private void ApplyDistributionState(DistributionResult distributionResult)
+		private void ApplyDistributionState(Machine sourceMachine, Guid groupID, Guid applicationID, Machine destinationMachine, bool success, string message = null)
 		{
 			if (InvokeRequired)
 			{
-				Invoke(new ApplyDistributionStateDelegate(ApplyDistributionState), distributionResult);
+				Invoke(new ApplyDistributionStateDelegate(ApplyDistributionState), sourceMachine, groupID, applicationID, destinationMachine, success, message);
 				return;
 			}
 
 			lock (_distributionDestinationMachineNodes)
 			{
 				DistributionDestinationMachineNode destinationMachineNode = _distributionDestinationMachineNodes.FirstOrDefault(node =>
-					node.Matches(new Machine(distributionResult.SourceMachineHostName).ID, distributionResult.GroupID,
-						distributionResult.ApplicationID, new Machine(distributionResult.DestinationMachineHostName).ID));
+					node.Matches(sourceMachine.ID, groupID, applicationID, destinationMachine.ID));
 
 				if (destinationMachineNode != null)
-					destinationMachineNode.State = (distributionResult.Result == DistributionResultValue.Success ? DistributionState.Success : DistributionState.Failure);
+				{
+					destinationMachineNode.State = success ? DistributionState.Success : DistributionState.Failure;
+					destinationMachineNode.Message = message;
+				}
 			}
 		}
 
@@ -1653,7 +1657,14 @@ namespace ProcessManagerUI.Forms
 					if (!ConnectionStore.ConnectionCreated(distributionAction.SourceMachine))
 						throw new Exception("No connection to source machine " + distributionAction.SourceMachine);
 
-					return ConnectionStore.Connections[distributionAction.SourceMachine].ServiceHandler.Service.TakeDistributionAction(new DTODistributionAction(distributionAction));
+					DistributionActionResult distributionActionResult = ConnectionStore.Connections[distributionAction.SourceMachine].ServiceHandler.Service
+						.TakeDistributionAction(new DTODistributionAction(distributionAction)).FromDTO();
+
+					if (!distributionActionResult.Success)
+						ApplyDistributionState(distributionAction.SourceMachine, distributionAction.Group.ID, distributionAction.Application.ID,
+							distributionAction.DestinationMachine, distributionActionResult.Success, distributionActionResult.ErrorMessage);
+
+					return distributionActionResult.Success;
 				}
 
 				MacroAction macroAction = action as MacroAction;

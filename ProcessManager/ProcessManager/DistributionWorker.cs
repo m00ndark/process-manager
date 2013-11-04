@@ -8,6 +8,7 @@ using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
 using ProcessManager.DataObjects.Comparers;
 using ProcessManager.EventArguments;
+using ProcessManager.Exceptions;
 using ProcessManager.Service.Client;
 using ProcessManager.Service.Common;
 using ProcessManager.Service.DataObjects;
@@ -256,43 +257,58 @@ namespace ProcessManager
 					{
 						try
 						{
-							Group destinationGroup = ConnectionStore.Connections[work.DestinationMachine].Configuration.Groups
-								.FirstOrDefault(group => Comparer.GroupsEqual(group, work.Group));
-
-							if (destinationGroup == null)
+							try
 							{
-								Logger.Add(LogType.Warning, "Could not distribute application " + work.Application.Name + " in group " + work.Group.Name
-									+ " to destination machine " + work.DestinationMachine.HostName + ". Destination machine does not contain a matching group.");
-								RaiseDistributionCompletedEvent(new DistributionResult(work, DistributionResultValue.Failure), work.Caller);
-								return;
-							}
+								Group destinationGroup = ConnectionStore.Connections[work.DestinationMachine].Configuration.Groups
+									.FirstOrDefault(group => Comparer.GroupsEqual(group, work.Group));
 
-							bool totalSuccess = true;
-							foreach (DistributionFile file in work.Files)
+								if (destinationGroup == null)
+									Logger.AddAndThrow<DistributionActionException>(LogType.Warning, "Could not distribute application " + work.Application.Name + " in group " + work.Group.Name
+										+ " to destination machine " + work.DestinationMachine.HostName + ". Destination machine does not contain a matching group.");
+
+								List<string> errorMessages = new List<string>();
+								foreach (DistributionFile file in work.Files)
+								{
+									file.DestinationGroupID = destinationGroup.ID;
+									file.Content = FileSystemHandler.GetFileContent(Path.Combine(work.Group.Path, file.RelativePath.Trim(Path.DirectorySeparatorChar)));
+
+									DistributeFileResult result = ConnectionStore.Connections[work.DestinationMachine].ServiceHandler.Service.DistributeFile(new DTODistributionFile(file)).FromDTO();
+
+									try
+									{
+										if (result.Success)
+											Logger.Add(LogType.Verbose, "Distribution of file to " + work.DestinationMachine.HostName + " succeeded: " + file.RelativePath + ", " + file.Content.Length + " bytes");
+										else
+											Logger.AddAndThrow<DistributionActionException>(LogType.Error, "Distribution of file to " + work.DestinationMachine.HostName + " failed: " + Path.GetFileName(file.RelativePath) + " | " + result.ErrorMessage);
+									}
+									catch (DistributionActionException ex)
+									{
+										errorMessages.Add(ex.Message);
+									}
+
+									file.IsDistributed = true;
+								}
+
+								if (errorMessages.Any())
+									throw new DistributionActionException(string.Join(Environment.NewLine, errorMessages.Select(x => x.Replace(" | ", Environment.NewLine + "\t"))));
+
+								RaiseDistributionCompletedEvent(new DistributionResult(work, DistributionResultValue.Success), work.Caller);
+							}
+							catch (DistributionActionException) { throw; }
+							catch (ThreadAbortException) { }
+							catch (Exception ex)
 							{
-								file.DestinationGroupID = destinationGroup.ID;
-								file.Content = FileSystemHandler.GetFileContent(Path.Combine(work.Group.Path, file.RelativePath.Trim(Path.DirectorySeparatorChar)));
-
-								bool success = ConnectionStore.Connections[work.DestinationMachine].ServiceHandler.Service.DistributeFile(new DTODistributionFile(file));
-
-								Logger.Add(LogType.Verbose, "Distribution of file to " + work.DestinationMachine.HostName + " " + (success ? "succeeded" : "failed") + ": " + file.RelativePath + ", " + file.Content.Length + " bytes");
-
-								file.IsDistributed = true;
-								totalSuccess &= success;
+								Logger.AddAndThrow<DistributionActionException>("An unexpected error occurred while distributing source files, aborting..", ex);
 							}
-
-							RaiseDistributionCompletedEvent(new DistributionResult(work, totalSuccess ? DistributionResultValue.Success : DistributionResultValue.Failure), work.Caller);
+							finally
+							{
+								lock (_pendingDistributionWork)
+									_pendingDistributionWork.Remove(work);
+							}
 						}
-						catch (ThreadAbortException) {}
-						catch (Exception ex)
+						catch (DistributionActionException ex)
 						{
-							Logger.Add("An unexpected error occurred while distributing source files, aborting..", ex);
-							RaiseDistributionCompletedEvent(new DistributionResult(work, DistributionResultValue.Failure), work.Caller);
-						}
-						finally
-						{
-							lock (_pendingDistributionWork)
-								_pendingDistributionWork.Remove(work);
+							RaiseDistributionCompletedEvent(new DistributionResult(work, DistributionResultValue.Failure, ex.Message), work.Caller);
 						}
 					});
 			}

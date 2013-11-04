@@ -76,16 +76,19 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		private void LinkLabelStart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
+			Message = null;
 			RaiseActionTakenEvent(new ProcessAction(ActionType.Start, Application));
 		}
 
 		private void LinkLabelStop_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
+			Message = null;
 			RaiseActionTakenEvent(new ProcessAction(ActionType.Stop, Application));
 		}
 
 		private void LinkLabelRestart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
+			Message = null;
 			RaiseActionTakenEvent(new ProcessAction(ActionType.Restart, Application));
 		}
 
@@ -114,7 +117,10 @@ namespace ProcessManagerUI.Controls.Nodes
 		public void TakeAction(ActionType type)
 		{
 			if (checkBoxSelected.Checked)
+			{
+				Message = null;
 				RaiseActionTakenEvent(new ProcessAction(type, Application));
+			}
 		}
 
 		#endregion
