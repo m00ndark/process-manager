@@ -580,7 +580,7 @@ namespace ProcessManagerUI.Forms
 
 		private void Node_ActionTaken(object sender, ActionEventArgs e)
 		{
-			TakeAction(e.Action);
+			TakeActionAsync(e.Action);
 		}
 
 		#endregion
@@ -935,7 +935,7 @@ namespace ProcessManagerUI.Forms
 			ProcessApplicationNode applicationNode = _processApplicationNodes.FirstOrDefault(node =>
 				node.Matches(processStatus.Machine.ID, processStatus.GroupID, processStatus.ApplicationID));
 
-			if (applicationNode == null)
+			if (applicationNode == null || processStatus.Value == ProcessStatusValue.Stopped && applicationNode.Status == ProcessStatusValue.ActionError)
 				return;
 
 			applicationNode.Status = processStatus.Value;
@@ -1607,6 +1607,11 @@ namespace ProcessManagerUI.Forms
 					linkLabelMacroPlayAll.Enabled = enable;
 					break;
 			}
+		}
+
+		public void TakeActionAsync(IAction action)
+		{
+			Task.Factory.StartNew(() => TakeAction(action));
 		}
 
 		public bool TakeAction(IAction action)
