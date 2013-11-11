@@ -25,7 +25,7 @@ namespace ProcessManagerUI.Forms
 		private Machine _selectedMachine;
 		private Group _selectedGroup;
 		private Application _selectedApplication;
-		private bool _disableTextChangedEvents;
+		private bool _disableChangedEvents;
 
 		public event EventHandler<MachinesEventArgs> ConfigurationChanged;
 		public event EventHandler MacrosChanged;
@@ -40,7 +40,7 @@ namespace ProcessManagerUI.Forms
 			_selectedMachine = null;
 			_selectedGroup = null;
 			_selectedApplication = null;
-			_disableTextChangedEvents = false;
+			_disableChangedEvents = false;
 			_initTimer = new Timer() { Enabled = false, Interval = 100 };
 			_initTimer.Tick += InitTimer_Tick;
 		}
@@ -210,7 +210,7 @@ namespace ProcessManagerUI.Forms
 			}
 			else
 			{
-				_disableTextChangedEvents = true;
+				_disableChangedEvents = true;
 				_selectedGroup = ((Group) listViewGroups.SelectedItems[0].Tag);
 				textBoxGroupName.Text = _selectedGroup.Name;
 				textBoxGroupPath.Text = _selectedGroup.Path;
@@ -220,7 +220,7 @@ namespace ProcessManagerUI.Forms
 					.Where(application => application != null)
 					.Select(application => new ListViewItem(application.Name) { Tag = application.ID })
 					.ToArray());
-				_disableTextChangedEvents = false;
+				_disableChangedEvents = false;
 				panelGroup.Visible = true;
 			}
 			EnableControls();
@@ -260,11 +260,10 @@ namespace ProcessManagerUI.Forms
 
 		private void TextBoxGroupName_TextChanged(object sender, EventArgs e)
 		{
-			if (!_disableTextChangedEvents)
-			{
-				GroupChanged();
-				EnableControls();
-			}
+			if (_disableChangedEvents) return;
+
+			GroupChanged();
+			EnableControls();
 		}
 
 		private void TextBoxGroupName_Leave(object sender, EventArgs e)
@@ -274,11 +273,10 @@ namespace ProcessManagerUI.Forms
 
 		private void TextBoxGroupPath_TextChanged(object sender, EventArgs e)
 		{
-			if (!_disableTextChangedEvents)
-			{
-				GroupChanged();
-				EnableControls();
-			}
+			if (_disableChangedEvents) return;
+
+			GroupChanged();
+			EnableControls();
 		}
 
 		private void TextBoxGroupPath_MouseLeave(object sender, EventArgs e)
@@ -345,7 +343,7 @@ namespace ProcessManagerUI.Forms
 			}
 			else
 			{
-				_disableTextChangedEvents = true;
+				_disableChangedEvents = true;
 				_selectedApplication = ((Application) listViewApplications.SelectedItems[0].Tag);
 				textBoxApplicationName.Text = _selectedApplication.Name;
 				textBoxApplicationRelativePath.Text = _selectedApplication.RelativePath;
@@ -354,7 +352,7 @@ namespace ProcessManagerUI.Forms
 				comboBoxApplicationSuccessExitCode.SelectedItem = GetSuccessExitCodeItem(_selectedApplication.SuccessExitCode);
 				checkBoxDistributionOnly.Checked = _selectedApplication.DistributionOnly;
 				DisplayDistributionSourceCount();
-				_disableTextChangedEvents = false;
+				_disableChangedEvents = false;
 				panelApplication.Visible = true;
 			}
 			EnableControls();
@@ -399,11 +397,10 @@ namespace ProcessManagerUI.Forms
 
 		private void TextBoxApplicationName_TextChanged(object sender, EventArgs e)
 		{
-			if (!_disableTextChangedEvents)
-			{
-				ApplicationChanged();
-				EnableControls();
-			}
+			if (_disableChangedEvents) return;
+
+			ApplicationChanged();
+			EnableControls();
 		}
 
 		private void TextBoxApplicationName_Leave(object sender, EventArgs e)
@@ -413,11 +410,10 @@ namespace ProcessManagerUI.Forms
 
 		private void TextBoxApplicationRelativePath_TextChanged(object sender, EventArgs e)
 		{
-			if (!_disableTextChangedEvents)
-			{
-				ApplicationChanged();
-				EnableControls();
-			}
+			if (_disableChangedEvents) return;
+
+			ApplicationChanged();
+			EnableControls();
 		}
 
 		private void TextBoxApplicationRelativePath_Leave(object sender, EventArgs e)
@@ -434,11 +430,10 @@ namespace ProcessManagerUI.Forms
 
 		private void TextBoxApplicationArguments_TextChanged(object sender, EventArgs e)
 		{
-			if (!_disableTextChangedEvents)
-			{
-				ApplicationChanged();
-				EnableControls();
-			}
+			if (_disableChangedEvents) return;
+
+			ApplicationChanged();
+			EnableControls();
 		}
 
 		private void TextBoxApplicationArguments_Leave(object sender, EventArgs e)
@@ -448,11 +443,15 @@ namespace ProcessManagerUI.Forms
 
 		private void CheckBoxApplicationWaitForExit_CheckedChanged(object sender, EventArgs e)
 		{
+			if (_disableChangedEvents) return;
+
 			UpdateSelectedApplication();
 		}
 
 		private void ComboBoxApplicationSuccessExitCode_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (_disableChangedEvents) return;
+
 			UpdateSelectedApplication();
 		}
 
@@ -499,6 +498,9 @@ namespace ProcessManagerUI.Forms
 				checkBoxApplicationWaitForExit.Checked = false;
 				comboBoxApplicationSuccessExitCode.SelectedItem = GetSuccessExitCodeItem(SuccessExitCode.Any);
 			}
+
+			if (_disableChangedEvents) return;
+
 			UpdateSelectedApplication();
 		}
 
@@ -739,33 +741,31 @@ namespace ProcessManagerUI.Forms
 
 		private void UpdateSelectedGroup()
 		{
-			if (_selectedGroup != null)
+			if (_selectedGroup == null) return;
+
+			if (GroupChanged())
 			{
-				if (GroupChanged())
-				{
-					_selectedGroup.Name = textBoxGroupName.Text;
-					_selectedGroup.Path = textBoxGroupPath.Text;
-					_selectedGroup.Applications.Clear();
-					_selectedGroup.Applications.AddRange(listViewGroupApplications.Items.Cast<ListViewItem>().Select(x => (Guid) x.Tag));
-					ListViewItem item = listViewGroups.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedGroup);
-					item.Text = _selectedGroup.Name;
-					listViewGroups.Sort();
-				}
-				textBoxGroupName.Text = _selectedGroup.Name;
-				EnableControls();
+				_selectedGroup.Name = textBoxGroupName.Text;
+				_selectedGroup.Path = textBoxGroupPath.Text;
+				_selectedGroup.Applications.Clear();
+				_selectedGroup.Applications.AddRange(listViewGroupApplications.Items.Cast<ListViewItem>().Select(x => (Guid) x.Tag));
+				ListViewItem item = listViewGroups.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedGroup);
+				item.Text = _selectedGroup.Name;
+				listViewGroups.Sort();
 			}
+			textBoxGroupName.Text = _selectedGroup.Name;
+			EnableControls();
 		}
 
 		private bool GroupChanged()
 		{
-			bool groupChanged = false;
-			if (_selectedMachine != null && _selectedGroup != null && !string.IsNullOrEmpty(textBoxGroupName.Text))
-			{
-				int equalApplicationsCount = _selectedGroup.Applications.Intersect(listViewGroupApplications.Items.Cast<ListViewItem>().Select(x => (Guid) x.Tag)).Count();
-				groupChanged = (_selectedGroup.Name != textBoxGroupName.Text || _selectedGroup.Path != textBoxGroupPath.Text
-					|| equalApplicationsCount != _selectedGroup.Applications.Count || equalApplicationsCount != listViewGroupApplications.Items.Count);
-				ConnectionStore.Connections[_selectedMachine].ConfigurationModified |= groupChanged;
-			}
+			if (_selectedMachine == null || _selectedGroup == null || string.IsNullOrEmpty(textBoxGroupName.Text))
+				return false;
+
+			int equalApplicationsCount = _selectedGroup.Applications.Intersect(listViewGroupApplications.Items.Cast<ListViewItem>().Select(x => (Guid) x.Tag)).Count();
+			bool groupChanged = (_selectedGroup.Name != textBoxGroupName.Text || _selectedGroup.Path != textBoxGroupPath.Text
+				|| equalApplicationsCount != _selectedGroup.Applications.Count || equalApplicationsCount != listViewGroupApplications.Items.Count);
+			ConnectionStore.Connections[_selectedMachine].ConfigurationModified |= groupChanged;
 			return groupChanged;
 		}
 
@@ -899,38 +899,36 @@ namespace ProcessManagerUI.Forms
 
 		private void UpdateSelectedApplication()
 		{
-			if (_selectedApplication != null)
+			if (_selectedApplication == null) return;
+
+			if (ApplicationChanged())
 			{
-				if (ApplicationChanged())
-				{
-					_selectedApplication.Name = textBoxApplicationName.Text;
-					_selectedApplication.RelativePath = textBoxApplicationRelativePath.Text;
-					_selectedApplication.Arguments = textBoxApplicationArguments.Text;
-					_selectedApplication.WaitForExit = checkBoxApplicationWaitForExit.Checked;
-					_selectedApplication.SuccessExitCode = GetSelectedSuccessExitCode();
-					_selectedApplication.DistributionOnly = checkBoxDistributionOnly.Checked;
-					ListViewItem item = listViewApplications.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedApplication);
-					item.Text = _selectedApplication.Name;
-					listViewApplications.Sort();
-				}
-				textBoxApplicationName.Text = _selectedApplication.Name;
-				EnableControls();
+				_selectedApplication.Name = textBoxApplicationName.Text;
+				_selectedApplication.RelativePath = textBoxApplicationRelativePath.Text;
+				_selectedApplication.Arguments = textBoxApplicationArguments.Text;
+				_selectedApplication.WaitForExit = checkBoxApplicationWaitForExit.Checked;
+				_selectedApplication.SuccessExitCode = GetSelectedSuccessExitCode();
+				_selectedApplication.DistributionOnly = checkBoxDistributionOnly.Checked;
+				ListViewItem item = listViewApplications.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedApplication);
+				item.Text = _selectedApplication.Name;
+				listViewApplications.Sort();
 			}
+			textBoxApplicationName.Text = _selectedApplication.Name;
+			EnableControls();
 		}
 
 		private bool ApplicationChanged()
 		{
-			bool applicationChanged = false;
-			if (_selectedMachine != null && _selectedApplication != null && !string.IsNullOrEmpty(textBoxApplicationName.Text))
-			{
-				applicationChanged = (_selectedApplication.Name != textBoxApplicationName.Text
-					|| _selectedApplication.RelativePath != textBoxApplicationRelativePath.Text
-					|| _selectedApplication.Arguments != textBoxApplicationArguments.Text
-					|| _selectedApplication.WaitForExit != checkBoxApplicationWaitForExit.Checked
-					|| _selectedApplication.SuccessExitCode != GetSelectedSuccessExitCode()
-					|| _selectedApplication.DistributionOnly != checkBoxDistributionOnly.Checked);
-				ConnectionStore.Connections[_selectedMachine].ConfigurationModified |= applicationChanged;
-			}
+			if (_selectedMachine == null || _selectedApplication == null || string.IsNullOrEmpty(textBoxApplicationName.Text))
+				return false;
+
+			bool applicationChanged = (_selectedApplication.Name != textBoxApplicationName.Text
+				|| _selectedApplication.RelativePath != textBoxApplicationRelativePath.Text
+				|| _selectedApplication.Arguments != textBoxApplicationArguments.Text
+				|| _selectedApplication.WaitForExit != checkBoxApplicationWaitForExit.Checked
+				|| _selectedApplication.SuccessExitCode != GetSelectedSuccessExitCode()
+				|| _selectedApplication.DistributionOnly != checkBoxDistributionOnly.Checked);
+			ConnectionStore.Connections[_selectedMachine].ConfigurationModified |= applicationChanged;
 			return applicationChanged;
 		}
 
@@ -1163,11 +1161,6 @@ namespace ProcessManagerUI.Forms
 			nameTemplate = (foundNo ? nameTemplate.Substring(0, lastIndex) : nameTemplate.Trim()) + " ";
 			while (existingNames.Contains(name = nameTemplate + (++tryNo))) { }
 			return name;
-		}
-
-		private void buttonCopyGroup_Click(object sender, EventArgs e)
-		{
-
 		}
 	}
 }
