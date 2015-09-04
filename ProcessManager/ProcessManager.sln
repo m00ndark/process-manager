@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessManagerUI", "ProcessManagerUI\ProcessManagerUI.csproj", "{C8D00382-6819-4FE5-96F7-EFD428487F41}"
 EndProject
@@ -23,27 +23,6 @@ Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "ProcessManagerSetup2012", "
 	EndProjectSection
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://qttfseu.qliktech.com:8080/tfs/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = ProcessManagerUI\\ProcessManagerUI.csproj
-		SccProjectName1 = ProcessManagerUI
-		SccLocalPath1 = ProcessManagerUI
-		SccProjectUniqueName2 = ProcessManager\\ProcessManager.csproj
-		SccProjectName2 = ProcessManager
-		SccLocalPath2 = ProcessManager
-		SccProjectUniqueName3 = ProcessManagerService\\ProcessManagerService.csproj
-		SccProjectName3 = ProcessManagerService
-		SccLocalPath3 = ProcessManagerService
-		SccProjectUniqueName4 = ProcessManagerSetup\\ProcessManagerSetup.vdproj
-		SccProjectName4 = ProcessManagerSetup
-		SccLocalPath4 = ProcessManagerSetup
-		SccProjectUniqueName5 = ProcessManagerSetup2012\\ProcessManagerSetup2012.isproj
-		SccProjectName5 = ProcessManagerSetup2012
-		SccLocalPath5 = ProcessManagerSetup2012
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Any CPU = CD_ROM|Any CPU
 		CD_ROM|x64 = CD_ROM|x64

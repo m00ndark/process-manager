@@ -295,7 +295,7 @@ namespace ProcessManager
 
 						if (configuration.Applications.Count > 0 && configuration.Groups.Sum(group => group.Applications.Count) > 0)
 						{
-							List<string> runningProcesses = ProcessHandler.GetProcesses(configuration.Applications);
+							List<string> runningProcesses = ProcessHandler.GetProcesses();
 
 							var processesStatusList = configuration.Groups
 								.SelectMany(group => configuration.Applications

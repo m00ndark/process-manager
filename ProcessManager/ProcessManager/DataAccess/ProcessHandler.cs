@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Threading;
 using ProcessManager.DataObjects;
 using ProcessManager.Exceptions;
@@ -13,11 +14,6 @@ namespace ProcessManager.DataAccess
 	public static class ProcessHandler
 	{
 		private const int WAIT_FOR_EXIT_TIMEOUT = 60000;
-
-		public static List<string> GetProcesses(List<Application> applications)
-		{
-			return applications.SelectMany(application => GetProcesses(application).Select(process => process.GetPathName())).ToList();
-		}
 
 		public static void Start(Group group, Application application)
 		{
@@ -101,7 +97,7 @@ namespace ProcessManager.DataAccess
 		private static IEnumerable<Process> GetProcesses(Group group, Application application)
 		{
 			string fullPath = Path.GetDirectoryName(Path.Combine(group.Path, application.RelativePath.TrimStart('\\')));
-			return GetProcesses(application)
+			return Process.GetProcessesByName(Path.GetFileNameWithoutExtension(application.RelativePath))
 				.Select(process => new
 					{
 						Process = process,
@@ -111,9 +107,24 @@ namespace ProcessManager.DataAccess
 				.Select(x => x.Process);
 		}
 
-		private static IEnumerable<Process> GetProcesses(Application application)
+		public static List<string> GetProcesses()
 		{
-			return Process.GetProcessesByName(Path.GetFileNameWithoutExtension(application.RelativePath));
+			return GetProcessesUsingWMI().ToList();
+		}
+
+		private static IEnumerable<string> GetProcessesUsingWMI()
+		{
+			const string WMI_QUERY_STRING = "SELECT ExecutablePath FROM Win32_Process";
+			using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(WMI_QUERY_STRING))
+			{
+				using (ManagementObjectCollection results = searcher.Get())
+				{
+					foreach (ManagementObject obj in results.Cast<ManagementObject>().Where(obj => obj["ExecutablePath"] != null))
+					{
+						yield return obj["ExecutablePath"].ToString();
+					}
+				}
+			}
 		}
 	}
 }
