@@ -18,10 +18,10 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		#region Properties
 
-        public Macro Macro { get; private set; }
+        public Macro Macro { get; }
 
-		public override Guid ID { get { return Macro.ID; } }
-        protected override string NodeName { get { return Macro.Name; } }
+		public override Guid ID => Macro.ID;
+		protected override string NodeName => Macro.Name;
 
 		#endregion
 

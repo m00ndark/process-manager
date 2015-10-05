@@ -24,9 +24,9 @@ namespace ProcessManager.DataObjects
 
 		#region Properties
 
-		public ActionType Type { get; private set; }
+		public ActionType Type { get; }
 		public Macro Macro { get; set; }
-		public List<IMacroAction> Actions { get; private set; }
+		public List<IMacroAction> Actions { get; }
 
 		#endregion
 	}

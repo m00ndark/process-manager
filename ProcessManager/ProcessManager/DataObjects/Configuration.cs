@@ -7,7 +7,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects.Comparers;
-using ProcessManager.Utilities;
+using ToolComponents.Core;
 
 namespace ProcessManager.DataObjects
 {
@@ -29,7 +29,7 @@ namespace ProcessManager.DataObjects
 		static Configuration()
 		{
 			_appDataFolder = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-				Settings.Service.Defaults.COMPANY_FOLDER_NAME), Settings.Service.Defaults.APPLICATION_FOLDER_NAME);
+				Settings.Service.Defaults.COMPANY_NAME), Settings.Service.Defaults.APPLICATION_NAME);
 
 			FileSystemHandler.CreateDirectory(_appDataFolder);
 
@@ -56,7 +56,7 @@ namespace ProcessManager.DataObjects
 
 		public void UpdateHash()
 		{
-			Hash = Cryptographer.CreateSHA512Hash(Guid.NewGuid().ToString());
+			Hash = Cryptographer.CreateSha512Hash();
 		}
 
 		public Configuration Clone()
@@ -79,7 +79,7 @@ namespace ProcessManager.DataObjects
 				configuration.Groups.ForEach(group =>
 					{
 						Group oldGroup = oldGroups.FirstOrDefault(x => Comparer.GroupsEqual(x, group));
-						group.ID = oldGroup != null ? oldGroup.ID : Guid.NewGuid();
+						group.ID = oldGroup?.ID ?? Guid.NewGuid();
 					});
 			}
 
@@ -89,7 +89,7 @@ namespace ProcessManager.DataObjects
 				configuration.Applications.ForEach(application =>
 					{
 						Application oldApplication = oldApplications.FirstOrDefault(x => Comparer.ApplicationsEqual(x, application));
-						Guid updatedApplicationID = oldApplication != null ? oldApplication.ID : Guid.NewGuid();
+						Guid updatedApplicationID = oldApplication?.ID ?? Guid.NewGuid();
 						applicationIDMappings.Add(application.ID, updatedApplicationID);
 						application.ID = updatedApplicationID;
 						application.Sources.ForEach(source => source.ID = Guid.NewGuid());

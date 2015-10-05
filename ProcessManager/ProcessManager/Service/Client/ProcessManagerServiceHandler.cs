@@ -4,7 +4,7 @@ using System.Threading;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Common;
-using ProcessManager.Utilities;
+using ToolComponents.Core.Logging;
 
 namespace ProcessManager.Service.Client
 {
@@ -46,9 +46,9 @@ namespace ProcessManager.Service.Client
 
 		#region Properties
 
-		public Machine Machine { get; private set; }
+		public Machine Machine { get; }
 		public ProcessManagerServiceHandlerStatus Status { get; private set; }
-		public IProcessManagerServiceOperator Service { get { return _processManagerServiceClient; } }
+		public IProcessManagerServiceOperator Service => _processManagerServiceClient;
 
 		#endregion
 
@@ -87,14 +87,12 @@ namespace ProcessManager.Service.Client
 
 		private void RaiseInitializationCompletedEvent(Exception exception = null)
 		{
-			if (InitializationCompleted != null)
-				InitializationCompleted(this, new ServiceHandlerConnectionChangedEventArgs(this, Status, exception));
+			InitializationCompleted?.Invoke(this, new ServiceHandlerConnectionChangedEventArgs(this, Status, exception));
 		}
 
 		private void RaiseConnectionChangedEvent()
 		{
-			if (ConnectionChanged != null)
-				ConnectionChanged(this, new ServiceHandlerConnectionChangedEventArgs(this, Status));
+			ConnectionChanged?.Invoke(this, new ServiceHandlerConnectionChangedEventArgs(this, Status));
 		}
 
 		#endregion
@@ -124,7 +122,7 @@ namespace ProcessManager.Service.Client
 					MaxReceivedMessageSize = Constants.MAX_MESSAGE_SIZE,
 					Security = { Mode = SecurityMode.None }
 				};
-			EndpointAddress endpointAddress = new EndpointAddress(new Uri("net.tcp://" + Machine.HostName + "/ProcessManagerService"));
+			EndpointAddress endpointAddress = new EndpointAddress(new Uri($"net.tcp://{Machine.HostName}/ProcessManagerService"));
 			InstanceContext context = new InstanceContext(_processManagerServiceEventHandler);
 			_processManagerServiceClient = new ProcessManagerServiceClient(context, binding, endpointAddress);
 		}
@@ -148,13 +146,13 @@ namespace ProcessManager.Service.Client
 				{
 					if (_processManagerServiceClient.State == CommunicationState.Faulted)
 					{
-						Logger.Add(LogType.Debug, Machine + ": ConnectionWatcher: state = Faulted");
+						Logger.Add(LogType.Debug, $"{Machine}: ConnectionWatcher: state = Faulted");
 						_processManagerServiceClient.Abort();
 					}
 
 					if (_processManagerServiceClient.State == CommunicationState.Closed)
 					{
-						Logger.Add(LogType.Debug, Machine + ": ConnectionWatcher: state = Closed");
+						Logger.Add(LogType.Debug, $"{Machine}: ConnectionWatcher: state = Closed");
 						SetupClient();
 					}
 
@@ -162,7 +160,7 @@ namespace ProcessManager.Service.Client
 					{
 						try
 						{
-							Logger.Add(LogType.Debug, Machine + ": ConnectionWatcher: state = Created");
+							Logger.Add(LogType.Debug, $"{Machine}: ConnectionWatcher: state = Created");
 							_processManagerServiceClient.Register(true);
 							Status = ProcessManagerServiceHandlerStatus.Connected;
 							if (!connectionAttempted)
@@ -196,7 +194,7 @@ namespace ProcessManager.Service.Client
 			catch (ThreadAbortException) { /* exit */ }
 			catch (Exception ex)
 			{
-				Logger.Add("Connection watcher thread for host " + Machine.HostName + " exited due to an unexpected exception", ex);
+				Logger.Add($"Connection watcher thread for host {Machine.HostName} exited due to an unexpected exception", ex);
 			}
 		}
 

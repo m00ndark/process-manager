@@ -2,7 +2,7 @@
 using System.Linq;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
-using ProcessManager.Utilities;
+using ToolComponents.Core.Logging;
 
 namespace ProcessManager.Service.Client
 {
@@ -50,7 +50,7 @@ namespace ProcessManager.Service.Client
 		{
 			try
 			{
-				Logger.Add(e.ServiceHandler.Machine + ": Initialization completed: status = " + e.ServiceHandler.Status, e.Exception);
+				Logger.Add($"{e.ServiceHandler.Machine}: Initialization completed: status = {e.ServiceHandler.Status}", e.Exception);
 
 				ModifyMachineConfiguration(e.ServiceHandler, e.Status == ProcessManagerServiceHandlerStatus.Connected);
 
@@ -58,7 +58,7 @@ namespace ProcessManager.Service.Client
 			}
 			catch (Exception ex)
 			{
-				Logger.Add(e.ServiceHandler.Machine + ": Initialization completed, exception occurred: status = " + e.ServiceHandler.Status, ex);
+				Logger.Add($"{e.ServiceHandler.Machine}: Initialization completed, exception occurred: status = {e.ServiceHandler.Status}", ex);
 				RaiseServiceHandlerInitializationCompletedEvent(e.ServiceHandler, e.ServiceHandler.Status, ex);
 			}
 		}
@@ -67,7 +67,7 @@ namespace ProcessManager.Service.Client
 		{
 			try
 			{
-				Logger.Add(e.ServiceHandler.Machine + ": Connection changed: status = " + e.ServiceHandler.Status, e.Exception);
+				Logger.Add($"{e.ServiceHandler.Machine}: Connection changed: status = {e.ServiceHandler.Status}", e.Exception);
 
 				ModifyMachineConfiguration(e.ServiceHandler, e.Status == ProcessManagerServiceHandlerStatus.Connected);
 
@@ -75,7 +75,7 @@ namespace ProcessManager.Service.Client
 			}
 			catch (Exception ex)
 			{
-				Logger.Add(e.ServiceHandler.Machine + ": Connection changed, exception occurred: status = " + e.ServiceHandler.Status, ex);
+				Logger.Add($"{e.ServiceHandler.Machine}: Connection changed, exception occurred: status = {e.ServiceHandler.Status}", ex);
 				RaiseServiceHandlerConnectionChangedEvent(e.ServiceHandler, e.ServiceHandler.Status, ex);
 			}
 		}
@@ -86,31 +86,30 @@ namespace ProcessManager.Service.Client
 
 		private void RaiseServiceHandlerInitializationCompletedEvent(ProcessManagerServiceHandler serviceHandler, ProcessManagerServiceHandlerStatus status, Exception exception = null)
 		{
-			if (ServiceHandlerInitializationCompleted != null)
-				ServiceHandlerInitializationCompleted(this, new ServiceHandlerConnectionChangedEventArgs(serviceHandler, status, exception));
+			ServiceHandlerInitializationCompleted?.Invoke(this, new ServiceHandlerConnectionChangedEventArgs(serviceHandler, status, exception));
 		}
 
 		private void RaiseServiceHandlerConnectionChangedEvent(ProcessManagerServiceHandler serviceHandler, ProcessManagerServiceHandlerStatus status, Exception exception = null)
 		{
-			if (ServiceHandlerConnectionChanged != null)
-				ServiceHandlerConnectionChanged(this, new ServiceHandlerConnectionChangedEventArgs(serviceHandler, status, exception));
+			ServiceHandlerConnectionChanged?.Invoke(this, new ServiceHandlerConnectionChangedEventArgs(serviceHandler, status, exception));
 		}
 
 		#endregion
 
-		private void ModifyMachineConfiguration(ProcessManagerServiceHandler serviceHandler, bool retrieve)
+		private static void ModifyMachineConfiguration(ProcessManagerServiceHandler serviceHandler, bool retrieve)
 		{
 			MachineConnection machineConnection = ConnectionStore.Connections.Values.FirstOrDefault(x => x.ServiceHandler == serviceHandler);
-			if (machineConnection != null)
+
+			if (machineConnection == null)
+				return;
+
+			try
 			{
-				try
-				{
-					machineConnection.Configuration = (retrieve ? machineConnection.ServiceHandler.Service.GetConfiguration().FromDTO() : null);
-				}
-				catch (Exception ex)
-				{
-					Logger.Add("Failed to retrieve machine configuration", ex);
-				}
+				machineConnection.Configuration = (retrieve ? machineConnection.ServiceHandler.Service.GetConfiguration().FromDTO() : null);
+			}
+			catch (Exception ex)
+			{
+				Logger.Add("Failed to retrieve machine configuration", ex);
 			}
 		}
 	}

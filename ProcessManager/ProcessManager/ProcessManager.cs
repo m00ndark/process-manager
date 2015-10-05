@@ -9,7 +9,7 @@ using ProcessManager.EventArguments;
 using ProcessManager.Exceptions;
 using ProcessManager.Service.Common;
 using ProcessManager.Service.Host;
-using ProcessManager.Utilities;
+using ToolComponents.Core.Logging;
 
 namespace ProcessManager
 {
@@ -57,7 +57,7 @@ namespace ProcessManager
 			}
 		}
 
-		public bool IsRunning { get { return (_mainThread != null); } }
+		public bool IsRunning => _mainThread != null;
 
 		#endregion
 
@@ -65,20 +65,17 @@ namespace ProcessManager
 
 		private void RaiseProcessStatusesChangedEvent(List<ProcessStatus> processStatuses)
 		{
-			if (ProcessStatusesChanged != null)
-				ProcessStatusesChanged(this, new ProcessStatusesEventArgs(processStatuses));
+			ProcessStatusesChanged?.Invoke(this, new ProcessStatusesEventArgs(processStatuses));
 		}
 
 		private void RaiseConfigurationChangedEvent(Configuration configuration)
 		{
-			if (ConfigurationChanged != null)
-				ConfigurationChanged(this, new MachineConfigurationHashEventArgs(configuration.Hash));
+			ConfigurationChanged?.Invoke(this, new MachineConfigurationHashEventArgs(configuration.Hash));
 		}
 
 		private void RaiseDistributionCompletedEvent(DistributionResult distributionResult, IProcessManagerServiceEventHandler caller)
 		{
-			if (DistributionCompleted != null)
-				DistributionCompleted(this, new DistributionResultEventArgs(distributionResult, caller));
+			DistributionCompleted?.Invoke(this, new DistributionResultEventArgs(distributionResult, caller));
 		}
 
 		#endregion
@@ -122,10 +119,10 @@ namespace ProcessManager
 				Application application = configuration.Applications.FirstOrDefault(x => x.ID == applicationID);
 
 				if (group == null)
-					Logger.AddAndThrow<ProcessActionException>(LogType.Error, "Application " + type + ": Could not find group with ID " + groupID);
+					Logger.AddAndThrow<ProcessActionException>(LogType.Error, $"Application {type}: Could not find group with ID {groupID}");
 
 				if (application == null)
-					Logger.AddAndThrow<ProcessActionException>(LogType.Error, "Application " + type + ": Could not find application with ID " + applicationID);
+					Logger.AddAndThrow<ProcessActionException>(LogType.Error, $"Application {type}: Could not find application with ID {applicationID}");
 
 				switch (type)
 				{
@@ -139,7 +136,7 @@ namespace ProcessManager
 						ProcessHandler.Restart(group, application);
 						break;
 					default:
-						Logger.AddAndThrow<ProcessActionException>(LogType.Error, "Process action type invalid: " + type);
+						Logger.AddAndThrow<ProcessActionException>(LogType.Error, $"Process action type invalid: {type}");
 						break;
 				}
 			}
@@ -163,16 +160,16 @@ namespace ProcessManager
 				Application application = configuration.Applications.FirstOrDefault(x => x.ID == applicationID);
 
 				if (string.IsNullOrEmpty(sourceMachineHostName))
-					Logger.AddAndThrow<DistributionActionException>(LogType.Error, "Application " + type + ": Missing source machine host name");
+					Logger.AddAndThrow<DistributionActionException>(LogType.Error, $"Application {type}: Missing source machine host name");
 
 				if (group == null)
-					Logger.AddAndThrow<DistributionActionException>(LogType.Error, "Application " + type + ": Could not find group with ID " + groupID);
+					Logger.AddAndThrow<DistributionActionException>(LogType.Error, $"Application {type}: Could not find group with ID {groupID}");
 
 				if (application == null)
-					Logger.AddAndThrow<DistributionActionException>(LogType.Error, "Application " + type + ": Could not find application with ID " + applicationID);
+					Logger.AddAndThrow<DistributionActionException>(LogType.Error, $"Application {type}: Could not find application with ID {applicationID}");
 
 				if (string.IsNullOrEmpty(destinationMachineHostName))
-					Logger.AddAndThrow<DistributionActionException>(LogType.Error, "Application " + type + ": Missing destination machine host name");
+					Logger.AddAndThrow<DistributionActionException>(LogType.Error, $"Application {type}: Missing destination machine host name");
 
 				DistributionWorker.Instance.AddWork(new DistributionWork(type, new Machine(sourceMachineHostName), group, application, new Machine(destinationMachineHostName), caller));
 			}
@@ -204,7 +201,7 @@ namespace ProcessManager
 				Group group = configuration.Groups.FirstOrDefault(x => x.ID == distributionFile.DestinationGroupID);
 
 				if (group == null)
-					Logger.AddAndThrow<DistributeFileException>(LogType.Error, "Could not find group with ID " + distributionFile.DestinationGroupID);
+					Logger.AddAndThrow<DistributeFileException>(LogType.Error, $"Could not find group with ID {distributionFile.DestinationGroupID}");
 
 				string filePath = Path.Combine(group.Path, distributionFile.RelativePath.Trim(Path.DirectorySeparatorChar));
 
@@ -214,7 +211,7 @@ namespace ProcessManager
 				}
 				catch (Exception ex)
 				{
-					Logger.AddAndThrow<DistributeFileException>("Failed to persist file content of " + filePath, ex);
+					Logger.AddAndThrow<DistributeFileException>($"Failed to persist file content of {filePath}", ex);
 				}
 			}
 			catch (DistributeFileException ex)

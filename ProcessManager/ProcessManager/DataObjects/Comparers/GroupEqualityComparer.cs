@@ -7,7 +7,7 @@ namespace ProcessManager.DataObjects.Comparers
 	{
 		public bool Equals(Group group, string name)
 		{
-			return (group != null && group.Name != null && name != null && group.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+			return (group?.Name != null && name != null && group.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
 		}
 
 		public bool Equals(Group x, Group y)
@@ -17,7 +17,7 @@ namespace ProcessManager.DataObjects.Comparers
 
 		public int GetHashCode(Group obj)
 		{
-			return (obj != null && obj.Name != null ? obj.Name.ToLower().GetHashCode() : 0);
+			return obj?.Name?.ToLower().GetHashCode() ?? 0;
 		}
 	}
 }

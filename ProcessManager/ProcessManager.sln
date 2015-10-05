@@ -1,26 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessManagerUI", "ProcessManagerUI\ProcessManagerUI.csproj", "{C8D00382-6819-4FE5-96F7-EFD428487F41}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessManager", "ProcessManager\ProcessManager.csproj", "{98D87BB4-276C-4CE1-ACC4-9841244E9560}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessManagerService", "ProcessManagerService\ProcessManagerService.csproj", "{B2D8BA19-3D8F-4A38-9800-A8A919A20686}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ProcessManagerSetup", "ProcessManagerSetup\ProcessManagerSetup.vdproj", "{F1657BA5-FA21-411E-BA96-46584F15A3EF}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{82ADC677-6355-4BFA-91C4-F24B0CB2FABF}"
-	ProjectSection(SolutionItems) = preProject
-		Microsoft.WindowsAPICodePack.dll = Microsoft.WindowsAPICodePack.dll
-	EndProjectSection
-EndProject
-Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "ProcessManagerSetup2012", "ProcessManagerSetup2012\ProcessManagerSetup2012.isproj", "{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}"
-	ProjectSection(ProjectDependencies) = postProject
-		{B2D8BA19-3D8F-4A38-9800-A8A919A20686} = {B2D8BA19-3D8F-4A38-9800-A8A919A20686}
-		{C8D00382-6819-4FE5-96F7-EFD428487F41} = {C8D00382-6819-4FE5-96F7-EFD428487F41}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -96,36 +83,6 @@ Global
 		{B2D8BA19-3D8F-4A38-9800-A8A919A20686}.SingleImage|Any CPU.Build.0 = Release|Any CPU
 		{B2D8BA19-3D8F-4A38-9800-A8A919A20686}.SingleImage|x64.ActiveCfg = Release|x64
 		{B2D8BA19-3D8F-4A38-9800-A8A919A20686}.SingleImage|x64.Build.0 = Release|x64
-		{F1657BA5-FA21-411E-BA96-46584F15A3EF}.CD_ROM|Any CPU.ActiveCfg = Release
-		{F1657BA5-FA21-411E-BA96-46584F15A3EF}.CD_ROM|x64.ActiveCfg = Release
-		{F1657BA5-FA21-411E-BA96-46584F15A3EF}.Debug|Any CPU.ActiveCfg = Debug
-		{F1657BA5-FA21-411E-BA96-46584F15A3EF}.Debug|x64.ActiveCfg = Debug
-		{F1657BA5-FA21-411E-BA96-46584F15A3EF}.DVD-5|Any CPU.ActiveCfg = Debug
-		{F1657BA5-FA21-411E-BA96-46584F15A3EF}.DVD-5|x64.ActiveCfg = Debug
-		{F1657BA5-FA21-411E-BA96-46584F15A3EF}.Release|Any CPU.ActiveCfg = Release
-		{F1657BA5-FA21-411E-BA96-46584F15A3EF}.Release|x64.ActiveCfg = Release
-		{F1657BA5-FA21-411E-BA96-46584F15A3EF}.Release|x64.Build.0 = Release
-		{F1657BA5-FA21-411E-BA96-46584F15A3EF}.SingleImage|Any CPU.ActiveCfg = Release
-		{F1657BA5-FA21-411E-BA96-46584F15A3EF}.SingleImage|x64.ActiveCfg = Release
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.CD_ROM|Any CPU.ActiveCfg = CD_ROM
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.CD_ROM|Any CPU.Build.0 = CD_ROM
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.CD_ROM|x64.ActiveCfg = CD_ROM
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.CD_ROM|x64.Build.0 = CD_ROM
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.Debug|Any CPU.ActiveCfg = SingleImage
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.Debug|x64.ActiveCfg = DVD-5
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.Debug|x64.Build.0 = DVD-5
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.DVD-5|Any CPU.ActiveCfg = DVD-5
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.DVD-5|Any CPU.Build.0 = DVD-5
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.DVD-5|x64.ActiveCfg = DVD-5
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.DVD-5|x64.Build.0 = DVD-5
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.Release|Any CPU.ActiveCfg = SingleImage
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.Release|Any CPU.Build.0 = SingleImage
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.Release|x64.ActiveCfg = SingleImage
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.Release|x64.Build.0 = SingleImage
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.SingleImage|Any CPU.ActiveCfg = SingleImage
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.SingleImage|Any CPU.Build.0 = SingleImage
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.SingleImage|x64.ActiveCfg = SingleImage
-		{770B46A5-8445-48F7-8B2A-A3F6BD30D38D}.SingleImage|x64.Build.0 = SingleImage
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

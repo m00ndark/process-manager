@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using Microsoft.Win32;
 using ProcessManager.DataObjects;
-using ProcessManager.Utilities;
+using ToolComponents.Core.Logging;
 
 namespace ProcessManager.DataAccess
 {
@@ -284,7 +284,7 @@ namespace ProcessManager.DataAccess
 						}
 						for (int i = 0; i < Settings.Client.Machines.Count; i++)
 						{
-							RegistryKey machineKey = machinesKey.CreateSubKey("Machine " + i.ToString("00"));
+							RegistryKey machineKey = machinesKey.CreateSubKey($"Machine {i.ToString("00")}");
 							if (machineKey == null) continue;
 							machineKey.SetValue("Host Name", Settings.Client.Machines[i].HostName);
 							machineKey.Close();
@@ -309,12 +309,12 @@ namespace ProcessManager.DataAccess
 							for (int i = 0; i < macro.ActionBundles.Count; i++)
 							{
 								MacroActionBundle actionBundle = macro.ActionBundles[i];
-								RegistryKey bundleKey = macroKey.CreateSubKey("Action Bundle " + i.ToString("00"));
+								RegistryKey bundleKey = macroKey.CreateSubKey($"Action Bundle {i.ToString("00")}");
 								if (bundleKey == null) continue;
 								bundleKey.SetValue("Action Type", actionBundle.Type.ToString());
 								for (int j = 0; j < actionBundle.Actions.Count; j++)
 								{
-									RegistryKey actionKey = bundleKey.CreateSubKey("Action " + j.ToString("00"));
+									RegistryKey actionKey = bundleKey.CreateSubKey($"Action {j.ToString("00")}");
 									if (actionKey == null) continue;
 									actionKey.SetValue("ID", actionBundle.Actions[j].ID.ToString());
 									if (actionBundle.Actions[j] is MacroProcessAction)
@@ -384,7 +384,7 @@ namespace ProcessManager.DataAccess
 							}
 							for (int i = 0; i < Settings.Client.P_CheckedNodes.Count; i++)
 							{
-								checkedNodesKey.SetValue("Node " + i.ToString("00"), Settings.Client.P_CheckedNodes[i].ToString());
+								checkedNodesKey.SetValue($"Node {i.ToString("00")}", Settings.Client.P_CheckedNodes[i].ToString());
 							}
 							checkedNodesKey.Close();
 						}
@@ -402,7 +402,7 @@ namespace ProcessManager.DataAccess
 									}
 									for (int i = 0; i < Settings.Client.P_CollapsedNodes[grouping].Count; i++)
 									{
-										groupingKey.SetValue("Node " + i.ToString("00"), Settings.Client.P_CollapsedNodes[grouping][i].ToString());
+										groupingKey.SetValue($"Node {i.ToString("00")}", Settings.Client.P_CollapsedNodes[grouping][i].ToString());
 									}
 									groupingKey.Close();
 								}
@@ -423,7 +423,7 @@ namespace ProcessManager.DataAccess
 							}
 							for (int i = 0; i < Settings.Client.D_CheckedNodes.Count; i++)
 							{
-								checkedNodesKey.SetValue("Node " + i.ToString("00"), Settings.Client.D_CheckedNodes[i].ToString());
+								checkedNodesKey.SetValue($"Node {i.ToString("00")}", Settings.Client.D_CheckedNodes[i].ToString());
 							}
 							checkedNodesKey.Close();
 						}
@@ -441,7 +441,7 @@ namespace ProcessManager.DataAccess
 									}
 									for (int i = 0; i < Settings.Client.D_CollapsedNodes[grouping].Count; i++)
 									{
-										groupingKey.SetValue("Node " + i.ToString("00"), Settings.Client.D_CollapsedNodes[grouping][i].ToString());
+										groupingKey.SetValue($"Node {i.ToString("00")}", Settings.Client.D_CollapsedNodes[grouping][i].ToString());
 									}
 									groupingKey.Close();
 								}
@@ -457,7 +457,7 @@ namespace ProcessManager.DataAccess
 							}
 							for (int i = 0; i < Settings.Client.M_CheckedNodes.Count; i++)
 							{
-								checkedNodesKey.SetValue("Node " + i.ToString("00"), Settings.Client.M_CheckedNodes[i].ToString());
+								checkedNodesKey.SetValue($"Node {i.ToString("00")}", Settings.Client.M_CheckedNodes[i].ToString());
 							}
 							checkedNodesKey.Close();
 						}
@@ -470,7 +470,7 @@ namespace ProcessManager.DataAccess
 							}
 							for (int i = 0; i < Settings.Client.M_CollapsedNodes.Count; i++)
 							{
-                                collapsedNodesKey.SetValue("Node " + i.ToString("00"), Settings.Client.M_CollapsedNodes[i].ToString());
+                                collapsedNodesKey.SetValue($"Node {i.ToString("00")}", Settings.Client.M_CollapsedNodes[i].ToString());
 							}
 							collapsedNodesKey.Close();
 						}
@@ -488,7 +488,7 @@ namespace ProcessManager.DataAccess
 			if (string.IsNullOrEmpty(executablePath))
 				key.DeleteValue("Process Manager", false);
 			else
-				key.SetValue("Process Manager", "\"" + executablePath + "\"", RegistryValueKind.String);
+				key.SetValue("Process Manager", $"\"{executablePath}\"", RegistryValueKind.String);
 			key.Close();
 		}
 	}

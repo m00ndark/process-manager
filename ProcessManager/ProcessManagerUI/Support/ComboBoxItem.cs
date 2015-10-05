@@ -14,8 +14,8 @@
 
 		#region Properties
 
-		public string Text { get; private set; }
-		public T Tag { get; private set; }
+		public string Text { get; }
+		public T Tag { get; }
 
 		#endregion
 

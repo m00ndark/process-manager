@@ -22,7 +22,7 @@ namespace ProcessManager.DataObjects
 
 		#region Properties
 
-		public ActionType Type { get; private set; }
+		public ActionType Type { get; }
 		public Machine SourceMachine { get; set; }
 		public Group Group { get; set; }
 		public Application Application { get; set; }

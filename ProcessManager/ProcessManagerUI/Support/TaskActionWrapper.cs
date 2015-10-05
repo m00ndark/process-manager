@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using ProcessManager.Utilities;
+using ToolComponents.Core.Logging;
 
 namespace ProcessManagerUI.Support
 {
@@ -11,8 +11,7 @@ namespace ProcessManagerUI.Support
 		{
 			try
 			{
-				if (action != null)
-					action();
+				action?.Invoke();
 			}
 			catch (InvalidAsynchronousStateException) { /*  */ }
 			catch (Exception ex)

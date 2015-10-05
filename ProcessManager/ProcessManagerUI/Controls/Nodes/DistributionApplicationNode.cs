@@ -17,10 +17,10 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		#region Properties
 
-		public Application Application { get; private set; }
+		public Application Application { get; }
 
-		public override Guid ID { get { return Application.ID; } }
-		protected override string NodeName { get { return Application.Name; } }
+		public override Guid ID => Application.ID;
+		protected override string NodeName => Application.Name;
 
 		#endregion
 

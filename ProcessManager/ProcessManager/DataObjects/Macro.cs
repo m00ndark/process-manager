@@ -24,7 +24,7 @@ namespace ProcessManager.DataObjects
 
 		public Guid ID { get; private set; }
 		public string Name { get; set; }
-		public List<MacroActionBundle> ActionBundles { get; private set; }
+		public List<MacroActionBundle> ActionBundles { get; }
 
 		#endregion
 

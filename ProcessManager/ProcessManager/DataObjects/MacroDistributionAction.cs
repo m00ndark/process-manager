@@ -22,14 +22,14 @@ namespace ProcessManager.DataObjects
 
 		#region Properties
 
-		public Guid ID { get; private set; }
-        public MacroActionType Type { get; private set; }
-		public Guid SourceMachineID { get; private set; }
-		public Guid GroupID { get; private set; }
-		public Guid ApplicationID { get; private set; }
-		public Guid DestinationMachineID { get; private set; }
+		public Guid ID { get; }
+        public MacroActionType Type { get; }
+		public Guid SourceMachineID { get; }
+		public Guid GroupID { get; }
+		public Guid ApplicationID { get; }
+		public Guid DestinationMachineID { get; }
 
-		public bool IsValid { get { return SourceMachineID != Guid.Empty && GroupID != Guid.Empty && ApplicationID != Guid.Empty && DestinationMachineID != Guid.Empty; } }
+		public bool IsValid => SourceMachineID != Guid.Empty && GroupID != Guid.Empty && ApplicationID != Guid.Empty && DestinationMachineID != Guid.Empty;
 
 		#endregion
 

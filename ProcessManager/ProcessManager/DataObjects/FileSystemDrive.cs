@@ -34,7 +34,7 @@ namespace ProcessManager.DataObjects
 		#region Properties
 
 		public string Name { get; set; }
-		public bool IsFolder { get; private set; }
+		public bool IsFolder { get; }
 		public string Label { get; set; }
 		public FileSystemDriveType Type { get; set; }
 

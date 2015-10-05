@@ -4,8 +4,8 @@ using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
-using ProcessManager.Utilities;
 using ProcessManagerUI.Controls.Nodes.Support;
+using ToolComponents.Core;
 
 namespace ProcessManagerUI.Controls.Nodes
 {
@@ -41,10 +41,10 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		#region Properties
 
-		public Machine DestinationMachine { get; private set; }
-		public Guid SourceApplicationID { get; private set; }
-		public Guid SourceGroupID { get; private set; }
-		public Guid SourceMachineID { get; private set; }
+		public Machine DestinationMachine { get; }
+		public Guid SourceApplicationID { get; }
+		public Guid SourceGroupID { get; }
+		public Guid SourceMachineID { get; }
 
 		public DistributionState State
 		{
@@ -66,8 +66,8 @@ namespace ProcessManagerUI.Controls.Nodes
 			}
 		}
 
-		public Guid ID { get { return _id; } }
-		public CheckState CheckState { get { return checkBoxSelected.CheckState; } }
+		public Guid ID => _id;
+		public CheckState CheckState => checkBoxSelected.CheckState;
 
 		#endregion
 
@@ -117,12 +117,12 @@ namespace ProcessManagerUI.Controls.Nodes
 			if (type != ActionType.Distribute)
 				throw new ArgumentException("Invalid action type");
 
-			if (checkBoxSelected.Checked)
-			{
-				State = DistributionState.Ongoing;
-				Message = null;
-				RaiseActionTakenEvent(new DistributionAction(ActionType.Distribute, DestinationMachine));
-			}
+			if (!checkBoxSelected.Checked)
+				return;
+
+			State = DistributionState.Ongoing;
+			Message = null;
+			RaiseActionTakenEvent(new DistributionAction(ActionType.Distribute, DestinationMachine));
 		}
 
 		#endregion
@@ -131,14 +131,12 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		private void RaiseCheckedChangedEvent()
 		{
-			if (CheckedChanged != null)
-				CheckedChanged(this, new EventArgs());
+			CheckedChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void RaiseActionTakenEvent(IAction action)
 		{
-			if (ActionTaken != null)
-				ActionTaken(this, new ActionEventArgs(action));
+			ActionTaken?.Invoke(this, new ActionEventArgs(action));
 		}
 
 		#endregion
@@ -147,7 +145,7 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		private static Guid MakeID(Guid sourceMachineID, Guid sourceGroupID, Guid sourceApplicationID, Guid destinationMachineID)
 		{
-			return Cryptographer.CreateGUID(sourceMachineID.ToString() + sourceGroupID.ToString()
+			return Cryptographer.CreateGuid(sourceMachineID.ToString() + sourceGroupID.ToString()
 				+ sourceApplicationID.ToString() + destinationMachineID.ToString());
 		}
 

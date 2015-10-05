@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Globalization;
 using ProcessManager.DataAccess;
 using ProcessManager.DataObjects;
-using ProcessManager.Utilities;
+using ToolComponents.Core.Logging;
 
 namespace ProcessManager
 {
@@ -49,8 +49,8 @@ namespace ProcessManager
 
 			public static class Defaults
 			{
-				public const string COMPANY_FOLDER_NAME = "QlikTech";
-				public const string APPLICATION_FOLDER_NAME = "ProcessManager";
+				public const string COMPANY_NAME = "Qlik";
+				public const string APPLICATION_NAME = "ProcessManager";
 				public const string CONFIGURATION_FILE_NAME = "processmanager_config.xml";
 				public const string LOG_FOLDER_NAME = "Logs";
 				public const string LOG_FILE_NAME = "processmanager_%date%.log";

@@ -21,7 +21,7 @@ namespace ProcessManager.DataObjects
 
 		#region Properties
 
-		public string RelativePath { get; private set; }
+		public string RelativePath { get; }
 		public Guid DestinationGroupID { get; set; }
 		public byte[] Content { get; set; }
 		public bool IsDistributed

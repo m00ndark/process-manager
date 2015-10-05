@@ -12,7 +12,7 @@ using ProcessManager.Exceptions;
 using ProcessManager.Service.Client;
 using ProcessManager.Service.Common;
 using ProcessManager.Service.DataObjects;
-using ProcessManager.Utilities;
+using ToolComponents.Core.Logging;
 
 namespace ProcessManager
 {
@@ -54,7 +54,7 @@ namespace ProcessManager
 			}
 		}
 
-		public bool IsRunning { get { return (_distributionConnectionManagementThread != null); } }
+		public bool IsRunning => (_distributionConnectionManagementThread != null);
 
 		#endregion
 
@@ -62,15 +62,14 @@ namespace ProcessManager
 
 		private void RaiseDistributionCompletedEvent(DistributionResult distributionResult, IProcessManagerServiceEventHandler caller)
 		{
-			if (DistributionCompleted != null)
-				DistributionCompleted(this, new DistributionResultEventArgs(distributionResult, caller));
+			DistributionCompleted?.Invoke(this, new DistributionResultEventArgs(distributionResult, caller));
 		}
 
 		#endregion
 
 		public void AddWork(DistributionWork work)
 		{
-			Task.Factory.StartNew(() => AddWorkThread(work));
+			Task.Run(() => AddWorkThread(work));
 		}
 
 		#region Implementation of IProcessManagerEventHandler
@@ -91,7 +90,7 @@ namespace ProcessManager
 		{
 			if (e.Status == ProcessManagerServiceHandlerStatus.Connected)
 			{
-				Task.Factory.StartNew(() => DistributeSourceFilesThread(e.ServiceHandler.Machine));
+				Task.Run(() => DistributeSourceFilesThread(e.ServiceHandler.Machine));
 			}
 			else
 			{
@@ -219,7 +218,7 @@ namespace ProcessManager
 						break;
 				}
 				
-				Logger.Add(LogType.Verbose, "Adding distribution work to queue: destination machine = " + work.DestinationMachine + ", files = " + work.Files.Count);
+				Logger.Add(LogType.Verbose, $"Adding distribution work to queue: destination machine = {work.DestinationMachine}, files = {work.Files.Count}");
 
 				lock (_pendingDistributionWork)
 					_pendingDistributionWork.Add(work);
@@ -253,7 +252,7 @@ namespace ProcessManager
 
 				processedDistributionWork.Add(work);
 
-				Task.Factory.StartNew(() =>
+				Task.Run(() =>
 					{
 						try
 						{
@@ -263,8 +262,8 @@ namespace ProcessManager
 									.FirstOrDefault(group => Comparer.GroupsEqual(group, work.Group));
 
 								if (destinationGroup == null)
-									Logger.AddAndThrow<DistributionActionException>(LogType.Warning, "Could not distribute application " + work.Application.Name + " in group " + work.Group.Name
-										+ " to destination machine " + work.DestinationMachine.HostName + ". Destination machine does not contain a matching group.");
+									Logger.AddAndThrow<DistributionActionException>(LogType.Warning, $"Could not distribute application {work.Application.Name} in group {work.Group.Name}" +
+										$" to destination machine {work.DestinationMachine.HostName}. Destination machine does not contain a matching group.");
 
 								List<string> errorMessages = new List<string>();
 								foreach (DistributionFile file in work.Files)
@@ -277,9 +276,9 @@ namespace ProcessManager
 									try
 									{
 										if (result.Success)
-											Logger.Add(LogType.Verbose, "Distribution of file to " + work.DestinationMachine.HostName + " succeeded: " + file.RelativePath + ", " + file.Content.Length + " bytes");
+											Logger.Add(LogType.Verbose, $"Distribution of file to {work.DestinationMachine.HostName} succeeded: {file.RelativePath}, {file.Content.Length} bytes");
 										else
-											Logger.AddAndThrow<DistributionActionException>(LogType.Error, "Distribution of file to " + work.DestinationMachine.HostName + " failed: " + Path.GetFileName(file.RelativePath) + " | " + result.ErrorMessage);
+											Logger.AddAndThrow<DistributionActionException>(LogType.Error, $"Distribution of file to {work.DestinationMachine.HostName} failed: {Path.GetFileName(file.RelativePath)} | {result.ErrorMessage}");
 									}
 									catch (DistributionActionException ex)
 									{

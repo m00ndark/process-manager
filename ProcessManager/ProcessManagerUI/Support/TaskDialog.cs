@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using APITaskDialog = Microsoft.WindowsAPICodePack.Dialogs.TaskDialog;
@@ -18,7 +17,7 @@ namespace ProcessManagerUI.Support
 
 		#region Properties
 
-		public static bool IsPlatformSupported { get { return APITaskDialog.IsPlatformSupported; } }
+		public static bool IsPlatformSupported => APITaskDialog.IsPlatformSupported;
 
 		#endregion
 

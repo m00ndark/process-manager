@@ -4,8 +4,8 @@ using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
-using ProcessManager.Utilities;
 using ProcessManagerUI.Controls.Nodes.Support;
+using ToolComponents.Core;
 using Application = ProcessManager.DataObjects.Application;
 
 namespace ProcessManagerUI.Controls.Nodes
@@ -33,9 +33,9 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		#region Properties
 
-		public Application Application { get; private set; }
-		public Guid GroupID { get; private set; }
-		public Guid MachineID { get; private set; }
+		public Application Application { get; }
+		public Guid GroupID { get; }
+		public Guid MachineID { get; }
 		
 		public ProcessStatusValue Status
 		{
@@ -57,8 +57,8 @@ namespace ProcessManagerUI.Controls.Nodes
 			}
 		}
 
-		public Guid ID { get { return _id; } }
-		public CheckState CheckState { get { return checkBoxSelected.CheckState; } }
+		public Guid ID => _id;
+		public CheckState CheckState => checkBoxSelected.CheckState;
 
 		#endregion
 
@@ -116,11 +116,11 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		public void TakeAction(ActionType type)
 		{
-			if (checkBoxSelected.Checked)
-			{
-				Message = null;
-				RaiseActionTakenEvent(new ProcessAction(type, Application));
-			}
+			if (!checkBoxSelected.Checked)
+				return;
+
+			Message = null;
+			RaiseActionTakenEvent(new ProcessAction(type, Application));
 		}
 
 		#endregion
@@ -129,14 +129,12 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		private void RaiseCheckedChangedEvent()
 		{
-			if (CheckedChanged != null)
-				CheckedChanged(this, new EventArgs());
+			CheckedChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void RaiseActionTakenEvent(ProcessAction action)
 		{
-			if (ActionTaken != null)
-				ActionTaken(this, new ActionEventArgs(action));
+			ActionTaken?.Invoke(this, new ActionEventArgs(action));
 		}
 
 		#endregion
@@ -145,7 +143,7 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		private static Guid MakeID(Guid machineID, Guid groupID, Guid applicationID)
 		{
-			return Cryptographer.CreateGUID(machineID.ToString() + groupID.ToString() + applicationID.ToString());
+			return Cryptographer.CreateGuid(machineID.ToString() + groupID.ToString() + applicationID.ToString());
 		}
 
 		private void ApplyStatus()

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ProcessManager.DataObjects;
 using ProcessManager.Service.Client;
 
@@ -14,7 +13,7 @@ namespace ProcessManager
 
 		#region Properties
 
-		public static IDictionary<Machine, MachineConnection> Connections { get; private set; }
+		public static IDictionary<Machine, MachineConnection> Connections { get; }
 
 		#endregion
 
@@ -38,11 +37,11 @@ namespace ProcessManager
 
 		public static void RemoveConnection(Machine machine)
 		{
-			if (Connections.ContainsKey(machine))
-			{
-				Connections[machine].ServiceHandler.Dispose();
-				Connections.Remove(machine);
-			}
+			if (!Connections.ContainsKey(machine))
+				return;
+
+			Connections[machine].ServiceHandler.Dispose();
+			Connections.Remove(machine);
 		}
 
 		public static bool MachineIsValid(Machine machine)

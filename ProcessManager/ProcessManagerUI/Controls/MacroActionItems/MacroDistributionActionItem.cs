@@ -41,7 +41,7 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 
 		#region Properties
 
-		public MacroActionBundle ActionBundle { get; private set; }
+		public MacroActionBundle ActionBundle { get; }
 
 		private Machine SelectedSourceMachine
 		{
@@ -85,10 +85,7 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 			}
 		}
 
-		private bool HasValidSelections
-		{
-			get { return SelectedSourceMachine != null && SelectedGroup != null && SelectedApplications != null && SelectedDestinationMachines != null; }
-		}
+		private bool HasValidSelections => SelectedSourceMachine != null && SelectedGroup != null && SelectedApplications != null && SelectedDestinationMachines != null;
 
 		#endregion
 
@@ -218,8 +215,7 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 
 		private void RaiseMacroActionItemChangedEvent()
 		{
-			if (MacroActionItemChanged != null)
-				MacroActionItemChanged(this, EventArgs.Empty);
+			MacroActionItemChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		#endregion
@@ -287,17 +283,14 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 
 		private void UpdateSelectedDestinationMachines()
 		{
-			if (SelectedDestinationMachines != null)
-			{
-				SelectedDestinationMachines = SelectedDestinationMachines
-					.Select(selectedMachine => ConnectionStore.Connections.Values
-						.Where(connection => connection.Configuration != null)
-						.Select(connection => connection.Machine)
-						.FirstOrDefault(machine => Comparer.MachinesEqual(machine, selectedMachine)))
-					.Where(machine => machine != null)
-					.Distinct(new MachineEqualityComparer())
-					.ToList();
-			}
+			SelectedDestinationMachines = SelectedDestinationMachines?
+				.Select(selectedMachine => ConnectionStore.Connections.Values
+					.Where(connection => connection.Configuration != null)
+					.Select(connection => connection.Machine)
+					.FirstOrDefault(machine => Comparer.MachinesEqual(machine, selectedMachine)))
+				.Where(machine => machine != null)
+				.Distinct(new MachineEqualityComparer())
+				.ToList();
 			UpdateLinkLabelDestinationMachines();
 		}
 

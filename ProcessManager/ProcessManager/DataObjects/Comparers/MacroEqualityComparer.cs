@@ -7,7 +7,7 @@ namespace ProcessManager.DataObjects.Comparers
 	{
 		public bool Equals(Macro macro, string name)
 		{
-			return (macro != null && macro.Name != null && name != null && macro.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+			return (macro?.Name != null && name != null && macro.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
 		}
 
 		public bool Equals(Macro x, Macro y)
@@ -17,7 +17,7 @@ namespace ProcessManager.DataObjects.Comparers
 
 		public int GetHashCode(Macro obj)
 		{
-			return (obj != null && obj.Name != null ? obj.Name.ToLower().GetHashCode() : 0);
+			return obj?.Name?.ToLower().GetHashCode() ?? 0;
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using ProcessManager.DataObjects.Comparers;
-using ProcessManager.Utilities;
+using ToolComponents.Core;
 
 namespace ProcessManager.DataObjects
 {
@@ -27,7 +27,7 @@ namespace ProcessManager.DataObjects
 			set
 			{
 				_hostName = value;
-				ID = Cryptographer.CreateGUID(_hostName);
+				ID = Cryptographer.CreateGuid(_hostName);
 			}
 		}
 

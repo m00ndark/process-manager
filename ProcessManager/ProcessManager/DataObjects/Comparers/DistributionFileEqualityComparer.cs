@@ -12,7 +12,7 @@ namespace ProcessManager.DataObjects.Comparers
 
 		public int GetHashCode(DistributionFile obj)
 		{
-			return (obj != null && obj.RelativePath != null ? obj.RelativePath.ToLower().GetHashCode() : 0);
+			return obj?.RelativePath?.ToLower().GetHashCode() ?? 0;
 		}
 	}
 }

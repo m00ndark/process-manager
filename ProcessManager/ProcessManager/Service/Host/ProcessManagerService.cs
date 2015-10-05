@@ -7,7 +7,7 @@ using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Common;
 using ProcessManager.Service.DataObjects;
-using ProcessManager.Utilities;
+using ToolComponents.Core.Logging;
 
 namespace ProcessManager.Service.Host
 {
@@ -40,7 +40,7 @@ namespace ProcessManager.Service.Host
 
 			//_clientsInstances.Add(OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>(), OperationContext.Current.InstanceContext);
 			string clientAddress = ((RemoteEndpointMessageProperty) OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name]).Address;
-			Logger.Add("Client at " + clientAddress + " registered" + (subscribe ? " as subscriber" : string.Empty));
+			Logger.Add($"Client at {clientAddress} registered{(subscribe ? " as subscriber" : string.Empty)}");
 		}
 
 		public void Unregister()
@@ -51,7 +51,7 @@ namespace ProcessManager.Service.Host
 				_clients.Where(x => (x.Key == caller)).ToList().ForEach(x => _clients.Remove(x));
 
 			string clientAddress = ((RemoteEndpointMessageProperty) OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name]).Address;
-			Logger.Add("Client at " + clientAddress + " unregistered");
+			Logger.Add($"Client at {clientAddress} unregistered");
 		}
 
 		#endregion
@@ -84,14 +84,14 @@ namespace ProcessManager.Service.Host
 
 		public DTOProcessActionResult TakeProcessAction(DTOProcessAction processAction)
 		{
-			Logger.Add(LogType.Verbose, "TakeProcessAction call received: action = " + processAction.Type + ", " + processAction.GroupID + " / " + processAction.ApplicationID);
+			Logger.Add(LogType.Verbose, $"TakeProcessAction call received: action = {processAction.Type}, {processAction.GroupID} / {processAction.ApplicationID}");
 			ProcessActionResult processActionResult = ProcessManager.Instance.TakeProcessAction(processAction.GroupID, processAction.ApplicationID, processAction.Type);
 			return new DTOProcessActionResult(processActionResult);
 		}
 
 		public DTODistributionActionResult TakeDistributionAction(DTODistributionAction distributionAction)
 		{
-			Logger.Add(LogType.Verbose, "TakeDistributionAction call received: action = " + distributionAction.Type + ", " + distributionAction.SourceMachineHostName + " / " + distributionAction.GroupID + " / " + distributionAction.ApplicationID + " / " + distributionAction.DestinationMachineHostName);
+			Logger.Add(LogType.Verbose, $"TakeDistributionAction call received: action = {distributionAction.Type}, {distributionAction.SourceMachineHostName} / {distributionAction.GroupID} / {distributionAction.ApplicationID} / {distributionAction.DestinationMachineHostName}");
 			IProcessManagerServiceEventHandler caller = OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>();
 			DistributionActionResult distributionActionResult = ProcessManager.Instance.TakeDistributionAction(distributionAction.SourceMachineHostName, distributionAction.GroupID, distributionAction.ApplicationID, distributionAction.DestinationMachineHostName, distributionAction.Type, caller);
 			return new DTODistributionActionResult(distributionActionResult);
@@ -105,13 +105,13 @@ namespace ProcessManager.Service.Host
 
 		public List<DTOFileSystemEntry> GetFileSystemEntries(string path, string filter)
 		{
-			Logger.Add(LogType.Verbose, "GetFileSystemEntries call received: path = " + path + ", filter = " + filter);
+			Logger.Add(LogType.Verbose, $"GetFileSystemEntries call received: path = {path}, filter = {filter}");
 			return ProcessManager.Instance.GetFileSystemEntries(path, filter).Select(x => new DTOFileSystemEntry(x)).ToList();
 		}
 
 		public DTODistributeFileResult DistributeFile(DTODistributionFile distributionFile)
 		{
-			Logger.Add(LogType.Verbose, "DistributeFile call received: relative path = " + distributionFile.RelativePath + ", destination group id = " + distributionFile.DestinationGroupID + ", content length = " + distributionFile.Content.Length);
+			Logger.Add(LogType.Verbose, $"DistributeFile call received: relative path = {distributionFile.RelativePath}, destination group id = {distributionFile.DestinationGroupID}, content length = {distributionFile.Content.Length}");
 			DistributeFileResult distributeFileResult = ProcessManager.Instance.DistributeFile(distributionFile.FromDTO());
 			return new DTODistributeFileResult(distributeFileResult);
 		}
@@ -127,12 +127,12 @@ namespace ProcessManager.Service.Host
 			{
 				try
 				{
-					Logger.Add(LogType.Verbose, "Sending ProcessStatusesChanged event: count = " + e.ProcessStatuses.Count + e.ProcessStatuses.Aggregate("", (x, y) => x + ", " + y.GroupID + " / " + y.ApplicationID));
+					Logger.Add(LogType.Verbose, $"Sending ProcessStatusesChanged event: count = {e.ProcessStatuses.Count}{e.ProcessStatuses.Aggregate("", (x, y) => $"{x}, {y.GroupID} / {y.ApplicationID}")}");
 					client.ServiceEvent_ProcessStatusesChanged(e.ProcessStatuses.Select(x => new DTOProcessStatus(x)).ToList());
 				}
 				catch (Exception ex)
 				{
-					Logger.Add("Failed to send ProcessStatusesChanged event: count = " + e.ProcessStatuses.Count + e.ProcessStatuses.Aggregate("", (x, y) => x + ", " + y.GroupID + " / " + y.ApplicationID), ex);
+					Logger.Add($"Failed to send ProcessStatusesChanged event: count = {e.ProcessStatuses.Count}{e.ProcessStatuses.Aggregate("", (x, y) => $"{x}, {y.GroupID} / {y.ApplicationID}")}", ex);
 					faultedClients.Add(client);
 				}
 			}
@@ -146,12 +146,12 @@ namespace ProcessManager.Service.Host
 			{
 				try
 				{
-					Logger.Add(LogType.Verbose, "Sending ConfigurationChanged event: hash = " + e.ConfigurationHash);
+					Logger.Add(LogType.Verbose, $"Sending ConfigurationChanged event: hash = {e.ConfigurationHash}");
 					client.ServiceEvent_ConfigurationChanged(e.ConfigurationHash);
 				}
 				catch (Exception ex)
 				{
-					Logger.Add("Failed to send ConfigurationChanged event: hash = " + e.ConfigurationHash, ex);
+					Logger.Add($"Failed to send ConfigurationChanged event: hash = {e.ConfigurationHash}", ex);
 					faultedClients.Add(client);
 				}
 			}
@@ -168,12 +168,12 @@ namespace ProcessManager.Service.Host
 				{
 					try
 					{
-						Logger.Add(LogType.Verbose, "Sending DistributionCompleted event: action = " + e.DistributionResult.Type + ", " + e.DistributionResult.SourceMachineHostName + " / " + e.DistributionResult.GroupID + " / " + e.DistributionResult.ApplicationID + " / " + e.DistributionResult.DestinationMachineHostName);
+						Logger.Add(LogType.Verbose, $"Sending DistributionCompleted event: action = {e.DistributionResult.Type}, {e.DistributionResult.SourceMachineHostName} / {e.DistributionResult.GroupID} / {e.DistributionResult.ApplicationID} / {e.DistributionResult.DestinationMachineHostName}");
 						client.ServiceEvent_DistributionCompleted(new DTODistributionResult(e.DistributionResult));
 					}
 					catch (Exception ex)
 					{
-						Logger.Add("Failed to send DistributionCompleted event: action = " + e.DistributionResult.Type + ", " + e.DistributionResult.SourceMachineHostName + " / " + e.DistributionResult.GroupID + " / " + e.DistributionResult.ApplicationID + " / " + e.DistributionResult.DestinationMachineHostName, ex);
+						Logger.Add($"Failed to send DistributionCompleted event: action = {e.DistributionResult.Type}, {e.DistributionResult.SourceMachineHostName} / {e.DistributionResult.GroupID} / {e.DistributionResult.ApplicationID} / {e.DistributionResult.DestinationMachineHostName}", ex);
 						faultedClients.Add(client);
 					}
 				}
@@ -189,7 +189,7 @@ namespace ProcessManager.Service.Host
 				faultedClients.ForEach(client => _clients.Remove(client));
 
 			if (faultedClients.Count > 0)
-				Logger.Add(LogType.Error, "Removed " + faultedClients.Count + " faulted clients");
+				Logger.Add(LogType.Error, $"Removed {faultedClients.Count} faulted clients");
 		}
 	}
 }

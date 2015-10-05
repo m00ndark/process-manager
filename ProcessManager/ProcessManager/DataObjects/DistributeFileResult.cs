@@ -13,11 +13,11 @@ namespace ProcessManager.DataObjects
 
 		#region Properties
 
-		public bool Success { get { return ErrorMessage == null; } }
+		public bool Success => ErrorMessage == null;
 
 		public string RelativePath { get; private set; }
 		public Guid DestinationGroupID { get; private set; }
-		public string ErrorMessage { get; private set; }
+		public string ErrorMessage { get; }
 
 		#endregion
 	}

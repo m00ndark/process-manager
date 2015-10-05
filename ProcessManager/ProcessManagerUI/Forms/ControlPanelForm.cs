@@ -11,10 +11,10 @@ using ProcessManager.DataObjects.Comparers;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
 using ProcessManager.Service.DataObjects;
-using ProcessManager.Utilities;
 using ProcessManagerUI.Controls.Nodes;
 using ProcessManagerUI.Controls.Nodes.Support;
 using ProcessManagerUI.Support;
+using ToolComponents.Core.Logging;
 using Application = ProcessManager.DataObjects.Application;
 
 namespace ProcessManagerUI.Forms
@@ -80,9 +80,9 @@ namespace ProcessManagerUI.Forms
 
 		#region Properties
 
-		private MacroPlayer MacroPlayer { get; set; }
-		private TabPageData SelectedTabData { get { return (TabPageData) tabControlSection.SelectedTab.Tag; } }
-		private ControlPanelTab SelectedTab { get { return SelectedTabData.ControlPanelTab; } }
+		private MacroPlayer MacroPlayer { get; }
+		private TabPageData SelectedTabData => (TabPageData) tabControlSection.SelectedTab.Tag;
+		private ControlPanelTab SelectedTab => SelectedTabData.ControlPanelTab;
 
 		private FlowLayoutPanel CurrentFlowLayoutPanel
 		{
@@ -144,22 +144,20 @@ namespace ProcessManagerUI.Forms
 
 		private bool RaiseConfigurationChangedEvent(Machine machine, string configurationHash)
 		{
-			if (ConfigurationChanged != null)
-			{
-				ConfigurationChanged(this, new MachineConfigurationHashEventArgs(machine, configurationHash));
-				return true;
-			}
-			return false;
+			if (ConfigurationChanged == null)
+				return false;
+
+			ConfigurationChanged?.Invoke(this, new MachineConfigurationHashEventArgs(machine, configurationHash));
+			return true;
 		}
 
 		private bool RaiseDistributionCompletedEvent(DistributionResult distributionActionResult)
 		{
-			if (DistributionCompleted != null)
-			{
-				DistributionCompleted(this, new DistributionResultEventArgs(distributionActionResult));
-				return true;
-			}
-			return false;
+			if (DistributionCompleted == null)
+				return false;
+
+			DistributionCompleted?.Invoke(this, new DistributionResultEventArgs(distributionActionResult));
+			return true;
 		}
 
 		#endregion
@@ -565,17 +563,17 @@ namespace ProcessManagerUI.Forms
 
 		private void RootNode_SizeChanged(object sender, EventArgs e)
 		{
-			if (!_ui.IsSuspended(SuspensionType.RootNodeSizeChanged))
-				UpdateSize();
+			if (_ui.IsSuspended(SuspensionType.RootNodeSizeChanged)) return;
+
+			UpdateSize();
 		}
 
 		private void Node_CheckedChanged(object sender, EventArgs e)
 		{
-			if (CurrentFlowLayoutPanel.Controls.Count > 0)
-			{
-				int uncheckedCount = CurrentRootNodes.Count(node => node.CheckState == CheckState.Unchecked);
-				EnableActionLinks(uncheckedCount != CurrentRootNodes.Count);
-			}
+			if (CurrentFlowLayoutPanel.Controls.Count == 0) return;
+
+			int uncheckedCount = CurrentRootNodes.Count(node => node.CheckState == CheckState.Unchecked);
+			EnableActionLinks(uncheckedCount != CurrentRootNodes.Count);
 		}
 
 		private void Node_ActionTaken(object sender, ActionEventArgs e)
@@ -658,12 +656,12 @@ namespace ProcessManagerUI.Forms
 
 		private void HandleProcessStatusesChanged(IEnumerable<ProcessStatus> processStatuses)
 		{
-			Task.Factory.StartNew(() => ApplyProcessStatuses(processStatuses));
+			Task.Run(() => ApplyProcessStatuses(processStatuses));
 		}
 
 		private void HandleConfigurationChanged(Machine machine, string configurationHash)
 		{
-			Task.Factory.StartNew(() =>
+			Task.Run(() =>
 				{
 					if (!RaiseConfigurationChangedEvent(machine, configurationHash) && ConnectionStore.Connections[machine].Configuration.Hash != configurationHash)
 						ReloadConfiguration(machine);
@@ -672,7 +670,7 @@ namespace ProcessManagerUI.Forms
 
 		private void HandleDistributionCompleted(DistributionResult distributionResult)
 		{
-			Task.Factory.StartNew(() =>
+			Task.Run(() =>
 				{
 					if (RaiseDistributionCompletedEvent(distributionResult))
 						ApplyDistributionState(new Machine(distributionResult.SourceMachineHostName), distributionResult.GroupID,
@@ -891,7 +889,7 @@ namespace ProcessManagerUI.Forms
 
 		private void RetrieveAllProcessStatuses()
 		{
-			Task.Factory.StartNew(() =>
+			Task.Run(() =>
 				{
 					List<ProcessStatus> processStatuses = new List<ProcessStatus>();
 					foreach (Machine machine in Settings.Client.Machines)
@@ -899,14 +897,14 @@ namespace ProcessManagerUI.Forms
 						try
 						{
 							if (!ConnectionStore.ConnectionCreated(machine))
-								throw new Exception("No connection to machine " + machine);
+								throw new Exception($"No connection to machine {machine}");
 
 							processStatuses.AddRange(ConnectionStore.Connections[machine].ServiceHandler.Service
 								.GetAllProcessStatuses().Select(x => x.FromDTO(machine)));
 						}
 						catch (Exception ex)
 						{
-							Logger.Add("Failed to retrieve all process statuses from machine " + machine, ex);
+							Logger.Add($"Failed to retrieve all process statuses from machine {machine}", ex);
 						}
 					}
 					ApplyProcessStatuses(processStatuses);
@@ -1611,7 +1609,7 @@ namespace ProcessManagerUI.Forms
 
 		public void TakeActionAsync(IAction action)
 		{
-			Task.Factory.StartNew(() => TakeAction(action));
+			Task.Run(() => TakeAction(action));
 		}
 
 		public bool TakeAction(IAction action)
@@ -1626,19 +1624,19 @@ namespace ProcessManagerUI.Forms
 						throw new Exception("Incomplete ProcessAction object");
 
 					if (!ConnectionStore.ConnectionCreated(processAction.Machine))
-						throw new Exception("No connection to machine " + processAction.Machine);
+						throw new Exception($"No connection to machine {processAction.Machine}");
 
 					if (!ConnectionStore.ConfigurationAvailable(processAction.Machine))
-						throw new Exception("No configuration available for machine " + processAction.Machine);
+						throw new Exception($"No configuration available for machine {processAction.Machine}");
 
 					Group group = ConnectionStore.Connections[processAction.Machine].Configuration.Groups.FirstOrDefault(x => Comparer.GroupsEqual(processAction.Group, x));
 					Application application = ConnectionStore.Connections[processAction.Machine].Configuration.Applications.FirstOrDefault(x => Comparer.ApplicationsEqual(processAction.Application, x));
 
 					if (group == null)
-						throw new Exception("Group " + processAction.Group + " missing on machine " + processAction.Machine);
+						throw new Exception($"Group {processAction.Group} missing on machine {processAction.Machine}");
 
 					if (application == null)
-						throw new Exception("Application " + processAction.Application + " missing on machine " + processAction.Machine);
+						throw new Exception($"Application {processAction.Application} missing on machine {processAction.Machine}");
 
 					processAction.Group = group;
 					processAction.Application = application;
@@ -1660,7 +1658,7 @@ namespace ProcessManagerUI.Forms
 						throw new Exception("Incomplete DistributionAction object");
 
 					if (!ConnectionStore.ConnectionCreated(distributionAction.SourceMachine))
-						throw new Exception("No connection to source machine " + distributionAction.SourceMachine);
+						throw new Exception($"No connection to source machine {distributionAction.SourceMachine}");
 
 					DistributionActionResult distributionActionResult = ConnectionStore.Connections[distributionAction.SourceMachine].ServiceHandler.Service
 						.TakeDistributionAction(new DTODistributionAction(distributionAction)).FromDTO();

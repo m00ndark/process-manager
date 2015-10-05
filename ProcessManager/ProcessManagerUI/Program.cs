@@ -5,9 +5,9 @@ using System.Threading;
 using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataAccess;
-using ProcessManager.Utilities;
 using ProcessManagerUI.Forms;
 using ProcessManagerUI.Support;
+using ToolComponents.Core.Logging;
 
 namespace ProcessManagerUI
 {
@@ -21,7 +21,7 @@ namespace ProcessManagerUI
 			{
 				if (createdNew)
 				{
-					Logger.LogSource = LogSource.Client;
+					Logger.Initialize(Settings.Service.Defaults.APPLICATION_NAME, DefaultSourcedLogEntry.Headers, LogSource.Client, Settings.Service.Defaults.LOG_TYPE_MIN_LEVEL);
 
 					if (Environment.CommandLine.Contains("-migratesettings"))
 					{

@@ -20,8 +20,8 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 				Capitalized = capitalized;
 			}
 
-			public MacroActionWaitForEvent WaitForEvent { get; private set; }
-			private bool Capitalized { get; set; }
+			public MacroActionWaitForEvent WaitForEvent { get; }
+			private bool Capitalized { get; }
 
 			public override string ToString()
 			{
@@ -63,7 +63,7 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 
 		#region Properties
 
-		public MacroActionBundle ActionBundle { get; private set; }
+		public MacroActionBundle ActionBundle { get; }
 
 		private MacroActionWaitForEvent? SelectedWaitForEvent
 		{
@@ -77,10 +77,7 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 
 		private int TimeoutMilliseconds { get; set; }
 
-		private bool HasValidSelections
-		{
-			get { return SelectedWaitForEvent != null; }
-		}
+		private bool HasValidSelections => SelectedWaitForEvent != null;
 
 		#endregion
 
@@ -142,8 +139,7 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 
 		private void RaiseMacroActionItemChangedEvent()
 		{
-			if (MacroActionItemChanged != null)
-				MacroActionItemChanged(this, EventArgs.Empty);
+			MacroActionItemChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		#endregion

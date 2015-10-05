@@ -79,26 +79,26 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonRemoveMacro_Click(object sender, EventArgs e)
 		{
-			if (listViewMacros.SelectedItems.Count > 0)
+			if (listViewMacros.SelectedItems.Count == 0)
+				return;
+
+			AnyMachinesChanged = _hasUnsavedChanges = true;
+			foreach (ListViewItem item in listViewMacros.SelectedItems)
 			{
-				AnyMachinesChanged = _hasUnsavedChanges = true;
-				foreach (ListViewItem item in listViewMacros.SelectedItems)
-				{
-					Settings.Client.Macros.Remove((Macro) item.Tag);
-					listViewMacros.Items.Remove(item);
-				}
-				_selectedMacro = null;
-				EnableControls();
+				Settings.Client.Macros.Remove((Macro) item.Tag);
+				listViewMacros.Items.Remove(item);
 			}
+			_selectedMacro = null;
+			EnableControls();
 		}
 
 		private void TextBoxMacroName_TextChanged(object sender, EventArgs e)
 		{
-			if (!_disableTextChangedEvents)
-			{
-				MacroChanged();
-				EnableControls();
-			}
+			if (_disableTextChangedEvents)
+				return;
+
+			MacroChanged();
+			EnableControls();
 		}
 
 		private void TextBoxMacroName_Leave(object sender, EventArgs e)
@@ -186,8 +186,7 @@ namespace ProcessManagerUI.Forms
 
 		private void RaiseMacrosChangedEvent()
 		{
-			if (MacrosChanged != null)
-				MacrosChanged(this, new EventArgs());
+			MacrosChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		#endregion
@@ -213,21 +212,20 @@ namespace ProcessManagerUI.Forms
 
 		private void UpdateSelectedMacro()
 		{
-			if (_selectedMacro != null)
+			if (_selectedMacro == null)
+				return;
+
+			if (MacroChanged())
 			{
-				if (MacroChanged())
-				{
-					_selectedMacro.Name = textBoxMacroName.Text;
-					_selectedMacro.ActionBundles.Clear();
-					_macroActionItems.ForEach(macroActionItem => _selectedMacro.ActionBundles.Add(
-						macroActionItem.ActionBundle != null ? macroActionItem.ActionBundle.Clone() : null));
-					ListViewItem item = listViewMacros.Items.Cast<ListViewItem>().First(x => x.Tag == _selectedMacro);
-					item.Text = _selectedMacro.Name;
-					listViewMacros.Sort();
-				}
-				textBoxMacroName.Text = _selectedMacro.Name;
-				EnableControls();
+				_selectedMacro.Name = textBoxMacroName.Text;
+				_selectedMacro.ActionBundles.Clear();
+				_macroActionItems.ForEach(macroActionItem => _selectedMacro.ActionBundles.Add(macroActionItem.ActionBundle?.Clone()));
+				ListViewItem item = listViewMacros.Items.Cast<ListViewItem>().First(x => ReferenceEquals(x.Tag, _selectedMacro));
+				item.Text = _selectedMacro.Name;
+				listViewMacros.Sort();
 			}
+			textBoxMacroName.Text = _selectedMacro.Name;
+			EnableControls();
 		}
 
 		private void ClearMacroActionItems()
@@ -246,7 +244,7 @@ namespace ProcessManagerUI.Forms
 
 		private MacroActionItem CreateMacroActionItem(MacroActionBundle actionBundle = null)
 		{
-			MacroActionItem macroActionItem = new MacroActionItem(actionBundle != null ? actionBundle.Clone() : null);
+			MacroActionItem macroActionItem = new MacroActionItem(actionBundle?.Clone());
 			macroActionItem.MacroActionItemChanged += MacroActionItem_MacroActionItemChanged;
 			macroActionItem.MacroActionItemRemoved += MacroActionItem_MacroActionItemRemoved;
 			macroActionItem.MacroActionItemMovedUp += MacroActionItem_MacroActionItemMovedUp;
@@ -322,7 +320,7 @@ namespace ProcessManagerUI.Forms
 				.Select(x => new
 					{
 						Macro = x.Key,
-						Message = x.Count() + " macros"
+						Message = $"{x.Count()} macros"
 					})
 				.ToDictionary(x => x.Macro, x => x.Message);
 			if (nonUniqueMacros.Count > 0)
@@ -344,7 +342,7 @@ namespace ProcessManagerUI.Forms
 			if (invalidMacros.Count > 0)
 			{
 				int invalidMacroCount = invalidMacros.SelectMany(x => x.Value).Count();
-				Messenger.ShowError("Macro" + (invalidMacroCount == 1 ? string.Empty : "s") + " invalid",
+				Messenger.ShowError($"Macro{(invalidMacroCount == 1 ? string.Empty : "s")} invalid",
 					"One or more macro property invalid. See details for more information.",
 					invalidMacros.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine + y.Value.Select(z => new { Macro = y.Key, Message = z })
 						.Aggregate(string.Empty, (a, b) => a + Environment.NewLine + b.Macro + ": " + b.Message).Trim()).Trim());

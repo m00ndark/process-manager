@@ -22,11 +22,11 @@ namespace ProcessManagerUI.Forms
 				Machine = machine;
 			}
 
-			public Machine Machine { get; private set; }
+			public Machine Machine { get; }
 
 			public override string ToString()
 			{
-				return "From " + Machine;
+				return $"From {Machine}";
 			}
 		}
 
@@ -204,8 +204,7 @@ namespace ProcessManagerUI.Forms
 
 		private void RaiseMachinesChangedEvent(List<Machine> machines = null)
 		{
-			if (MachinesChanged != null)
-				MachinesChanged(this, new MachinesEventArgs(machines));
+			MachinesChanged?.Invoke(this, new MachinesEventArgs(machines));
 		}
 
 		#endregion
@@ -269,7 +268,7 @@ namespace ProcessManagerUI.Forms
 				List<Machine> invalidMachines = new List<Machine>(Settings.Client.Machines.Where(machine => !MachineIsValid(machine)));
 				if (invalidMachines.Count > 0)
 				{
-					Messenger.ShowError("Machine" + (invalidMachines.Count == 1 ? string.Empty : "s") + " invalid", "Host name invalid for "
+					Messenger.ShowError($"Machine{(invalidMachines.Count == 1 ? string.Empty : "s")} invalid", "Host name invalid for "
 						+ invalidMachines.Aggregate(string.Empty, (x, y) => x + ", " + y).Trim(", ".ToCharArray()));
 					return false;
 				}
@@ -311,8 +310,8 @@ namespace ProcessManagerUI.Forms
 
 			if (configurationParts == ConfigurationParts.All)
 			{
-				if (Messenger.ShowWarningQuestion("Confirm setup copy", "Are you sure you want to copy the setup from "
-					+ sourceMachine + " to " + string.Join(", ", destinationMachines) + ", overwriting the existing setup?") == DialogResult.No)
+				if (Messenger.ShowWarningQuestion("Confirm setup copy",
+					$"Are you sure you want to copy the setup from {sourceMachine} to {string.Join(", ", destinationMachines)}, overwriting the existing setup?") == DialogResult.No)
 				{
 					return;
 				}

@@ -7,7 +7,7 @@ namespace ProcessManager.DataObjects.Comparers
 	{
 		public bool Equals(Application application, string name)
 		{
-			return (application != null && application.Name != null && name != null && application.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+			return (application?.Name != null && name != null && application.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
 		}
 
 		public bool Equals(Application x, Application y)
@@ -17,7 +17,7 @@ namespace ProcessManager.DataObjects.Comparers
 
 		public int GetHashCode(Application obj)
 		{
-			return (obj != null && obj.Name != null ? obj.Name.ToLower().GetHashCode() : 0);
+			return obj?.Name?.ToLower().GetHashCode() ?? 0;
 		}
 	}
 }

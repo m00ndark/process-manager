@@ -108,8 +108,7 @@ namespace ProcessManagerUI.Forms
 			ServiceHelper.ProcessManagerEventHandler.ConfigurationChanged -= ProcessManagerEventHandler_ConfigurationChanged;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerInitializationCompleted -= ServiceConnectionHandler_ServiceHandlerInitializationCompleted;
 			ProcessManagerServiceConnectionHandler.Instance.ServiceHandlerConnectionChanged -= ServiceConnectionHandler_ServiceHandlerConnectionChanged;
-			Settings.Client.CFG_SelectedConfigurationSection =
-				(treeViewConfiguration.SelectedNode != null ? treeViewConfiguration.SelectedNode.Name : Settings.Client.Defaults.SELECTED_CONFIGURATION_SECTION);
+			Settings.Client.CFG_SelectedConfigurationSection = treeViewConfiguration.SelectedNode?.Name ?? Settings.Client.Defaults.SELECTED_CONFIGURATION_SECTION;
 			Settings.Client.Save(ClientSettingsType.States);
 		}
 
@@ -292,11 +291,12 @@ namespace ProcessManagerUI.Forms
 					SelectedPath = textBoxGroupPath.Text,
 					BrowserMode = FileSystemBrowserForm.Mode.Folder
 				};
-			if (fileSystemBrowser.ShowDialog(this) == DialogResult.OK)
-			{
-				textBoxGroupPath.Text = fileSystemBrowser.SelectedPath;
-				UpdateSelectedGroup();
-			}
+
+			if (fileSystemBrowser.ShowDialog(this) != DialogResult.OK)
+				return;
+
+			textBoxGroupPath.Text = fileSystemBrowser.SelectedPath;
+			UpdateSelectedGroup();
 		}
 
 		private void ListViewGroupApplications_SelectedIndexChanged(object sender, EventArgs e)
@@ -313,12 +313,11 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonRemoveGroupApplication_Click(object sender, EventArgs e)
 		{
-			if (listViewGroupApplications.SelectedItems.Count > 0)
-			{
-				listViewGroupApplications.Items.Remove(listViewGroupApplications.SelectedItems[0]);
-				UpdateSelectedGroup();
-				EnableControls();
-			}
+			if (listViewGroupApplications.SelectedItems.Count == 0) return;
+
+			listViewGroupApplications.Items.Remove(listViewGroupApplications.SelectedItems[0]);
+			UpdateSelectedGroup();
+			EnableControls();
 		}
 
 		private void ButtonCopyGroupApplications_Click(object sender, EventArgs e)
@@ -377,22 +376,21 @@ namespace ProcessManagerUI.Forms
 		{
 			if (_selectedMachine == null) return;
 
-			if (listViewApplications.SelectedItems.Count > 0)
+			if (listViewApplications.SelectedItems.Count == 0) return;
+
+			foreach (ListViewItem item in listViewApplications.SelectedItems)
 			{
-				foreach (ListViewItem item in listViewApplications.SelectedItems)
-				{
-					Application application = (Application) item.Tag;
-					ConnectionStore.Connections[_selectedMachine].Configuration.Applications.Remove(application);
-					ConnectionStore.Connections[_selectedMachine].Configuration.Groups.ForEach(group => group.Applications.Remove(application.ID));
-					listViewApplications.Items.Remove(item);
-					listViewGroupApplications.Items.Cast<ListViewItem>()
-						.Where(x => (Guid) x.Tag == application.ID).ToList()
-						.ForEach(x => listViewGroupApplications.Items.Remove(x));
-				}
-				ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
-				_selectedApplication = null;
-				EnableControls();
+				Application application = (Application) item.Tag;
+				ConnectionStore.Connections[_selectedMachine].Configuration.Applications.Remove(application);
+				ConnectionStore.Connections[_selectedMachine].Configuration.Groups.ForEach(group => @group.Applications.Remove(application.ID));
+				listViewApplications.Items.Remove(item);
+				listViewGroupApplications.Items.Cast<ListViewItem>()
+					.Where(x => (Guid) x.Tag == application.ID).ToList()
+					.ForEach(x => listViewGroupApplications.Items.Remove(x));
 			}
+			ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
+			_selectedApplication = null;
+			EnableControls();
 		}
 
 		private void TextBoxApplicationName_TextChanged(object sender, EventArgs e)
@@ -458,35 +456,35 @@ namespace ProcessManagerUI.Forms
 		private void ButtonEditDistributionSources_Click(object sender, EventArgs e)
 		{
 			DistributionSourcesForm distributionSourcesForm = new DistributionSourcesForm(_selectedMachine, _selectedApplication, () => GetAllGroups(false));
-			if (distributionSourcesForm.ShowDialog(this) == DialogResult.OK)
-			{
-				if (distributionSourcesForm.DistributionSourcesChanged)
-				{
-					if (_selectedMachine == null)
-						return;
+			if (distributionSourcesForm.ShowDialog(this) != DialogResult.OK)
+				return;
 
-					_selectedApplication.Sources.Where(x => distributionSourcesForm.DistributionSources.All(y => y.ID != x.ID))
-						.ToList().ForEach(x => _selectedApplication.Sources.Remove(x));
+			if (!distributionSourcesForm.DistributionSourcesChanged)
+				return;
 
-					distributionSourcesForm.DistributionSources
-						.Select(x => new
-							{
-								New = x,
-								Old = _selectedApplication.Sources.FirstOrDefault(y => y.ID == x.ID)
-							})
-						.Where(x => x.Old != null)
-						.ToList()
-						.ForEach(x => x.New.CopyTo(x.Old));
+			if (_selectedMachine == null)
+				return;
 
-					distributionSourcesForm.DistributionSources.Where(x => _selectedApplication.Sources.All(y => y.ID != x.ID))
-						.ToList().ForEach(x => _selectedApplication.Sources.Add(x));
+			_selectedApplication.Sources.Where(x => distributionSourcesForm.DistributionSources.All(y => y.ID != x.ID))
+				.ToList().ForEach(x => _selectedApplication.Sources.Remove(x));
 
-					DisplayDistributionSourceCount();
+			distributionSourcesForm.DistributionSources
+				.Select(x => new
+					{
+						New = x,
+						Old = _selectedApplication.Sources.FirstOrDefault(y => y.ID == x.ID)
+					})
+				.Where(x => x.Old != null)
+				.ToList()
+				.ForEach(x => x.New.CopyTo(x.Old));
 
-					ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
-					EnableControls();
-				}
-			}
+			distributionSourcesForm.DistributionSources.Where(x => _selectedApplication.Sources.All(y => y.ID != x.ID))
+				.ToList().ForEach(x => _selectedApplication.Sources.Add(x));
+
+			DisplayDistributionSourceCount();
+
+			ConnectionStore.Connections[_selectedMachine].ConfigurationModified = true;
+			EnableControls();
 		}
 
 		private void CheckBoxDistributionOnly_CheckedChanged(object sender, EventArgs e)
@@ -540,15 +538,16 @@ namespace ProcessManagerUI.Forms
 					Filter = "Applications (*.exe)|*.exe|All files (*.*)|*.*",
 					BrowserMode = FileSystemBrowserForm.Mode.File
 				};
-			if (fileSystemBrowser.ShowDialog(this) == DialogResult.OK)
+
+			if (fileSystemBrowser.ShowDialog(this) != DialogResult.OK)
+				return;
+
+			if (!fileSystemBrowser.SelectedPath.StartsWith(@group.Path, StringComparison.CurrentCultureIgnoreCase))
+				Messenger.ShowError("Invalid application path", $"The selected application's path must start with the selected group's path; {@group.Path}");
+			else
 			{
-				if (!fileSystemBrowser.SelectedPath.StartsWith(group.Path, StringComparison.CurrentCultureIgnoreCase))
-					Messenger.ShowError("Invalid application path", "The selected application's path must start with the selected group's path; " + group.Path);
-				else
-				{
-					textBoxApplicationRelativePath.Text = fileSystemBrowser.SelectedPath.Substring(group.Path.TrimEnd(Path.DirectorySeparatorChar).Length);
-					UpdateSelectedApplication();
-				}
+				textBoxApplicationRelativePath.Text = fileSystemBrowser.SelectedPath.Substring(@group.Path.TrimEnd(Path.DirectorySeparatorChar).Length);
+				UpdateSelectedApplication();
 			}
 		}
 
@@ -566,7 +565,7 @@ namespace ProcessManagerUI.Forms
 
 			if (ConnectionStore.Connections[e.Machine].Configuration.Hash != e.ConfigurationHash)
 			{
-				Messenger.ShowWarning("Configuration changed", "The configuration for " + e.Machine + " was changed from another client."
+				Messenger.ShowWarning("Configuration changed", $"The configuration for {e.Machine} was changed from another client."
 					+ " Configuration will be reloaded to reflect those changes.");
 
 				ServiceHelper.ReloadConfiguration(e.Machine);
@@ -592,7 +591,7 @@ namespace ProcessManagerUI.Forms
 			{
 				if (e.Status == ProcessManagerServiceHandlerStatus.Disconnected && e.Exception != null)
 				{
-					Messenger.ShowError("Failed to connect to machine", "Could not connect to Process Manager service at " + machine.HostName, e.Exception);
+					Messenger.ShowError("Failed to connect to machine", $"Could not connect to Process Manager service at {machine.HostName}", e.Exception);
 				}
 				else if (e.Status == ProcessManagerServiceHandlerStatus.Connected && _selectedMachine == machine)
 				{
@@ -662,14 +661,12 @@ namespace ProcessManagerUI.Forms
 
 		private void RaiseConfigurationChangedEvent(List<Machine> machines)
 		{
-			if (ConfigurationChanged != null)
-				ConfigurationChanged(this, new MachinesEventArgs(machines));
+			ConfigurationChanged?.Invoke(this, new MachinesEventArgs(machines));
 		}
 
 		private void RaiseMacrosChangedEvent()
 		{
-			if (MacrosChanged != null)
-				MacrosChanged(this, new EventArgs());
+			MacrosChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		#endregion
@@ -802,7 +799,7 @@ namespace ProcessManagerUI.Forms
 								.Select(x => new
 									{
 										Group = x.Key,
-										Message = x.Count() + " groups"
+										Message = $"{x.Count()} groups"
 									})
 								.ToList()
 						})
@@ -837,7 +834,7 @@ namespace ProcessManagerUI.Forms
 			if (invalidGroups.Count > 0)
 			{
 				int invalidGroupCount = invalidGroups.SelectMany(x => x.Value).Count();
-				Messenger.ShowError("Group" + (invalidGroupCount == 1 ? string.Empty : "s") + " invalid",
+				Messenger.ShowError($"Group{(invalidGroupCount == 1 ? string.Empty : "s")} invalid",
 					"One or more group property invalid. See details for more information.",
 					invalidGroups.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine
 						+ y.Value.SelectMany(z => z.Value, (a, b) => new { Group = a.Key, Message = b })
@@ -946,7 +943,7 @@ namespace ProcessManagerUI.Forms
 								.Select(x => new
 									{
 										Application = x.Key,
-										Message = x.Count() + " applications"
+										Message = $"{x.Count()} applications"
 									})
 								.ToList()
 						})
@@ -981,7 +978,7 @@ namespace ProcessManagerUI.Forms
 			if (invalidApplications.Count > 0)
 			{
 				int invalidApplicationCount = invalidApplications.SelectMany(x => x.Value).Count();
-				Messenger.ShowError("Application" + (invalidApplicationCount == 1 ? string.Empty : "s") + " invalid",
+				Messenger.ShowError($"Application{(invalidApplicationCount == 1 ? string.Empty : "s")} invalid",
 					"One or more application property invalid. See details for more information.",
 					invalidApplications.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine
 						+ y.Value.SelectMany(z => z.Value, (a, b) => new { Application = a.Key, Message = b })

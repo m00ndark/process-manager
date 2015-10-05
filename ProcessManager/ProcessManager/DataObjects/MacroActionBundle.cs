@@ -23,7 +23,7 @@ namespace ProcessManager.DataObjects
 		#region Properties
 
 		public MacroActionType Type { get; private set; }
-		public List<IMacroAction> Actions { get; private set; }
+		public List<IMacroAction> Actions { get; }
 
 		public bool IsValid { get { return Actions.Aggregate(Actions.Count > 0, (allValid, action) => allValid && action.IsValid); } }
 
@@ -63,7 +63,7 @@ namespace ProcessManager.DataObjects
 
 		public override int GetHashCode()
 		{
-			return Actions.Aggregate(Type.GetHashCode(), (hashCode, action) => hashCode ^ (action != null ? action.GetHashCode() : 0) * 397);
+			return Actions.Aggregate(Type.GetHashCode(), (hashCode, action) => hashCode ^ (action?.GetHashCode() ?? 0) * 397);
 		}
 
 		#endregion

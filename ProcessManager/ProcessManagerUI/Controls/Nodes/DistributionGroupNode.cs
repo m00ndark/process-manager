@@ -23,10 +23,10 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		#region Properties
 
-		public Group Group { get; private set; }
+		public Group Group { get; }
 
-		public override Guid ID { get { return _id; } }
-		protected override string NodeName { get { return Group.Name; } }
+		public override Guid ID => _id;
+		protected override string NodeName => Group.Name;
 
 		#endregion
 

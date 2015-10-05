@@ -20,14 +20,14 @@ namespace ProcessManager.DataObjects
 
         #region Properties
 
-	    public Guid ID { get; private set; }
-        public MacroActionType Type { get; private set; }
-        public MacroActionWaitForEvent WaitForEvent { get; private set; }
-        public int TimeoutMilliseconds { get; private set; }
+	    public Guid ID { get; }
+        public MacroActionType Type { get; }
+        public MacroActionWaitForEvent WaitForEvent { get; }
+        public int TimeoutMilliseconds { get; }
 
-        public bool IsValid { get { return true; } }
+        public bool IsValid => true;
 
-        #endregion
+	    #endregion
 
 	    public IMacroAction Copy()
 	    {

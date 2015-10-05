@@ -22,8 +22,8 @@ namespace ProcessManagerUI
 				PlayableMacroActions = playableMacroActions;
 			}
 
-			public Macro Macro { get; private set; }
-			public List<PlayableMacroAction> PlayableMacroActions { get; private set; }
+			public Macro Macro { get; }
+			public List<PlayableMacroAction> PlayableMacroActions { get; }
 		}
 
 		#endregion
@@ -40,9 +40,9 @@ namespace ProcessManagerUI
 				MacroActionState = MacroActionState.Unknown;
 			}
 
-			public Macro Macro { get; private set; }
-			public IMacroAction MacroAction { get; private set; }
-			public IAction Action { get; private set; }
+			public Macro Macro { get; }
+			public IMacroAction MacroAction { get; }
+			public IAction Action { get; }
 			public MacroActionState MacroActionState { get; set; }
 		}
 
@@ -59,7 +59,7 @@ namespace ProcessManagerUI
 
 		#region Properties
 
-		private IControlPanel ControlPanel { get; set; }
+		private IControlPanel ControlPanel { get; }
 
 		#endregion
 
@@ -96,7 +96,7 @@ namespace ProcessManagerUI
 
 		public void Play(Macro macro, List<IMacroAction> macroActions)
 		{
-			Task.Factory.StartNew(() => PlayThread(macro, macroActions));
+			Task.Run(() => PlayThread(macro, macroActions));
 		}
 
 		private void PlayThread(Macro macro, List<IMacroAction> macroActions)

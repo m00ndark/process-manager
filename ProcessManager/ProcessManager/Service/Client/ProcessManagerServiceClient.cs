@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
-using ProcessManager.DataObjects;
 using ProcessManager.Service.Common;
 using ProcessManager.Service.DataObjects;
 

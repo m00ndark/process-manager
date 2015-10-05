@@ -28,7 +28,7 @@ namespace ProcessManager.Service.DataObjects
 
 		public ProcessActionResult FromDTO(Machine machine)
 		{
-			return new ProcessActionResult(Type, ErrorMessage, Status != null ? Status.FromDTO(machine) : null);
+			return new ProcessActionResult(Type, ErrorMessage, Status?.FromDTO(machine));
 		}
 	}
 }

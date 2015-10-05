@@ -31,7 +31,7 @@ namespace ProcessManager.DataObjects
 		public Guid ID { get; set; }
 		public string Name { get; set; }
 		public string Path { get; set; }
-		public List<Guid> Applications { get; private set; }
+		public List<Guid> Applications { get; }
 
 		#endregion
 

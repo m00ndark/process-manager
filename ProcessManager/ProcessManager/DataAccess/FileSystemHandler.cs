@@ -13,13 +13,13 @@ namespace ProcessManager.DataAccess
 
 		public static IEnumerable<FileSystemDrive> GetFileSystemDrives()
 		{
-			DataTable drivesTable = WMIHandler.GetTable("Win32_LogicalDisk", new[] { "Name", "DriveType", "ProviderName", "VolumeName" });
+			DataTable drivesTable = WMIHandler.GetTable("Win32_LogicalDisk", "Name", "DriveType", "ProviderName", "VolumeName");
 			foreach (DataRow row in drivesTable.Rows)
 			{
 				int driveType = int.Parse(row["DriveType"].ToString());
 				FileSystemDriveType type = (Enum.IsDefined(typeof(FileSystemDriveType), driveType) ? (FileSystemDriveType) driveType : FileSystemDriveType.Unknown);
-				string providerName = (row["ProviderName"] != null ? row["ProviderName"].ToString().TrimEnd(Path.DirectorySeparatorChar) : string.Empty);
-				string volumeName = (row["VolumeName"] != null ? row["VolumeName"].ToString() : string.Empty);
+				string providerName = row["ProviderName"]?.ToString().TrimEnd(Path.DirectorySeparatorChar) ?? string.Empty;
+				string volumeName = row["VolumeName"]?.ToString() ?? string.Empty;
 				string label = string.Empty;
 				if (type == FileSystemDriveType.NetworkDrive && !string.IsNullOrEmpty(providerName))
 				{

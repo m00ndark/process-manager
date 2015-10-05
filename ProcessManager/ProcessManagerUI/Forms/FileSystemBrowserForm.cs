@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ProcessManager;
@@ -47,7 +40,7 @@ namespace ProcessManagerUI.Forms
 
 			#region Properties
 
-			public IFileSystemEntry Entry { get; private set; }
+			public IFileSystemEntry Entry { get; }
 			public int Priority { get; set; }
 
 			#endregion
@@ -163,21 +156,15 @@ namespace ProcessManagerUI.Forms
 
 		#region Properties
 
-		public Machine Machine { get; private set; }
+		public Machine Machine { get; }
 		public string SelectedPath { get; set; }
 		public string Description { get; set; }
 		public Mode BrowserMode { get; set; }
 		public string Filter { get; set; }
 
-		public bool FolderMode
-		{
-			get { return ((BrowserMode & Mode.File) == 0); }
-		}
+		public bool FolderMode => ((BrowserMode & Mode.File) == 0);
 
-		public bool FileMode
-		{
-			get { return ((BrowserMode & Mode.Folder) == 0); }
-		}
+		public bool FileMode => ((BrowserMode & Mode.Folder) == 0);
 
 		#endregion
 
@@ -210,7 +197,7 @@ namespace ProcessManagerUI.Forms
 			if (!string.IsNullOrEmpty(SelectedPath))
 				PreparePathExpansion(SelectedPath);
 
-			Task.Factory.StartNew(() => TaskActionWrapper.Do(() =>
+			Task.Run(() => TaskActionWrapper.Do(() =>
 				{
 					DisplayDrives();
 					ExpandTreeNode(_machineNode);
@@ -232,7 +219,7 @@ namespace ProcessManagerUI.Forms
 			FileSystemTreeNode node = (FileSystemTreeNode) e.Node;
 
 			if (node.Entry != null)
-				Task.Factory.StartNew(() => TaskActionWrapper.Do(() => RequestFolders(node.ChildEntries)));
+				Task.Run(() => TaskActionWrapper.Do(() => RequestFolders(node.ChildEntries)));
 		}
 
 		private void TreeView_BeforeSelect(object sender, TreeViewCancelEventArgs e)
@@ -246,7 +233,7 @@ namespace ProcessManagerUI.Forms
 			EnableControls();
 
 			if (!FolderMode)
-				Task.Factory.StartNew(() => TaskActionWrapper.Do(() => DisplayFiles((FileSystemTreeNode) e.Node)));
+				Task.Run(() => TaskActionWrapper.Do(() => DisplayFiles((FileSystemTreeNode) e.Node)));
 		}
 
 		private void ListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -264,7 +251,7 @@ namespace ProcessManagerUI.Forms
 			if (entry.IsFolder)
 			{
 				FileSystemTreeNode treeNode = _entryNodes[entry];
-				Task.Factory.StartNew(() => TaskActionWrapper.Do(() =>
+				Task.Run(() => TaskActionWrapper.Do(() =>
 					{
 						ExpandTreeNode(treeNode.Parent);
 						SelectTreeNode(treeNode);
@@ -394,14 +381,13 @@ namespace ProcessManagerUI.Forms
 			if (cancel)
 				_entryQueue.IncreasePriority(((FileSystemTreeNode) node).Entry);
 
-			Task.Factory.StartNew(() => TaskActionWrapper.Do(() =>
+			Task.Run(() => TaskActionWrapper.Do(() =>
 				{
 					if (cancel)
 						using (new WaitCursor(this, SetCursor))
 							Worker.WaitFor(() => NodeHasChildren(node));
 
-					if (work != null)
-						work();
+					work?.Invoke();
 				}));
 
 			return cancel;
@@ -439,7 +425,7 @@ namespace ProcessManagerUI.Forms
 
 				_machineNode.ChildEntries = drives.Cast<IFileSystemEntry>().ToList();
 				SetTreeViewNodes(_machineNode, treeNodes);
-				Task.Factory.StartNew(() => TaskActionWrapper.Do(() => RequestFolders(drives)));
+				Task.Run(() => TaskActionWrapper.Do(() => RequestFolders(drives)));
 			}
 		}
 
@@ -548,7 +534,7 @@ namespace ProcessManagerUI.Forms
 				}
 				else
 				{
-					TreeNodeCollection nodes = (_lastAutoExpandedNode == null ? _machineNode.Nodes : _lastAutoExpandedNode.Nodes);
+					TreeNodeCollection nodes = _lastAutoExpandedNode?.Nodes ?? _machineNode.Nodes;
 					_lastAutoExpandedNode = nodes.Cast<FileSystemTreeNode>().FirstOrDefault(node => node.Entry.Equals(pathPart));
 					if (_lastAutoExpandedNode != null)
 					{
@@ -570,7 +556,8 @@ namespace ProcessManagerUI.Forms
 
 		private static string MakeDriveLabel(FileSystemDrive drive)
 		{
-			return (!string.IsNullOrEmpty(drive.Label) ? drive.Label : drive.GetTypeDescription()) + " (" + drive.Name + ")";
+			string label = !string.IsNullOrEmpty(drive.Label) ? drive.Label : drive.GetTypeDescription();
+			return $"{label} ({drive.Name})";
 		}
 
 		private void DisplayFiles(FileSystemTreeNode node)
@@ -615,7 +602,7 @@ namespace ProcessManagerUI.Forms
 		{
 			if (entry.IsFolder) return string.Empty;
 			const int KILO_BYTES = 1024;
-			return string.Format("{0:#,##0} KB", decimal.Divide((entry.Bytes == 0 ? 0 : (entry.Bytes < KILO_BYTES ? KILO_BYTES : entry.Bytes)), KILO_BYTES));
+			return $"{decimal.Divide((entry.Bytes == 0 ? 0 : (entry.Bytes < KILO_BYTES ? KILO_BYTES : entry.Bytes)), KILO_BYTES):#,##0} KB";
 		}
 
 		private static string MakeFileDate(FileSystemEntry entry)

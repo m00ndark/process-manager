@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using ProcessManager;
 using ProcessManager.DataObjects;
-using ProcessManager.Utilities;
 using ProcessManagerUI.Controls.Nodes.Support;
+using ToolComponents.Core;
 
 namespace ProcessManagerUI.Controls.Nodes
 {
@@ -32,12 +32,12 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		#region Properties
 
-        public Macro Macro { get; private set; }
-		public Guid MachineID { get; private set; }
-		public MacroActionType Type { get; private set; }
+        public Macro Macro { get; }
+		public Guid MachineID { get; }
+		public MacroActionType Type { get; }
 
-		public override Guid ID { get { return _id; } }
-        protected override string NodeName { get { return _nodeName; } }
+		public override Guid ID => _id;
+		protected override string NodeName => _nodeName;
 
 		#endregion
 
@@ -60,7 +60,7 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		private static Guid MakeID(Guid macroID, Guid machineID)
 		{
-			return Cryptographer.CreateGUID(macroID.ToString() + machineID);
+			return Cryptographer.CreateGuid(macroID.ToString() + machineID);
 		}
 
 		private string GetNodeName()
@@ -68,7 +68,7 @@ namespace ProcessManagerUI.Controls.Nodes
 			Machine machine = Settings.Client.Machines.FirstOrDefault(x => x.ID == MachineID);
 			return machine == null
 				? null
-				: (Type == MacroActionType.Distribute ? "Distribute to " : Type + " at ") + machine.HostName;
+				: (Type == MacroActionType.Distribute ? "Distribute to " : $"{Type} at ") + machine.HostName;
 		}
 
 		#endregion

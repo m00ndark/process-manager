@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ProcessManager;
-using ProcessManager.Utilities;
 using ProcessManagerUI.Support;
+using ToolComponents.Core.Logging;
 
 namespace ProcessManagerUI.Utilities
 {
@@ -17,7 +17,7 @@ namespace ProcessManagerUI.Utilities
 
 		#region Properties
 
-		private Guid ID { get; set; }
+		private Guid ID { get; }
 		private bool ExecuteCompleted { get; set; }
 
 		#endregion
@@ -57,7 +57,7 @@ namespace ProcessManagerUI.Utilities
 		public static void Do(string message, Action work)
 		{
 			Worker worker = new Worker();
-			Task.Factory.StartNew(() => worker.ExceuteDo(work));
+			Task.Run(() => worker.ExceuteDo(work));
 			Wait(message, worker);
 		}
 
@@ -70,7 +70,7 @@ namespace ProcessManagerUI.Utilities
 		{
 			if (signal()) return;
 			Worker worker = new Worker();
-			Task.Factory.StartNew(() => worker.ExceuteWaitFor(signal));
+			Task.Run(() => worker.ExceuteWaitFor(signal));
 			Wait(message, worker);
 		}
 

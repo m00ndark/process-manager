@@ -23,10 +23,10 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		#region Properties
 
-		public Machine Machine { get; private set; }
+		public Machine Machine { get; }
 
-		public override Guid ID { get { return _id; } }
-		protected override string NodeName { get { return Machine.HostName; } }
+		public override Guid ID => _id;
+		protected override string NodeName => Machine.HostName;
 
 		#endregion
 

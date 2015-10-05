@@ -21,13 +21,13 @@ namespace ProcessManager.DataObjects
 
 		#region Properties
 
-		public Guid ID { get; private set; }
+		public Guid ID { get; }
 		public MacroActionType Type { get; private set; }
-		public Guid MachineID { get; private set; }
-		public Guid GroupID { get; private set; }
-		public Guid ApplicationID { get; private set; }
+		public Guid MachineID { get; }
+		public Guid GroupID { get; }
+		public Guid ApplicationID { get; }
 
-		public bool IsValid { get { return MachineID != Guid.Empty && GroupID != Guid.Empty && ApplicationID != Guid.Empty; } }
+		public bool IsValid => MachineID != Guid.Empty && GroupID != Guid.Empty && ApplicationID != Guid.Empty;
 
 		#endregion
 

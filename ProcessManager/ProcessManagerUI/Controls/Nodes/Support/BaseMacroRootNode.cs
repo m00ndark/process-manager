@@ -40,7 +40,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		#region Properties
 
-		public List<IMacroNode> ChildNodes { get; private set; }
+		public List<IMacroNode> ChildNodes { get; }
 
 		public bool Expanded
 		{
@@ -64,7 +64,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 		}
 
 		public bool IsComplete { get { return NodeName != null && ChildNodes.Aggregate(true, (areComplete, node) => areComplete && node.IsComplete); } }
-		public CheckState CheckState { get { return checkBoxSelected.CheckState; } }
+		public CheckState CheckState => checkBoxSelected.CheckState;
 
 		public virtual Guid ID { get { throw new InvalidOperationException("Class must be inherited!"); } }
 		protected virtual string NodeName { get { throw new InvalidOperationException("Class must be inherited!"); } }
@@ -89,12 +89,12 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 			EnableActionLinks(CheckState != CheckState.Unchecked);
 
-			if (CheckState != CheckState.Indeterminate)
-			{
-				_ignoreCheckedChangedEvents = true;
-				ChildNodes.ForEach(node => node.Check(CheckState == CheckState.Checked));
-				_ignoreCheckedChangedEvents = false;
-			}
+			if (CheckState == CheckState.Indeterminate)
+				return;
+
+			_ignoreCheckedChangedEvents = true;
+			ChildNodes.ForEach(node => node.Check(CheckState == CheckState.Checked));
+			_ignoreCheckedChangedEvents = false;
 		}
 
 		private void LinkLabelPlay_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -108,11 +108,11 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		private void RootNode_SizeChanged(object sender, EventArgs e)
 		{
-			if (flowLayoutPanel.Controls.Count > 0)
-			{
-				_childrenSize.Height = ChildNodes.Select(node => node.Size).Sum(size => size.Height);
-				ApplyExpandedCollapsed();
-			}
+			if (flowLayoutPanel.Controls.Count == 0)
+				return;
+
+			_childrenSize.Height = ChildNodes.Select(node => node.Size).Sum(size => size.Height);
+			ApplyExpandedCollapsed();
 		}
 
 		private void Node_CheckedChanged(object sender, EventArgs e)
@@ -219,20 +219,17 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		private void RaiseCheckedChangedEvent()
 		{
-			if (CheckedChanged != null)
-				CheckedChanged(this, EventArgs.Empty);
+			CheckedChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		protected void RaiseActionTakenEvent(IAction action)
 		{
-			if (ActionTaken != null)
-				ActionTaken(this, new ActionEventArgs(action));
+			ActionTaken?.Invoke(this, new ActionEventArgs(action));
 		}
 
 		private void RaiseStateChangedEvent()
 		{
-			if (StateChanged != null)
-				StateChanged(this, EventArgs.Empty);
+			StateChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		#endregion

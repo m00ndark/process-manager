@@ -5,8 +5,8 @@ using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
-using ProcessManager.Utilities;
 using ProcessManagerUI.Controls.Nodes.Support;
+using ToolComponents.Core;
 using Application = ProcessManager.DataObjects.Application;
 
 namespace ProcessManagerUI.Controls.Nodes
@@ -41,7 +41,7 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		#region Properties
 
-        public IMacroAction MacroAction { get; private set; }
+        public IMacroAction MacroAction { get; }
 
 		public MacroActionState State
 		{
@@ -54,9 +54,9 @@ namespace ProcessManagerUI.Controls.Nodes
 			}
 		}
 
-		public bool IsComplete { get { return _actionName != null; } }
-		public Guid ID { get { return _id; } }
-		public CheckState CheckState { get { return checkBoxSelected.CheckState; } }
+		public bool IsComplete => _actionName != null;
+		public Guid ID => _id;
+		public CheckState CheckState => checkBoxSelected.CheckState;
 
 		#endregion
 
@@ -112,20 +112,17 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		private void RaiseCheckedChangedEvent()
 		{
-			if (CheckedChanged != null)
-				CheckedChanged(this, EventArgs.Empty);
+			CheckedChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void RaiseActionTakenEvent(IAction action)
 		{
-			if (ActionTaken != null)
-				ActionTaken(this, new ActionEventArgs(action));
+			ActionTaken?.Invoke(this, new ActionEventArgs(action));
 		}
 
 		private void RaiseStateChangedEvent()
 		{
-			if (StateChanged != null)
-				StateChanged(this, EventArgs.Empty);
+			StateChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		#endregion
@@ -134,7 +131,7 @@ namespace ProcessManagerUI.Controls.Nodes
 
         private static Guid MakeID(Guid macroID, Guid macroActionID)
 		{
-			return Cryptographer.CreateGUID(macroID.ToString() + macroActionID);
+			return Cryptographer.CreateGuid(macroID.ToString() + macroActionID);
 		}
 
 		private static string GetActionName(IMacroAction macroAction)
@@ -155,7 +152,7 @@ namespace ProcessManagerUI.Controls.Nodes
 					}
 					return machine == null || group == null || application == null
 						? null
-						: string.Format("{0} / {1}", group.Name, application.Name);
+						: $"{group.Name} / {application.Name}";
 				case MacroActionType.Distribute:
 					MacroDistributionAction macroDistributionAction = (MacroDistributionAction) macroAction;
 					Machine destinationMachine = Settings.Client.Machines.FirstOrDefault(x => x.ID == macroDistributionAction.DestinationMachineID);
@@ -168,16 +165,16 @@ namespace ProcessManagerUI.Controls.Nodes
 					}
 					return sourceMachine == null || group == null || application == null
 						? null
-						: string.Format("{0} / {1} / {2}", sourceMachine.HostName, group.Name, application.Name);
+						: $"{sourceMachine.HostName} / {group.Name} / {application.Name}";
 				case MacroActionType.Wait:
 					MacroWaitAction macroWaitAction = (MacroWaitAction) macroAction;
 					if (!macroWaitAction.IsValid) throw new InvalidOperationException();
 					switch (macroWaitAction.WaitForEvent)
 					{
 						case MacroActionWaitForEvent.Timeout:
-							return string.Format("{0} for timeout, {1} ms", macroWaitAction.Type, macroWaitAction.TimeoutMilliseconds);
+							return $"{macroWaitAction.Type} for timeout, {macroWaitAction.TimeoutMilliseconds} ms";
 						case MacroActionWaitForEvent.PreviousActionsCompleted:
-							return string.Format("{0} for previous actions completed", macroWaitAction.Type);
+							return $"{macroWaitAction.Type} for previous actions completed";
 						default:
 							throw new InvalidOperationException();
 					}

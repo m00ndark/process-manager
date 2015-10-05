@@ -17,7 +17,7 @@ namespace ProcessManager.Service.Client
 
 		#region Properties
 
-		public Machine Machine { get; private set; }
+		public Machine Machine { get; }
 
 		#endregion
 
@@ -33,20 +33,17 @@ namespace ProcessManager.Service.Client
 
 		private void RaiseProcessStatusesChangedEvent(IEnumerable<DTOProcessStatus> processStatuses)
 		{
-			if (ProcessStatusesChanged != null)
-				ProcessStatusesChanged(this, new ProcessStatusesEventArgs(processStatuses.Select(x => x.FromDTO(Machine)).ToList()));
+			ProcessStatusesChanged?.Invoke(this, new ProcessStatusesEventArgs(processStatuses.Select(x => x.FromDTO(Machine)).ToList()));
 		}
 
 		private void RaiseConfigurationChangedEvent(string configurationHash)
 		{
-			if (ConfigurationChanged != null)
-				ConfigurationChanged(this, new MachineConfigurationHashEventArgs(Machine, configurationHash));
+			ConfigurationChanged?.Invoke(this, new MachineConfigurationHashEventArgs(Machine, configurationHash));
 		}
 
 		private void RaiseDistributionCompletedEvent(DTODistributionResult distributionResult)
 		{
-			if (DistributionCompleted != null)
-				DistributionCompleted(this, new DistributionResultEventArgs(distributionResult.FromDTO()));
+			DistributionCompleted?.Invoke(this, new DistributionResultEventArgs(distributionResult.FromDTO()));
 		}
 
 		#endregion

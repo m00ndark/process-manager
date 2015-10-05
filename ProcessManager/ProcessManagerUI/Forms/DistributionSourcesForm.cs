@@ -35,7 +35,7 @@ namespace ProcessManagerUI.Forms
 				BrowseMode = browseMode;
 			}
 
-			public BrowseMode BrowseMode { get; private set; }
+			public BrowseMode BrowseMode { get; }
 
 			public override string ToString()
 			{
@@ -75,9 +75,9 @@ namespace ProcessManagerUI.Forms
 
 		#region Properties
 
-		public Machine Machine { get; private set; }
-		public Application Application { get; private set; }
-		public List<DistributionSource> DistributionSources { get; private set; }
+		public Machine Machine { get; }
+		public Application Application { get; }
+		public List<DistributionSource> DistributionSources { get; }
 		public bool DistributionSourcesChanged { get; private set; }
 
 		#endregion
@@ -130,7 +130,8 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonAddSource_Click(object sender, EventArgs e)
 		{
-			if (!_machineAvailable) return;
+			if (!_machineAvailable)
+				return;
 
 			_disableStateChangedEvents = true;
 			_selectedSource = new DistributionSource();
@@ -156,26 +157,27 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonRemoveSource_Click(object sender, EventArgs e)
 		{
-			if (!_machineAvailable) return;
+			if (!_machineAvailable)
+				return;
 
-			if (listViewSources.SelectedItems.Count > 0)
-			{
-				_selectedSource = (DistributionSource) listViewSources.SelectedItems[0].Tag;
-				DistributionSources.Remove(_selectedSource);
-				DistributionSourcesChanged = true;
-				listViewSources.Items.Remove(listViewSources.SelectedItems[0]);
-				_selectedSource = null;
-				EnableControls();
-			}
+			if (listViewSources.SelectedItems.Count == 0)
+				return;
+
+			_selectedSource = (DistributionSource) listViewSources.SelectedItems[0].Tag;
+			DistributionSources.Remove(_selectedSource);
+			DistributionSourcesChanged = true;
+			listViewSources.Items.Remove(listViewSources.SelectedItems[0]);
+			_selectedSource = null;
+			EnableControls();
 		}
 
 		private void TextBoxPath_TextChanged(object sender, EventArgs e)
 		{
-			if (!_disableStateChangedEvents)
-			{
-				SourceChanged();
-				EnableControls();
-			}
+			if (_disableStateChangedEvents)
+				return;
+
+			SourceChanged();
+			EnableControls();
 		}
 
 		private void TextBoxPath_Enter(object sender, EventArgs e)
@@ -191,7 +193,8 @@ namespace ProcessManagerUI.Forms
 
 		private void ButtonBrowseSourcePath_Click(object sender, EventArgs e)
 		{
-			if (!_machineAvailable) return;
+			if (!_machineAvailable)
+				return;
 
 			if (textBoxPath.ForeColor == Color.Silver)
 				Picker.ShowMenu(buttonBrowseSourcePath, Enum.GetValues(typeof(BrowseMode)).Cast<BrowseMode>().Select(x => new BrowseModeWrapper(x)),
@@ -202,11 +205,11 @@ namespace ProcessManagerUI.Forms
 
 		private void TextBoxFilter_TextChanged(object sender, EventArgs e)
 		{
-			if (!_disableStateChangedEvents)
-			{
-				SourceChanged();
-				EnableControls();
-			}
+			if (_disableStateChangedEvents)
+				return;
+
+			SourceChanged();
+			EnableControls();
 		}
 
 		private void TextBoxFilter_Leave(object sender, EventArgs e)
@@ -216,14 +219,18 @@ namespace ProcessManagerUI.Forms
 
 		private void CheckBoxRecursive_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!_disableStateChangedEvents)
-				UpdateSelectedSource();
+			if (_disableStateChangedEvents)
+				return;
+
+			UpdateSelectedSource();
 		}
 
 		private void CheckBoxInclusive_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!_disableStateChangedEvents)
-				UpdateSelectedSource();
+			if (_disableStateChangedEvents)
+				return;
+
+			UpdateSelectedSource();
 		}
 
 		private void ButtonOK_Click(object sender, EventArgs e)
@@ -254,15 +261,16 @@ namespace ProcessManagerUI.Forms
 					SelectedPath = sourcePath,
 					BrowserMode = FileSystemBrowserForm.Mode.Folder | FileSystemBrowserForm.Mode.File
 				};
-			if (fileSystemBrowser.ShowDialog(this) == DialogResult.OK)
+
+			if (fileSystemBrowser.ShowDialog(this) != DialogResult.OK)
+				return;
+
+			if (!fileSystemBrowser.SelectedPath.StartsWith(@group.Path, StringComparison.CurrentCultureIgnoreCase))
+				Messenger.ShowError("Invalid source path", $"The selected source path must start with the selected group's path; {@group.Path}");
+			else
 			{
-				if (!fileSystemBrowser.SelectedPath.StartsWith(group.Path, StringComparison.CurrentCultureIgnoreCase))
-					Messenger.ShowError("Invalid source path", "The selected source path must start with the selected group's path; " + group.Path);
-				else
-				{
-					DisplayPath(fileSystemBrowser.SelectedPath.Substring(group.Path.TrimEnd(Path.DirectorySeparatorChar).Length));
-					UpdateSelectedSource();
-				}
+				DisplayPath(fileSystemBrowser.SelectedPath.Substring(@group.Path.TrimEnd(Path.DirectorySeparatorChar).Length));
+				UpdateSelectedSource();
 			}
 		}
 
@@ -357,7 +365,7 @@ namespace ProcessManagerUI.Forms
 			if (invalidSources.Count > 0)
 			{
 				int invalidSourceCount = invalidSources.Keys.Count;
-				Messenger.ShowError("Distribution source" + (invalidSourceCount == 1 ? string.Empty : "s") + " invalid",
+				Messenger.ShowError($"Distribution source{(invalidSourceCount == 1 ? string.Empty : "s")} invalid",
 					"One or more distribution source property invalid. See details for more information.",
 					invalidSources.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine
 						+ y.Value.Select(z => new { Source = y.Key, Message = z })

@@ -11,10 +11,10 @@
 
 		#region Properties
 
-		public bool Success { get { return ErrorMessage == null; } }
+		public bool Success => ErrorMessage == null;
 
 		public ActionType Type { get; private set; }
-		public string ErrorMessage { get; private set; }
+		public string ErrorMessage { get; }
 		public ProcessStatus Status { get; private set; }
 
 		#endregion

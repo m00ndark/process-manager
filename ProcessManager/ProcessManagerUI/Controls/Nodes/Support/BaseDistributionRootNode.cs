@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using ProcessManager;
 using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
-using ProcessManager.Utilities;
+using ToolComponents.Core;
 
 namespace ProcessManagerUI.Controls.Nodes.Support
 {
@@ -39,7 +39,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		#region Properties
 
-		public List<INode> ChildNodes { get; private set; }
+		public List<INode> ChildNodes { get; }
 
 		public bool Expanded
 		{
@@ -51,7 +51,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			}
 		}
 
-		public CheckState CheckState { get { return checkBoxSelected.CheckState; } }
+		public CheckState CheckState => checkBoxSelected.CheckState;
 
 		public virtual Guid ID { get { throw new InvalidOperationException("Class must be inherited!"); } }
 		protected virtual string NodeName { get { throw new InvalidOperationException("Class must be inherited!"); } }
@@ -76,12 +76,12 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 			EnableActionLinks(CheckState != CheckState.Unchecked);
 
-			if (CheckState != CheckState.Indeterminate)
-			{
-				_ignoreCheckedChangedEvents = true;
-				ChildNodes.ForEach(node => node.Check(CheckState == CheckState.Checked));
-				_ignoreCheckedChangedEvents = false;
-			}
+			if (CheckState == CheckState.Indeterminate)
+				return;
+
+			_ignoreCheckedChangedEvents = true;
+			ChildNodes.ForEach(node => node.Check(CheckState == CheckState.Checked));
+			_ignoreCheckedChangedEvents = false;
 		}
 
 		private void LinkLabelDistribute_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -95,11 +95,11 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		private void RootNode_SizeChanged(object sender, EventArgs e)
 		{
-			if (flowLayoutPanel.Controls.Count > 0)
-			{
-				_childrenSize.Height = ChildNodes.Select(node => node.Size).Sum(size => size.Height);
-				ApplyExpandedCollapsed();
-			}
+			if (flowLayoutPanel.Controls.Count == 0)
+				return;
+
+			_childrenSize.Height = ChildNodes.Select(node => node.Size).Sum(size => size.Height);
+			ApplyExpandedCollapsed();
 		}
 
 		private void Node_CheckedChanged(object sender, EventArgs e)
@@ -181,14 +181,12 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		private void RaiseCheckedChangedEvent()
 		{
-			if (CheckedChanged != null)
-				CheckedChanged(this, new EventArgs());
+			CheckedChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void RaiseActionTakenEvent(IAction action)
 		{
-			if (ActionTaken != null)
-				ActionTaken(this, new ActionEventArgs(action));
+			ActionTaken?.Invoke(this, new ActionEventArgs(action));
 		}
 
 		#endregion
@@ -197,7 +195,7 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		protected static Guid MakeID(Guid machineID, Guid groupID)
 		{
-			return Cryptographer.CreateGUID(machineID.ToString() + groupID.ToString());
+			return Cryptographer.CreateGuid(machineID.ToString() + groupID.ToString());
 		}
 
 		private void ApplyExpandedCollapsed()

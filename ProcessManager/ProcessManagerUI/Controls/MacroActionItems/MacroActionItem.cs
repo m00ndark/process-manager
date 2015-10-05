@@ -122,26 +122,22 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 
 		private void RaiseMacroActionItemChangedEvent()
 		{
-			if (MacroActionItemChanged != null)
-				MacroActionItemChanged(this, EventArgs.Empty);
+			MacroActionItemChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void RaiseMacroActionItemRemovedEvent()
 		{
-			if (MacroActionItemRemoved != null)
-				MacroActionItemRemoved(this, EventArgs.Empty);
+			MacroActionItemRemoved?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void RaiseMacroActionItemMovedUpEvent()
 		{
-			if (MacroActionItemMovedUp != null)
-				MacroActionItemMovedUp(this, EventArgs.Empty);
+			MacroActionItemMovedUp?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void RaiseMacroActionItemMovedDownEvent()
 		{
-			if (MacroActionItemMovedDown != null)
-				MacroActionItemMovedDown(this, EventArgs.Empty);
+			MacroActionItemMovedDown?.Invoke(this, EventArgs.Empty);
 		}
 
 		#endregion
@@ -149,8 +145,7 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 		public void SetWidth(int width)
 		{
 			Width = width;
-			if (_macroActionItem != null)
-				_macroActionItem.SetWidth(panelAction.Width);
+			_macroActionItem?.SetWidth(panelAction.Width);
 		}
 
 		#region Helpers
@@ -172,7 +167,7 @@ namespace ProcessManagerUI.Controls.MacroActionItems
 				case MacroActionType.Start:
 				case MacroActionType.Stop:
 				case MacroActionType.Restart:
-					if (ProcessActionBundle != null) ProcessActionBundle.ChangeActionType(actionType);
+					ProcessActionBundle?.ChangeActionType(actionType);
 					ActionBundle = ProcessActionBundle ?? new MacroActionBundle(actionType);
 					_macroActionItem = new MacroProcessActionItem(ProcessActionBundle);
 					break;

@@ -8,6 +8,7 @@ using System.Threading;
 using ProcessManager.DataObjects;
 using ProcessManager.Exceptions;
 using ProcessManager.Utilities;
+using ToolComponents.Core.Logging;
 
 namespace ProcessManager.DataAccess
 {
@@ -36,7 +37,7 @@ namespace ProcessManager.DataAccess
 			}
 			catch (Exception ex)
 			{
-				Logger.AddAndThrow<ProcessActionException>("Failed to start process with path " + fullPath, ex);
+				Logger.AddAndThrow<ProcessActionException>($"Failed to start process with path {fullPath}", ex);
 			}
 
 			if (!application.WaitForExit)
@@ -47,18 +48,18 @@ namespace ProcessManager.DataAccess
 				switch (application.SuccessExitCode)
 				{
 					case SuccessExitCode.Zero:
-						if (process.ExitCode != 0) throw new ProcessActionException("Process exit code was " + process.ExitCode + " (expected zero)");
+						if (process.ExitCode != 0) throw new ProcessActionException($"Process exit code was {process.ExitCode} (expected zero)");
 						break;
 					case SuccessExitCode.Positive:
-						if (process.ExitCode < 0) throw new ProcessActionException("Process exit code was " + process.ExitCode + " (expected positive)");
+						if (process.ExitCode < 0) throw new ProcessActionException($"Process exit code was {process.ExitCode} (expected positive)");
 						break;
 					case SuccessExitCode.Negative:
-						if (process.ExitCode >= 0) throw new ProcessActionException("Process exit code was " + process.ExitCode + " (expected negative)");
+						if (process.ExitCode >= 0) throw new ProcessActionException($"Process exit code was {process.ExitCode} (expected negative)");
 						break;
 				}
 			}
 			else
-				throw new ProcessActionException("Process did not exit within " + WAIT_FOR_EXIT_TIMEOUT + " milliseconds");
+				throw new ProcessActionException($"Process did not exit within {WAIT_FOR_EXIT_TIMEOUT} milliseconds");
 		}
 
 		public static void Stop(Group group, Application application)
@@ -71,7 +72,7 @@ namespace ProcessManager.DataAccess
 				}
 				catch (Exception ex)
 				{
-					Logger.AddAndThrow<ProcessActionException>("Failed to kill process with path " + process.GetPathName(), ex);
+					Logger.AddAndThrow<ProcessActionException>($"Failed to kill process with path {process.GetPathName()}", ex);
 				}
 			}
 		}

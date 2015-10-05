@@ -12,7 +12,7 @@ namespace ProcessManagerUI.Support
 
 		#region Properties
 
-		public ControlPanelTab ControlPanelTab { get; private set; }
+		public ControlPanelTab ControlPanelTab { get; }
 		public bool Invalidated { get; private set; }
 
 		#endregion

@@ -19,7 +19,7 @@ namespace ProcessManagerUI
 		#region Properties
 
 		public static IProcessManagerEventHandler ProcessManagerEventHandler { get; private set; }
-		public static bool IsInitialized { get { return ProcessManagerEventHandler != null; } }
+		public static bool IsInitialized => ProcessManagerEventHandler != null;
 
 		#endregion
 
@@ -95,14 +95,15 @@ namespace ProcessManagerUI
 						}
 					}
 				});
-			if (exceptions.Count > 0)
-			{
-				Messenger.ShowError("Failed to save configuration",
-					"Could not save configuration for " + exceptions.Aggregate(string.Empty, (x, y) => x + ", " + y.Key).Trim(", ".ToCharArray()),
-					exceptions.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine + y.Value.Message).Trim());
-				return exceptions.Keys.ToArray();
-			}
-			return new Machine[0];
+
+			if (exceptions.Count == 0)
+				return new Machine[0];
+
+			Messenger.ShowError("Failed to save configuration",
+				"Could not save configuration for " + exceptions.Aggregate(string.Empty, (x, y) => x + ", " + y.Key).Trim(", ".ToCharArray()),
+				exceptions.Aggregate(string.Empty, (x, y) => x + Environment.NewLine + Environment.NewLine + y.Value.Message).Trim());
+
+			return exceptions.Keys.ToArray();
 		}
 	}
 }
