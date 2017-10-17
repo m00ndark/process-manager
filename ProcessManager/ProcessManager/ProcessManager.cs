@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,12 +22,14 @@ namespace ProcessManager
 		private Thread _mainThread;
 		private volatile bool _shutDownRequested;
 		private Dictionary<Guid, Dictionary<Guid, ProcessStatus>> _processStatuses;
+		private readonly ConcurrentDictionary<Guid, bool> _processStatusListeners;
 
 		private ProcessManager()
 		{
 			_mainThread = null;
 			_shutDownRequested = false;
 			_processStatuses = new Dictionary<Guid, Dictionary<Guid, ProcessStatus>>();
+			_processStatusListeners = new ConcurrentDictionary<Guid, bool>();
 			Logger.LogTypeMinLevel = Settings.Service.Read<LogType>("LogTypeMinLevel");
 			DistributionWorker.Instance.DistributionCompleted += DistributionWorker_DistributionCompleted;
 		}
@@ -65,7 +68,7 @@ namespace ProcessManager
 
 		private void RaiseProcessStatusesChangedEvent(List<ProcessStatus> processStatuses)
 		{
-			ProcessStatusesChanged?.Invoke(this, new ProcessStatusesEventArgs(processStatuses));
+			ProcessStatusesChanged?.Invoke(this, new ProcessStatusesEventArgs(processStatuses, _processStatusListeners.Where(x => x.Value).Select(x => x.Key).ToArray()));
 		}
 
 		private void RaiseConfigurationChangedEvent(Configuration configuration)
@@ -73,9 +76,9 @@ namespace ProcessManager
 			ConfigurationChanged?.Invoke(this, new MachineConfigurationHashEventArgs(configuration.Hash));
 		}
 
-		private void RaiseDistributionCompletedEvent(DistributionResult distributionResult, IProcessManagerServiceEventHandler caller)
+		private void RaiseDistributionCompletedEvent(DistributionResult distributionResult, Guid clientId)
 		{
-			DistributionCompleted?.Invoke(this, new DistributionResultEventArgs(distributionResult, caller));
+			DistributionCompleted?.Invoke(this, new DistributionResultEventArgs(distributionResult, clientId));
 		}
 
 		#endregion
@@ -84,7 +87,7 @@ namespace ProcessManager
 
 		private void DistributionWorker_DistributionCompleted(object sender, DistributionResultEventArgs e)
 		{
-			RaiseDistributionCompletedEvent(e.DistributionResult, e.Caller);
+			RaiseDistributionCompletedEvent(e.DistributionResult, e.ClientId);
 		}
 
 		#endregion
@@ -106,6 +109,16 @@ namespace ProcessManager
 		{
 			lock (_processStatuses)
 				return _processStatuses.Values.SelectMany(x => x.Values).ToList();
+		}
+
+		public void ActivateProcessStatusNotifications(Guid clientId)
+		{
+			_processStatusListeners[clientId] = true;
+		}
+
+		public void DeactivateProcessStatusNotifications(Guid clientId)
+		{
+			_processStatusListeners[clientId] = false;
 		}
 
 		public ProcessActionResult TakeProcessAction(Guid groupID, Guid applicationID, ActionType type)
@@ -149,7 +162,8 @@ namespace ProcessManager
 				_processStatuses.ContainsKey(groupID) && _processStatuses[groupID].ContainsKey(applicationID) ? _processStatuses[groupID][applicationID] : null);
 		}
 
-		public DistributionActionResult TakeDistributionAction(string sourceMachineHostName, Guid groupID, Guid applicationID, string destinationMachineHostName, ActionType type, IProcessManagerServiceEventHandler caller)
+		public DistributionActionResult TakeDistributionAction(string sourceMachineHostName, Guid groupID, Guid applicationID,
+			string destinationMachineHostName, ActionType type, Guid clientId)
 		{
 			string errorMessage = null;
 
@@ -171,7 +185,7 @@ namespace ProcessManager
 				if (string.IsNullOrEmpty(destinationMachineHostName))
 					Logger.AddAndThrow<DistributionActionException>(LogType.Error, $"Application {type}: Missing destination machine host name");
 
-				DistributionWorker.Instance.AddWork(new DistributionWork(type, new Machine(sourceMachineHostName), group, application, new Machine(destinationMachineHostName), caller));
+				DistributionWorker.Instance.AddWork(new DistributionWork(type, new Machine(sourceMachineHostName), group, application, new Machine(destinationMachineHostName), clientId));
 			}
 			catch (DistributionActionException ex)
 			{
@@ -286,54 +300,57 @@ namespace ProcessManager
 
 				while (!_shutDownRequested)
 				{
-					try
+					if (_processStatusListeners.Any(x => x.Value))
 					{
-						Configuration configuration = Configuration.Read();
-
-						if (configuration.Applications.Count > 0 && configuration.Groups.Sum(group => group.Applications.Count) > 0)
+						try
 						{
-							List<string> runningProcesses = ProcessHandler.GetProcesses();
+							Configuration configuration = Configuration.Read();
 
-							var processesStatusList = configuration.Groups
-								.SelectMany(group => configuration.Applications
-									.Where(application => group.Applications.Contains(application.ID))
-									.Select(application => new
-										{
-											Group = group,
-											Application = application,
-											Path = Path.Combine(group.Path, application.RelativePath.TrimStart('\\'))
-										}))
-								.Select(x => new
-									{
-										x.Group,
-										x.Application,
-										Status = new ProcessStatus(x.Group.ID, x.Application.ID,
-											runningProcesses.Any(runningProcess => runningProcess.Equals(x.Path, StringComparison.CurrentCultureIgnoreCase))
-												? ProcessStatusValue.Running : ProcessStatusValue.Stopped)
-									})
-								.ToList();
-
-							List<ProcessStatus> changedProcessStatuses;
-							lock (_processStatuses)
+							if (configuration.Applications.Count > 0 && configuration.Groups.Sum(group => group.Applications.Count) > 0)
 							{
-								changedProcessStatuses = processesStatusList
-									.Where(x => !_processStatuses.ContainsKey(x.Group.ID) || !_processStatuses[x.Group.ID].ContainsKey(x.Application.ID)
-										|| _processStatuses[x.Group.ID][x.Application.ID].Value != x.Status.Value)
-									.Select(x => x.Status)
+								List<string> runningProcesses = ProcessHandler.GetProcesses();
+
+								var processesStatusList = configuration.Groups
+									.SelectMany(group => configuration.Applications
+										.Where(application => group.Applications.Contains(application.ID))
+										.Select(application => new
+											{
+												Group = group,
+												Application = application,
+												Path = Path.Combine(group.Path, application.RelativePath.TrimStart('\\'))
+											}))
+									.Select(x => new
+										{
+											x.Group,
+											x.Application,
+											Status = new ProcessStatus(x.Group.ID, x.Application.ID,
+												runningProcesses.Any(runningProcess => runningProcess.Equals(x.Path, StringComparison.CurrentCultureIgnoreCase))
+													? ProcessStatusValue.Running : ProcessStatusValue.Stopped)
+										})
 									.ToList();
 
-								_processStatuses = processesStatusList
-									.GroupBy(x => x.Group.ID)
-									.ToDictionary(x => x.Key, x => x.ToDictionary(y => y.Application.ID, y => y.Status));
-							}
+								List<ProcessStatus> changedProcessStatuses;
+								lock (_processStatuses)
+								{
+									changedProcessStatuses = processesStatusList
+										.Where(x => !_processStatuses.ContainsKey(x.Group.ID) || !_processStatuses[x.Group.ID].ContainsKey(x.Application.ID)
+											|| _processStatuses[x.Group.ID][x.Application.ID].Value != x.Status.Value)
+										.Select(x => x.Status)
+										.ToList();
 
-							if (changedProcessStatuses.Count > 0)
-								RaiseProcessStatusesChangedEvent(changedProcessStatuses);
+									_processStatuses = processesStatusList
+										.GroupBy(x => x.Group.ID)
+										.ToDictionary(x => x.Key, x => x.ToDictionary(y => y.Application.ID, y => y.Status));
+								}
+
+								if (changedProcessStatuses.Count > 0)
+									RaiseProcessStatusesChangedEvent(changedProcessStatuses);
+							}
 						}
-					}
-					catch (Exception ex)
-					{
-						Logger.Add("An unexpected error occurred in main loop", ex);
+						catch (Exception ex)
+						{
+							Logger.Add("An unexpected error occurred in main loop", ex);
+						}
 					}
 
 					Thread.Sleep(Settings.Service.Read<int>("StatusUpdateInterval"));

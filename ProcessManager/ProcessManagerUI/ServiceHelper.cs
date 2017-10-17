@@ -64,7 +64,7 @@ namespace ProcessManagerUI
 		{
 			Worker.Do("Retrieving configuration...", () =>
 				{
-					foreach (MachineConnection connection in ConnectionStore.Connections.Values.Where(x => (machine == null || machine.Equals(x.Machine))))
+					foreach (MachineConnection connection in ConnectionStore.Connections.Values.Where(x => machine == null || machine.Equals(x.Machine)))
 					{
 						try { connection.Configuration = connection.ServiceHandler.Service.GetConfiguration().FromDTO(); } catch { ; }
 					}

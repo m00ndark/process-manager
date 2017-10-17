@@ -79,7 +79,7 @@ namespace ProcessManager.DataObjects
 		public override bool Equals(object obj)
 		{
 			Application application = obj as Application;
-			return (application != null && Comparer.ApplicationsEqual(this, application));
+			return application != null && Comparer.ApplicationsEqual(this, application);
 		}
 
 		public override int GetHashCode()

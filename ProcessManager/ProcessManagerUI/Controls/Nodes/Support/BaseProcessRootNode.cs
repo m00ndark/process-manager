@@ -117,8 +117,8 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 			if (_ignoreCheckedChangedEvents) return;
 			int checkedCount = ChildNodes.Count(node => node.CheckState == CheckState.Checked);
 			int uncheckedCount = ChildNodes.Count(node => node.CheckState == CheckState.Unchecked);
-			checkBoxSelected.CheckState = (checkedCount == ChildNodes.Count ? CheckState.Checked
-				: (uncheckedCount == ChildNodes.Count ? CheckState.Unchecked : CheckState.Indeterminate));
+			checkBoxSelected.CheckState = checkedCount == ChildNodes.Count ? CheckState.Checked
+				: (uncheckedCount == ChildNodes.Count ? CheckState.Unchecked : CheckState.Indeterminate);
 		}
 
 		private void Node_ActionTaken(object sender, ActionEventArgs e)
@@ -210,10 +210,10 @@ namespace ProcessManagerUI.Controls.Nodes.Support
 
 		private void ApplyExpandedCollapsed()
 		{
-			pictureBoxExpandCollapse.Image = (Expanded ? Properties.Resources.expanded_16 : Properties.Resources.collapsed_16);
+			pictureBoxExpandCollapse.Image = Expanded ? Properties.Resources.expanded_16 : Properties.Resources.collapsed_16;
 			Size = new Size(Math.Max(Size.Width - flowLayoutPanel.Size.Width + _childrenSize.Width,
 				Size.Width - (int) tableLayoutPanel.ColumnStyles[0].Width + labelNodeName.Size.Width),
-				(Expanded ? Size.Height - flowLayoutPanel.Size.Height + _childrenSize.Height : tableLayoutPanel.Size.Height));
+				Expanded ? Size.Height - flowLayoutPanel.Size.Height + _childrenSize.Height : tableLayoutPanel.Size.Height);
 			tableLayoutPanel.ColumnStyles[0].Width = labelNodeName.Size.Width;
 		}
 

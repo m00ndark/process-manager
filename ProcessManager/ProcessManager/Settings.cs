@@ -83,7 +83,7 @@ namespace ProcessManager
 
 			public static string Read(string settingName)
 			{
-				string defaultValue = (_defaultValues.ContainsKey(settingName) ? _defaultValues[settingName] : string.Empty);
+				string defaultValue = _defaultValues.ContainsKey(settingName) ? _defaultValues[settingName] : string.Empty;
 				return Read(settingName, defaultValue);
 			}
 

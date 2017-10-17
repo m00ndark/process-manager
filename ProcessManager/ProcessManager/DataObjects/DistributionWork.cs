@@ -1,31 +1,27 @@
-﻿using System.Collections.Generic;
-using ProcessManager.Service.Common;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ProcessManager.DataObjects
 {
 	public class DistributionWork
 	{
-		public DistributionWork(ActionType type, Machine sourceMachine, Group @group, Application application, Machine destinationMachine, IProcessManagerServiceEventHandler caller)
+		public DistributionWork(ActionType type, Machine sourceMachine, Group @group, Application application, Machine destinationMachine, Guid clientId)
 		{
 			Type = type;
 			SourceMachine = sourceMachine;
 			Group = group;
 			Application = application;
 			DestinationMachine = destinationMachine;
-			Caller = caller;
+			ClientId = clientId;
 			Files = new List<DistributionFile>();
 		}
 
-		#region Properties
-
-		public ActionType Type { get; private set; }
-		public Machine SourceMachine { get; private set; }
-		public Group Group { get; private set; }
-		public Application Application { get; private set; }
-		public Machine DestinationMachine { get; private set; }
-		public IProcessManagerServiceEventHandler Caller { get; private set; }
+		public ActionType Type { get; }
+		public Machine SourceMachine { get; }
+		public Group Group { get; }
+		public Application Application { get; }
+		public Machine DestinationMachine { get; }
+		public Guid ClientId { get; }
 		public List<DistributionFile> Files { get; set; }
-
-		#endregion
 	}
 }

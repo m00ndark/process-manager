@@ -105,7 +105,7 @@ namespace ProcessManager.Service.Client
 
 			try
 			{
-				machineConnection.Configuration = (retrieve ? machineConnection.ServiceHandler.Service.GetConfiguration().FromDTO() : null);
+				machineConnection.Configuration = retrieve ? machineConnection.ServiceHandler.Service.GetConfiguration().FromDTO() : null;
 			}
 			catch (Exception ex)
 			{

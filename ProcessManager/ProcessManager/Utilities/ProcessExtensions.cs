@@ -69,8 +69,7 @@ namespace ProcessManager.Utilities
 				{
 					// Try this method for Vista or higher operating systems
 					uint size = PATH_BUFFER_SIZE;
-					if ((Environment.OSVersion.Version.Major >= 6) &&
-					 (QueryFullProcessImageName(hProcess, 0, pathBuffer, ref size) && (size > 0)))
+					if (Environment.OSVersion.Version.Major >= 6 && QueryFullProcessImageName(hProcess, 0, pathBuffer, ref size) && size > 0)
 					{
 						return pathBuffer.ToString();
 					}

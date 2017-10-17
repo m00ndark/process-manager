@@ -152,7 +152,7 @@ namespace ProcessManagerUI.Controls
 		{
 			base.WndProc(ref m);
 			const int WM_PAINT = 15;
-			if ((m.Msg == WM_PAINT) && RenderOnGlass)
+			if (m.Msg == WM_PAINT && RenderOnGlass)
 			{
 				RedrawControlAsBitmap(Handle);
 			}

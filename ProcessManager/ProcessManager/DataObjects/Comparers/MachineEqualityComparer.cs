@@ -7,12 +7,12 @@ namespace ProcessManager.DataObjects.Comparers
 	{
 		public bool Equals(Machine machine, string hostName)
 		{
-			return (machine?.HostName != null && hostName != null && machine.HostName.Equals(hostName, StringComparison.CurrentCultureIgnoreCase));
+			return machine?.HostName != null && hostName != null && machine.HostName.Equals(hostName, StringComparison.CurrentCultureIgnoreCase);
 		}
 
 		public bool Equals(Machine x, Machine y)
 		{
-			return (y != null && Equals(x, y.HostName));
+			return y != null && Equals(x, y.HostName);
 		}
 
 		public int GetHashCode(Machine obj)

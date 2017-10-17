@@ -11,7 +11,7 @@ namespace ProcessManagerUI.Controls.Nodes
 		private readonly Guid _id;
 
 		public DistributionGroupNode(Group group, Guid? machineID, IEnumerable<INode> childNodes, DistributionGrouping grouping)
-			: this((machineID.HasValue ? MakeID(group.ID, machineID.Value) : group.ID), group, childNodes, grouping) { }
+			: this(machineID.HasValue ? MakeID(@group.ID, machineID.Value) : @group.ID, group, childNodes, grouping) { }
 
 		private DistributionGroupNode(Guid id, Group group, IEnumerable<INode> childNodes, DistributionGrouping grouping)
 			: base(childNodes, grouping, !Settings.Client.D_CollapsedNodes[grouping].Contains(group.ID))

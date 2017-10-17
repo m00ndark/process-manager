@@ -15,7 +15,19 @@ namespace ProcessManagerUI.Utilities
 
 		public static void ShowMenu<T>(Point position, IEnumerable<T> items, Action<T> pickHandler)
 		{
-			if (items == null || !items.Any())
+			ShowIconMenu(position, items.Select(x => Tuple.Create<T, Bitmap>(x, null)), pickHandler);
+		}
+
+		public static void ShowIconMenu<T>(Control control, IEnumerable<Tuple<T, Bitmap>> items, Action<T> pickHandler)
+		{
+			ShowIconMenu(control.Parent.PointToScreen(new Point(control.Location.X, control.Location.Y + control.Size.Height)), items, pickHandler);
+		}
+
+		public static void ShowIconMenu<T>(Point position, IEnumerable<Tuple<T, Bitmap>> items, Action<T> pickHandler)
+		{
+			List<Tuple<T, Bitmap>> itemList = items?.OrderBy(item => item.Item1.ToString()).ToList();
+
+			if (itemList == null || !itemList.Any())
 				return;
 
 			ContextMenuStrip contextMenu = new ContextMenuStrip();
@@ -35,7 +47,7 @@ namespace ProcessManagerUI.Utilities
 				};
 			contextMenu.Closed += contextMenuClosedEventHandler;
 			contextMenu.ItemClicked += menuItemClickedEventHandler;
-			items.OrderBy(item => item.ToString()).ToList().ForEach(item => contextMenu.Items.Add(new ToolStripMenuItem(item.ToString()) { Tag = item }));
+			itemList.ForEach(item => contextMenu.Items.Add(new ToolStripMenuItem(item.Item1.ToString()) { Tag = item.Item1, Image = item.Item2 }));
 			contextMenu.Show(position);
 		}
 
@@ -46,15 +58,22 @@ namespace ProcessManagerUI.Utilities
 
 		public static void ShowMenu<T1, T2>(Point position, IEnumerable<T1> rootItems, IEnumerable<T2> items, Action<T1, T2> pickHandler)
 		{
-			if (rootItems == null || !rootItems.Any()) return;
-			if (items == null || !items.Any()) return;
+			IEnumerable<T1> rootItemList = rootItems as IList<T1> ?? rootItems?.ToList();
+
+			if (rootItemList == null || !rootItemList.Any())
+				return;
+
+			List<T2> itemList = items?.OrderBy(item => item.ToString()).ToList();
+
+			if (itemList == null || !itemList.Any())
+				return;
 
 			ContextMenuStrip contextMenu = new ContextMenuStrip();
-			foreach (T1 rootItem in rootItems)
+			foreach (T1 rootItem in rootItemList)
 			{
 				ToolStripMenuItem rootMenuItem = new ToolStripMenuItem(rootItem.ToString()) { Tag = rootItem };
 				contextMenu.Items.Add(rootMenuItem);
-				items.OrderBy(item => item.ToString()).ToList().ForEach(item => rootMenuItem.DropDownItems.Add(new ToolStripMenuItem(item.ToString()) { Tag = new Tuple<T1, T2>(rootItem, item) }));
+				itemList.ForEach(item => rootMenuItem.DropDownItems.Add(new ToolStripMenuItem(item.ToString()) { Tag = new Tuple<T1, T2>(rootItem, item) }));
 			}
 
 			ToolStripDropDownClosedEventHandler contextMenuClosedEventHandler = null;
@@ -84,7 +103,9 @@ namespace ProcessManagerUI.Utilities
 
 		public static void ShowMultiSelectMenu<T>(Point position, IEnumerable<Tuple<T, bool>> items, Action<List<T>> pickHandler)
 		{
-			if (items == null || !items.Any())
+			List<Tuple<T, bool>> itemList = items?.OrderBy(item => item.Item1.ToString()).ToList();
+
+			if (itemList == null || !itemList.Any())
 				return;
 
 			bool anyItemClicked = false;
@@ -120,12 +141,7 @@ namespace ProcessManagerUI.Utilities
 			contextMenu.Closed += contextMenuClosedEventHandler;
 			contextMenu.Closing += contextMenuClosingEventHandler;
 			contextMenu.ItemClicked += menuItemClickedEventHandler;
-			items.OrderBy(item => item.Item1.ToString()).ToList().ForEach(item =>
-				contextMenu.Items.Add(new ToolStripMenuItem(item.Item1.ToString())
-					{
-						Tag = item.Item1,
-						Checked = item.Item2
-					}));
+			itemList.ForEach(item => contextMenu.Items.Add(new ToolStripMenuItem(item.Item1.ToString()) { Tag = item.Item1, Checked = item.Item2 }));
 			contextMenu.Show(position);
 		}
 	}

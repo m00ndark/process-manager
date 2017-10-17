@@ -7,12 +7,12 @@ namespace ProcessManager.DataObjects.Comparers
 	{
 		public bool Equals(Macro macro, string name)
 		{
-			return (macro?.Name != null && name != null && macro.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+			return macro?.Name != null && name != null && macro.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase);
 		}
 
 		public bool Equals(Macro x, Macro y)
 		{
-			return (y != null && Equals(x, y.Name));
+			return y != null && Equals(x, y.Name);
 		}
 
 		public int GetHashCode(Macro obj)

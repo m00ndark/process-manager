@@ -12,6 +12,7 @@ using ProcessManager.Service.Client;
 using ProcessManagerUI.Properties;
 using ProcessManagerUI.Support;
 using ProcessManagerUI.Utilities;
+using ToolComponents.Core.Extensions;
 
 namespace ProcessManagerUI.Forms
 {
@@ -162,9 +163,9 @@ namespace ProcessManagerUI.Forms
 		public Mode BrowserMode { get; set; }
 		public string Filter { get; set; }
 
-		public bool FolderMode => ((BrowserMode & Mode.File) == 0);
+		public bool FolderMode => (BrowserMode & Mode.File) == 0;
 
-		public bool FileMode => ((BrowserMode & Mode.Folder) == 0);
+		public bool FileMode => (BrowserMode & Mode.Folder) == 0;
 
 		#endregion
 
@@ -285,27 +286,24 @@ namespace ProcessManagerUI.Forms
 
 		private void ServiceConnectionHandler_ServiceHandlerConnectionChanged(object sender, ServiceHandlerConnectionChangedEventArgs e)
 		{
-			if (InvokeRequired)
-			{
-				Invoke(new EventHandler<ServiceHandlerConnectionChangedEventArgs>(ServiceConnectionHandler_ServiceHandlerConnectionChanged), sender, e);
-				return;
-			}
-
-			Machine machine = ConnectionStore.Connections.Values.Where(x => x.ServiceHandler == e.ServiceHandler).Select(x => x.Machine).FirstOrDefault();
-			if (machine != null && Machine == machine)
-			{
-				if (e.Status == ProcessManagerServiceHandlerStatus.Disconnected)
+			this.InvokeIfRequired(() =>
 				{
-					_machineAvailable = false;
-					EnableControls(false);
-					Messenger.ShowWarning("Connection lost", "The connection to the targeted machine was lost.");
-				}
-				else if (e.Status == ProcessManagerServiceHandlerStatus.Connected)
-				{
-					_machineAvailable = true;
-					EnableControls();
-				}
-			}
+					Machine machine = ConnectionStore.Connections.Values.Where(x => x.ServiceHandler == e.ServiceHandler).Select(x => x.Machine).FirstOrDefault();
+					if (machine != null && Machine == machine)
+					{
+						if (e.Status == ProcessManagerServiceHandlerStatus.Disconnected)
+						{
+							_machineAvailable = false;
+							EnableControls(false);
+							Messenger.ShowWarning("Connection lost", "The connection to the targeted machine was lost.");
+						}
+						else if (e.Status == ProcessManagerServiceHandlerStatus.Connected)
+						{
+							_machineAvailable = true;
+							EnableControls();
+						}
+					}
+				});
 		}
 
 		#endregion
@@ -314,15 +312,15 @@ namespace ProcessManagerUI.Forms
 
 		private bool EntrySelected()
 		{
-			return (FolderMode && treeView.SelectedNode != null
+			return FolderMode && treeView.SelectedNode != null
 				|| FileMode && listView.SelectedItems.Count > 0 && !((FileSystemListViewItem) listView.SelectedItems[0]).Entry.IsFolder
-				|| !FolderMode && !FileMode && listView.SelectedItems.Count > 0);
+				|| !FolderMode && !FileMode && listView.SelectedItems.Count > 0;
 		}
 
 		private void EnableControls(bool enable = true)
 		{
-			splitContainer.Enabled = (_machineAvailable && enable);
-			buttonOK.Enabled = (_machineAvailable && enable && EntrySelected());
+			splitContainer.Enabled = _machineAvailable && enable;
+			buttonOK.Enabled = _machineAvailable && enable && EntrySelected();
 		}
 
 		private void PopulateFilter()
@@ -395,7 +393,7 @@ namespace ProcessManagerUI.Forms
 
 		private static bool NodeHasChildren(TreeNode node)
 		{
-			return (node.Nodes.Count != 1 || node.Nodes[0] is FileSystemTreeNode);
+			return node.Nodes.Count != 1 || node.Nodes[0] is FileSystemTreeNode;
 		}
 
 		private void DisplayDrives()
@@ -511,7 +509,7 @@ namespace ProcessManagerUI.Forms
 
 		private static string FixPath(string path)
 		{
-			return (path.EndsWith(":") ? path + Path.DirectorySeparatorChar : path);
+			return path.EndsWith(":") ? path + Path.DirectorySeparatorChar : path;
 		}
 
 		private void AutoExpandPath()
@@ -589,7 +587,7 @@ namespace ProcessManagerUI.Forms
 						.ThenBy(x => x.Name)
 						.Select(x => new FileSystemListViewItem(new[] { x.Name, MakeFileSize(x), MakeFileDate(x) })
 							{
-								ImageKey = (x.IsFolder ? IMAGE_LIST_KEY_FOLDER : Path.GetExtension(x.Name)),
+								ImageKey = x.IsFolder ? IMAGE_LIST_KEY_FOLDER : Path.GetExtension(x.Name),
 								Entry = x
 							}));
 				}
@@ -602,7 +600,7 @@ namespace ProcessManagerUI.Forms
 		{
 			if (entry.IsFolder) return string.Empty;
 			const int KILO_BYTES = 1024;
-			return $"{decimal.Divide((entry.Bytes == 0 ? 0 : (entry.Bytes < KILO_BYTES ? KILO_BYTES : entry.Bytes)), KILO_BYTES):#,##0} KB";
+			return $"{decimal.Divide(entry.Bytes == 0 ? 0 : (entry.Bytes < KILO_BYTES ? KILO_BYTES : entry.Bytes), KILO_BYTES):#,##0} KB";
 		}
 
 		private static string MakeFileDate(FileSystemEntry entry)
@@ -632,134 +630,89 @@ namespace ProcessManagerUI.Forms
 			return image;
 		}
 
-		private delegate void AddToImageListDelegate(IDictionary<string, Image> images);
-
 		private void AddToImageList(IDictionary<string, Image> images)
 		{
-			if (treeView.InvokeRequired)
-			{
-				treeView.Invoke(new AddToImageListDelegate(AddToImageList), images);
-				return;
-			}
-
-			treeView.BeginUpdate();
-			foreach (string key in images.Keys)
-			{
-				imageList.Images.Add(key, images[key]);
-			}
-			treeView.EndUpdate();
+			treeView.InvokeIfRequired(() =>
+				{
+					treeView.BeginUpdate();
+					foreach (string key in images.Keys)
+					{
+						imageList.Images.Add(key, images[key]);
+					}
+					treeView.EndUpdate();
+				});
 		}
-
-		private delegate void SetTreeViewNodesDelegate(TreeNode parentNode, IEnumerable<FileSystemTreeNode> nodes);
 
 		private void SetTreeViewNodes(TreeNode parentNode, IEnumerable<FileSystemTreeNode> nodes)
 		{
-			if (treeView.InvokeRequired)
-			{
-				treeView.Invoke(new SetTreeViewNodesDelegate(SetTreeViewNodes), parentNode, nodes);
-				return;
-			}
-
-			parentNode.Nodes.Clear();
-			parentNode.Nodes.AddRange(nodes.Cast<TreeNode>().ToArray());
+			treeView.InvokeIfRequired(() =>
+				{
+					parentNode.Nodes.Clear();
+					parentNode.Nodes.AddRange(nodes.Cast<TreeNode>().ToArray());
+				});
 		}
-
-		private delegate void ExpandTreeNodeDelegate(TreeNode node);
 
 		private void ExpandTreeNode(TreeNode node)
 		{
-			if (treeView.InvokeRequired)
-			{
-				treeView.Invoke(new ExpandTreeNodeDelegate(ExpandTreeNode), node);
-				return;
-			}
+			treeView.InvokeIfRequired(() =>
+				{
+					node.EnsureVisible();
+					node.Expand();
 
-			node.EnsureVisible();
-			node.Expand();
-
-			if (node.Nodes.Count == 0)
-				AbortPathExpansion();
+					if (node.Nodes.Count == 0)
+						AbortPathExpansion();
+				});
 		}
-
-		private delegate void SelectTreeNodeDelegate(TreeNode node);
 
 		private void SelectTreeNode(TreeNode node)
 		{
-			if (treeView.InvokeRequired)
-			{
-				treeView.Invoke(new SelectTreeNodeDelegate(SelectTreeNode), node);
-				return;
-			}
+			treeView.InvokeIfRequired(() =>
+				{
+					node.EnsureVisible();
+					treeView.SelectedNode = node;
 
-			node.EnsureVisible();
-			treeView.SelectedNode = node;
-			if (treeView.SelectedNode != null)
-				treeView.Focus();
+					if (treeView.SelectedNode != null)
+						treeView.Focus();
+				});
 		}
-
-		private delegate List<FileSystemListViewItem> GetListViewItemsDelegate();
 
 		private List<FileSystemListViewItem> GetListViewItems()
 		{
-			if (listView.InvokeRequired)
-				return (List<FileSystemListViewItem>) listView.Invoke(new GetListViewItemsDelegate(GetListViewItems));
-
-			return listView.Items.Cast<FileSystemListViewItem>().ToList();
+			return listView.InvokeIfRequired(() => listView.Items.Cast<FileSystemListViewItem>().ToList());
 		}
-
-		private delegate void SetListViewItemsDelegate(IEnumerable<FileSystemListViewItem> items);
 
 		private void SetListViewItems(IEnumerable<FileSystemListViewItem> items)
 		{
-			if (listView.InvokeRequired)
-			{
-				listView.Invoke(new SetListViewItemsDelegate(SetListViewItems), items);
-				return;
-			}
-
-			listView.Items.Clear();
-			listView.Items.AddRange(items.Cast<ListViewItem>().ToArray());
+			listView.InvokeIfRequired(() =>
+				{
+					listView.Items.Clear();
+					listView.Items.AddRange(items.Cast<ListViewItem>().ToArray());
+				});
 		}
-
-		private delegate void SelectListViewItemDelegate(ListViewItem item);
 
 		private void SelectListViewItem(ListViewItem item)
 		{
-			if (listView.InvokeRequired)
-			{
-				listView.Invoke(new SelectListViewItemDelegate(SelectListViewItem), item);
-				return;
-			}
-
-			item.EnsureVisible();
-			item.Selected = true;
-			listView.Focus();
+			listView.InvokeIfRequired(() =>
+				{
+					item.EnsureVisible();
+					item.Selected = true;
+					listView.Focus();
+				});
 		}
-
-		private delegate string GetSelectedFilterDelegate();
 
 		private string GetSelectedFilter()
 		{
-			if (comboBoxFilter.InvokeRequired)
-			{
-				return (string) comboBoxFilter.Invoke(new GetSelectedFilterDelegate(GetSelectedFilter));
-			}
-
-			return (comboBoxFilter.SelectedIndex != -1 ? ((ComboBoxItem<string>) comboBoxFilter.SelectedItem).Tag : "*");
+			return comboBoxFilter.InvokeIfRequired(()
+				=> comboBoxFilter.SelectedIndex != -1 ? ((ComboBoxItem<string>) comboBoxFilter.SelectedItem).Tag : "*");
 		}
-
-		private delegate void SetCursorDelegate(Cursor cursor);
 
 		private void SetCursor(Cursor cursor)
 		{
-			if (InvokeRequired)
-			{
-				Invoke(new SetCursorDelegate(SetCursor), cursor);
-				return;
-			}
-
-			splitContainer.Enabled = (cursor != Cursors.WaitCursor);
-			Cursor = cursor;
+			this.InvokeIfRequired(() =>
+				{
+					splitContainer.Enabled = cursor != Cursors.WaitCursor;
+					Cursor = cursor;
+				});
 		}
 
 		#endregion

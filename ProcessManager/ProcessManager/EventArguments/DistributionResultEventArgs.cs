@@ -1,22 +1,17 @@
 ﻿using System;
 using ProcessManager.DataObjects;
-using ProcessManager.Service.Common;
 
 namespace ProcessManager.EventArguments
 {
 	public class DistributionResultEventArgs : EventArgs
 	{
-		public DistributionResultEventArgs(DistributionResult distributionResult, IProcessManagerServiceEventHandler caller = null)
+		public DistributionResultEventArgs(DistributionResult distributionResult, Guid clientId = default(Guid))
 		{
 			DistributionResult = distributionResult;
-			Caller = caller;
+			ClientId = clientId;
 		}
 
-		#region Properties
-
-		public DistributionResult DistributionResult { get; private set; }
-		public IProcessManagerServiceEventHandler Caller { get; set; }
-
-		#endregion
+		public DistributionResult DistributionResult { get; }
+		public Guid ClientId { get; }
 	}
 }

@@ -7,12 +7,12 @@ namespace ProcessManager.DataObjects.Comparers
 	{
 		public bool Equals(Application application, string name)
 		{
-			return (application?.Name != null && name != null && application.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+			return application?.Name != null && name != null && application.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase);
 		}
 
 		public bool Equals(Application x, Application y)
 		{
-			return (y != null && Equals(x, y.Name));
+			return y != null && Equals(x, y.Name);
 		}
 
 		public int GetHashCode(Application obj)

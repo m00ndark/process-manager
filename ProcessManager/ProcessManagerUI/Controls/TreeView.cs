@@ -55,7 +55,7 @@ namespace ProcessManagerUI.Controls
 			NativeMethods.SetWindowTheme(Handle, "explorer", null);
 
 			int style = NativeMethods.SendMessage(Handle, Convert.ToUInt32(NativeMethods.TVM_GETEXTENDEDSTYLE), 0, 0);
-			style |= (NativeMethods.TVS_EX_AUTOHSCROLL | NativeMethods.TVS_EX_FADEINOUTEXPANDOS | NativeMethods.TVS_EX_DOUBLEBUFFER);
+			style |= NativeMethods.TVS_EX_AUTOHSCROLL | NativeMethods.TVS_EX_FADEINOUTEXPANDOS | NativeMethods.TVS_EX_DOUBLEBUFFER;
 			NativeMethods.SendMessage(Handle, NativeMethods.TVM_SETEXTENDEDSTYLE, 0, style);
 		}
 	}

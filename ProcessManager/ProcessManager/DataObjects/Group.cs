@@ -60,7 +60,7 @@ namespace ProcessManager.DataObjects
 		public override bool Equals(object obj)
 		{
 			Group group = obj as Group;
-			return (group != null && Comparer.GroupsEqual(this, group));
+			return @group != null && Comparer.GroupsEqual(this, @group);
 		}
 
 		public override int GetHashCode()

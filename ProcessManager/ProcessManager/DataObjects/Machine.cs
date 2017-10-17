@@ -43,7 +43,7 @@ namespace ProcessManager.DataObjects
 		public override bool Equals(object obj)
 		{
 			Machine machine = obj as Machine;
-			return (machine != null && Comparer.MachinesEqual(this, machine));
+			return machine != null && Comparer.MachinesEqual(this, machine);
 		}
 
 		public override int GetHashCode()

@@ -59,7 +59,7 @@ namespace ProcessManagerUI.Controls
 			// This didn't quiet get in the cente rso I had to add 1 pixel to the sf.Height / 2
 			if (DividerPosition == DividerPositions.Center)
 			{
-				Rectangle rect = new Rectangle((int) sfW.Width + (sfW.Width > 0 ? 3 : 0), ((int) sfH.Height / 2) + 1, Width - (int) sfW.Width, 1);
+				Rectangle rect = new Rectangle((int) sfW.Width + (sfW.Width > 0 ? 3 : 0), (int) sfH.Height / 2 + 1, Width - (int) sfW.Width, 1);
 				e.Graphics.FillRectangle(sbDividerColor, rect);
 			}
 			else if (DividerPosition == DividerPositions.Below)

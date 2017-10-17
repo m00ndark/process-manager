@@ -56,9 +56,9 @@ namespace ProcessManager.DataObjects
 		public override bool Equals(object obj)
 		{
 			MacroActionBundle macroActionBundle = obj as MacroActionBundle;
-			return (macroActionBundle != null
+			return macroActionBundle != null
 				&& macroActionBundle.Type == Type
-				&& macroActionBundle.Actions.SequenceEqual(Actions));
+				&& macroActionBundle.Actions.SequenceEqual(Actions);
 		}
 
 		public override int GetHashCode()

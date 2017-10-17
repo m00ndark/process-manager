@@ -6,11 +6,13 @@ namespace ProcessManager.EventArguments
 {
 	public class ProcessStatusesEventArgs : EventArgs
 	{
-		public ProcessStatusesEventArgs(List<ProcessStatus> processStatuses)
+		public ProcessStatusesEventArgs(List<ProcessStatus> processStatuses, Guid[] clientIds = null)
 		{
 			ProcessStatuses = processStatuses;
+			ClientIds = clientIds;
 		}
 
 		public List<ProcessStatus> ProcessStatuses { get; private set; }
+		public Guid[] ClientIds { get; }
 	}
 }

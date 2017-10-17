@@ -11,7 +11,7 @@ namespace ProcessManagerUI.Controls.Nodes
 		private readonly Guid _id;
 
 		public ProcessGroupNode(Group group, Guid? machineID, IEnumerable<INode> childNodes, ProcessGrouping grouping)
-			: this((machineID.HasValue ? MakeID(group.ID, machineID.Value) : group.ID), group, childNodes, grouping) { }
+			: this(machineID.HasValue ? MakeID(@group.ID, machineID.Value) : @group.ID, group, childNodes, grouping) { }
 
 		private ProcessGroupNode(Guid id, Group group, IEnumerable<INode> childNodes, ProcessGrouping grouping)
 			: base(childNodes, grouping, !Settings.Client.P_CollapsedNodes[grouping].Contains(id))

@@ -41,7 +41,7 @@ namespace ProcessManager.DataObjects
 		public override bool Equals(object obj)
 		{
 			DistributionFile distributionFile = obj as DistributionFile;
-			return (distributionFile != null && Comparer.DistributionFilesEqual(this, distributionFile));
+			return distributionFile != null && Comparer.DistributionFilesEqual(this, distributionFile);
 		}
 
 		public override int GetHashCode()

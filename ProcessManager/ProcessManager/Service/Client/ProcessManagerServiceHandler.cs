@@ -33,7 +33,7 @@ namespace ProcessManager.Service.Client
 			Machine = machine;
 			Status = ProcessManagerServiceHandlerStatus.Uninitialized;
 			_processManagerEventHandler = processManagerEventHandler;
-			_isSubscribing = (_processManagerEventHandler != null);
+			_isSubscribing = _processManagerEventHandler != null;
 			_processManagerServiceEventHandler = new ProcessManagerServiceEventHandler(Machine);
 			SetupClient();
 			if (_isSubscribing)
@@ -130,7 +130,7 @@ namespace ProcessManager.Service.Client
 		public static bool HostNameValid(Machine machine)
 		{
 			UriHostNameType hostNameType = Uri.CheckHostName(machine.HostName);
-			return (hostNameType == UriHostNameType.Dns || hostNameType == UriHostNameType.IPv4 || hostNameType == UriHostNameType.IPv6);
+			return hostNameType == UriHostNameType.Dns || hostNameType == UriHostNameType.IPv4 || hostNameType == UriHostNameType.IPv6;
 		}
 
 		#endregion

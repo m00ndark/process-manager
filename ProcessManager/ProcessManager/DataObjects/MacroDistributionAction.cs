@@ -48,12 +48,12 @@ namespace ProcessManager.DataObjects
 		public override bool Equals(object obj)
 		{
 			MacroDistributionAction macroDistributionAction = obj as MacroDistributionAction;
-			return (macroDistributionAction != null
+			return macroDistributionAction != null
 				&& macroDistributionAction.Type == Type
 				&& macroDistributionAction.SourceMachineID == SourceMachineID
 				&& macroDistributionAction.GroupID == GroupID
 				&& macroDistributionAction.ApplicationID == ApplicationID
-				&& macroDistributionAction.DestinationMachineID == DestinationMachineID);
+				&& macroDistributionAction.DestinationMachineID == DestinationMachineID;
 		}
 
 		public override int GetHashCode()

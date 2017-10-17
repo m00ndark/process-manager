@@ -44,10 +44,10 @@ namespace ProcessManager.DataObjects
 	    public override bool Equals(object obj)
         {
             MacroWaitAction macroWaitAction = obj as MacroWaitAction;
-            return (macroWaitAction != null
-                && macroWaitAction.Type == Type
-                && macroWaitAction.WaitForEvent == WaitForEvent
-                && macroWaitAction.TimeoutMilliseconds == TimeoutMilliseconds);
+            return macroWaitAction != null
+	            && macroWaitAction.Type == Type
+	            && macroWaitAction.WaitForEvent == WaitForEvent
+	            && macroWaitAction.TimeoutMilliseconds == TimeoutMilliseconds;
         }
 
         public override int GetHashCode()

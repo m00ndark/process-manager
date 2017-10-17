@@ -20,6 +20,12 @@ namespace ProcessManager.Service.Common
 		List<DTOProcessStatus> GetAllProcessStatuses();
 
 		[OperationContract]
+		void ActivateProcessStatusNotifications();
+
+		[OperationContract]
+		void DeactivateProcessStatusNotifications();
+
+		[OperationContract]
 		DTOProcessActionResult TakeProcessAction(DTOProcessAction processAction);
 
 		[OperationContract]

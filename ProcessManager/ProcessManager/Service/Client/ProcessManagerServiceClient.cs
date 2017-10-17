@@ -47,6 +47,16 @@ namespace ProcessManager.Service.Client
 			return Channel.GetAllProcessStatuses();
 		}
 
+		public void ActivateProcessStatusNotifications()
+		{
+			Channel.ActivateProcessStatusNotifications();
+		}
+
+		public void DeactivateProcessStatusNotifications()
+		{
+			Channel.DeactivateProcessStatusNotifications();
+		}
+
 		public DTOProcessActionResult TakeProcessAction(DTOProcessAction processAction)
 		{
 			return Channel.TakeProcessAction(processAction);

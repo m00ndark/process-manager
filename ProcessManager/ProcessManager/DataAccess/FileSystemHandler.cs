@@ -17,7 +17,7 @@ namespace ProcessManager.DataAccess
 			foreach (DataRow row in drivesTable.Rows)
 			{
 				int driveType = int.Parse(row["DriveType"].ToString());
-				FileSystemDriveType type = (Enum.IsDefined(typeof(FileSystemDriveType), driveType) ? (FileSystemDriveType) driveType : FileSystemDriveType.Unknown);
+				FileSystemDriveType type = Enum.IsDefined(typeof(FileSystemDriveType), driveType) ? (FileSystemDriveType) driveType : FileSystemDriveType.Unknown;
 				string providerName = row["ProviderName"]?.ToString().TrimEnd(Path.DirectorySeparatorChar) ?? string.Empty;
 				string volumeName = row["VolumeName"]?.ToString() ?? string.Empty;
 				string label = string.Empty;
@@ -28,7 +28,7 @@ namespace ProcessManager.DataAccess
 						label = labelPart + " (" + providerName.Substring(0, providerName.Length - labelPart.Length).TrimEnd(Path.DirectorySeparatorChar) + ")";
 				}
 				else
-					label = (!string.IsNullOrEmpty(volumeName) ? volumeName : string.Empty);
+					label = !string.IsNullOrEmpty(volumeName) ? volumeName : string.Empty;
 
 				yield return new FileSystemDrive(row["Name"].ToString(), label, type);
 			}

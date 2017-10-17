@@ -49,11 +49,11 @@ namespace ProcessManager.DataObjects
 		public override bool Equals(object obj)
 		{
 			MacroProcessAction macroProcessAction = obj as MacroProcessAction;
-			return (macroProcessAction != null
+			return macroProcessAction != null
 				&& macroProcessAction.Type == Type
 				&& macroProcessAction.MachineID == MachineID
 				&& macroProcessAction.GroupID == GroupID
-				&& macroProcessAction.ApplicationID == ApplicationID);
+				&& macroProcessAction.ApplicationID == ApplicationID;
 		}
 
 		public override int GetHashCode()

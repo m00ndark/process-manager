@@ -84,11 +84,11 @@ namespace ProcessManagerUI.Support
 		private static DialogResult Show(Guid id, string title, string instruction, string message, TaskDialogStandardButtons buttons, TaskDialogStandardIcon icon,
 			string details, int progressBarMaxValue, Action<int> tickEventHandler)
 		{
-			TaskDialogProgressBar progressBar = (progressBarMaxValue < 0 ? null
+			TaskDialogProgressBar progressBar = progressBarMaxValue < 0 ? null
 				: new TaskDialogProgressBar(0, progressBarMaxValue, 0)
 					{
-						State = (progressBarMaxValue == 0 ? TaskDialogProgressBarState.Marquee : TaskDialogProgressBarState.Normal)
-					});
+						State = progressBarMaxValue == 0 ? TaskDialogProgressBarState.Marquee : TaskDialogProgressBarState.Normal
+					};
 
 			APITaskDialog taskDialog = new APITaskDialog()
 				{
@@ -155,7 +155,7 @@ namespace ProcessManagerUI.Support
 			switch (buttons)
 			{
 				case MessageBoxButtons.OK:
-					taskDialogButtons = (showCloseButtonInsteadOfOK ? TaskDialogStandardButtons.Close : TaskDialogStandardButtons.Ok);
+					taskDialogButtons = showCloseButtonInsteadOfOK ? TaskDialogStandardButtons.Close : TaskDialogStandardButtons.Ok;
 					break;
 				case MessageBoxButtons.OKCancel:
 					taskDialogButtons = TaskDialogStandardButtons.Ok | TaskDialogStandardButtons.Cancel;

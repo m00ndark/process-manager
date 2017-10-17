@@ -211,7 +211,7 @@ namespace ProcessManagerUI.Controls.Nodes
 
 		public bool Matches(Guid id)
 		{
-			return (ID == id);
+			return ID == id;
 		}
 	}
 }

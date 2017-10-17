@@ -80,7 +80,7 @@ namespace ProcessManagerUI.Forms
 			}
 			else
 			{
-				_selectedMachine = ((Machine) listViewMachines.SelectedItems[0].Tag);
+				_selectedMachine = (Machine) listViewMachines.SelectedItems[0].Tag;
 				textBoxMachineHostName.Text = _selectedMachine.HostName;
 				panelMachine.Visible = true;
 				EnableControls();
@@ -232,7 +232,7 @@ namespace ProcessManagerUI.Forms
 			bool machineChanged = false;
 			if (_selectedMachine != null && !string.IsNullOrEmpty(textBoxMachineHostName.Text))
 			{
-				machineChanged = (_selectedMachine.HostName != textBoxMachineHostName.Text);
+				machineChanged = _selectedMachine.HostName != textBoxMachineHostName.Text;
 				_hasUnsavedChanges |= machineChanged;
 				AnyMachinesChanged |= machineChanged;
 			}
@@ -347,14 +347,14 @@ namespace ProcessManagerUI.Forms
 
 		private void EnableControls(bool enable = true)
 		{
-			buttonApply.Enabled = (enable && _hasUnsavedChanges);
-			buttonRemoveMachine.Enabled = (enable && listViewMachines.SelectedItems.Count > 0 && !listViewMachines.SelectedItems
-				.Cast<ListViewItem>().Any(item => item.Tag.Equals(Settings.Constants.LocalMachine)));
-			labelMachineHostName.Enabled = (enable && listViewMachines.SelectedItems.Count == 1);
-			textBoxMachineHostName.Enabled = (enable && listViewMachines.SelectedItems.Count == 1);
-			textBoxMachineHostName.ReadOnly = (listViewMachines.SelectedItems.Count == 1 && listViewMachines.SelectedItems[0].Tag.Equals(Settings.Constants.LocalMachine));
-			buttonValidateMachine.Enabled = (enable && !string.IsNullOrEmpty(textBoxMachineHostName.Text));
-			buttonCopyMachineSetup.Enabled = (enable && !_hasUnsavedChanges);// && !string.IsNullOrEmpty(textBoxMachineHostName.Text));
+			buttonApply.Enabled = enable && _hasUnsavedChanges;
+			buttonRemoveMachine.Enabled = enable && listViewMachines.SelectedItems.Count > 0 && !listViewMachines.SelectedItems
+				.Cast<ListViewItem>().Any(item => item.Tag.Equals(Settings.Constants.LocalMachine));
+			labelMachineHostName.Enabled = enable && listViewMachines.SelectedItems.Count == 1;
+			textBoxMachineHostName.Enabled = enable && listViewMachines.SelectedItems.Count == 1;
+			textBoxMachineHostName.ReadOnly = listViewMachines.SelectedItems.Count == 1 && listViewMachines.SelectedItems[0].Tag.Equals(Settings.Constants.LocalMachine);
+			buttonValidateMachine.Enabled = enable && !string.IsNullOrEmpty(textBoxMachineHostName.Text);
+			buttonCopyMachineSetup.Enabled = enable && !_hasUnsavedChanges;// && !string.IsNullOrEmpty(textBoxMachineHostName.Text));
 		}
 
 		#endregion

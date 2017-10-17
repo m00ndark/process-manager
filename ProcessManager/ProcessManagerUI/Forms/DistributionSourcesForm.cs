@@ -10,6 +10,7 @@ using ProcessManager.DataObjects;
 using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
 using ProcessManagerUI.Utilities;
+using ToolComponents.Core.Extensions;
 using Application = ProcessManager.DataObjects.Application;
 
 namespace ProcessManagerUI.Forms
@@ -250,11 +251,11 @@ namespace ProcessManagerUI.Forms
 
 		private void ContextMenu_BrowseSourcePath_GroupClicked(BrowseModeWrapper browseModeWrapper, Group group)
 		{
-			string sourcePath = (textBoxPath.ForeColor == Color.Silver && browseModeWrapper != null
+			string sourcePath = textBoxPath.ForeColor == Color.Silver && browseModeWrapper != null
 				? (browseModeWrapper.BrowseMode == BrowseMode.BasedOnGroup
-					? group.Path
-					: Path.Combine(group.Path, Application.RelativePath.Trim(Path.DirectorySeparatorChar)))
-				: Path.Combine(group.Path, textBoxPath.Text.Trim(Path.DirectorySeparatorChar)));
+					? @group.Path
+					: Path.Combine(@group.Path, Application.RelativePath.Trim(Path.DirectorySeparatorChar)))
+				: Path.Combine(@group.Path, textBoxPath.Text.Trim(Path.DirectorySeparatorChar));
 			FileSystemBrowserForm fileSystemBrowser = new FileSystemBrowserForm(Machine)
 				{
 					Description = "Select a source path for the distribution...",
@@ -280,27 +281,24 @@ namespace ProcessManagerUI.Forms
 
 		private void ServiceConnectionHandler_ServiceHandlerConnectionChanged(object sender, ServiceHandlerConnectionChangedEventArgs e)
 		{
-			if (InvokeRequired)
-			{
-				Invoke(new EventHandler<ServiceHandlerConnectionChangedEventArgs>(ServiceConnectionHandler_ServiceHandlerConnectionChanged), sender, e);
-				return;
-			}
-
-			Machine machine = ConnectionStore.Connections.Values.Where(x => x.ServiceHandler == e.ServiceHandler).Select(x => x.Machine).FirstOrDefault();
-			if (machine != null && Machine == machine)
-			{
-				if (e.Status == ProcessManagerServiceHandlerStatus.Disconnected)
+			this.InvokeIfRequired(() =>
 				{
-					_machineAvailable = false;
-					EnableControls(false);
-					Messenger.ShowWarning("Connection lost", "The connection to the selected machine was lost.");
-				}
-				else if (e.Status == ProcessManagerServiceHandlerStatus.Connected)
-				{
-					_machineAvailable = true;
-					EnableControls();
-				}
-			}
+					Machine machine = ConnectionStore.Connections.Values.Where(x => x.ServiceHandler == e.ServiceHandler).Select(x => x.Machine).FirstOrDefault();
+					if (machine != null && Machine == machine)
+					{
+						if (e.Status == ProcessManagerServiceHandlerStatus.Disconnected)
+						{
+							_machineAvailable = false;
+							EnableControls(false);
+							Messenger.ShowWarning("Connection lost", "The connection to the selected machine was lost.");
+						}
+						else if (e.Status == ProcessManagerServiceHandlerStatus.Connected)
+						{
+							_machineAvailable = true;
+							EnableControls();
+						}
+					}
+				});
 		}
 
 		#endregion
@@ -309,11 +307,11 @@ namespace ProcessManagerUI.Forms
 
 		private void EnableControls(bool enable = true)
 		{
-			listViewSources.Enabled = (_machineAvailable && enable);
-			buttonAddSource.Enabled = (_machineAvailable && enable);
-			buttonRemoveSource.Enabled = (_machineAvailable && enable);
-			backgroundPanelSource.Enabled = (_machineAvailable && enable);
-			buttonOK.Enabled = (_machineAvailable && enable);
+			listViewSources.Enabled = _machineAvailable && enable;
+			buttonAddSource.Enabled = _machineAvailable && enable;
+			buttonRemoveSource.Enabled = _machineAvailable && enable;
+			backgroundPanelSource.Enabled = _machineAvailable && enable;
+			buttonOK.Enabled = _machineAvailable && enable;
 		}
 
 		private void UpdateSelectedSource()
@@ -322,7 +320,7 @@ namespace ProcessManagerUI.Forms
 			{
 				if (SourceChanged())
 				{
-					_selectedSource.Path = (textBoxPath.ForeColor == Color.Silver || string.IsNullOrEmpty(textBoxPath.Text) ? null : textBoxPath.Text);
+					_selectedSource.Path = textBoxPath.ForeColor == Color.Silver || string.IsNullOrEmpty(textBoxPath.Text) ? null : textBoxPath.Text;
 					_selectedSource.Filter = textBoxFilter.Text;
 					_selectedSource.Recursive = checkBoxRecursive.Checked;
 					_selectedSource.Inclusive = checkBoxInclusive.Checked;
@@ -343,10 +341,10 @@ namespace ProcessManagerUI.Forms
 			bool sourceChanged = false;
 			if (_selectedSource != null)
 			{
-				sourceChanged = (_selectedSource.Path != (textBoxPath.ForeColor == Color.Silver ? null : textBoxPath.Text)
+				sourceChanged = _selectedSource.Path != (textBoxPath.ForeColor == Color.Silver ? null : textBoxPath.Text)
 					|| _selectedSource.Filter != textBoxFilter.Text
 					|| _selectedSource.Recursive != checkBoxRecursive.Checked
-					|| _selectedSource.Inclusive != checkBoxInclusive.Checked);
+					|| _selectedSource.Inclusive != checkBoxInclusive.Checked;
 				DistributionSourcesChanged |= sourceChanged;
 			}
 			return sourceChanged;
@@ -385,8 +383,8 @@ namespace ProcessManagerUI.Forms
 
 		private void DisplayPath(string path)
 		{
-			textBoxPath.ForeColor = (path == null ? Color.Silver : Color.FromKnownColor(KnownColor.WindowText));
-			textBoxPath.Text = (path ?? UNSPECIFIED_PATH);
+			textBoxPath.ForeColor = path == null ? Color.Silver : Color.FromKnownColor(KnownColor.WindowText);
+			textBoxPath.Text = path ?? UNSPECIFIED_PATH;
 		}
 
 		#endregion

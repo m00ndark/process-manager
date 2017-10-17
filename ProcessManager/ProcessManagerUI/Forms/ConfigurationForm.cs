@@ -11,6 +11,7 @@ using ProcessManager.EventArguments;
 using ProcessManager.Service.Client;
 using ProcessManagerUI.Support;
 using ProcessManagerUI.Utilities;
+using ToolComponents.Core.Extensions;
 using Application = ProcessManager.DataObjects.Application;
 using Timer = System.Windows.Forms.Timer;
 
@@ -18,9 +19,27 @@ namespace ProcessManagerUI.Forms
 {
 	public partial class ConfigurationForm : Form
 	{
+		private class Error
+		{
+			public Error(string message, Exception exception)
+			{
+				Message = message;
+				Exception = exception;
+			}
+
+			public string Message { get; }
+			public Exception Exception { get; set; }
+
+			public override string ToString()
+			{
+				return Message;
+			}
+		}
+
 		private readonly Timer _initTimer;
 		private readonly Func<MacrosForm> _getMacrosForm;
 		private readonly Action<MacrosForm> _setMacrosForm;
+		private readonly List<Error> _errors;
 		private Panel _currentPanel;
 		private Machine _selectedMachine;
 		private Group _selectedGroup;
@@ -41,6 +60,7 @@ namespace ProcessManagerUI.Forms
 			_selectedGroup = null;
 			_selectedApplication = null;
 			_disableChangedEvents = false;
+			_errors = new List<Error>();
 			_initTimer = new Timer() { Enabled = false, Interval = 100 };
 			_initTimer.Tick += InitTimer_Tick;
 		}
@@ -93,7 +113,7 @@ namespace ProcessManagerUI.Forms
 			setupNode.Nodes.Add(applicationsNode);
 			treeViewConfiguration.ExpandAll();
 			TreeNode[] matches =  treeViewConfiguration.Nodes.Find(Settings.Client.CFG_SelectedConfigurationSection, true);
-			treeViewConfiguration.SelectedNode = (matches.Length > 0 ? matches[0] : groupsNode);
+			treeViewConfiguration.SelectedNode = matches.Length > 0 ? matches[0] : groupsNode;
 			_initTimer.Start();
 		}
 
@@ -169,6 +189,12 @@ namespace ProcessManagerUI.Forms
 				_currentPanel.Visible = true;
 		}
 
+		private void LinkLabelErrors_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			Picker.ShowIconMenu(linkLabelErrors, _errors.Select(error => Tuple.Create(error, Properties.Resources.communication_error_16)), error
+				=> Messenger.ShowError("Failed to connect to machine", error.Message, error.Exception));
+		}
+
 		private void ButtonOK_Click(object sender, EventArgs e)
 		{
 			if (Save())
@@ -210,7 +236,7 @@ namespace ProcessManagerUI.Forms
 			else
 			{
 				_disableChangedEvents = true;
-				_selectedGroup = ((Group) listViewGroups.SelectedItems[0].Tag);
+				_selectedGroup = (Group) listViewGroups.SelectedItems[0].Tag;
 				textBoxGroupName.Text = _selectedGroup.Name;
 				textBoxGroupPath.Text = _selectedGroup.Path;
 				listViewGroupApplications.Items.Clear();
@@ -343,7 +369,7 @@ namespace ProcessManagerUI.Forms
 			else
 			{
 				_disableChangedEvents = true;
-				_selectedApplication = ((Application) listViewApplications.SelectedItems[0].Tag);
+				_selectedApplication = (Application) listViewApplications.SelectedItems[0].Tag;
 				textBoxApplicationName.Text = _selectedApplication.Name;
 				textBoxApplicationRelativePath.Text = _selectedApplication.RelativePath;
 				textBoxApplicationArguments.Text = _selectedApplication.Arguments;
@@ -557,21 +583,18 @@ namespace ProcessManagerUI.Forms
 
 		private void ProcessManagerEventHandler_ConfigurationChanged(object sender, MachineConfigurationHashEventArgs e)
 		{
-			if (InvokeRequired)
-			{
-				Invoke(new EventHandler<MachineConfigurationHashEventArgs>(ProcessManagerEventHandler_ConfigurationChanged), sender, e);
-				return;
-			}
+			this.InvokeIfRequired(() =>
+				{
+					if (ConnectionStore.Connections[e.Machine].Configuration.Hash != e.ConfigurationHash)
+					{
+						Messenger.ShowWarning("Configuration changed", $"The configuration for {e.Machine} was changed from another client."
+							+ " Configuration will be reloaded to reflect those changes.");
 
-			if (ConnectionStore.Connections[e.Machine].Configuration.Hash != e.ConfigurationHash)
-			{
-				Messenger.ShowWarning("Configuration changed", $"The configuration for {e.Machine} was changed from another client."
-					+ " Configuration will be reloaded to reflect those changes.");
-
-				ServiceHelper.ReloadConfiguration(e.Machine);
-				UpdateSelections();
-				PopulateAllControls();
-			}
+						ServiceHelper.ReloadConfiguration(e.Machine);
+						UpdateSelections();
+						PopulateAllControls();
+					}
+				});
 		}
 
 		#endregion
@@ -580,48 +603,42 @@ namespace ProcessManagerUI.Forms
 
 		private void ServiceConnectionHandler_ServiceHandlerInitializationCompleted(object sender, ServiceHandlerConnectionChangedEventArgs e)
 		{
-			if (InvokeRequired)
-			{
-				Invoke(new EventHandler<ServiceHandlerConnectionChangedEventArgs>(ServiceConnectionHandler_ServiceHandlerInitializationCompleted), sender, e);
-				return;
-			}
-
-			Machine machine = ConnectionStore.Connections.Values.Where(x => x.ServiceHandler == e.ServiceHandler).Select(x => x.Machine).FirstOrDefault();
-			if (machine != null)
-			{
-				if (e.Status == ProcessManagerServiceHandlerStatus.Disconnected && e.Exception != null)
+			this.InvokeIfRequired(() =>
 				{
-					Messenger.ShowError("Failed to connect to machine", $"Could not connect to Process Manager service at {machine.HostName}", e.Exception);
-				}
-				else if (e.Status == ProcessManagerServiceHandlerStatus.Connected && _selectedMachine == machine)
-				{
-					PopulateAllControls();
-				}
-			}
+					Machine machine = ConnectionStore.Connections.Values.Where(x => x.ServiceHandler == e.ServiceHandler).Select(x => x.Machine).FirstOrDefault();
+					if (machine != null)
+					{
+						if (e.Status == ProcessManagerServiceHandlerStatus.Disconnected && e.Exception != null)
+						{
+							AddError($"Could not connect to Process Manager service at {machine.HostName}", e.Exception);
+						}
+						else if (e.Status == ProcessManagerServiceHandlerStatus.Connected && _selectedMachine == machine)
+						{
+							PopulateAllControls();
+						}
+					}
+				});
 		}
 
 		private void ServiceConnectionHandler_ServiceHandlerConnectionChanged(object sender, ServiceHandlerConnectionChangedEventArgs e)
 		{
-			if (InvokeRequired)
-			{
-				Invoke(new EventHandler<ServiceHandlerConnectionChangedEventArgs>(ServiceConnectionHandler_ServiceHandlerConnectionChanged), sender, e);
-				return;
-			}
-
-			Machine machine = ConnectionStore.Connections.Values.Where(x => x.ServiceHandler == e.ServiceHandler).Select(x => x.Machine).FirstOrDefault();
-			if (machine != null && _selectedMachine == machine)
-			{
-				if (e.Status == ProcessManagerServiceHandlerStatus.Disconnected)
+			this.InvokeIfRequired(() =>
 				{
-					ClearAllControls();
-					ShowAllControls(false);
-					Messenger.ShowWarning("Connection lost", "The connection to the selected machine was lost.");
-				}
-				else if (e.Status == ProcessManagerServiceHandlerStatus.Connected)
-				{
-					PopulateAllControls();
-				}
-			}
+					Machine machine = ConnectionStore.Connections.Values.Where(x => x.ServiceHandler == e.ServiceHandler).Select(x => x.Machine).FirstOrDefault();
+					if (machine != null && _selectedMachine == machine)
+					{
+						if (e.Status == ProcessManagerServiceHandlerStatus.Disconnected)
+						{
+							ClearAllControls();
+							ShowAllControls(false);
+							Messenger.ShowWarning("Connection lost", "The connection to the selected machine was lost.");
+						}
+						else if (e.Status == ProcessManagerServiceHandlerStatus.Connected)
+						{
+							PopulateAllControls();
+						}
+					}
+				});
 		}
 
 		#endregion
@@ -709,7 +726,7 @@ namespace ProcessManagerUI.Forms
 				selectedMachine = Settings.Constants.LocalMachine;
 
 			int index = comboBoxMachines.Items.IndexOf(selectedMachine);
-			comboBoxMachines.SelectedIndex = (index == -1 ? 0 : index);
+			comboBoxMachines.SelectedIndex = index == -1 ? 0 : index;
 		}
 
 		#endregion
@@ -760,8 +777,8 @@ namespace ProcessManagerUI.Forms
 				return false;
 
 			int equalApplicationsCount = _selectedGroup.Applications.Intersect(listViewGroupApplications.Items.Cast<ListViewItem>().Select(x => (Guid) x.Tag)).Count();
-			bool groupChanged = (_selectedGroup.Name != textBoxGroupName.Text || _selectedGroup.Path != textBoxGroupPath.Text
-				|| equalApplicationsCount != _selectedGroup.Applications.Count || equalApplicationsCount != listViewGroupApplications.Items.Count);
+			bool groupChanged = _selectedGroup.Name != textBoxGroupName.Text || _selectedGroup.Path != textBoxGroupPath.Text
+				|| equalApplicationsCount != _selectedGroup.Applications.Count || equalApplicationsCount != listViewGroupApplications.Items.Count;
 			ConnectionStore.Connections[_selectedMachine].ConfigurationModified |= groupChanged;
 			return groupChanged;
 		}
@@ -782,7 +799,7 @@ namespace ProcessManagerUI.Forms
 				return new List<Group>();
 
 			List<Group> groups = ConnectionStore.Connections[_selectedMachine].Configuration.Groups;
-			return (exceptCurrent ? (_selectedGroup == null ? new List<Group>() : groups.Except(new List<Group>() { _selectedGroup })) : groups);
+			return exceptCurrent ? (_selectedGroup == null ? new List<Group>() : groups.Except(new List<Group>() { _selectedGroup })) : groups;
 		}
 
 		private static bool ValidateGroups()
@@ -919,12 +936,12 @@ namespace ProcessManagerUI.Forms
 			if (_selectedMachine == null || _selectedApplication == null || string.IsNullOrEmpty(textBoxApplicationName.Text))
 				return false;
 
-			bool applicationChanged = (_selectedApplication.Name != textBoxApplicationName.Text
+			bool applicationChanged = _selectedApplication.Name != textBoxApplicationName.Text
 				|| _selectedApplication.RelativePath != textBoxApplicationRelativePath.Text
 				|| _selectedApplication.Arguments != textBoxApplicationArguments.Text
 				|| _selectedApplication.WaitForExit != checkBoxApplicationWaitForExit.Checked
 				|| _selectedApplication.SuccessExitCode != GetSelectedSuccessExitCode()
-				|| _selectedApplication.DistributionOnly != checkBoxDistributionOnly.Checked);
+				|| _selectedApplication.DistributionOnly != checkBoxDistributionOnly.Checked;
 			ConnectionStore.Connections[_selectedMachine].ConfigurationModified |= applicationChanged;
 			return applicationChanged;
 		}
@@ -1119,28 +1136,32 @@ namespace ProcessManagerUI.Forms
 
 		private void EnableControls(bool enable = true)
 		{
-			buttonApply.Enabled = (enable && HasUnsavedConfiguration);
+			buttonApply.Enabled = enable && HasUnsavedConfiguration;
 
-			buttonCopyGroup.Enabled = (enable && listViewGroups.SelectedItems.Count == 1);
-			buttonRemoveGroup.Enabled = (enable && listViewGroups.SelectedItems.Count > 0);
-			buttonAddGroupApplication.Enabled = (enable && GetNonIncludedGroupApplications().Any());
-			buttonRemoveGroupApplication.Enabled = (enable && listViewGroupApplications.SelectedItems.Count > 0);
-			buttonCopyGroupApplications.Enabled = (enable && GetAllGroups(true).Any());
+			buttonCopyGroup.Enabled = enable && listViewGroups.SelectedItems.Count == 1;
+			buttonRemoveGroup.Enabled = enable && listViewGroups.SelectedItems.Count > 0;
+			buttonAddGroupApplication.Enabled = enable && GetNonIncludedGroupApplications().Any();
+			buttonRemoveGroupApplication.Enabled = enable && listViewGroupApplications.SelectedItems.Count > 0;
+			buttonCopyGroupApplications.Enabled = enable && GetAllGroups(true).Any();
 
-			buttonCopyApplication.Enabled = (enable && listViewApplications.SelectedItems.Count == 1);
-			buttonRemoveApplication.Enabled = (enable && listViewApplications.SelectedItems.Count > 0);
-			labelApplicationRelativePath.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
-			labelApplicationArguments.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
-			textBoxApplicationRelativePath.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
-			textBoxApplicationArguments.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
-			buttonBrowseApplicationRelativePath.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
-			labelApplicationWaitForExit.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
-			checkBoxApplicationWaitForExit.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly);
-			labelApplicationSuccessExitCode.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly && checkBoxApplicationWaitForExit.Checked);
-			comboBoxApplicationSuccessExitCode.Enabled = (enable && _selectedApplication != null && !_selectedApplication.DistributionOnly && checkBoxApplicationWaitForExit.Checked);
+			buttonCopyApplication.Enabled = enable && listViewApplications.SelectedItems.Count == 1;
+			buttonRemoveApplication.Enabled = enable && listViewApplications.SelectedItems.Count > 0;
+			labelApplicationRelativePath.Enabled = enable && _selectedApplication != null && !_selectedApplication.DistributionOnly;
+			labelApplicationArguments.Enabled = enable && _selectedApplication != null && !_selectedApplication.DistributionOnly;
+			textBoxApplicationRelativePath.Enabled = enable && _selectedApplication != null && !_selectedApplication.DistributionOnly;
+			textBoxApplicationArguments.Enabled = enable && _selectedApplication != null && !_selectedApplication.DistributionOnly;
+			buttonBrowseApplicationRelativePath.Enabled = enable && _selectedApplication != null && !_selectedApplication.DistributionOnly;
+			labelApplicationWaitForExit.Enabled = enable && _selectedApplication != null && !_selectedApplication.DistributionOnly;
+			checkBoxApplicationWaitForExit.Enabled = enable && _selectedApplication != null && !_selectedApplication.DistributionOnly;
+			labelApplicationSuccessExitCode.Enabled = enable && _selectedApplication != null && !_selectedApplication.DistributionOnly && checkBoxApplicationWaitForExit.Checked;
+			comboBoxApplicationSuccessExitCode.Enabled = enable && _selectedApplication != null && !_selectedApplication.DistributionOnly && checkBoxApplicationWaitForExit.Checked;
 		}
 
-		#endregion
+		private void AddError(string error, Exception ex)
+		{
+			_errors.Add(new Error(error, ex));
+			linkLabelErrors.Show();
+		}
 
 		public static string GetFirstAvailableDefaultName(ICollection<string> existingNames, string nameTemplate)
 		{
@@ -1156,8 +1177,10 @@ namespace ProcessManagerUI.Forms
 				}
 			}
 			nameTemplate = (foundNo ? nameTemplate.Substring(0, lastIndex) : nameTemplate.Trim()) + " ";
-			while (existingNames.Contains(name = nameTemplate + (++tryNo))) { }
+			while (existingNames.Contains(name = nameTemplate + ++tryNo)) { }
 			return name;
 		}
+
+		#endregion
 	}
 }

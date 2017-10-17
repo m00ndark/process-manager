@@ -55,7 +55,7 @@ namespace ProcessManagerUI.Forms
 			else
 			{
 				_disableTextChangedEvents = true;
-				_selectedMacro = ((Macro) listViewMacros.SelectedItems[0].Tag);
+				_selectedMacro = (Macro) listViewMacros.SelectedItems[0].Tag;
 				textBoxMacroName.Text = _selectedMacro.Name;
 				LayoutMacroActionItems();
 				_disableTextChangedEvents = false;
@@ -304,8 +304,8 @@ namespace ProcessManagerUI.Forms
 			bool macroChanged = false;
 			if (_selectedMacro != null && !string.IsNullOrEmpty(textBoxMacroName.Text))
 			{
-				macroChanged = (_selectedMacro.Name != textBoxMacroName.Text
-					|| !_selectedMacro.ActionBundles.SequenceEqual(_macroActionItems.Select(item => item.ActionBundle)));
+				macroChanged = _selectedMacro.Name != textBoxMacroName.Text
+					|| !_selectedMacro.ActionBundles.SequenceEqual(_macroActionItems.Select(item => item.ActionBundle));
 				_hasUnsavedChanges |= macroChanged;
 				AnyMachinesChanged |= macroChanged;
 			}
@@ -384,9 +384,9 @@ namespace ProcessManagerUI.Forms
 
 		private void EnableControls(bool enable = true)
 		{
-			buttonApply.Enabled = (enable && _hasUnsavedChanges);
-			buttonCopyMacro.Enabled = (enable && listViewMacros.SelectedItems.Count == 1);
-			buttonRemoveMacro.Enabled = (enable && listViewMacros.SelectedItems.Count > 0);
+			buttonApply.Enabled = enable && _hasUnsavedChanges;
+			buttonCopyMacro.Enabled = enable && listViewMacros.SelectedItems.Count == 1;
+			buttonRemoveMacro.Enabled = enable && listViewMacros.SelectedItems.Count > 0;
 		}
 
 		#endregion

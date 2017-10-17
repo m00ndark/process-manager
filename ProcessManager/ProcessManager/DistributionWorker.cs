@@ -54,15 +54,15 @@ namespace ProcessManager
 			}
 		}
 
-		public bool IsRunning => (_distributionConnectionManagementThread != null);
+		public bool IsRunning => _distributionConnectionManagementThread != null;
 
 		#endregion
 
 		#region Event raisers
 
-		private void RaiseDistributionCompletedEvent(DistributionResult distributionResult, IProcessManagerServiceEventHandler caller)
+		private void RaiseDistributionCompletedEvent(DistributionResult distributionResult, Guid clientId)
 		{
-			DistributionCompleted?.Invoke(this, new DistributionResultEventArgs(distributionResult, caller));
+			DistributionCompleted?.Invoke(this, new DistributionResultEventArgs(distributionResult, clientId));
 		}
 
 		#endregion
@@ -291,7 +291,7 @@ namespace ProcessManager
 								if (errorMessages.Any())
 									throw new DistributionActionException(string.Join(Environment.NewLine, errorMessages.Select(x => x.Replace(" | ", Environment.NewLine + "\t"))));
 
-								RaiseDistributionCompletedEvent(new DistributionResult(work, DistributionResultValue.Success), work.Caller);
+								RaiseDistributionCompletedEvent(new DistributionResult(work, DistributionResultValue.Success), work.ClientId);
 							}
 							catch (DistributionActionException) { throw; }
 							catch (ThreadAbortException) { }
@@ -307,7 +307,7 @@ namespace ProcessManager
 						}
 						catch (DistributionActionException ex)
 						{
-							RaiseDistributionCompletedEvent(new DistributionResult(work, DistributionResultValue.Failure, ex.Message), work.Caller);
+							RaiseDistributionCompletedEvent(new DistributionResult(work, DistributionResultValue.Failure, ex.Message), work.ClientId);
 						}
 					});
 			}

@@ -7,12 +7,12 @@ namespace ProcessManager.DataObjects.Comparers
 	{
 		public bool Equals(Group group, string name)
 		{
-			return (group?.Name != null && name != null && group.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+			return @group?.Name != null && name != null && @group.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase);
 		}
 
 		public bool Equals(Group x, Group y)
 		{
-			return (y != null && Equals(x, y.Name));
+			return y != null && Equals(x, y.Name);
 		}
 
 		public int GetHashCode(Group obj)

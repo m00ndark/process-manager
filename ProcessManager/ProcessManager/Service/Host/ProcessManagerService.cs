@@ -14,19 +14,32 @@ namespace ProcessManager.Service.Host
 	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = true)]
 	internal class ProcessManagerService : IProcessManagerService
 	{
-		private readonly IDictionary<IProcessManagerServiceEventHandler, bool> _clients;
-		//private readonly IDictionary<IProcessManagerServiceEventHandler, InstanceContext> _clientsInstances = new Dictionary<IProcessManagerServiceEventHandler, InstanceContext>();
+		private class ConnectedClient
+		{
+			public ConnectedClient(IProcessManagerServiceEventHandler caller, bool subscribe)
+			{
+				Id = Guid.NewGuid();
+				Caller = caller;
+				Subscribe = subscribe;
+			}
+
+			public Guid Id { get; }
+			public IProcessManagerServiceEventHandler Caller { get; }
+			public bool Subscribe { get; }
+		}
+
+		private readonly IDictionary<IProcessManagerServiceEventHandler, ConnectedClient> _clients;
 
 		public ProcessManagerService()
 		{
-			_clients = new Dictionary<IProcessManagerServiceEventHandler, bool>();
+			_clients = new Dictionary<IProcessManagerServiceEventHandler, ConnectedClient>();
 		}
 
 		#region Properties
 
-		private IEnumerable<IProcessManagerServiceEventHandler> SubscribingClients
+		private IEnumerable<ConnectedClient> SubscribingClients
 		{
-			get { lock (_clients) return _clients.Where(x => x.Value).Select(x => x.Key).ToList(); }
+			get { lock (_clients) return _clients.Values.Where(x => x.Subscribe).ToList(); }
 		}
 
 		#endregion
@@ -35,20 +48,24 @@ namespace ProcessManager.Service.Host
 
 		public void Register(bool subscribe)
 		{
-			lock (_clients)
-				_clients.Add(OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>(), subscribe);
+			ConnectedClient client = new ConnectedClient(GetCaller(), subscribe);
 
-			//_clientsInstances.Add(OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>(), OperationContext.Current.InstanceContext);
-			string clientAddress = ((RemoteEndpointMessageProperty) OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name]).Address;
+			lock (_clients)
+				_clients.Add(client.Caller, client);
+
+			string clientAddress = ((RemoteEndpointMessageProperty) OperationContext.Current
+				.IncomingMessageProperties[RemoteEndpointMessageProperty.Name])
+				.Address;
+
 			Logger.Add($"Client at {clientAddress} registered{(subscribe ? " as subscriber" : string.Empty)}");
 		}
 
 		public void Unregister()
 		{
-			IProcessManagerServiceEventHandler caller = OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>();
+			IProcessManagerServiceEventHandler caller = GetCaller();
 
 			lock (_clients)
-				_clients.Where(x => (x.Key == caller)).ToList().ForEach(x => _clients.Remove(x));
+				_clients.Where(x => x.Key == caller).ToList().ForEach(x => _clients.Remove(x));
 
 			string clientAddress = ((RemoteEndpointMessageProperty) OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name]).Address;
 			Logger.Add($"Client at {clientAddress} unregistered");
@@ -82,6 +99,26 @@ namespace ProcessManager.Service.Host
 			return ProcessManager.Instance.GetAllProcessStatuses().Select(x => new DTOProcessStatus(x)).ToList();
 		}
 
+		public void ActivateProcessStatusNotifications()
+		{
+			Logger.Add(LogType.Verbose, "ActivateProcessStatusNotifications call received");
+
+			ConnectedClient client = GetClient();
+
+			if (client != null)
+				ProcessManager.Instance.ActivateProcessStatusNotifications(client.Id);
+		}
+
+		public void DeactivateProcessStatusNotifications()
+		{
+			Logger.Add(LogType.Verbose, "DeactivateProcessStatusNotifications call received");
+
+			ConnectedClient client = GetClient();
+
+			if (client != null)
+				ProcessManager.Instance.DeactivateProcessStatusNotifications(client.Id);
+		}
+
 		public DTOProcessActionResult TakeProcessAction(DTOProcessAction processAction)
 		{
 			Logger.Add(LogType.Verbose, $"TakeProcessAction call received: action = {processAction.Type}, {processAction.GroupID} / {processAction.ApplicationID}");
@@ -91,9 +128,22 @@ namespace ProcessManager.Service.Host
 
 		public DTODistributionActionResult TakeDistributionAction(DTODistributionAction distributionAction)
 		{
-			Logger.Add(LogType.Verbose, $"TakeDistributionAction call received: action = {distributionAction.Type}, {distributionAction.SourceMachineHostName} / {distributionAction.GroupID} / {distributionAction.ApplicationID} / {distributionAction.DestinationMachineHostName}");
-			IProcessManagerServiceEventHandler caller = OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>();
-			DistributionActionResult distributionActionResult = ProcessManager.Instance.TakeDistributionAction(distributionAction.SourceMachineHostName, distributionAction.GroupID, distributionAction.ApplicationID, distributionAction.DestinationMachineHostName, distributionAction.Type, caller);
+			Logger.Add(LogType.Verbose, $"TakeDistributionAction call received: action = {distributionAction.Type}," +
+				$" {distributionAction.SourceMachineHostName} / {distributionAction.GroupID} / {distributionAction.ApplicationID} / {distributionAction.DestinationMachineHostName}");
+
+			ConnectedClient client = GetClient();
+
+			if (client == null)
+				return null;
+
+			DistributionActionResult distributionActionResult = ProcessManager.Instance.TakeDistributionAction(
+				distributionAction.SourceMachineHostName,
+				distributionAction.GroupID,
+				distributionAction.ApplicationID,
+				distributionAction.DestinationMachineHostName,
+				distributionAction.Type,
+				client.Id);
+
 			return new DTODistributionActionResult(distributionActionResult);
 		}
 
@@ -122,13 +172,13 @@ namespace ProcessManager.Service.Host
 
 		public void ProcessManagerEventProvider_ProcessStatusesChanged(object sender, ProcessStatusesEventArgs e)
 		{
-			List<IProcessManagerServiceEventHandler> faultedClients = new List<IProcessManagerServiceEventHandler>();
-			foreach (IProcessManagerServiceEventHandler client in SubscribingClients)
+			List<ConnectedClient> faultedClients = new List<ConnectedClient>();
+			foreach (ConnectedClient client in e.ClientIds.Select(GetClientById))
 			{
 				try
 				{
 					Logger.Add(LogType.Verbose, $"Sending ProcessStatusesChanged event: count = {e.ProcessStatuses.Count}{e.ProcessStatuses.Aggregate("", (x, y) => $"{x}, {y.GroupID} / {y.ApplicationID}")}");
-					client.ServiceEvent_ProcessStatusesChanged(e.ProcessStatuses.Select(x => new DTOProcessStatus(x)).ToList());
+					client.Caller.ServiceEvent_ProcessStatusesChanged(e.ProcessStatuses.Select(x => new DTOProcessStatus(x)).ToList());
 				}
 				catch (Exception ex)
 				{
@@ -141,13 +191,13 @@ namespace ProcessManager.Service.Host
 
 		public void ProcessManagerEventProvider_ConfigurationChanged(object sender, MachineConfigurationHashEventArgs e)
 		{
-			List<IProcessManagerServiceEventHandler> faultedClients = new List<IProcessManagerServiceEventHandler>();
-			foreach (IProcessManagerServiceEventHandler client in SubscribingClients)
+			List<ConnectedClient> faultedClients = new List<ConnectedClient>();
+			foreach (ConnectedClient client in SubscribingClients)
 			{
 				try
 				{
 					Logger.Add(LogType.Verbose, $"Sending ConfigurationChanged event: hash = {e.ConfigurationHash}");
-					client.ServiceEvent_ConfigurationChanged(e.ConfigurationHash);
+					client.Caller.ServiceEvent_ConfigurationChanged(e.ConfigurationHash);
 				}
 				catch (Exception ex)
 				{
@@ -160,22 +210,19 @@ namespace ProcessManager.Service.Host
 
 		public void ProcessManagerEventProvider_DistributionCompleted(object sender, DistributionResultEventArgs e)
 		{
-			List<IProcessManagerServiceEventHandler> faultedClients = new List<IProcessManagerServiceEventHandler>();
-			lock (_clients)
+			List<ConnectedClient> faultedClients = new List<ConnectedClient>();
+			ConnectedClient client = GetClientById(e.ClientId);
+			if (client != null)
 			{
-				IProcessManagerServiceEventHandler client = _clients.Keys.FirstOrDefault(x => x == e.Caller);
-				if (client != null)
+				try
 				{
-					try
-					{
-						Logger.Add(LogType.Verbose, $"Sending DistributionCompleted event: action = {e.DistributionResult.Type}, {e.DistributionResult.SourceMachineHostName} / {e.DistributionResult.GroupID} / {e.DistributionResult.ApplicationID} / {e.DistributionResult.DestinationMachineHostName}");
-						client.ServiceEvent_DistributionCompleted(new DTODistributionResult(e.DistributionResult));
-					}
-					catch (Exception ex)
-					{
-						Logger.Add($"Failed to send DistributionCompleted event: action = {e.DistributionResult.Type}, {e.DistributionResult.SourceMachineHostName} / {e.DistributionResult.GroupID} / {e.DistributionResult.ApplicationID} / {e.DistributionResult.DestinationMachineHostName}", ex);
-						faultedClients.Add(client);
-					}
+					Logger.Add(LogType.Verbose, $"Sending DistributionCompleted event: action = {e.DistributionResult.Type}, {e.DistributionResult.SourceMachineHostName} / {e.DistributionResult.GroupID} / {e.DistributionResult.ApplicationID} / {e.DistributionResult.DestinationMachineHostName}");
+					client.Caller.ServiceEvent_DistributionCompleted(new DTODistributionResult(e.DistributionResult));
+				}
+				catch (Exception ex)
+				{
+					Logger.Add($"Failed to send DistributionCompleted event: action = {e.DistributionResult.Type}, {e.DistributionResult.SourceMachineHostName} / {e.DistributionResult.GroupID} / {e.DistributionResult.ApplicationID} / {e.DistributionResult.DestinationMachineHostName}", ex);
+					faultedClients.Add(client);
 				}
 			}
 			RemoveFaultedClients(faultedClients);
@@ -183,10 +230,27 @@ namespace ProcessManager.Service.Host
 
 		#endregion
 
-		private void RemoveFaultedClients(List<IProcessManagerServiceEventHandler> faultedClients)
+		private static IProcessManagerServiceEventHandler GetCaller()
+		{
+			return OperationContext.Current.GetCallbackChannel<IProcessManagerServiceEventHandler>();
+		}
+
+		private ConnectedClient GetClient()
 		{
 			lock (_clients)
-				faultedClients.ForEach(client => _clients.Remove(client));
+				return _clients.TryGetValue(GetCaller(), out ConnectedClient client) ? client : null;
+		}
+
+		private ConnectedClient GetClientById(Guid clientId)
+		{
+			lock (_clients)
+				return _clients.Values.FirstOrDefault(client => client.Id == clientId);
+		}
+
+		private void RemoveFaultedClients(List<ConnectedClient> faultedClients)
+		{
+			lock (_clients)
+				faultedClients.ForEach(client => _clients.Remove(client.Caller));
 
 			if (faultedClients.Count > 0)
 				Logger.Add(LogType.Error, $"Removed {faultedClients.Count} faulted clients");
