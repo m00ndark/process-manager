@@ -1,0 +1,435 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C8D00382-6819-4FE5-96F7-EFD428487F41}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ProcessManagerUI</RootNamespace>
+    <AssemblyName>ProcessManagerUI</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\app.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\build\bin\</OutputPath>
+    <IntermediateOutputPath>..\..\build\obj\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>..\..\build\bin\ProcessManagerUI.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>..\..\build\bin\</OutputPath>
+    <IntermediateOutputPath>..\..\build\obj\</IntermediateOutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>..\..\build\bin\ProcessManagerUI.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>ProcessManagerUI.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\build\bin\</OutputPath>
+    <IntermediateOutputPath>..\..\build\obj\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>..\..\build\bin\ProcessManagerUI.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>..\..\build\bin\</OutputPath>
+    <IntermediateOutputPath>..\..\build\obj\</IntermediateOutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>..\..\build\bin\ProcessManagerUI.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup>
+    <Reference Include="Microsoft.WindowsAPICodePack">
+      <HintPath>External\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="ToolComponents.Core">
+      <HintPath>..\ProcessManager\External\ToolComponents.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\MacroActionItems\MacroActionItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MacroActionItems\MacroActionItem.Designer.cs">
+      <DependentUpon>MacroActionItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MacroActionItems\MacroDistributionActionItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MacroActionItems\MacroDistributionActionItem.Designer.cs">
+      <DependentUpon>MacroDistributionActionItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MacroActionItems\MacroProcessActionItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MacroActionItems\MacroProcessActionItem.Designer.cs">
+      <DependentUpon>MacroProcessActionItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MacroActionItems\MacroWaitActionItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MacroActionItems\MacroWaitActionItem.Designer.cs">
+      <DependentUpon>MacroWaitActionItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MacroActionItems\Support\IMacroActionItem.cs" />
+    <Compile Include="Controls\Nodes\DistributionApplicationNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\DistributionDestinationMachineNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\DistributionDestinationMachineNode.Designer.cs">
+      <DependentUpon>DistributionDestinationMachineNode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Nodes\DistributionGroupNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\DistributionSourceMachineNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\MacroActionNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\MacroActionNode.Designer.cs">
+      <DependentUpon>MacroActionNode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Nodes\MacroMachineNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\MacroNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\Support\BaseMacroRootNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\Support\BaseMacroRootNode.Designer.cs">
+      <DependentUpon>BaseMacroRootNode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Nodes\Support\BaseProcessRootNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\ProcessApplicationNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\ProcessApplicationNode.Designer.cs">
+      <DependentUpon>ProcessApplicationNode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Nodes\ProcessGroupNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\Support\BaseProcessRootNode.Designer.cs">
+      <DependentUpon>BaseProcessRootNode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Nodes\Support\BaseDistributionRootNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\Support\BaseDistributionRootNode.Designer.cs">
+      <DependentUpon>BaseDistributionRootNode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Nodes\Support\IMacroNode.cs" />
+    <Compile Include="Controls\Nodes\Support\IMacroRootNode.cs" />
+    <Compile Include="Controls\Nodes\Support\INode.cs" />
+    <Compile Include="Controls\Nodes\ProcessMachineNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Nodes\Support\IRootNode.cs" />
+    <Compile Include="Forms\DistributionSourcesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DistributionSourcesForm.Designer.cs">
+      <DependentUpon>DistributionSourcesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FileSystemBrowserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FileSystemBrowserForm.Designer.cs">
+      <DependentUpon>FileSystemBrowserForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MacrosForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MacrosForm.Designer.cs">
+      <DependentUpon>MacrosForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IControlPanel.cs" />
+    <Compile Include="MacroPlayer.cs" />
+    <Compile Include="ServiceHelper.cs" />
+    <Compile Include="Support\ComboBoxItem.cs" />
+    <Compile Include="Controls\BackgroundPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\ConfigurationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ConfigurationForm.Designer.cs">
+      <DependentUpon>ConfigurationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\HorizontalPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\LabeledDivider.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Support\FileSystemListViewItem.cs" />
+    <Compile Include="Support\FileSystemTreeNode.cs" />
+    <Compile Include="Support\NativeMethods.cs" />
+    <Compile Include="Controls\TreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\ControlPanelForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ControlPanelForm.Designer.cs">
+      <DependentUpon>ControlPanelForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MachinesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MachinesForm.Designer.cs">
+      <DependentUpon>MachinesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Support\ShellIcon.cs" />
+    <Compile Include="Support\TabPageData.cs" />
+    <Compile Include="Support\TaskActionWrapper.cs" />
+    <Compile Include="Support\TaskDialog.cs" />
+    <Compile Include="Support\UISuspension.cs" />
+    <Compile Include="Support\WaitCursor.cs" />
+    <Compile Include="Utilities\Messenger.cs" />
+    <Compile Include="Utilities\Picker.cs" />
+    <Compile Include="Utilities\Worker.cs" />
+    <EmbeddedResource Include="Controls\MacroActionItems\MacroActionItem.resx">
+      <DependentUpon>MacroActionItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MacroActionItems\MacroDistributionActionItem.resx">
+      <DependentUpon>MacroDistributionActionItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MacroActionItems\MacroProcessActionItem.resx">
+      <DependentUpon>MacroProcessActionItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MacroActionItems\MacroWaitActionItem.resx">
+      <DependentUpon>MacroWaitActionItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Nodes\MacroActionNode.resx">
+      <DependentUpon>MacroActionNode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Nodes\ProcessApplicationNode.resx">
+      <DependentUpon>ProcessApplicationNode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Nodes\DistributionDestinationMachineNode.resx">
+      <DependentUpon>DistributionDestinationMachineNode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Nodes\Support\BaseMacroRootNode.resx">
+      <DependentUpon>BaseMacroRootNode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Nodes\Support\BaseProcessRootNode.resx">
+      <DependentUpon>BaseProcessRootNode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Nodes\Support\BaseDistributionRootNode.resx">
+      <DependentUpon>BaseDistributionRootNode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ConfigurationForm.resx">
+      <DependentUpon>ConfigurationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ControlPanelForm.resx">
+      <DependentUpon>ControlPanelForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DistributionSourcesForm.resx">
+      <DependentUpon>DistributionSourcesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FileSystemBrowserForm.resx">
+      <DependentUpon>FileSystemBrowserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MachinesForm.resx">
+      <DependentUpon>MachinesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MacrosForm.resx">
+      <DependentUpon>MacrosForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Resources\app.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\copy-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\remove-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProcessManager\ProcessManager.csproj">
+      <Project>{98D87BB4-276C-4CE1-ACC4-9841244E9560}</Project>
+      <Name>ProcessManager</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\running-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stopped-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\collapsed-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\expanded-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\unknown-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\drive-compact-disc-16.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\drive-local-disk-16.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\drive-network-16.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\drive-removable-disk-16.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\folder-16.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\machine-16.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\distribution-unknown-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\distribution-ongoing-16.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\distribution-success-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\distribution-failure-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\macro-unknown-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\macro-ongoing-16.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\macro-success-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\macro-failure-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow-up-7-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow-down-7-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close-16-14.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close-active-16-14.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\action-error-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="External\Microsoft.WindowsAPICodePack.dll" />
+    <None Include="Resources\communication-error-16.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
